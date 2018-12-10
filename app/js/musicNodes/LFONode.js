@@ -15,6 +15,8 @@ export default class LFONode extends MusicNode{
 		const rangeSliderContainer = document.createElement('div');
 		rangeSliderContainer.className = 'range-slider-container';
 
+		console.log('hej matte');
+
 		this.el.appendChild(rangeSliderContainer);
 
 		this.frequencySlider = new RangeSlider(
