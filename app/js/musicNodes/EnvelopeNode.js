@@ -13,110 +13,64 @@ export default class EnvelopeNode extends MusicNode{
 
 		this.audioNode = new Tone.Envelope();
 
-		const rangeSliderContainer = document.createElement('div');
-		rangeSliderContainer.className = 'range-slider-container';
-
-		this.el.appendChild(rangeSliderContainer);
-
-		this.onParameterChangeBound = this.onParameterChange.bind(this);
-
-		this.attack = new RangeSlider(
-			rangeSliderContainer,
-			'A',
-			0.01,
-			{min: 0, max: 2},
-			this.onParameterChangeBound,
-			'attack',
-			2
-		);
-		
-		this.decay = new RangeSlider(
-			rangeSliderContainer,
-			'D',
-			0.1,
-			{min: 0, max: 2},
-			this.onParameterChangeBound,
-			'decay',
-			2
-		);
-		
-		this.sustain = new RangeSlider(
-			rangeSliderContainer,
-			'S',
-			0.5,
-			{min: 0, max: 1},
-			this.onParameterChangeBound,
-			'sustain',
-			2
-		);
-		
-		this.release = new RangeSlider(
-			rangeSliderContainer,
-			'R',
-			1,
-			{min: 0, max: 2},
-			this.onParameterChangeBound,
-			'release',
-			2
-		);
-
-		
-	}
-
-	getParams(step) {
-		const params = {};
-		params.attack = this.attack.getReadyValue();
-		params.decay = this.decay.getReadyValue();
-		params.sustain = this.sustain.getReadyValue();
-		params.release = this.release.getReadyValue();
-
-		return params;
+		this.params = {
+			'Attack' : {
+				obj: RangeSlider,
+				objSettings: {
+					title: 'A',
+					val: 0.01,
+					range: {min: 0, max: 2},
+					param: 'attack',
+					decimals: 2
+				}
+			},
+			'Decay' : {
+				obj: RangeSlider,
+				objSettings: {
+					title: 'D',
+					val: 0.1,
+					range: {min: 0, max: 2},
+					param: 'decay',
+					decimals: 2
+				}
+			},
+			'Sustain' : {
+				obj: RangeSlider,
+				objSettings: {
+					title: 'S',
+					val: 0.5,
+					range: {min: 0, max: 1},
+					param: 'sustain',
+					decimals: 2
+				}
+			},
+			'Release' : {
+				obj: RangeSlider,
+				objSettings: {
+					title: 'R',
+					val: 1,
+					range: {min: 0, max: 2},
+					param: 'release',
+					decimals: 2
+				}
+			}
+		}
 	}
 
 	getAudioNode() {
 
 		const env = new Tone.Envelope();
-		env.attack = this.attack.getReadyValue();
-		env.decay = this.decay.getReadyValue();
-		env.sustain = this.sustain.getReadyValue();
-		env.release = this.release.getReadyValue();
+		env.attack = this.params['Attack'].objSettings.val;
+		env.decay = this.params['Decay'].objSettings.val;
+		env.sustain = this.params['Decay'].objSettings.val;
+		env.release = this.params['Decay'].objSettings.val;
 
 		return env;
 	}
 
-	onParameterChange(val, type) {
-		this.audioNode[type] = val;
-	}
-
 	setup() {
 
-		// window.addEventListener('keydown', (e) => {
-			
-		// 	if (e.key === 'a' && !this.keyIsDown) {
-		// 		console.log('keydown.  ', e);
-		// 		this.audioNode.triggerAttack();
-		// 		this.keyIsDown = true;
-		// 	}
-		// });
-
-		// window.addEventListener('keyup', (e) => {			
-
-		// 	if (e.key === 'a') {
-		// 		console.log('keyup.  ', e);
-		// 		this.audioNode.triggerRelease();
-		// 		this.keyIsDown = false;
-		// 	}
-		// });
 	}
-
-	keyDown() {
-		this.audioNode.triggerAttack();
-	}
-
-	keyUp() {
-		this.audioNode.triggerRelease();
-	}
-
 
 	// enableInput(outputAudioNode) {
 	// 	super.enableInput();

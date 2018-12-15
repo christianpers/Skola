@@ -8,7 +8,7 @@ export default class Node{
 		this.el.className = 'node';
 	}
 
-	init(parentEl, onConnectingCallback, onInputConnectionCallback, type, nodeConfig) {
+	init(parentEl, onConnectingCallback, onInputConnectionCallback, type, nodeConfig, onNodeActive) {
 
 		this.initNodeConfig = !!nodeConfig;
 
@@ -17,6 +17,7 @@ export default class Node{
 		this.onInputConnectionCallback = onInputConnectionCallback;
 		this.hasActiveInput = false;
 		this.type = type;
+		this.onNodeActive = onNodeActive;
 
 		this.parentEl = parentEl;
 
@@ -92,7 +93,10 @@ export default class Node{
 
 	onMouseDown(e) {
 
+		e.stopPropagation();
 		e.preventDefault();
+
+
 
 		// console.log('mouse down', e);
 
@@ -115,6 +119,8 @@ export default class Node{
 	}
 
 	onMouseUp(e) {
+
+		this.onNodeActive(this);
 
 		window.removeEventListener('mouseup', this.onMouseUpBound);
 		window.removeEventListener('mousemove', this.onMouseMoveBound);

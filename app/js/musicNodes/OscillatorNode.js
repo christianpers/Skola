@@ -13,17 +13,38 @@ export default class OscillatorNode extends MusicNode{
 		this.isKeyboardListener = true;
 		this.isOscillator = true;
 
-		const rangeSliderContainer = document.createElement('div');
-		rangeSliderContainer.className = 'range-slider-container';
+		// const rangeSliderContainer = document.createElement('div');
+		// rangeSliderContainer.className = 'range-slider-container';
 
-		this.el.appendChild(rangeSliderContainer);
+		// this.el.appendChild(rangeSliderContainer);
 
-		this.onParameterChangeBound = this.onParameterChange.bind(this);
+		// this.onParameterChangeBound = this.onParameterChange.bind(this);
 
-		this.octaveSlider = new RangeSlider(rangeSliderContainer, 'Octave', 0, {min: -3, max: 3}, null, '', 0);
+		// this.octaveSlider = new RangeSlider(rangeSliderContainer, 'Octave', 0, {min: -3, max: 3}, null, '', 0);
+
+		this.params = {
+			'Octave' : {
+				obj: RangeSlider,
+				objSettings: {
+					title: 'Octave',
+					val: 0,
+					range: {min: -3, max: 3},
+					param: null,
+					decimals: 0
+				}
+			}
+		}
+	}
+
+	setParamVal(val, key) {
+		this.params[key].objSettings.val = val;
 	}
 
 	getParams(step) {
+		if (!step) {
+			step = 0;
+		}
+		
 		const params = {};
 		params.frequency = this.getFrequency(step);
 		params.type = "sawtooth";
@@ -44,32 +65,30 @@ export default class OscillatorNode extends MusicNode{
 
 	getFrequency(step) {
 
-		const octaveOffset = parseInt(this.octaveSlider.getValue().toFixed(0));
+		// const octaveOffset = parseInt(this.octaveSlider.getValue().toFixed(0));
+		const octaveOffset = parseInt(this.params['Octave'].objSettings.val);
 
 		const tempOctave = octaveOffset;
 		const tempSteps = 12 * tempOctave + step;
 		
 		const freq = OscillatorNode.BASE_FREQ * Math.pow(OscillatorNode.ROOT, tempSteps);
 
-		console.log('freq: ', freq);
-
 		return freq;
 	}
 
-	keyDown(step) {
+	// keyDown(step) {
 
-		const freq = this.getFrequency(step);
-		console.log(freq);
+	// 	const freq = this.getFrequency(step);
 
-		this.audioNode.frequency.value = freq;
+	// 	this.audioNode.frequency.value = freq;
 
-		console.log(this.audioNode);
-	}
+	// }
 
-	keyUp() {
-	}
+	// keyUp() {
+	// }
 
 	onParameterChange(val, type) {
+
 		// this.audioNode[type] = val;
 
 		// console.log(this.audioNode);

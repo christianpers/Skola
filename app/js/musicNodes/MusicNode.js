@@ -14,6 +14,33 @@ export default class MusicNode extends Node{
 
 	}
 
+	init(parentEl, onConnectingCallback, onInputConnectionCallback, type, nodeConfig, onNodeActive, onParameterChange) {
+		super.init(parentEl, onConnectingCallback, onInputConnectionCallback, type, nodeConfig, onNodeActive);
+
+		this.onParameterChange = onParameterChange;
+	}
+
+	onParameterUpdate() {
+		const params = this.getParams();
+
+		this.onParameterChange(this.ID, params);
+	}
+
+	getParams(step) {
+
+		const params = {};
+		for (const key in this.params) {
+			const obj = this.params[key];
+			params[obj.objSettings.param] = obj.objSettings.val;
+		}
+		
+		return params;
+	}
+
+	setParamVal(val, key) {
+		this.params[key].objSettings.val = val;
+	}
+
 	setup() {
 
 		

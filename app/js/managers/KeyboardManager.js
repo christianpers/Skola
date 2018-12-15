@@ -9,7 +9,7 @@ export default class KeyboardManager{
 
 		for (var i=0;i<KeyboardManager.KEY_INTS.length;i++){
 			const key = KeyboardManager.KEY_INTS[i];
-			var obj = {keyNr: key, step:i, triggered: false, synth: new SynthCopy(i)};
+			var obj = {keyNr: key, step: i, triggered: false, synth: new SynthCopy(i)};
 			
 			this.keys.push(obj);
 		}
@@ -49,11 +49,18 @@ export default class KeyboardManager{
 		}
 	}
 
+	onAudioNodeParamChange(nodeID, params) {
+
+		for (let i = 0; i < this.keys.length; i++) {
+			this.keys[i].synth.onParamChange(nodeID, params);
+		}
+	}
+
 	getKey(key) {
 
 		let ret = null;
 		for (let i=0; i<this.keys.length;i++) {
-			if (this.keys[i].keyNr == key){
+			if (this.keys[i].keyNr === key){
 				ret = this.keys[i];
 				continue;
 			}

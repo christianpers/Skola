@@ -1,6 +1,7 @@
 import NodeManager from './managers/NodeManager';
 import NodeLibrary from './managers/NodeLibrary/NodeLibrary';
 import KeyboardManager from './managers/KeyboardManager';
+import NodeSettings from './views/NodeSettings';
 
 import OscillatorNode from './musicNodes/OscillatorNode';
 import GainNode from './musicNodes/GainNode';
@@ -20,9 +21,37 @@ export default class Main{
 
 		window.addEventListener('popstate', this.onPopStateChange.bind(this));
 
-		// window.NS.audioContext = new (window.AudioContext || window.webkitAudioContext);
+		this.nodeTypes = {
+			audio: {
+				audio: [
+					{
+						type: 'Oscillator',
+						obj: OscillatorNode
+					},
+					{
+						type: 'Gain',
+						obj: GainNode
+					}
+				],
+				data: [
+					{
+						type: 'LFO',
+						obj: LFONode
+					},
+					{
+						type: 'Envelope',
+						obj: EnvelopeNode
+					}
+				]
+			},
+			graphics: {}
+		}
 
-		const nodeLibrary = new NodeLibrary(document.body);
+		this.onNodeAddedFromLibraryBound = this.onNodeAddedFromLibrary.bind(this);
+
+		this.nodeSettings = new NodeSettings(document.body);
+		
+		const nodeLibrary = new NodeLibrary(document.body, this.nodeTypes, this.onNodeAddedFromLibraryBound);
 
 		const initData = {
 			nodes: [
@@ -150,8 +179,18 @@ export default class Main{
 
 		this.keyboardManager = new KeyboardManager();
 
-		this.nodeManager = new NodeManager(initData, this.keyboardManager);
+		this.onNodeActiveBound = this.onNodeActive.bind(this);
+
+		this.nodeManager = new NodeManager(initData, this.keyboardManager, this.onNodeActiveBound);
 		
+	}
+
+	onNodeActive(node) {
+		this.nodeSettings.show(node);
+	}
+
+	onNodeAddedFromLibrary(data) {
+		this.nodeManager.onNodeAddedFromLibrary(data);
 	}
 
 	onPopStateChange(e) {

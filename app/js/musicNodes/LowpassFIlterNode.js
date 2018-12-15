@@ -5,41 +5,39 @@ import RangeSlider from '../views/Nodes/NodeComponents/RangeSlider';
 export default class LowpassFilterNode extends MusicNode{
 	constructor() {
 		super();
-
 		
 		this.audioNode = new Tone.Filter();
 
-		const rangeSliderContainer = document.createElement('div');
-		rangeSliderContainer.className = 'range-slider-container';
+		this.params = {
+			'Frequency' : {
+				obj: RangeSlider,
+				objSettings: {
+					title: 'Frequency',
+					val: 350,
+					range: {min: 0, max: 22000},
+					param: 'frequency',
+					decimals: 0
+				}
+			},
+			'Q' : {
+				obj: RangeSlider,
+				objSettings: {
+					title: 'Q',
+					val: 1,
+					range: {min: 0, max: 10},
+					param: 'Q',
+					decimals: 2
+				}
+			},
+		}
 
-		this.el.appendChild(rangeSliderContainer);
-
-		this.onParameterChangeBound = this.onParameterChange.bind(this);
-
-		this.release = new RangeSlider(
-			rangeSliderContainer,
-			'Frequency',
-			350,
-			{min: 0, max: 22000},
-			this.onParameterChangeBound,
-			'frequency',
-			0
-		);
-
-	}
-
-	getParams(step) {
-		const params = {};
-		params.frequency = this.release.getReadyValue();
-
-		return params;
 	}
 
 	getAudioNode() {
 
 		const audioNode = new Tone.Filter();
-		audioNode.frequency.value = this.audioNode.frequency.value;
-		audioNode.Q.value = 10;
+		audioNode.frequency.value = this.params['Frequency'].objSettings.val;
+		audioNode.Q.value = this.params['Q'].objSettings.val;
 
 		return audioNode;
 	}
@@ -47,14 +45,6 @@ export default class LowpassFilterNode extends MusicNode{
 	getParamConnection() {
 
 		return 'frequency';
-	}
-
-	onParameterChange(val, type) {
-		if (type === 'frequency') {
-			this.audioNode[type].value = val;
-		} else {
-			this.audioNode[type] = val;
-		}
 	}
 
 	setup() {

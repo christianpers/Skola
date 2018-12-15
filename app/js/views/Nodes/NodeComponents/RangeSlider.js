@@ -43,9 +43,15 @@ export default class RangeSlider{
 
 		setTimeout(() => {
 			this.setPos(this.sliderBg.clientHeight);
-		}, 500);
+		}, 0);
 
 		this.knobEl.addEventListener('mousedown', this.onMouseDownBound);
+	}
+
+	remove() {
+
+		this.knobEl.removeEventListener('mousedown', this.onMouseDownBound);
+		this.parentEl.removeChild(this.el);
 	}
 
 	getValue() {
@@ -79,8 +85,8 @@ export default class RangeSlider{
 		this.value = val > 1 ? 1 : val < 0 ? 0 : val;
 
 		this.setPos(sliderHeight);
-
 		if (this.valChangeCallback) {
+
 			this.valChangeCallback(parseFloat(this.getValue().toFixed(this.decimals)), this.parameter);
 		}
 		

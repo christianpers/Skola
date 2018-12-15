@@ -4,10 +4,12 @@ import GraphicsNodeManager from './GraphicsNodeManager';
 import AudioNodeManager from './AudioNodeManager';
 
 export default class NodeManager{
-	constructor(config, keyboardManager) {
+	constructor(config, keyboardManager, onNodeActive) {
 
 		this.config = config;
 		this.hasConfig = !!config;
+
+		this.onNodeActiveCallback = onNodeActive;
 
 		this.constructorIsDone = false;
 
@@ -25,15 +27,18 @@ export default class NodeManager{
 		this.onConnectingBound = this.onConnecting.bind(this);
 		this.onInputConnectionBound = this.onInputConnection.bind(this);
 		this.addBound = this.add.bind(this);
+		this.onAudioNodeParamChangeBound = this.onAudioNodeParamChange.bind(this);
 		
-		this.audioNodeManager = new AudioNodeManager();
-		this.audioNodeManager.init(
+		this.audioNodeManager = new AudioNodeManager(
 			document.body,
 			this.onConnectingBound,
 			this.onInputConnectionBound,
 			this.addBound,
-			this.hasConfig ? this.config.nodes : []
+			this.hasConfig ? this.config.nodes : [],
+			this.onAudioNodeParamChangeBound,
+			onNodeActive,
 		);
+		this.audioNodeManager.init();
 
 		if (this.hasConfig) {
 			for (let i = 0; i < this.config.connections.length; i++) {
@@ -51,6 +56,14 @@ export default class NodeManager{
 		// console.log(this._nodes);
 		// this.graphicsNodeManager = new GraphicsNodeManager(document.body, this.onConnectingBound, this.onInputConnectionBound, this.addBound);
 
+	}
+
+	onNodeAddedFromLibrary(data) {
+		this.audioNodeManager.createNode(data);
+	}
+
+	onAudioNodeParamChange(nodeID, params) {
+		this.keyboardManager.onAudioNodeParamChange(nodeID, params);
 	}
 
 	onConnecting(node) {
@@ -123,18 +136,12 @@ export default class NodeManager{
 
 	add(node) {
 		this._nodes.push(node);
-
-		if (node.isKeyboardListener) {
-			this.audioNodeManager.addKeyboardListener(node);
-		}
 	}
 
 	remove(node) {
 		node.remove();
 		const tempNodes = this._nodes.filter((t) => t.ID !== node.ID);
 		this._nodes = tempNodes;
-
-		this.audioNodeManager.removeKeyboardListener(node);
 	}
 
 	update() {

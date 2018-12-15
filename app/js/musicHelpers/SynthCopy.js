@@ -48,6 +48,23 @@ export default class SynthCopy{
 		}
 	}
 
+	onParamChange(nodeID, params) {
+		if (this.nodes[nodeID]) {
+			this._updateParams(this.nodes[nodeID], params);
+		}
+	}
+
+	_updateParams(audioNode, params) {
+		for (const key in params) {
+			if (key === 'frequency' || key === 'amplitude' || key === 'Q') {
+				audioNode[key].value = params[key];
+
+			} else {
+				audioNode[key] = params[key];
+			}
+		}
+	}
+
 	keyDown() {
 
 		// !!TODO LOOP NODES INSTEAD OF CONNECTIONS!!
@@ -56,14 +73,15 @@ export default class SynthCopy{
 			
 			const audioNode = this.nodes[connection.out.ID];
 			const params = connection.out.getParams(this.step);
-			for (const key in params) {
-				if (key === 'frequency' || key === 'amplitude') {
-					audioNode[key].value = params[key];
+			this._updateParams(audioNode, params);
+			// for (const key in params) {
+			// 	if (key === 'frequency' || key === 'amplitude') {
+			// 		audioNode[key].value = params[key];
 
-				} else {
-					audioNode[key] = params[key];
-				}
-			}
+			// 	} else {
+			// 		audioNode[key] = params[key];
+			// 	}
+			// }
 		}
 
 		for (let i = 0; i < this.triggerNodes.length; i++) {
