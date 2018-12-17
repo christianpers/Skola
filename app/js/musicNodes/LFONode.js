@@ -21,7 +21,8 @@ export default class LFONode extends MusicNode{
 					range: {min: 0.1, max: 17.0},
 					param: 'frequency',
 					decimals: 2
-				}
+				},
+				useAsInput: false,
 			},
 			'Amplitude' : {
 				obj: RangeSlider,
@@ -31,7 +32,8 @@ export default class LFONode extends MusicNode{
 					range: {min: 0, max: 1},
 					param: 'amplitude',
 					decimals: 2
-				}
+				},
+				useAsInput: false,
 			},
 		}
 	}

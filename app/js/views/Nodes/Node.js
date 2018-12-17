@@ -4,8 +4,7 @@ import NodeInput from './NodeComponents/NodeInput';
 export default class Node{
 	constructor() {
 
-		this.el = document.createElement('div');
-		this.el.className = 'node';
+		
 	}
 
 	init(parentEl, onConnectingCallback, onInputConnectionCallback, type, nodeConfig, onNodeActive) {
@@ -21,6 +20,8 @@ export default class Node{
 
 		this.parentEl = parentEl;
 
+		this.lastDelta = {x: 0, y: 0};
+
 		const typeEl = document.createElement('h4');
 		typeEl.innerHTML = this.type;
 		typeEl.className = 'node-type';
@@ -32,8 +33,11 @@ export default class Node{
 		this.onOutputClickBound = this.onOutputClick.bind(this);
 		this.onInputClickBound = this.onInputClick.bind(this);
 
-		this.output = new NodeOutput(this.el, this.onOutputClickBound);
-		this.input = new NodeInput(this.el, this.onInputClickBound);
+		if (!this.isParam && this.hasAudioInput) {
+			this.input = new NodeInput(this.bottomPartEl, this.onInputClickBound);
+		}
+		
+		this.output = new NodeOutput(this.bottomPartEl, this.onOutputClickBound, this.isParam);
 
 		this.moveCoords = {
 			start: {
@@ -41,8 +45,8 @@ export default class Node{
 				y: 0
 			},
 			offset: {
-				x: this.initNodeConfig ? nodeConfig.pos[0] : 0,
-				y: this.initNodeConfig ? nodeConfig.pos[1] : 0,
+				x: this.initNodeConfig ? nodeConfig.pos[0] : 200,
+				y: this.initNodeConfig ? nodeConfig.pos[1] : 200,
 			}
 		};
 
@@ -68,12 +72,16 @@ export default class Node{
 		this.output.disable();
 	}
 
-	enableInput() {
-		this.input.enable();
+	enableInput(param) {
+		if (this.input) {
+			this.input.enable();
+		}
 	}
 
 	disableInput() {
-		this.input.disable();
+		if (this.input){
+			this.input.disable();
+		}
 	}
 
 	onOutputClick() {
@@ -81,9 +89,9 @@ export default class Node{
 		this.onConnectingCallback(this);
 	}
 
-	onInputClick() {
+	onInputClick(param) {
 
-		this.onInputConnectionCallback(this);
+		this.onInputConnectionCallback(this, param);
 	}
 
 	remove() {
@@ -96,12 +104,11 @@ export default class Node{
 		e.stopPropagation();
 		e.preventDefault();
 
-
-
-		// console.log('mouse down', e);
-
 		this.moveCoords.start.x = e.x - this.moveCoords.offset.x;
 		this.moveCoords.start.y = e.y - this.moveCoords.offset.y;
+
+		this.lastDelta.x = 0;
+		this.lastDelta.y = 0;
 
 		window.addEventListener('mouseup', this.onMouseUpBound);
 		window.addEventListener('mousemove', this.onMouseMoveBound);
@@ -115,12 +122,17 @@ export default class Node{
 		this.moveCoords.offset.x = deltaX;
 		this.moveCoords.offset.y = deltaY;
 
+		this.lastDelta.x = deltaX;
+		this.lastDelta.y = deltaY;
+
 		this.el.style[window.NS.transform] = `translate3d(${deltaX}px, ${deltaY}px, 0)`;
 	}
 
 	onMouseUp(e) {
 
-		this.onNodeActive(this);
+		if ((e.target.parentNode !== this.output.el) && (this.lastDelta.x < 2 && this.lastDelta.y < 2)) {
+			this.onNodeActive(this);
+		}
 
 		window.removeEventListener('mouseup', this.onMouseUpBound);
 		window.removeEventListener('mousemove', this.onMouseMoveBound);

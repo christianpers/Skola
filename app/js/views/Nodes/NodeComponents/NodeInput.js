@@ -9,6 +9,17 @@ export default class NodeInput{
 		this.el = document.createElement('div');
 		this.el.className = 'node-input node-component';
 
+		const dotEl = document.createElement('div');
+		dotEl.className = 'dot';
+
+		this.el.appendChild(dotEl);
+
+		const labelEl = document.createElement('p');
+		labelEl.className = 'label';
+		labelEl.innerHTML = 'Ljud in';
+
+		this.el.appendChild(labelEl);
+
 		this.parentEl.appendChild(this.el);
 
 		this.onClickBound = this.onClick.bind(this);

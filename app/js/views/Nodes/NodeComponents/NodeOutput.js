@@ -1,5 +1,5 @@
 export default class NodeOutput{
-	constructor(parentEl, onClickCallback) {
+	constructor(parentEl, onClickCallback, isParam) {
 
 		this.isActive = false;
 		this.onClickCallback = onClickCallback;
@@ -8,6 +8,17 @@ export default class NodeOutput{
 
 		this.el = document.createElement('div');
 		this.el.className = 'node-output node-component';
+
+		const dotEl = document.createElement('div');
+		dotEl.className = 'dot';
+
+		this.el.appendChild(dotEl);
+
+		const labelEl = document.createElement('p');
+		labelEl.className = 'label';
+		labelEl.innerHTML = isParam ? 'Data ut' : 'Ljud ut';
+
+		this.el.appendChild(labelEl);
 
 		this.parentEl.appendChild(this.el);
 
@@ -21,8 +32,6 @@ export default class NodeOutput{
 		this.el.classList.add('selected');
 
 		this.onClickCallback();
-
-
 	}
 
 	enable() {

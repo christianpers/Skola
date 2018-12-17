@@ -68,33 +68,131 @@ export default class NodeManager{
 
 	onConnecting(node) {
 
+		console.log('on connecting');
+
 		this.isConnecting = true;
 		this.outputActiveNode = node;
 
-		const otherNodes = this._nodes.filter((t) => t.ID !== node.ID);
+		/*
+			create data node array
+			create audio node array
 
+			check if out is data or audio
+
+			if data
+				set not connected params as possible 
+
+			if audio
+				set not connected audio ins as possible
+		*/
+
+		const paramConnections = this._nodeConnections.filter(t => t.param);
+		const audioConnections = this._nodeConnections.filter(t => !t.param);
+
+		const otherNodes = this._nodes.filter((t) => t.ID !== node.ID && t.hasAudioInput);
+
+		const dataNodes = otherNodes.filter(t => t.isParam);
+
+		const getInputParams = (node) => {
+			const params = [];
+			for (const key in node.params) {
+				if (node.params[key].useAsInput) {
+					params.push(node.params[key]);
+				}
+			}
+
+			return params;
+		};
+
+		const hasAvailableInputParams = (node) => {
+			const nodeParamConnections = paramConnections.filter(t => t.in.ID === node.ID);
+
+			const inputParams = getInputParams(node);
+
+			const availableParams = [];
+			for (let i = 0; i < inputParams.length; i++) {
+				const inputParam = inputParams[i];
+				if (!nodeParamConnections.some(t => t.param.objSettings.param === inputParam.objSettings.param)) {
+					availableParams.push(inputParam);
+					inputParam.canBeConnected = true;
+				}
+			}
+
+			return availableParams.length > 0;
+
+		};
+		
+		const audioNodesWithInputParams = otherNodes.filter((t) => {
+			return hasAvailableInputParams(t);
+		});
+
+		const notConnectedAudioInNodes = [];
 		for (let i = 0; i < otherNodes.length; i++) {
-			otherNodes[i].input.activatePossible();
+			const node = otherNodes[i];
+			if (!audioConnections.some(t => t.in.ID === node.ID) && !node.isParam) {
+				notConnectedAudioInNodes.push(node);
+			}
+		}
+
+		console.log('param nodes: ', audioNodesWithInputParams);
+
+		console.log('audio nodes: ', notConnectedAudioInNodes);
+
+		const nodesToLoop = node.isParam ? audioNodesWithInputParams : notConnectedAudioInNodes;
+
+		for (let i = 0; i < nodesToLoop.length; i++) {
+			nodesToLoop[i].canBeConnected = true;
 		}
 	}
 
-	onInputConnection(inputNode) {
+	onInputConnection(inputNode, param) {
 
 		if (!this.isConnecting || !this.outputActiveNode) {
 			return;
 		}
 
-		this.isConnecting = false;
-
-		this.outputActiveNode.setup();
-
-		if (this.outputActiveNode.audioNode) {
-
-			inputNode.enableInput(this.outputActiveNode.getConnectNode());
-			this.outputActiveNode.enableOutput();
+		if ((!this.outputActiveNode.isParam && param) || (this.outputActiveNode.isParam && !param)) {
+			return;
 		}
 
-		const connectionData = {out: this.outputActiveNode, in: inputNode, lineEl: this.nodeRenderer.addLine(inputNode.ID + '---' + this.outputActiveNode.ID)};
+		if (this.outputActiveNode.isParam) {
+			if (!param.canBeConnected) {
+				const params = inputNode.params;
+				for (const key in params) {
+					params[key].canBeConnected = false;
+				}
+				return;
+			}
+		} else {
+			if (!inputNode.canBeConnected) {
+				for (let i = 0; i < this._nodes.length; i++) {
+					this._nodes[i].canBeConnected = false;
+				}
+			}
+		}
+
+		
+
+		// if (!inputNode.canBeConnected) {
+		// 	for (let i = 0; i < this._nodes.length; i++) {
+		// 		this._nodes[i].canBeConnected = false;
+		// 	}
+		// 	return;
+		// }
+
+		this.isConnecting = false;
+
+		// this.outputActiveNode.setup();
+
+		if (param) {
+			inputNode.enableParam(param);
+		} else {
+			inputNode.enableInput(this.outputActiveNode.getConnectNode());
+		}
+		
+		this.outputActiveNode.enableOutput();
+		
+		const connectionData = {param: param, out: this.outputActiveNode, in: inputNode, lineEl: this.nodeRenderer.addLine(inputNode.ID + '---' + this.outputActiveNode.ID)};
 		connectionData.lineEl.addEventListener('click', (e) => {
 			this.removeConnection(connectionData);
 		});
@@ -108,22 +206,31 @@ export default class NodeManager{
 		this.outputActiveNode = null;
 
 		for (let i = 0; i < this._nodes.length; i++) {
-			this._nodes[i].input.deactivatePossible();
+			this._nodes[i].canBeConnected = false;
+			if (this._nodes[i].input) {
+				this._nodes[i].input.deactivatePossible();
+			}	
 		}
 	}
 
 	removeConnection(connectionData) {
 
-		connectionData.in.disableInput(connectionData.out.getConnectNode());
+		if (connectionData.param) {
+			connectionData.in.disableParam(connectionData.param);
+
+		} else {
+			connectionData.in.disableInput(connectionData.out.getConnectNode());
+		}
+
 		connectionData.out.disableOutput(connectionData.in);
 
 		const tempNodeConnections = this._nodeConnections.filter((t) => {
 			return t.out.ID !== connectionData.out.ID;
 		});
 
-		for (let i = 0; i < tempNodeConnections.length; i++) {
-			tempNodeConnections[i].in.enableInput(tempNodeConnections[i].out.getConnectNode());
-		}
+		// for (let i = 0; i < tempNodeConnections.length; i++) {
+		// 	tempNodeConnections[i].in.enableInput(tempNodeConnections[i].out.getConnectNode());
+		// }
 
 		this._nodeConnections = tempNodeConnections;
 

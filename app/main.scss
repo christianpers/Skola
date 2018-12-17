@@ -113,6 +113,10 @@ h1,h2,h3,h4,h5,text,p {
 	top: 0;
 	left: 0;
 	cursor: grab;
+	display: flex;
+    flex-direction: column;
+    border-radius: 3px;
+    background-color: #2b2c2d;
 	&:active{
 		cursor: grabbing;
 	}
@@ -127,40 +131,95 @@ h1,h2,h3,h4,h5,text,p {
 		width: 60px;
 		height: 30px;
 	}
+
+	& .top-part{
+		width: 100%;
+    	height: 60%;
+    	border-bottom: 2px solid #222223;
+    	padding: 10px;
+	}
+
+	& .bottom-part{
+		width: 100%;
+    	height: 40%;
+    	display: flex;
+    	justify-content: space-between;
+    	padding: 10px;
+		align-items: center;
+	}
 }
 
-.node-input{
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 20px;
-	background: rgba(0,0,0,.4);
-	height: 100%;
-	&.possible{
-		background: rgba(0, 240, 0, .6);
+.node-component{
+	display: flex;
+
+	& .dot{
+		width: 10px;
+		height: 10px;
+		border-radius: 5px;
+		border: 2px solid red;
+
 	}
-	&.not-possible{
-		background: rgba(240, 0 ,0, .6);
+
+	& .label{
+		margin-right: 5px;
+		margin-left: 5px;
+		color: red;
 	}
 
 	&.active{
-		background: rgba(240, 20, 20, 1);
+		& .dot{
+			background: red;
+		}
 	}
 }
 
+.node-param{
+	margin-bottom: 5px; 
+}
+
+.node-input{
+	/*
+	& .dot{
+		background: 
+	}
+	&.possible{
+		& .dot{
+			background: rgba(0, 240, 0, .6);
+		}
+		
+	}
+	&.not-possible{
+		& .dot{
+			background: rgba(240, 0 ,0, .6);
+		}
+		
+	}
+
+	&.active{
+		& .dot{
+			background: rgba(240, 20, 20, 1);
+		}
+		
+	}
+
+	*/
+}
+
 .node-output{
-	position: absolute;
-	top: 0;
-	right: 0;
-	width: 20px;
+	flex-direction: row-reverse;
+	/*
+	width: 10px;
+	height: 10px;
+	border-radius: 5px;
 	background: rgba(0,0,0,.4);
-	height: 100%;
 	&.selected{
 		background: rgba(20, 20, 200, .6);
 	}
 	&.active{
 		background: rgba(0,0,0,.6);
 	}
+
+	*/
 }
 
 .node-settings{

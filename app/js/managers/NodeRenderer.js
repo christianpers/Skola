@@ -23,7 +23,7 @@ export default class NodeRenderer{
 		line.setAttribute('y1','0');
 		line.setAttribute('x2','0');
 		line.setAttribute('y2','0');
-		line.setAttribute('stroke-width', '10');
+		line.setAttribute('stroke-width', '2');
 		line.setAttribute("stroke", "white");
 		line.setAttribute('stroke-linecap', 'round');
 
@@ -56,8 +56,8 @@ export default class NodeRenderer{
 
 	render() {
 
-		const nodeW = 100;
-		const nodeH = 60;
+		const nodeW = 200;
+		const nodeH = 100;
 		const length = this.nodeManager._nodeConnections.length;
 		for (let i = 0; i < length; i++) {
 			const nodeOut = this.nodeManager._nodeConnections[i].out;
@@ -74,6 +74,8 @@ export default class NodeRenderer{
 			line.setAttribute('y1', startY);
 			line.setAttribute('x2', endX);
 			line.setAttribute('y2', endY);
+			const color = this.nodeManager._nodeConnections[i].param ? 'yellow' : 'white';
+			line.setAttribute('stroke', color);
 		}
 
 	}

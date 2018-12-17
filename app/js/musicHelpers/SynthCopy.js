@@ -39,7 +39,8 @@ export default class SynthCopy{
 
 			if (connection.out.isParam) {
 			
-				const param = connection.in.getParamConnection();
+				// const param = connection.in.getParamConnection();
+				const param = connection.param.objSettings.param;
 				audioNodeOut.connect(audioNodeIn[param]);
 						
 			} else {

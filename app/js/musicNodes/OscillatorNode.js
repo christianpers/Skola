@@ -12,15 +12,7 @@ export default class OscillatorNode extends MusicNode{
 
 		this.isKeyboardListener = true;
 		this.isOscillator = true;
-
-		// const rangeSliderContainer = document.createElement('div');
-		// rangeSliderContainer.className = 'range-slider-container';
-
-		// this.el.appendChild(rangeSliderContainer);
-
-		// this.onParameterChangeBound = this.onParameterChange.bind(this);
-
-		// this.octaveSlider = new RangeSlider(rangeSliderContainer, 'Octave', 0, {min: -3, max: 3}, null, '', 0);
+		this.hasAudioInput = false;
 
 		this.params = {
 			'Octave' : {
@@ -31,7 +23,8 @@ export default class OscillatorNode extends MusicNode{
 					range: {min: -3, max: 3},
 					param: null,
 					decimals: 0
-				}
+				},
+				useAsInput: false,
 			}
 		}
 	}

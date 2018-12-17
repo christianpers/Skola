@@ -50,6 +50,7 @@ export default class AudioNodeManager{
 			this.onInputConnectionCallback,
 			data.type,
 			undefined,
+			this.onNodeActive,
 			this.onParameterChange
 		);
 		this.addCallback(node);

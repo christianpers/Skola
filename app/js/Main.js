@@ -31,6 +31,14 @@ export default class Main{
 					{
 						type: 'Gain',
 						obj: GainNode
+					},
+					{
+						type: 'Filter',
+						obj: LowpassFilterNode,
+					},
+					{
+						type: 'Speaker',
+						obj: SpeakerNode,
 					}
 				],
 				data: [
@@ -181,7 +189,7 @@ export default class Main{
 
 		this.onNodeActiveBound = this.onNodeActive.bind(this);
 
-		this.nodeManager = new NodeManager(initData, this.keyboardManager, this.onNodeActiveBound);
+		this.nodeManager = new NodeManager(null, this.keyboardManager, this.onNodeActiveBound);
 		
 	}
 

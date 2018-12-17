@@ -17,7 +17,8 @@ export default class LowpassFilterNode extends MusicNode{
 					range: {min: 0, max: 22000},
 					param: 'frequency',
 					decimals: 0
-				}
+				},
+				useAsInput: true,
 			},
 			'Q' : {
 				obj: RangeSlider,
@@ -27,7 +28,8 @@ export default class LowpassFilterNode extends MusicNode{
 					range: {min: 0, max: 10},
 					param: 'Q',
 					decimals: 2
-				}
+				},
+				useAsInput: true,
 			},
 		}
 
@@ -54,22 +56,22 @@ export default class LowpassFilterNode extends MusicNode{
 
 	enableInput(outputAudioNode) {
 		super.enableInput();
-		if (outputAudioNode.isParam) {
-			outputAudioNode.audioNode.connect(this.audioNode.frequency);
-		} else {
-			outputAudioNode.audioNode.connect(this.audioNode);
-		}
+		// if (outputAudioNode.isParam) {
+		// 	outputAudioNode.audioNode.connect(this.audioNode.frequency);
+		// } else {
+		// 	outputAudioNode.audioNode.connect(this.audioNode);
+		// }
 		
 	}
 
 	disableInput(nodeToDisconnect) {
 		super.disableInput();
-		if (nodeToDisconnect.isParam) {
-			// nodeToDisconnect.audioNode.disconnect(this.audioNode.frequency);
-			this.audioNode.disconnect(nodeToDisconnect.audioNode);
-		} else {
-			nodeToDisconnect.audioNode.disconnect(this.audioNode);
-		}
+		// if (nodeToDisconnect.isParam) {
+		// 	// nodeToDisconnect.audioNode.disconnect(this.audioNode.frequency);
+		// 	this.audioNode.disconnect(nodeToDisconnect.audioNode);
+		// } else {
+		// 	nodeToDisconnect.audioNode.disconnect(this.audioNode);
+		// }
 		
 	}
 

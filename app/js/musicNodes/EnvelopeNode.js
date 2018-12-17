@@ -7,7 +7,6 @@ export default class EnvelopeNode extends MusicNode{
 		super();
 
 		this.isParam = true;
-		this.keyIsDown = false;
 		this.isKeyboardListener = true;
 		this.isEnvelope = true;
 
@@ -22,7 +21,8 @@ export default class EnvelopeNode extends MusicNode{
 					range: {min: 0, max: 2},
 					param: 'attack',
 					decimals: 2
-				}
+				},
+				useAsInput: false,
 			},
 			'Decay' : {
 				obj: RangeSlider,
@@ -32,7 +32,8 @@ export default class EnvelopeNode extends MusicNode{
 					range: {min: 0, max: 2},
 					param: 'decay',
 					decimals: 2
-				}
+				},
+				useAsInput: false,
 			},
 			'Sustain' : {
 				obj: RangeSlider,
@@ -42,7 +43,8 @@ export default class EnvelopeNode extends MusicNode{
 					range: {min: 0, max: 1},
 					param: 'sustain',
 					decimals: 2
-				}
+				},
+				useAsInput: false,
 			},
 			'Release' : {
 				obj: RangeSlider,
@@ -52,7 +54,8 @@ export default class EnvelopeNode extends MusicNode{
 					range: {min: 0, max: 2},
 					param: 'release',
 					decimals: 2
-				}
+				},
+				useAsInput: false,
 			}
 		}
 	}
