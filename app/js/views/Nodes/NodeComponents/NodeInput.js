@@ -27,7 +27,10 @@ export default class NodeInput{
 		this.el.addEventListener('click', this.onClickBound);
 	}
 
-	onClick() {
+	onClick(e) {
+
+		e.stopPropagation();
+		e.preventDefault();
 
 		this.onClickCallback();
 	}

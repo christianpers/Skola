@@ -2,6 +2,7 @@ import Node from '../views/Nodes/Node';
 import NodeRenderer from './NodeRenderer';
 import GraphicsNodeManager from './GraphicsNodeManager';
 import AudioNodeManager from './AudioNodeManager';
+import NodeConnectionLine from './NodeConnectionLine';
 
 export default class NodeManager{
 	constructor(config, keyboardManager, onNodeActive) {
@@ -19,6 +20,7 @@ export default class NodeManager{
 		this._nodeConnections = [];
 
 		this.nodeRenderer = new NodeRenderer(document.body, this);
+		this.nodeConnectionLine = new NodeConnectionLine(this.nodeRenderer.el);
 
 		this.isConnecting = false;
 
@@ -68,10 +70,17 @@ export default class NodeManager{
 
 	onConnecting(node) {
 
+		const outputHasConnection = this._nodeConnections.some(t => t.out.ID === node.ID);
+		if (outputHasConnection) {
+			return;
+		}
+
 		console.log('on connecting');
 
 		this.isConnecting = true;
 		this.outputActiveNode = node;
+
+		this.nodeConnectionLine.onConnectionActive(node);
 
 		/*
 			create data node array
@@ -147,12 +156,15 @@ export default class NodeManager{
 
 	onInputConnection(inputNode, param) {
 
+		let inputAvailable = true;
+
 		if (!this.isConnecting || !this.outputActiveNode) {
+			inputAvailable = false;
 			return;
 		}
 
 		if ((!this.outputActiveNode.isParam && param) || (this.outputActiveNode.isParam && !param)) {
-			return;
+			inputAvailable = false;
 		}
 
 		if (this.outputActiveNode.isParam) {
@@ -161,7 +173,7 @@ export default class NodeManager{
 				for (const key in params) {
 					params[key].canBeConnected = false;
 				}
-				return;
+				inputAvailable = false;
 			}
 		} else {
 			if (!inputNode.canBeConnected) {
@@ -171,18 +183,13 @@ export default class NodeManager{
 			}
 		}
 
-		
+		this.nodeConnectionLine.onInputClick(inputAvailable, inputNode, this.outputActiveNode);
 
-		// if (!inputNode.canBeConnected) {
-		// 	for (let i = 0; i < this._nodes.length; i++) {
-		// 		this._nodes[i].canBeConnected = false;
-		// 	}
-		// 	return;
-		// }
+		if (!inputAvailable) {
+			return;
+		}
 
 		this.isConnecting = false;
-
-		// this.outputActiveNode.setup();
 
 		if (param) {
 			inputNode.enableParam(param);

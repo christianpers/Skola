@@ -12,6 +12,30 @@ export default class SynthCopy{
 
 		// debugger;
 
+		// DISCONNECT
+		for (let i = 0; i < connections.length; i++) {
+			const connection = connections[i];
+			const audioNodeOut = this.nodes[connection.out.ID];
+			let audioNodeIn = this.nodes[connection.in.ID];
+
+			if (!audioNodeOut || !audioNodeIn) {
+				continue;
+			}
+
+			if (connection.out.isParam) {
+			
+				// const param = connection.in.getParamConnection();
+				// const param = connection.param.objSettings.param;
+				// audioNodeOut.connect(audioNodeIn[param]);
+						
+			} else {
+				// audioNodeOut.disconnect(audioNodeIn);
+				audioNodeIn.disconnect();
+			}
+		}
+
+		// debugger;
+
 		this.nodes = {};
 		this.currentConnections = connections;
 		this.triggerNodes = [];
@@ -73,16 +97,12 @@ export default class SynthCopy{
 			const connection = this.currentConnections[i];
 			
 			const audioNode = this.nodes[connection.out.ID];
+			if (connection.out.isOscillator) {
+				audioNode.start();
+			}
 			const params = connection.out.getParams(this.step);
 			this._updateParams(audioNode, params);
-			// for (const key in params) {
-			// 	if (key === 'frequency' || key === 'amplitude') {
-			// 		audioNode[key].value = params[key];
-
-			// 	} else {
-			// 		audioNode[key] = params[key];
-			// 	}
-			// }
+			
 		}
 
 		for (let i = 0; i < this.triggerNodes.length; i++) {
@@ -91,6 +111,18 @@ export default class SynthCopy{
 	}
 
 	keyUp() {
+
+		for (let i = 0; i < this.currentConnections.length; i++) {
+			const connection = this.currentConnections[i];
+			
+			const audioNode = this.nodes[connection.out.ID];
+			if (connection.out.isOscillator) {
+				audioNode.stop();
+			}
+			const params = connection.out.getParams(this.step);
+			this._updateParams(audioNode, params);
+			
+		}
 
 		for (let i = 0; i < this.triggerNodes.length; i++) {
 			this.triggerNodes[i].triggerRelease();

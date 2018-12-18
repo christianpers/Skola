@@ -28,6 +28,9 @@ export default class NodeOutput{
 	}
 
 	onClick(e) {
+
+		e.stopPropagation();
+		e.preventDefault();
 		
 		this.el.classList.add('selected');
 

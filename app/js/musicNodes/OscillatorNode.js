@@ -51,7 +51,7 @@ export default class OscillatorNode extends MusicNode{
 
 		oscAudioNode.type = "sawtooth";
 		oscAudioNode.frequency.value = this.getFrequency(step);
-		oscAudioNode.start();
+		// oscAudioNode.start();
 
 		return oscAudioNode;
 	}
@@ -89,10 +89,10 @@ export default class OscillatorNode extends MusicNode{
 
 	setup() {
 
-		this.audioNode = new Tone.Oscillator();
+		// this.audioNode = new Tone.Oscillator();
 
-		this.audioNode.type = "sawtooth";
-		this.audioNode.frequency.value = 130.812782650299317;
+		// this.audioNode.type = "sawtooth";
+		// this.audioNode.frequency.value = 130.812782650299317;
 		// this.audioNode.start();
 	}
 

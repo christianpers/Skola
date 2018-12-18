@@ -22,28 +22,28 @@ export default class SpeakerNode extends MusicNode{
 	enableInput(outputAudioNode) {
 		super.enableInput();
 
-		if (Array.isArray(outputAudioNode)) {
-			for (let i = 0; i < outputAudioNode.length; i++) {
-				outputAudioNode[i].audioNode.connect(this.audioNode);
-			}
+		// if (Array.isArray(outputAudioNode)) {
+		// 	for (let i = 0; i < outputAudioNode.length; i++) {
+		// 		outputAudioNode[i].audioNode.connect(this.audioNode);
+		// 	}
 
-			return;
-		}
+		// 	return;
+		// }
 
-		outputAudioNode.audioNode.connect(this.audioNode);
+		// outputAudioNode.audioNode.connect(this.audioNode);
 	}
 
 	disableInput(nodeToDisconnect) {
 		super.disableInput();
 		
-		if (Array.isArray(nodeToDisconnect)) {
-			for (let i = 0; i < nodeToDisconnect.length; i++) {
-				nodeToDisconnect[i].audioNode.disconnect(this.audioNode);
-			}
+		// if (Array.isArray(nodeToDisconnect)) {
+		// 	for (let i = 0; i < nodeToDisconnect.length; i++) {
+		// 		nodeToDisconnect[i].audioNode.disconnect(this.audioNode);
+		// 	}
 
-			return;
-		}
+		// 	return;
+		// }
 
-		nodeToDisconnect.audioNode.disconnect(this.audioNode);
+		// nodeToDisconnect.audioNode.disconnect(this.audioNode);
 	}
 }

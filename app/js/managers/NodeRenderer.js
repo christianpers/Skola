@@ -29,8 +29,6 @@ export default class NodeRenderer{
 
 		this.el.appendChild(line);
 
-		// this.lines.push(line);
-
 		return line;
 
 	}
@@ -63,11 +61,14 @@ export default class NodeRenderer{
 			const nodeOut = this.nodeManager._nodeConnections[i].out;
 			const nodeIn = this.nodeManager._nodeConnections[i].in;
 
+			const isParam = !!this.nodeManager._nodeConnections[i].param;
 
-			const startX = nodeOut.moveCoords.offset.x + nodeW;
-			const startY = nodeOut.moveCoords.offset.y + nodeH / 2;
+			// console.log('isparam', isParam, '   ', this.)
+
+			const startX = nodeOut.moveCoords.offset.x + nodeW * .2;
+			const startY = nodeOut.moveCoords.offset.y + (nodeH - nodeH * .2);
 			const endX = nodeIn.moveCoords.offset.x;
-			const endY = nodeIn.moveCoords.offset.y + nodeH / 2;
+			const endY = isParam ? nodeIn.moveCoords.offset.y + nodeH * .1 : nodeIn.moveCoords.offset.y + (nodeH - nodeH * .2);
 
 			const line = this.nodeManager._nodeConnections[i].lineEl;
 			line.setAttribute('x1', startX);

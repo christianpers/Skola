@@ -65,8 +65,8 @@ export default class EnvelopeNode extends MusicNode{
 		const env = new Tone.Envelope();
 		env.attack = this.params['Attack'].objSettings.val;
 		env.decay = this.params['Decay'].objSettings.val;
-		env.sustain = this.params['Decay'].objSettings.val;
-		env.release = this.params['Decay'].objSettings.val;
+		env.sustain = this.params['Sustain'].objSettings.val;
+		env.release = this.params['Release'].objSettings.val;
 
 		return env;
 	}
