@@ -2,6 +2,7 @@ import NodeManager from './managers/NodeManager';
 import NodeLibrary from './managers/NodeLibrary/NodeLibrary';
 import KeyboardManager from './managers/KeyboardManager';
 import NodeSettings from './views/NodeSettings';
+import WorkspaceManager from './managers/WorkspaceManager';
 
 import OscillatorNode from './musicNodes/OscillatorNode';
 import GainNode from './musicNodes/GainNode';
@@ -58,6 +59,8 @@ export default class Main{
 		this.onNodeAddedFromLibraryBound = this.onNodeAddedFromLibrary.bind(this);
 
 		this.nodeSettings = new NodeSettings(document.body);
+
+		this.workspaceManager = new WorkspaceManager(document.body);
 		
 		const nodeLibrary = new NodeLibrary(document.body, this.nodeTypes, this.onNodeAddedFromLibraryBound);
 
@@ -189,7 +192,9 @@ export default class Main{
 
 		this.onNodeActiveBound = this.onNodeActive.bind(this);
 
-		this.nodeManager = new NodeManager(null, this.keyboardManager, this.onNodeActiveBound);
+		
+
+		this.nodeManager = new NodeManager(null, this.keyboardManager, this.onNodeActiveBound, this.workspaceManager.el);
 		
 	}
 

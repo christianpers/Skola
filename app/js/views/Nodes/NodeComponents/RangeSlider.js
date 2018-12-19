@@ -45,12 +45,12 @@ export default class RangeSlider{
 			this.setPos(this.sliderBg.clientHeight);
 		}, 0);
 
-		this.knobEl.addEventListener('mousedown', this.onMouseDownBound);
+		this.el.addEventListener('mousedown', this.onMouseDownBound);
 	}
 
 	remove() {
 
-		this.knobEl.removeEventListener('mousedown', this.onMouseDownBound);
+		this.el.removeEventListener('mousedown', this.onMouseDownBound);
 		this.parentEl.removeChild(this.el);
 	}
 
@@ -67,6 +67,24 @@ export default class RangeSlider{
 
 		e.preventDefault();
 		e.stopPropagation();
+
+		const sliderBgRect = this.sliderBg.getBoundingClientRect();
+
+		const sliderHeight = this.sliderBg.clientHeight;
+
+		const y = Math.round((e.y - sliderBgRect.top) * 100) / 100;
+		const val = 1 - (y / sliderHeight);
+
+		this.value = val > 1 ? 1 : val < 0 ? 0 : val;
+
+		this.setPos(sliderHeight);
+		if (this.valChangeCallback) {
+
+			this.valChangeCallback(parseFloat(this.getValue().toFixed(this.decimals)), this.parameter);
+		}
+		
+
+		this.valueEl.innerHTML = this.getValue().toFixed(this.decimals);
 
 		window.addEventListener('mouseup', this.onMouseUpBound);
 		window.addEventListener('mousemove', this.onMouseMoveBound);
@@ -103,7 +121,10 @@ export default class RangeSlider{
 	setPos(sliderHeight) {
 
 		const pos = sliderHeight - this.value * sliderHeight;
+		const height = this.value * sliderHeight;
 
-		this.knobEl.style[window.NS.transform] = `translate3d(0px, ${pos}px, 0)`;
+		this.knobEl.style.height = `${height}px`;
+
+		// this.knobEl.style[window.NS.transform] = `translate3d(0px, ${pos}px, 0)`;
 	}
 }

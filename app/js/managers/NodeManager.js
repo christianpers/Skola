@@ -5,7 +5,7 @@ import AudioNodeManager from './AudioNodeManager';
 import NodeConnectionLine from './NodeConnectionLine';
 
 export default class NodeManager{
-	constructor(config, keyboardManager, onNodeActive) {
+	constructor(config, keyboardManager, onNodeActive, parentEl) {
 
 		this.config = config;
 		this.hasConfig = !!config;
@@ -19,7 +19,7 @@ export default class NodeManager{
 		this._nodes = [];
 		this._nodeConnections = [];
 
-		this.nodeRenderer = new NodeRenderer(document.body, this);
+		this.nodeRenderer = new NodeRenderer(parentEl, this);
 		this.nodeConnectionLine = new NodeConnectionLine(this.nodeRenderer.el);
 
 		this.isConnecting = false;
@@ -32,7 +32,7 @@ export default class NodeManager{
 		this.onAudioNodeParamChangeBound = this.onAudioNodeParamChange.bind(this);
 		
 		this.audioNodeManager = new AudioNodeManager(
-			document.body,
+			parentEl,
 			this.onConnectingBound,
 			this.onInputConnectionBound,
 			this.addBound,
@@ -68,10 +68,11 @@ export default class NodeManager{
 		this.keyboardManager.onAudioNodeParamChange(nodeID, params);
 	}
 
-	onConnecting(node) {
+	onConnecting(node, clickPos) {
 
 		const outputHasConnection = this._nodeConnections.some(t => t.out.ID === node.ID);
 		if (outputHasConnection) {
+			this.removeConnection(this._nodeConnections.find(t => t.out.ID === node.ID));
 			return;
 		}
 
@@ -80,7 +81,7 @@ export default class NodeManager{
 		this.isConnecting = true;
 		this.outputActiveNode = node;
 
-		this.nodeConnectionLine.onConnectionActive(node);
+		this.nodeConnectionLine.onConnectionActive(node, clickPos);
 
 		/*
 			create data node array
@@ -199,7 +200,12 @@ export default class NodeManager{
 		
 		this.outputActiveNode.enableOutput();
 		
-		const connectionData = {param: param, out: this.outputActiveNode, in: inputNode, lineEl: this.nodeRenderer.addLine(inputNode.ID + '---' + this.outputActiveNode.ID)};
+		const connectionData = {
+			param: param,
+			out: this.outputActiveNode,
+			in: inputNode,
+			lineEl: this.nodeRenderer.addLine(inputNode.ID + '---' + this.outputActiveNode.ID),
+		};
 		connectionData.lineEl.addEventListener('click', (e) => {
 			this.removeConnection(connectionData);
 		});

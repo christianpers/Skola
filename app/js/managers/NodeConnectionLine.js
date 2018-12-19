@@ -24,20 +24,27 @@ export default class NodeConnectionLine{
 
 	}
 
-	onConnectionActive(nodeOut) {
+	onConnectionActive(nodeOut, clickPos) {
 
 		const nodeH = 100;
 
-		const startX = nodeOut.moveCoords.offset.x + 200 * .2;
-		const startY = nodeOut.moveCoords.offset.y + (nodeH - nodeH * .2);
+		const dotPos = nodeOut.getDotPos(nodeOut.output.el);
+		const offsetX = nodeOut.output.el.offsetLeft;
+		const offsetY = nodeOut.output.el.offsetTop;
+		
+		const x = nodeOut.moveCoords.offset.x + offsetX + dotPos.width;
+		const y = nodeOut.moveCoords.offset.y + offsetY + 7;
+
+		this.startPos.x = clickPos.x;
+		this.startPos.y = clickPos.y;
 
 		const line = this.line;
 
-		line.setAttribute('x1', startX);
-		line.setAttribute('y1', startY);
-		line.setAttribute('x2', startX);
-		line.setAttribute('y2', startY);
-		line.setAttribute("stroke", "red");
+		line.setAttribute('x1', x);
+		line.setAttribute('y1', y);
+		line.setAttribute('x2', x);
+		line.setAttribute('y2', y);
+		line.setAttribute("stroke", nodeOut.isParam ? 'yellow' : 'red');
 		line.setAttribute("stroke-opacity", .6);
 
 		window.addEventListener('mousemove', this.onMouseMoveBound);
@@ -72,8 +79,20 @@ export default class NodeConnectionLine{
 
 		const line = this.line;
 
-		line.setAttribute('x2', e.x);
-		line.setAttribute('y2', e.y);
+		const startX = parseFloat(line.getAttribute('x1'));
+		const startY = parseFloat(line.getAttribute('y1'));
+
+		const deltaX = e.x - this.startPos.x;
+		const deltaY = e.y - this.startPos.y;
+		
+		const x = startX + deltaX;
+		const y = startY + deltaY;
+
+		this.endPos.x = x;
+		this.endPos.y = y;
+
+		line.setAttribute('x2', x);
+		line.setAttribute('y2', y);
 	}
 
 	onMouseClick(e) {

@@ -60,22 +60,42 @@ export default class NodeRenderer{
 		for (let i = 0; i < length; i++) {
 			const nodeOut = this.nodeManager._nodeConnections[i].out;
 			const nodeIn = this.nodeManager._nodeConnections[i].in;
+			const param = this.nodeManager._nodeConnections[i].param;
 
-			const isParam = !!this.nodeManager._nodeConnections[i].param;
+			const isParam = !!param;
+
+			const inEl = isParam ? nodeIn.inputParams[param.objSettings.param].el : nodeIn.input.el;
+			const outDotPos = nodeOut.getDotPos(nodeOut.output.el);
+			const inDotPos = nodeIn.getDotPos(inEl);
 
 			// console.log('isparam', isParam, '   ', this.)
 
-			const startX = nodeOut.moveCoords.offset.x + nodeW * .2;
-			const startY = nodeOut.moveCoords.offset.y + (nodeH - nodeH * .2);
-			const endX = nodeIn.moveCoords.offset.x;
-			const endY = isParam ? nodeIn.moveCoords.offset.y + nodeH * .1 : nodeIn.moveCoords.offset.y + (nodeH - nodeH * .2);
+			const offsetXOut = nodeOut.output.el.offsetLeft;
+			const offsetYOut = nodeOut.output.el.offsetTop;
+			
+			const startX = nodeOut.moveCoords.offset.x + offsetXOut + outDotPos.width - 3;
+			const startY = nodeOut.moveCoords.offset.y + offsetYOut + 7;
+
+			
+
+			const offsetXIn = inEl.offsetLeft;
+			const offsetYIn = inEl.offsetTop;
+			
+			const endX = nodeIn.moveCoords.offset.x + offsetXIn + 4;
+			const endY = nodeIn.moveCoords.offset.y + offsetYIn + 7;
+
+
+			// const startX = nodeOut.moveCoords.offset.x + outDotPos.left;
+			// const startY = nodeOut.moveCoords.offset.y + outDotPos.top;
+			// const endX = nodeIn.moveCoords.offset.x + inDotPos.left;
+			// const endY = nodeIn.moveCoords.offset.y + inDotPos.top;
 
 			const line = this.nodeManager._nodeConnections[i].lineEl;
 			line.setAttribute('x1', startX);
 			line.setAttribute('y1', startY);
 			line.setAttribute('x2', endX);
 			line.setAttribute('y2', endY);
-			const color = this.nodeManager._nodeConnections[i].param ? 'yellow' : 'white';
+			const color = this.nodeManager._nodeConnections[i].param ? 'yellow' : 'red';
 			line.setAttribute('stroke', color);
 		}
 

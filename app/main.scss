@@ -9,8 +9,9 @@ html, body {
 
 	// overflow:hidden;
 	position: relative;
-	background: #304148;
+	background: #1b1c1e;
 	font-size: 12px;
+	overflow: hidden;
 }
 
 h1, h2, h3, h4, h5, p{
@@ -105,6 +106,17 @@ h1,h2,h3,h4,h5,text,p {
 	}
 }
 
+.workspace{
+	position: absolute;
+	top: 0;
+	left: 0;
+	/*background: radial-gradient(#e66465, #9198e5);
+	background: #1b1c1e;
+	opacity: 0;*/
+    z-index: 2;
+
+}
+
 .node{
 	position: absolute;
 	width: 200px;
@@ -117,6 +129,7 @@ h1,h2,h3,h4,h5,text,p {
     flex-direction: column;
     border-radius: 3px;
     background-color: #2b2c2d;
+
 	&:active{
 		cursor: grabbing;
 	}
@@ -137,6 +150,7 @@ h1,h2,h3,h4,h5,text,p {
     	height: 60%;
     	border-bottom: 2px solid #222223;
     	padding: 10px;
+    	padding-left: 0;
 	}
 
 	& .bottom-part{
@@ -145,12 +159,18 @@ h1,h2,h3,h4,h5,text,p {
     	display: flex;
     	justify-content: space-between;
     	padding: 10px;
+    	padding-right: 0;
+    	padding-left: 0;
 		align-items: center;
 	}
 }
 
 .node-component{
 	display: flex;
+	flex: 1;
+	&.right-align{
+		text-align: right;
+	}
 
 	& .dot{
 		width: 10px;
@@ -174,52 +194,48 @@ h1,h2,h3,h4,h5,text,p {
 }
 
 .node-param{
-	margin-bottom: 5px; 
-}
+	margin-bottom: 5px;
+	position: relative;
+    left: -5px;
+    & .dot{
+    	border: 2px solid yellow;
+    }
 
-.node-input{
-	/*
-	& .dot{
-		background: 
-	}
-	&.possible{
-		& .dot{
-			background: rgba(0, 240, 0, .6);
-		}
-		
-	}
-	&.not-possible{
-		& .dot{
-			background: rgba(240, 0 ,0, .6);
-		}
-		
+    & .label{
+		color: yellow;
 	}
 
 	&.active{
 		& .dot{
-			background: rgba(240, 20, 20, 1);
+			background: yellow;
 		}
-		
 	}
-
-	*/
 }
 
 .node-output{
 	flex-direction: row-reverse;
-	/*
-	width: 10px;
-	height: 10px;
-	border-radius: 5px;
-	background: rgba(0,0,0,.4);
-	&.selected{
-		background: rgba(20, 20, 200, .6);
-	}
-	&.active{
-		background: rgba(0,0,0,.6);
-	}
+	position: relative;
+    right: -5px;
+    &.param{
+    	& .dot{
+	    	border: 2px solid yellow;
+	    }
 
-	*/
+	    & .label{
+			color: yellow;
+		}
+
+		&.active{
+			& .dot{
+				background: yellow;
+			}
+		}
+    }
+}
+
+.node-input{
+	position: relative;
+    left: -5px;
 }
 
 .node-settings{
@@ -233,7 +249,7 @@ h1,h2,h3,h4,h5,text,p {
 	padding-right: 10px;
 	padding-top: 10px;
 	background: #66808c;
-	z-index: 1;
+	z-index: 3;
 	transform: translate3d(-100%, 0, 0);
 	&.visible{
 		transform: translate3d(0, 0, 0);
@@ -251,7 +267,7 @@ h1,h2,h3,h4,h5,text,p {
 	padding-right: 10px;
 	padding-top: 10px;
 	background: #66808c;
-	z-index: 1;
+	z-index: 2;
 
 	& .level-title{
 		border-bottom: 1px solid black;
@@ -317,22 +333,20 @@ h1,h2,h3,h4,h5,text,p {
 	align-items: center;
 	justify-content: space-evenly;
 	& .node-range-slider-bg{
-		background: gray;
+		background: white;
 		position: relative;
-		width: 30%;
+		width: 70%;
 		height: 60%;
 		cursor: pointer;
 	}
 
 	& .node-range-knob{
 		position: absolute;
-		top: 0;
-		left: 50%;
-		width: 200%;
-		height: 10%;
-		border: 1px solid gray;
-		background: white;
-		margin-left: -100%;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		height: 0;
+		background: #db664c;
 	}
 
 	& .node-range-value{
@@ -341,7 +355,7 @@ h1,h2,h3,h4,h5,text,p {
 }
 
 .range-slider-container{
-	width: 60%;
+	width: 80%;
 	height: 90%;
 	margin: 2% auto;
 	display: flex;

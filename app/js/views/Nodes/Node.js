@@ -33,11 +33,13 @@ export default class Node{
 		this.onOutputClickBound = this.onOutputClick.bind(this);
 		this.onInputClickBound = this.onInputClick.bind(this);
 
-		if (!this.isParam && this.hasAudioInput) {
+		const hasInput = !this.isParam && this.hasAudioInput;
+
+		if (hasInput) {
 			this.input = new NodeInput(this.bottomPartEl, this.onInputClickBound);
 		}
 		
-		this.output = new NodeOutput(this.bottomPartEl, this.onOutputClickBound, this.isParam);
+		this.output = new NodeOutput(this.bottomPartEl, this.onOutputClickBound, this.isParam, hasInput);
 
 		this.moveCoords = {
 			start: {
@@ -45,8 +47,8 @@ export default class Node{
 				y: 0
 			},
 			offset: {
-				x: this.initNodeConfig ? nodeConfig.pos[0] : 200,
-				y: this.initNodeConfig ? nodeConfig.pos[1] : 200,
+				x: this.initNodeConfig ? nodeConfig.pos[0] : parentEl.clientWidth / 2 - 100,
+				y: this.initNodeConfig ? nodeConfig.pos[1] : parentEl.clientHeight / 2 - 50,
 			}
 		};
 
@@ -84,9 +86,9 @@ export default class Node{
 		}
 	}
 
-	onOutputClick() {
+	onOutputClick(clickPos) {
 
-		this.onConnectingCallback(this);
+		this.onConnectingCallback(this, clickPos);
 	}
 
 	onInputClick(param) {

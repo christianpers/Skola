@@ -45,6 +45,11 @@ export default class MusicNode extends Node{
 		}
 	}
 
+	getDotPos(el) {
+		
+		return el.getBoundingClientRect();
+	}
+
 	enableParam(param) {
 		console.log('enable param', param);
 

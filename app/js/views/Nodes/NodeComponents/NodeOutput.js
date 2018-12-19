@@ -1,5 +1,5 @@
 export default class NodeOutput{
-	constructor(parentEl, onClickCallback, isParam) {
+	constructor(parentEl, onClickCallback, isParam, hasInput) {
 
 		this.isActive = false;
 		this.onClickCallback = onClickCallback;
@@ -7,8 +7,9 @@ export default class NodeOutput{
 		this.parentEl = parentEl;
 
 		this.el = document.createElement('div');
-		this.el.className = 'node-output node-component';
-
+		const classes = 
+		this.el.className = `node-output node-component ${hasInput ? '' : 'right-align'} ${isParam ? 'param' : ''}`;
+	
 		const dotEl = document.createElement('div');
 		dotEl.className = 'dot';
 
@@ -34,7 +35,7 @@ export default class NodeOutput{
 		
 		this.el.classList.add('selected');
 
-		this.onClickCallback();
+		this.onClickCallback({x: e.x, y: e.y});
 	}
 
 	enable() {

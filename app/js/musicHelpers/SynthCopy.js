@@ -112,11 +112,13 @@ export default class SynthCopy{
 
 	keyUp() {
 
+		const triggerNodesLength = this.triggerNodes.length;
+
 		for (let i = 0; i < this.currentConnections.length; i++) {
 			const connection = this.currentConnections[i];
 			
 			const audioNode = this.nodes[connection.out.ID];
-			if (connection.out.isOscillator) {
+			if (connection.out.isOscillator && triggerNodesLength === 0) {
 				audioNode.stop();
 			}
 			const params = connection.out.getParams(this.step);
@@ -124,7 +126,7 @@ export default class SynthCopy{
 			
 		}
 
-		for (let i = 0; i < this.triggerNodes.length; i++) {
+		for (let i = 0; i < triggerNodesLength; i++) {
 			this.triggerNodes[i].triggerRelease();
 		}
 	}
