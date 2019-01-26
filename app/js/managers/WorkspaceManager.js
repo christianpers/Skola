@@ -4,13 +4,20 @@ export default class WorkspaceManager{
 		this.width = 3000;
 		this.height = 2000;
 
+		this.containerEl = document.createElement('div');
+		this.containerEl.className = 'workspace-container';
+
+		parentEl.appendChild(this.containerEl);
+
+		
+
 		this.el = document.createElement('div');
 		this.el.className = 'workspace';
 
 		this.el.style.width = this.width + 'px';
 		this.el.style.height = this.height + 'px';
 
-		parentEl.appendChild(this.el);
+		this.containerEl.appendChild(this.el);
 
 		this.onMouseDownBound = this.onMouseDown.bind(this);
 		this.onMouseMoveBound = this.onMouseMove.bind(this);
@@ -33,6 +40,10 @@ export default class WorkspaceManager{
 	}
 
 	onMouseDown(e) {
+
+		if (e.target.nodeName === 'INPUT' || e.target.classList.contains('prevent-drag')) {
+			return;
+		}
 
 		e.preventDefault();
 
@@ -61,5 +72,10 @@ export default class WorkspaceManager{
 
 		window.removeEventListener('mousemove', this.onMouseMoveBound);
 		window.removeEventListener('mouseup', this.onMouseUpBound);
+	}
+
+	onResize(w, h) {
+		this.containerEl.style.width = `${w}px`;
+		this.containerEl.style.height = `${h}px`;
 	}
 }

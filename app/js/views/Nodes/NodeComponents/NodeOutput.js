@@ -1,5 +1,5 @@
 export default class NodeOutput{
-	constructor(parentEl, onClickCallback, isParam, hasInput) {
+	constructor(parentEl, onClickCallback, isParam, hasInput, isSpeaker, isGraphicsNode) {
 
 		this.isActive = false;
 		this.onClickCallback = onClickCallback;
@@ -17,13 +17,18 @@ export default class NodeOutput{
 
 		const labelEl = document.createElement('p');
 		labelEl.className = 'label';
-		labelEl.innerHTML = isParam ? 'Data ut' : 'Ljud ut';
+		labelEl.innerHTML = isParam ? 'Data ut' : isGraphicsNode ? 'Grafik ut' : 'Ljud ut';
 
 		this.el.appendChild(labelEl);
 
 		this.parentEl.appendChild(this.el);
 
 		this.onClickBound = this.onClick.bind(this);
+
+		if (isSpeaker) {
+			this.el.style.display = 'none';
+			return;
+		}
 
 		this.el.addEventListener('click', this.onClickBound);
 	}

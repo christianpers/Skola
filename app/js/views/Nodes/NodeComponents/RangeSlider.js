@@ -1,11 +1,13 @@
 export default class RangeSlider{
-	constructor(parentEl, title, value, settings, valChangeCallback, parameter, decimals) {
+	constructor(parentEl, title, value, settings, valChangeCallback, parameter, decimals, disable) {
 
 		this.parentEl = parentEl;
 
 		this.valChangeCallback = valChangeCallback;
 		this.parameter = parameter;
 		this.decimals = decimals;
+
+		this.disable = disable;
 
 		this.value = (value - settings.min) / (settings.max - settings.min);
 		this.settings = settings;
@@ -64,6 +66,10 @@ export default class RangeSlider{
 	}
 
 	onMouseDown(e) {
+
+		if (this.disable) {
+			return;
+		}
 
 		e.preventDefault();
 		e.stopPropagation();

@@ -4,6 +4,8 @@ import GraphicsNodeManager from './GraphicsNodeManager';
 import AudioNodeManager from './AudioNodeManager';
 import NodeConnectionLine from './NodeConnectionLine';
 
+import ParamHelpers from '../graphicNodes/Helpers/ParamHelpers';
+
 export default class NodeManager{
 	constructor(config, keyboardManager, onNodeActive, parentEl) {
 
@@ -18,9 +20,11 @@ export default class NodeManager{
 
 		this._nodes = [];
 		this._nodeConnections = [];
+		this._graphicNodes = [];
+		this._graphicNodeLength = 0;
 
-		this.nodeRenderer = new NodeRenderer(parentEl, this);
-		this.nodeConnectionLine = new NodeConnectionLine(this.nodeRenderer.el);
+		this.nodeConnectionRenderer = new NodeRenderer(parentEl, this);
+		this.nodeConnectionLine = new NodeConnectionLine(this.nodeConnectionRenderer.el);
 
 		this.isConnecting = false;
 
@@ -30,6 +34,7 @@ export default class NodeManager{
 		this.onInputConnectionBound = this.onInputConnection.bind(this);
 		this.addBound = this.add.bind(this);
 		this.onAudioNodeParamChangeBound = this.onAudioNodeParamChange.bind(this);
+		this.onSequencerTriggerBound = this.onSequencerTrigger.bind(this);
 		
 		this.audioNodeManager = new AudioNodeManager(
 			parentEl,
@@ -39,8 +44,20 @@ export default class NodeManager{
 			this.hasConfig ? this.config.nodes : [],
 			this.onAudioNodeParamChangeBound,
 			onNodeActive,
+			this.onSequencerTriggerBound,
 		);
 		this.audioNodeManager.init();
+
+		this.onGraphicsParamChangeBound = this.onGraphicsParamChange.bind(this);
+
+		this.graphicsNodeManager = new GraphicsNodeManager(
+			parentEl,
+			this.onConnectingBound,
+			this.onInputConnectionBound,
+			this.addBound,
+			onNodeActive,
+			this.onGraphicsParamChangeBound,
+		);
 
 		if (this.hasConfig) {
 			for (let i = 0; i < this.config.connections.length; i++) {
@@ -60,21 +77,40 @@ export default class NodeManager{
 
 	}
 
-	onNodeAddedFromLibrary(data) {
-		this.audioNodeManager.createNode(data);
+	onSequencerTrigger(step, time) {
+		this.keyboardManager.play(step, time);
 	}
 
-	onAudioNodeParamChange(nodeID, params) {
-		this.keyboardManager.onAudioNodeParamChange(nodeID, params);
+	onNodeAddedFromLibrary(type, data) {
+		if (type === 'graphics') {
+			this.graphicsNodeManager.createNode(data);
+		} else {
+			this.audioNodeManager.createNode(data);
+		}
+	}
+
+	onGraphicsParamChange(node) {
+		// const connection = this._nodeConnections.find(t => t.out.ID === node.ID);
+
+		// if (!connection) {
+		// 	return;
+		// }
+
+		// const param = connection.param;
+		// connection.in.updateParam(param, connection.out);
+	}
+
+	onAudioNodeParamChange(node, params) {
+		this.keyboardManager.onAudioNodeParamChange(node, params);
 	}
 
 	onConnecting(node, clickPos) {
 
 		const outputHasConnection = this._nodeConnections.some(t => t.out.ID === node.ID);
-		if (outputHasConnection) {
-			this.removeConnection(this._nodeConnections.find(t => t.out.ID === node.ID));
-			return;
-		}
+		// if (outputHasConnection) {
+		// 	this.removeConnection(this._nodeConnections.find(t => t.out.ID === node.ID));
+		// 	return;
+		// }
 
 		console.log('on connecting');
 
@@ -131,28 +167,28 @@ export default class NodeManager{
 			return availableParams.length > 0;
 
 		};
-		
-		const audioNodesWithInputParams = otherNodes.filter((t) => {
-			return hasAvailableInputParams(t);
-		});
 
-		const notConnectedAudioInNodes = [];
-		for (let i = 0; i < otherNodes.length; i++) {
-			const node = otherNodes[i];
-			if (!audioConnections.some(t => t.in.ID === node.ID) && !node.isParam) {
-				notConnectedAudioInNodes.push(node);
+		if (!this.outputActiveNode.isGraphicsNode) {
+			const audioNodesWithInputParams = otherNodes.filter((t) => {
+				return hasAvailableInputParams(t);
+			});
+
+			const notConnectedAudioInNodes = [];
+			for (let i = 0; i < otherNodes.length; i++) {
+				const node = otherNodes[i];
+				if (!audioConnections.some(t => t.in.ID === node.ID) && !node.isParam) {
+					notConnectedAudioInNodes.push(node);
+				}
+			}
+
+			const nodesToLoop = node.isParam ? audioNodesWithInputParams : notConnectedAudioInNodes;
+
+			for (let i = 0; i < nodesToLoop.length; i++) {
+				nodesToLoop[i].canBeConnected = true;
 			}
 		}
-
-		console.log('param nodes: ', audioNodesWithInputParams);
-
-		console.log('audio nodes: ', notConnectedAudioInNodes);
-
-		const nodesToLoop = node.isParam ? audioNodesWithInputParams : notConnectedAudioInNodes;
-
-		for (let i = 0; i < nodesToLoop.length; i++) {
-			nodesToLoop[i].canBeConnected = true;
-		}
+		
+		
 	}
 
 	onInputConnection(inputNode, param) {
@@ -161,59 +197,83 @@ export default class NodeManager{
 
 		if (!this.isConnecting || !this.outputActiveNode) {
 			inputAvailable = false;
+			const connection = this._nodeConnections.find(t => t.in.ID === inputNode.ID && t.param.title === param.title);
+			if (connection) {
+				this.removeConnection(connection);
+			}
+			
 			return;
 		}
 
-		if ((!this.outputActiveNode.isParam && param) || (this.outputActiveNode.isParam && !param)) {
-			inputAvailable = false;
-		}
-
-		if (this.outputActiveNode.isParam) {
-			if (!param.canBeConnected) {
-				const params = inputNode.params;
-				for (const key in params) {
-					params[key].canBeConnected = false;
-				}
+		if (!inputNode.isGraphicsNode) {
+			if ((!this.outputActiveNode.isParam && param) || (this.outputActiveNode.isParam && !param)) {
 				inputAvailable = false;
 			}
-		} else {
-			if (!inputNode.canBeConnected) {
-				for (let i = 0; i < this._nodes.length; i++) {
-					this._nodes[i].canBeConnected = false;
+
+			if (this.outputActiveNode.isParam) {
+				if (!param.canBeConnected) {
+					const params = inputNode.params;
+					for (const key in params) {
+						params[key].canBeConnected = false;
+					}
+					inputAvailable = false;
+				}
+			} else {
+				if (!inputNode.canBeConnected) {
+					for (let i = 0; i < this._nodes.length; i++) {
+						this._nodes[i].canBeConnected = false;
+					}
 				}
 			}
+		
+
+			if (!inputAvailable) {
+				return;
+			}
+
+		} else {
+			
+			if (param && !ParamHelpers[param.paramHelpersType].isValid(this.outputActiveNode, param)) {
+				return;
+			}
+			
 		}
 
 		this.nodeConnectionLine.onInputClick(inputAvailable, inputNode, this.outputActiveNode);
 
-		if (!inputAvailable) {
-			return;
-		}
-
 		this.isConnecting = false;
-
-		if (param) {
-			inputNode.enableParam(param);
-		} else {
-			inputNode.enableInput(this.outputActiveNode.getConnectNode());
-		}
-		
-		this.outputActiveNode.enableOutput();
 		
 		const connectionData = {
 			param: param,
 			out: this.outputActiveNode,
 			in: inputNode,
-			lineEl: this.nodeRenderer.addLine(inputNode.ID + '---' + this.outputActiveNode.ID),
+			lineEl: this.nodeConnectionRenderer.addLine(inputNode.ID + '---' + this.outputActiveNode.ID),
 		};
 		connectionData.lineEl.addEventListener('click', (e) => {
 			this.removeConnection(connectionData);
 		});
 
+		if (param) {
+			inputNode.enableParam(param, connectionData);
+		} else {
+			inputNode.enableInput(this.outputActiveNode.getConnectNode());
+		}
+		
+		this.outputActiveNode.enableOutput(param ? param : undefined, connectionData);
+
 		this._nodeConnections.push(connectionData);
 
 		if (this.constructorIsDone) {
-			this.keyboardManager.onAudioNodeConnectionUpdate(this._nodeConnections);
+			if (connectionData.out.isRenderNode) {
+				// const renderConnections = this._nodeConnections.filter(t => t.out.isRenderNode);
+				if (!connectionData.in.hasOutput) {
+					this.graphicsNodeManager.onConnectionUpdate([connectionData]);
+				}
+				
+			} else {
+				const audioConnections = this._nodeConnections.filter(t => !t.out.isGraphicsNode);
+				this.keyboardManager.onAudioNodeConnectionUpdate(audioConnections);
+			}	
 		}
 		
 		this.outputActiveNode = null;
@@ -229,17 +289,27 @@ export default class NodeManager{
 	removeConnection(connectionData) {
 
 		if (connectionData.param) {
-			connectionData.in.disableParam(connectionData.param);
+			connectionData.in.disableParam(connectionData.param, connectionData);
+
 
 		} else {
 			connectionData.in.disableInput(connectionData.out.getConnectNode());
 		}
 
-		connectionData.out.disableOutput(connectionData.in);
+		connectionData.out.disableOutput(connectionData.in, connectionData.param);
 
-		const tempNodeConnections = this._nodeConnections.filter((t) => {
+		let tempNodeConnections = this._nodeConnections.filter((t) => {
 			return t.out.ID !== connectionData.out.ID;
 		});
+
+		if (connectionData.param) {
+			tempNodeConnections = this._nodeConnections.filter(t => {
+				const hasParam = t.param;
+				if (!hasParam) return true;
+
+				return t.param.title !== connectionData.param.title;
+			});
+		}
 
 		// for (let i = 0; i < tempNodeConnections.length; i++) {
 		// 	tempNodeConnections[i].in.enableInput(tempNodeConnections[i].out.getConnectNode());
@@ -248,28 +318,58 @@ export default class NodeManager{
 		this._nodeConnections = tempNodeConnections;
 
 		// console.log('audio connection update');
-		this.keyboardManager.onAudioNodeConnectionUpdate(this._nodeConnections);
+		if (connectionData.in.isCanvasNode) {
+			// const renderConnections = this._nodeConnections.filter(t => t.out.isRenderNode && t.in);
+			this.graphicsNodeManager.onConnectionUpdate([]);
+		} else {
+			const audioConnections = this._nodeConnections.filter(t => !t.out.isGraphicsNode);
+			this.keyboardManager.onAudioNodeConnectionUpdate(audioConnections);
+		}
+		
 
-		this.nodeRenderer.removeLine(connectionData.lineEl);
+		this.nodeConnectionRenderer.removeLine(connectionData.lineEl);
 
 	}
 
 	add(node) {
 		this._nodes.push(node);
+		if (node.isRenderNode) {
+			this._graphicNodes.push(node);
+			this._graphicNodeLength = this._graphicNodes.length;
+		}
 	}
 
 	remove(node) {
+		if (node.isGraphicsNode) {
+			const tempNodes = this._graphicNodes.filter(t => t.ID !== node.ID);
+			this._graphicNodes = tempNodes;
+			this._graphicNodeLength = this._graphicNodes.length;
+		}
+
 		node.remove();
 		const tempNodes = this._nodes.filter((t) => t.ID !== node.ID);
 		this._nodes = tempNodes;
+
+
 	}
 
 	update() {
-		this.nodeRenderer.update();
-		// this.graphicsNodeManager.update();
+		this.nodeConnectionRenderer.update();
+
+		for (let i = 0; i < this._graphicNodeLength; i++) {
+			this._graphicNodes[i].update();
+		}
+
+		this.graphicsNodeManager.update();
 	}
 
 	render() {
-		this.nodeRenderer.render();
+		this.nodeConnectionRenderer.render();
+
+		for (let i = 0; i < this._graphicNodeLength; i++) {
+			this._graphicNodes[i].render();
+		}
+
+		this.graphicsNodeManager.render();
 	}
 }

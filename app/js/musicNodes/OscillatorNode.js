@@ -14,23 +14,26 @@ export default class OscillatorNode extends MusicNode{
 		this.isOscillator = true;
 		this.hasAudioInput = false;
 
+		this.paramVals = {};
+
 		this.params = {
 			'Octave' : {
 				obj: RangeSlider,
 				objSettings: {
 					title: 'Octave',
-					val: 0,
+					defaultVal: 0,
 					range: {min: -3, max: 3},
-					param: null,
+					param: 'octave',
 					decimals: 0
 				},
 				useAsInput: false,
 			}
-		}
-	}
+		};
 
-	setParamVal(val, key) {
-		this.params[key].objSettings.val = val;
+		for (const loopKey in this.params) {
+			const key = this.params[loopKey].objSettings.param;
+			this.paramVals[key] = this.params[loopKey].objSettings.defaultVal;
+		}
 	}
 
 	getParams(step) {
@@ -45,12 +48,12 @@ export default class OscillatorNode extends MusicNode{
 		return params;
 	}
 
-	getAudioNode(step) {
+	getAudioNode() {
 
 		const oscAudioNode = new Tone.Oscillator();
 
-		oscAudioNode.type = "sawtooth";
-		oscAudioNode.frequency.value = this.getFrequency(step);
+		// oscAudioNode.type = "sawtooth";
+		// oscAudioNode.frequency.value = this.getFrequency(step);
 		// oscAudioNode.start();
 
 		return oscAudioNode;
@@ -58,8 +61,9 @@ export default class OscillatorNode extends MusicNode{
 
 	getFrequency(step) {
 
-		// const octaveOffset = parseInt(this.octaveSlider.getValue().toFixed(0));
-		const octaveOffset = parseInt(this.params['Octave'].objSettings.val);
+		// const octaveOffset = parseInt(this.params['Octave'].objSettings.val);
+		const octaveOffset = parseInt(this.paramVals['octave']);
+		// console.log(octaveOffset);
 
 		const tempOctave = octaveOffset;
 		const tempSteps = 12 * tempOctave + step;

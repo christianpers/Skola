@@ -1,5 +1,5 @@
 export default class NodeParam{
-	constructor(parentEl, param, onClickCallback) {
+	constructor(parentEl, param, onClickCallback, parentTitle) {
 
 		this.el = document.createElement('div');
 		this.el.className = 'node-param node-component';
@@ -12,9 +12,14 @@ export default class NodeParam{
 		this.el.appendChild(dotEl);
 
 		const labelEl = document.createElement('p');
+		
 		labelEl.className = 'label';
-		labelEl.innerHTML = param.objSettings.param;
-
+		if (param.objSettings) {
+			labelEl.innerHTML = param.objSettings.param;
+		} else {
+			labelEl.innerHTML = param.param;
+		}
+		
 		this.el.appendChild(labelEl);
 
 		parentEl.appendChild(this.el);

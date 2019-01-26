@@ -44,11 +44,11 @@ export default class SynthCopy{
 			const connection = connections[i];
 
 			if (!this.nodes[connection.in.ID]) {
-				this.nodes[connection.in.ID] = connection.in.getAudioNode(this.step);
+				this.nodes[connection.in.ID] = connection.in.getAudioNode();
 			}
 
 			if (!this.nodes[connection.out.ID]) {
-				const audioNode = connection.out.getAudioNode(this.step);
+				const audioNode = connection.out.getAudioNode(connection.param ? connection.param.objSettings.param : undefined);
 				this.nodes[connection.out.ID] = audioNode;
 				if (connection.out.isEnvelope) {
 					this.triggerNodes.push(audioNode);
@@ -73,15 +73,41 @@ export default class SynthCopy{
 		}
 	}
 
-	onParamChange(nodeID, params) {
-		if (this.nodes[nodeID]) {
-			this._updateParams(this.nodes[nodeID], params);
+	onParamChange(node, params) {
+
+		if (this.nodes[node.ID]) {
+			if (node.isOscillator) {
+				this._updateOscillatorParams(this.nodes[node.ID], params, node);
+			} else {
+				const nodeParam = node.params
+				this._updateParams(this.nodes[node.ID], params, node);
+			}
 		}
 	}
 
-	_updateParams(audioNode, params) {
+	_updateOscillatorParams(audioNode, params, node) {
+		audioNode['frequency'].value = node.getFrequency(this.step);
+		audioNode['type'] = params.type;
+	}
+
+	_updateParams(audioNode, params, node) {
+		const nodeParamIsConnected = (node, param) => {
+
+			for (const key in node.params) {
+				if (node.params[key].objSettings.param === param) {
+					return node.params[key].isConnected;
+				}
+			}
+		};
+
 		for (const key in params) {
-			if (key === 'frequency' || key === 'amplitude' || key === 'Q') {
+			if (key === 'gain') {
+				if (nodeParamIsConnected(node, key)) {
+					continue;
+				}
+			}
+			
+			if (key === 'frequency' || key === 'amplitude' || key === 'Q' || key === 'gain' || key === 'threshold' || key === 'ratio') {
 				audioNode[key].value = params[key];
 
 			} else {
@@ -90,18 +116,69 @@ export default class SynthCopy{
 		}
 	}
 
+	play(time) {
+
+		const triggerNodesLength = this.triggerNodes.length;
+
+		// !!TODO LOOP NODES INSTEAD OF CONNECTIONS!!
+		for (let i = 0; i < this.currentConnections.length; i++) {
+			const connection = this.currentConnections[i];
+
+			const audioNode = this.nodes[connection.out.ID];
+
+			const params = connection.out.getParams(this.step);
+			
+
+			
+			if (connection.out.isOscillator) {
+				this._updateOscillatorParams(audioNode, params, connection.out);
+				audioNode.start(time);
+		
+			} else {
+				this._updateParams(audioNode, params, connection.out);
+			}
+			
+			
+			
+		}
+
+		for (let i = 0; i < this.triggerNodes.length; i++) {
+			this.triggerNodes[i].triggerAttackRelease("16n", time);
+		}
+
+		
+
+		for (let i = 0; i < this.currentConnections.length; i++) {
+			const connection = this.currentConnections[i];
+			
+			const audioNode = this.nodes[connection.out.ID];
+			if (connection.out.isOscillator && triggerNodesLength === 0) {
+				audioNode.stop("32n");
+			
+			}
+			// const params = connection.out.getParams(this.step);
+			// this._updateParams(audioNode, params, connection.out);
+			
+		}
+	}
+
 	keyDown() {
 
 		// !!TODO LOOP NODES INSTEAD OF CONNECTIONS!!
 		for (let i = 0; i < this.currentConnections.length; i++) {
 			const connection = this.currentConnections[i];
-			
+
 			const audioNode = this.nodes[connection.out.ID];
-			if (connection.out.isOscillator) {
-				audioNode.start();
-			}
 			const params = connection.out.getParams(this.step);
-			this._updateParams(audioNode, params);
+
+			if (connection.out.isOscillator) {
+				this._updateOscillatorParams(audioNode, params, connection.out);
+				audioNode.start();
+		
+			} else {
+				this._updateParams(audioNode, params, connection.out);
+			}
+			
 			
 		}
 
@@ -121,8 +198,8 @@ export default class SynthCopy{
 			if (connection.out.isOscillator && triggerNodesLength === 0) {
 				audioNode.stop();
 			}
-			const params = connection.out.getParams(this.step);
-			this._updateParams(audioNode, params);
+			// const params = connection.out.getParams(this.step);
+			// this._updateParams(audioNode, params, connection.out);
 			
 		}
 

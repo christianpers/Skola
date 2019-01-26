@@ -13,14 +13,34 @@ import EnvelopeNode from './musicNodes/EnvelopeNode';
 import FrequencyEnvelopeNode from './musicNodes/FrequencyEnvelopeNode';
 import LFONode from './musicNodes/LFONode';
 import SignalMultiplier from './musicHelpers/mathNodes/SignalMultiplier';
+import CompressorNode from './musicNodes/CompressorNode';
+import SequencerNode from './musicNodes/SequencerNode';
+
+import LavaNoiseNode from './graphicNodes/ProceduralTextures/LavaNoise';
+import CircleNode from './graphicNodes/Shapes/CircleNode';
+import CubeNode from './graphicNodes/Shapes/CubeNode';
+import ColorNode from './graphicNodes/ColorNode';
+import PositionNode from './graphicNodes/PositionNode';
+import RotationNode from './graphicNodes/RotationNode';
+import ParamDriverNode from './graphicNodes/ParamDriverNode';
+
+import Tone from 'tone';
 
 export default class Main{
 
 	constructor(){
 
+		Tone.Transport.bpm.value = 80;
+		Tone.Transport.start();
+
 		this.historyState = {id: window.location.pathname};
 
 		window.addEventListener('popstate', this.onPopStateChange.bind(this));
+
+		window.addEventListener('resize', () => {
+
+			this.onResize();
+		});
 
 		this.nodeTypes = {
 			audio: {
@@ -40,6 +60,10 @@ export default class Main{
 					{
 						type: 'Speaker',
 						obj: SpeakerNode,
+					},
+					{
+						type: 'Compressor',
+						obj: CompressorNode,
 					}
 				],
 				data: [
@@ -51,9 +75,38 @@ export default class Main{
 						type: 'Envelope',
 						obj: EnvelopeNode
 					}
-				]
+				],
+				triggers: [
+					{
+						type: 'SequencerNode',
+						obj: SequencerNode,
+					}
+				],
 			},
-			graphics: {}
+			graphics: {
+				'3D - Shapes': [
+					{
+						type: 'Cube',
+						obj: CubeNode,
+					}
+				],
+				'Procedural Texture (Material)': [
+					{
+						type: 'Circle',
+						obj: CircleNode,
+					},
+					{
+						type: 'LavaNoise',
+						obj: LavaNoiseNode,
+					},
+				],
+				'Modifiers' : [
+					{
+						type: 'ParamDriver',
+						obj: ParamDriverNode,
+					},
+				]
+			}
 		}
 
 		this.onNodeAddedFromLibraryBound = this.onNodeAddedFromLibrary.bind(this);
@@ -61,23 +114,13 @@ export default class Main{
 		this.nodeSettings = new NodeSettings(document.body);
 
 		this.workspaceManager = new WorkspaceManager(document.body);
+
+		this.onResize();
 		
 		const nodeLibrary = new NodeLibrary(document.body, this.nodeTypes, this.onNodeAddedFromLibraryBound);
 
 		const initData = {
 			nodes: [
-				// {
-				// 	node: new OscillatorNode(),
-				// 	type: 'Oscillator',
-				// 	id: 1,
-				// 	pos: [20, 50],
-				// },
-				// {
-				// 	node: new GainNode(),
-				// 	type: 'Amp',
-				// 	id: 2,
-				// 	pos: [600, 50],
-				// },
 				{
 					node: new LowpassFilterNode(),
 					type: 'LowpassFilterNode',
@@ -90,18 +133,6 @@ export default class Main{
 					id: 4,
 					pos: [900, 200],
 				},
-				// {
-				// 	node: new EnvelopeNode(),
-				// 	type: 'EnvelopeNode',
-				// 	id: 5,
-				// 	pos: [460, 200],
-				// },
-				// {
-				// 	node: new FrequencyEnvelopeNode(),
-				// 	type: 'FrequencyEnvelopeNode',
-				// 	id: 6,
-				// 	pos: [160, 200],
-				// },
 				{
 					node: new OscillatorNode(),
 					type: 'Oscillator',
@@ -114,24 +145,12 @@ export default class Main{
 					id: 8,
 					pos: [600, 400],
 				},
-				// {
-				// 	node: new LowpassFilterNode(),
-				// 	type: 'LowpassFilterNode',
-				// 	id: 9,
-				// 	pos: [300, 400],
-				// },
 				{
 					node: new EnvelopeNode(),
 					type: 'EnvelopeNode',
 					id: 10,
 					pos: [460, 550],
 				},
-				// {
-				// 	node: new FrequencyEnvelopeNode(),
-				// 	type: 'FrequencyEnvelopeNode',
-				// 	id: 11,
-				// 	pos: [160, 550],
-				// },
 				{
 					node: new LFONode(),
 					type: 'LFONode',
@@ -160,31 +179,6 @@ export default class Main{
 					in: 4,
 					out: 8,
 				},
-				// {
-				// 	in: 3,
-				// 	out: 6,
-				// },
-
-				// {
-				// 	in: 9,
-				// 	out: 7,
-				// },
-				// {
-				// 	in: 8,
-				// 	out: 9,
-				// },
-				// {
-				// 	in: 4,
-				// 	out: 8,
-				// },
-				// {
-				// 	in: 8,
-				// 	out: 10,
-				// },
-				// {
-				// 	in: 9,
-				// 	out: 11,
-				// },
 			]
 		};
 
@@ -192,24 +186,19 @@ export default class Main{
 
 		this.onNodeActiveBound = this.onNodeActive.bind(this);
 
-		
-
 		this.nodeManager = new NodeManager(null, this.keyboardManager, this.onNodeActiveBound, this.workspaceManager.el);
-		
 	}
 
 	onNodeActive(node) {
 		this.nodeSettings.show(node);
 	}
 
-	onNodeAddedFromLibrary(data) {
-		this.nodeManager.onNodeAddedFromLibrary(data);
+	onNodeAddedFromLibrary(type, data) {
+		this.nodeManager.onNodeAddedFromLibrary(type, data);
 	}
 
 	onPopStateChange(e) {
-
 		console.log('hash change: ', e);
-
 	}
 
 	pushState(id, url) {
@@ -231,8 +220,10 @@ export default class Main{
 		this.nodeManager.render();
 	}
 
-	onResize(w,h){
-
+	onResize() {
+		const w = window.innerWidth;
+		const h = window.innerHeight;
+		this.workspaceManager.onResize(w, h);
 	}
 
 }

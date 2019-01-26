@@ -8,18 +8,26 @@ export default class GainNode extends MusicNode{
 
 		this.audioNode = Tone.context.createGain();
 
+		this.paramVals = {};
+
 		this.params = {
 			'Gain' : {
 				obj: RangeSlider,
 				objSettings: {
 					title: 'Gain',
-					val: .5,
+					defaultVal: .5,
 					range: {min: 0, max: 1},
 					param: 'gain',
 					decimals: 2
 				},
 				useAsInput: true,
+				isConnected: false,
 			},
+		};
+
+		for (const loopKey in this.params) {
+			const key = this.params[loopKey].objSettings.param;
+			this.paramVals[key] = this.params[loopKey].objSettings.defaultVal;
 		}
 
 	}
@@ -29,9 +37,16 @@ export default class GainNode extends MusicNode{
 		
 	}
 
-	getParams() {
-		return {};
-	}
+	// getParams() {
+	// 	const params = {};
+	// 	// params.gain = {
+	// 	// 	val: this.params['Gain'].objSettings.val,
+	// 	// 	ic
+	// 	// }
+	// 	params.gain = this.params['Gain'].objSettings.val;
+
+	// 	return params;
+	// }
 
 	getAudioNode() {
 

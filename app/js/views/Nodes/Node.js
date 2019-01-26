@@ -4,7 +4,9 @@ import NodeInput from './NodeComponents/NodeInput';
 export default class Node{
 	constructor() {
 
-		
+		this.hasOutput = true;
+		this.isGraphicsNode = false;
+		this.hasGraphicsInput = false;
 	}
 
 	init(parentEl, onConnectingCallback, onInputConnectionCallback, type, nodeConfig, onNodeActive) {
@@ -17,7 +19,7 @@ export default class Node{
 		this.hasActiveInput = false;
 		this.type = type;
 		this.onNodeActive = onNodeActive;
-
+		
 		this.parentEl = parentEl;
 
 		this.lastDelta = {x: 0, y: 0};
@@ -33,13 +35,24 @@ export default class Node{
 		this.onOutputClickBound = this.onOutputClick.bind(this);
 		this.onInputClickBound = this.onInputClick.bind(this);
 
-		const hasInput = !this.isParam && this.hasAudioInput;
+		const hasInput = !this.isParam && this.hasAudioInput || this.hasGraphicsInput;
 
 		if (hasInput) {
-			this.input = new NodeInput(this.bottomPartEl, this.onInputClickBound);
+			this.input = new NodeInput(this.bottomPartEl, this.onInputClickBound, this.isGraphicsNode);
 		}
 		
-		this.output = new NodeOutput(this.bottomPartEl, this.onOutputClickBound, this.isParam, hasInput);
+		if (this.hasOutput) {
+			this.output = new NodeOutput(
+				this.bottomPartEl,
+				this.onOutputClickBound,
+				this.isParam,
+				hasInput,
+				this.isSpeaker,
+				this.isGraphicsNode,
+			);
+		}
+		
+		
 
 		this.moveCoords = {
 			start: {
@@ -47,8 +60,8 @@ export default class Node{
 				y: 0
 			},
 			offset: {
-				x: this.initNodeConfig ? nodeConfig.pos[0] : parentEl.clientWidth / 2 - 100,
-				y: this.initNodeConfig ? nodeConfig.pos[1] : parentEl.clientHeight / 2 - 50,
+				x: this.initNodeConfig ? nodeConfig.pos[0] : parentEl.clientWidth / 2 - 100 * Math.random(),
+				y: this.initNodeConfig ? nodeConfig.pos[1] : parentEl.clientHeight / 2 - 50 * Math.random(),
 			}
 		};
 
@@ -57,9 +70,11 @@ export default class Node{
 		this.onMouseDownBound = this.onMouseDown.bind(this);
 		this.onMouseMoveBound = this.onMouseMove.bind(this);
 		this.onMouseUpBound = this.onMouseUp.bind(this);
+	}
+
+	activateDrag() {
 
 		this.el.addEventListener('mousedown', this.onMouseDownBound);
-
 	}
 
 	getConnectNode() {
@@ -103,6 +118,10 @@ export default class Node{
 
 	onMouseDown(e) {
 
+		if (e.target.nodeName === 'INPUT' || e.target.classList.contains('prevent-drag')) {
+			return;
+		}
+
 		e.stopPropagation();
 		e.preventDefault();
 
@@ -132,9 +151,16 @@ export default class Node{
 
 	onMouseUp(e) {
 
-		if ((e.target.parentNode !== this.output.el) && (this.lastDelta.x < 2 && this.lastDelta.y < 2)) {
-			this.onNodeActive(this);
+		if (this.output.el) {
+			if ((e.target.parentNode !== this.output.el) && (Math.abs(this.lastDelta.x) < 2 && Math.abs(this.lastDelta.y) < 2)) {
+				if (this.onNodeActive) {
+					this.onNodeActive(this);
+				}
+				
+			}
 		}
+
+		
 
 		window.removeEventListener('mouseup', this.onMouseUpBound);
 		window.removeEventListener('mousemove', this.onMouseMoveBound);

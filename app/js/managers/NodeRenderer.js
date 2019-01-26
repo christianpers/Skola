@@ -64,7 +64,17 @@ export default class NodeRenderer{
 
 			const isParam = !!param;
 
-			const inEl = isParam ? nodeIn.inputParams[param.objSettings.param].el : nodeIn.input.el;
+			let inEl;
+			if (isParam) {
+				if (param.objSettings) {
+					inEl = nodeIn.inputParams[param.objSettings.param].el;	
+				} else {
+					inEl = nodeIn.inputParams[param.title].el;
+				}
+			} else {
+				inEl = nodeIn.input.el;
+			}
+			// const inEl = isParam ? nodeIn.inputParams[param.objSettings.param].el : nodeIn.input.el;
 			const outDotPos = nodeOut.getDotPos(nodeOut.output.el);
 			const inDotPos = nodeIn.getDotPos(inEl);
 

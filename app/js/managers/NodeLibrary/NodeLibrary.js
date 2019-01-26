@@ -8,6 +8,11 @@ export default class NodeLibrary{
 		this.el = document.createElement('div');
 		this.el.className = 'node-library';
 
+		const innerScroll = document.createElement('div');
+		innerScroll.className = 'inner-scroll';
+
+		this.el.appendChild(innerScroll);
+
 		this.parentEl.appendChild(this.el);
 
 		for (const key in nodeTypes) {
@@ -61,20 +66,19 @@ export default class NodeLibrary{
 					// this.el.appendChild(nodeWrapper);
 
 					nodeWrapper.addEventListener('mousedown', (e) => {
-						this.onMouseDown(e, nodeTypes[key][keySub][i]);
+						this.onMouseDown(e, key, nodeTypes[key][keySub][i]);
 					});
 				}
 			}
 
-			this.el.appendChild(level0);
+			innerScroll.appendChild(level0);
 		}
 
 		
 	}
 
-	onMouseDown(e, data) {
-
-		this.onNodeAddedCallback(data);
+	onMouseDown(e, type, data) {
+		this.onNodeAddedCallback(type, data);
 
 	}
 

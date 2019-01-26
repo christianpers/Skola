@@ -27,7 +27,7 @@ export default class NodeSettings{
 	onParameterChange() {
 		for (const key in this.currentParams) {
 			const val = this.currentParams[key].getReadyValue();
-			this.currentNode.setParamVal(val, key);
+			this.currentNode.setParamVal(val, this.currentParams[key].parameter);
 		}
 
 		this.currentNode.onParameterUpdate();
@@ -37,25 +37,39 @@ export default class NodeSettings{
 
 		this.reset();
 
-		this.el.classList.add('visible');
+		
 		this.currentNode = node;
 		
 		const params = node.params;
 		for (const key in params) {
+
+			if (!params[key].obj) {
+				continue;
+			}
+			
 			const settings = params[key].objSettings;
+
+			const val = node.paramVals[settings.param];
+
 
 			const obj = new params[key].obj(
 				this.paramContainer,
 				settings.title,
-				settings.val,
+				val,
 				settings.range,
 				this.onParameterChangeBound,
 				settings.param,
-				settings.decimals
+				settings.decimals,
+				params[key].isConnected && settings.param === 'gain'
 			);
 
 			this.currentParams[key] = obj;
 		}
+
+		if (Object.keys(params).length > 0) {
+			this.el.classList.add('visible');
+		}
+		
 	}
 
 	hide() {

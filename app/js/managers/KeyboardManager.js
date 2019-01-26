@@ -43,16 +43,21 @@ export default class KeyboardManager{
 		});
 	}
 
+	play(step, time) {
+		// console.log(step, this.keys);
+		this.keys[step].synth.play(time);
+	}
+
 	onAudioNodeConnectionUpdate(connections) {
 		for (let i = 0; i < this.keys.length; i++) {
 			this.keys[i].synth.updateConnections(connections);
 		}
 	}
 
-	onAudioNodeParamChange(nodeID, params) {
+	onAudioNodeParamChange(node, params) {
 
 		for (let i = 0; i < this.keys.length; i++) {
-			this.keys[i].synth.onParamChange(nodeID, params);
+			this.keys[i].synth.onParamChange(node, params);
 		}
 	}
 

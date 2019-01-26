@@ -2,38 +2,36 @@ import MusicNode from './MusicNode';
 import Tone from 'tone';
 import RangeSlider from '../views/Nodes/NodeComponents/RangeSlider';
 
-export default class LFONode extends MusicNode{
+export default class CompressorNode extends MusicNode{
 	constructor() {
 		super();
 
-		this.isParam = true;
-
-		this.audioNode = new Tone.LFO();
+		this.audioNode = new Tone.Compressor();
 
 		// this.audioNode.start();
 
 		this.paramVals = {};
 
 		this.params = {
-			'Frequency' : {
+			'Threshold' : {
 				obj: RangeSlider,
 				objSettings: {
-					title: 'Frequency',
-					defaultVal: 6.0,
-					range: {min: 0.1, max: 17.0},
-					param: 'frequency',
-					decimals: 2
+					title: 'Threshold',
+					defaultVal: -24,
+					range: {min: -48, max: 48},
+					param: 'threshold',
+					decimals: 0
 				},
 				useAsInput: false,
 			},
-			'Amplitude' : {
+			'Ratio' : {
 				obj: RangeSlider,
 				objSettings: {
-					title: 'Amplitude',
-					defaultVal: 0.5,
-					range: {min: 0, max: 1},
-					param: 'amplitude',
-					decimals: 2
+					title: 'Ratio',
+					defaultVal: 12,
+					range: {min: 0, max: 40},
+					param: 'range',
+					decimals: 0
 				},
 				useAsInput: false,
 			},
@@ -47,12 +45,8 @@ export default class LFONode extends MusicNode{
 
 	getAudioNode() {
 
-		const lfo = new Tone.LFO();
-		lfo.min = -22000;
-		lfo.max = 22000;
-		lfo.start();
-
-		return lfo;
+		const audioNode = new Tone.Compressor();
+		return audioNode;
 	}
 
 	main() {

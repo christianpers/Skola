@@ -8,12 +8,14 @@ export default class LowpassFilterNode extends MusicNode{
 		
 		this.audioNode = new Tone.Filter();
 
+		this.paramVals = {};
+
 		this.params = {
 			'Frequency' : {
 				obj: RangeSlider,
 				objSettings: {
 					title: 'Frequency',
-					val: 350,
+					defaultVal: 350,
 					range: {min: 0, max: 22000},
 					param: 'frequency',
 					decimals: 0
@@ -24,13 +26,18 @@ export default class LowpassFilterNode extends MusicNode{
 				obj: RangeSlider,
 				objSettings: {
 					title: 'Q',
-					val: 1,
+					defaultVal: 1,
 					range: {min: 0, max: 10},
 					param: 'Q',
 					decimals: 2
 				},
 				useAsInput: true,
 			},
+		};
+
+		for (const loopKey in this.params) {
+			const key = this.params[loopKey].objSettings.param;
+			this.paramVals[key] = this.params[loopKey].objSettings.defaultVal;
 		}
 
 	}
@@ -38,8 +45,13 @@ export default class LowpassFilterNode extends MusicNode{
 	getAudioNode() {
 
 		const audioNode = new Tone.Filter();
-		audioNode.frequency.value = this.params['Frequency'].objSettings.val;
-		audioNode.Q.value = this.params['Q'].objSettings.val;
+		// audioNode.frequency.value = this.params['Frequency'].objSettings.val;
+		// audioNode.Q.value = this.params['Q'].objSettings.val;
+
+		for (const key in this.params) {
+			const paramStr = this.params[key].objSettings.param;
+			audioNode[paramStr].value = this.paramVals[paramStr];
+		}
 
 		return audioNode;
 	}

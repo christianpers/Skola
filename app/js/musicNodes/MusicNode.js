@@ -13,6 +13,9 @@ export default class MusicNode extends Node{
 		this.isSpeaker = false;
 		this.isSignalMath = false;
 		this.hasAudioInput = true;
+		this.isSequencer = false;
+
+		this.params = {};
 
 		this.canBeConnected = false;
 
@@ -32,10 +35,11 @@ export default class MusicNode extends Node{
 		this.inputParams = {};
 	}
 
-	init(parentEl, onConnectingCallback, onInputConnectionCallback, type, nodeConfig, onNodeActive, onParameterChange) {
+	init(parentEl, onConnectingCallback, onInputConnectionCallback, type, nodeConfig, onNodeActive, onParameterChange, onSequencerTrigger) {
 		super.init(parentEl, onConnectingCallback, onInputConnectionCallback, type, nodeConfig, onNodeActive);
 
 		this.onParameterChange = onParameterChange;
+		this.onSequencerTrigger = onSequencerTrigger;
 
 		for (const key in this.params) {
 			if (this.params[key].useAsInput) {
@@ -43,6 +47,14 @@ export default class MusicNode extends Node{
 				this.inputParams[this.params[key].objSettings.param] = param;
 			}
 		}
+
+		if (this.isSequencer) {
+			this.el.classList.add('sequencer');
+			this.createUI();
+			this.setup();
+		}
+
+		this.activateDrag();
 	}
 
 	getDotPos(el) {
@@ -54,50 +66,39 @@ export default class MusicNode extends Node{
 		console.log('enable param', param);
 
 		const paramComponent = this.inputParams[param.objSettings.param];
+		param.isConnected = true;
 		paramComponent.enable();
+
 	}
 
 	disableParam(param) {
 		const paramComponent = this.inputParams[param.objSettings.param];
+		param.isConnected = false;
 		paramComponent.disable();
 	}
 
 	onParameterUpdate() {
 		const params = this.getParams();
 
-		this.onParameterChange(this.ID, params);
+		this.onParameterChange(this, params);
 	}
 
-	getParams(step) {
+	getParams() {
 
 		const params = {};
 		for (const key in this.params) {
 			const obj = this.params[key];
-			params[obj.objSettings.param] = obj.objSettings.val;
+			params[obj.objSettings.param] = this.paramVals[obj.objSettings.param];
 		}
+
+		// console.log(params);
 		
 		return params;
 	}
 
 	setParamVal(val, key) {
-		this.params[key].objSettings.val = val;
+		this.paramVals[key] = val;
 	}
-
-	setup() {
-
-		
-	}
-
-
-	// enableInput(outputAudioNode) {
-	// 	super.enableInput();
-	// 	// outputAudioNode.connect(this.audioNode);
-	// }
-
-	// disableInput(nodeToDisconnect) {
-	// 	super.disableInput();
-	// 	// nodeToDisconnect.disconnect(this.audioNode);
-	// }
 
 	main() {
 
