@@ -4,8 +4,10 @@ import RangeSlider from '../../views/Nodes/NodeComponents/RangeSlider';
 import * as THREE from 'three';
 
 export default class CircleNode extends RenderNode{
-	constructor(FBO, mainRender) {
-		super(FBO, mainRender);
+	constructor(mainRender) {
+		super(mainRender);
+
+		this.isBackgroundNode = true;
 
 		this.shader = `${SHADERS.BASE_SHADER}${SHADERS.BASE_MAIN_HEADER}${SHADERS.CIRCLE_SHAPE_MAIN}${SHADERS.BASE_MAIN_FOOTER}`;
 
@@ -55,13 +57,35 @@ export default class CircleNode extends RenderNode{
 
 	}
 
+	enableOutput(param, connection) {
+		super.enableOutput();
 
-	enableInput(outputNode) {
-		super.enableInput();
+		this.currentOutConnections.push(connection);
+		this.currentOutConnectionsLength = this.currentOutConnections.length;
+
+		
 	}
 
-	disableInput(nodeToDisconnect) {
-		super.disableInput();
+	disableOutput(nodeIn, param) {
+		const tempOutConnections = this.currentOutConnections.map(t => t);
+
+		let paramConnections = tempOutConnections.filter(t => t.param);
+		let nodeConnections = tempOutConnections.filter(t => !t.param);
+
+		if (param) {
+			paramConnections = paramConnections.filter(t => t.param && (t.param.title !== param.title));
+		} else {
+			nodeConnections = nodeConnections.filter(t => t.in.ID !== nodeIn.ID);
+		}
+		
+		const finalConnections = paramConnections.concat(nodeConnections);
+		this.currentOutConnections = finalConnections;
+		this.currentOutConnectionsLength = this.currentOutConnections.length;
+
+		if (this.currentOutConnectionsLength <= 0) {
+			super.disableOutput();
+
+		}
 	}
 
 

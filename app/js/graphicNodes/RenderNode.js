@@ -2,7 +2,7 @@ import GraphicNode from './GraphicNode';
 import * as THREE from 'three';
 
 export default class RenderNode extends GraphicNode{
-	constructor(FBO, mainRender) {
+	constructor(mainRender) {
 		super();
 
 		this.isRenderNode = true;

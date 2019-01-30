@@ -4,6 +4,7 @@ import NodeParam from '../views/Nodes/NodeComponents/NodeParam';
 import NodeHeader from '../views/Nodes/NodeComponents/NodeHeader';
 
 import ParamHelpers from './Helpers/ParamHelpers';
+import InputHelpers from './Helpers/InputHelpers';
 
 export default class GraphicNode extends Node{
 	constructor() {
@@ -11,6 +12,8 @@ export default class GraphicNode extends Node{
 
 		this.params = {};
 		this.inputParams = {};
+		this.isForegroundNode = false;
+		this.isBackgroundNode = false;
 
 		this.currentOutConnections = [];
 		this.currentOutConnectionsLength = 0;
@@ -28,6 +31,8 @@ export default class GraphicNode extends Node{
 
 		this.el.appendChild(this.bottomPartEl);
 
+		this.inputHelpersType = InputHelpers.general;
+
 		this.isGraphicsNode = true;
 		this.isRenderNode = false;
 		this.canConnectToMaterial = false;
@@ -41,7 +46,7 @@ export default class GraphicNode extends Node{
 		type,
 		initData,
 		onNodeActive,
-		onGraphicsParamChange,
+		onNodeRemove,
 	) {
 		super.init(
 			parentEl,
@@ -50,9 +55,8 @@ export default class GraphicNode extends Node{
 			type,
 			initData,
 			onNodeActive,
+			onNodeRemove,
 		);
-
-		this.onGraphicsParamChange = onGraphicsParamChange;
 
 		const paramParents = [];
 		for (const key in this.params) {

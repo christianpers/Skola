@@ -5,30 +5,31 @@ import SceneNode from '../graphicNodes/SceneNode';
 import Render from '../graphicNodes/Render';
 
 export default class GraphicsNodeManager{
-	constructor(parentEl, onConnectingCallback, onInputConnectionCallback, addCallback, onNodeActive, onGraphicsParamChange) {
+	constructor(parentEl, onConnectingCallback, onInputConnectionCallback, addCallback, onNodeActive, removeCallback) {
 
 		this.parentEl = parentEl;
 		this.onConnectingCallback = onConnectingCallback;
 		this.onInputConnectionCallback = onInputConnectionCallback;
 		this.addCallback = addCallback;
 		this.onNodeActive = onNodeActive;
-		this.onGraphicsParamChange = onGraphicsParamChange;
+		this.removeCallback = removeCallback;
 
 		this.mainRender = new Render();
 
-		this.sceneNode = new SceneNode(this.mainRender);
-		this.sceneNode.init(
-			parentEl,
-			onConnectingCallback,
-			onInputConnectionCallback,
-			'Canvas',
-		);
+		// this.sceneNode = new SceneNode(this.mainRender);
+		// this.sceneNode.init(
+		// 	parentEl,
+		// 	onConnectingCallback,
+		// 	onInputConnectionCallback,
+		// 	'Canvas',
+		// 	this.removeCallback,
+		// );
 
-		this.addCallback(this.sceneNode);
+		// this.addCallback(this.sceneNode);
 	}
 
 	createNode(data) {
-		const node = new data.obj(this.sceneNode.framebuffer, this.mainRender);
+		const node = new data.obj(this.mainRender);
 		node.init(
 			this.parentEl,
 			this.onConnectingCallback,
@@ -36,21 +37,13 @@ export default class GraphicsNodeManager{
 			data.type,
 			undefined,
 			undefined,
-			this.onGraphicsParamChange,
+			this.removeCallback,
 
 		);
 		
-		node.onResize(this.sceneNode.getRenderWindowDimensions());
+		node.onResize({w: 540, h: 538});
 		
 		this.addCallback(node);
-	}
-
-	onConnectionUpdate(connections) {
-		this.sceneNode.onConnectionUpdate(connections);
-	}
-
-	onNodeParamChange() {
-
 	}
 
 	update() {

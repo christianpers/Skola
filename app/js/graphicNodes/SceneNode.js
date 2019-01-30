@@ -2,6 +2,9 @@ import * as THREE from 'three';
 import Node from '../views/Nodes/Node';
 import * as SHADERS from '../../shaders/SHADERS';
 
+import NodeInput from '../views/Nodes/NodeComponents/NodeInput';
+import InputHelpers from './Helpers/InputHelpers';
+
 export default class SceneNode extends Node{
 
 	constructor(mainRender) {
@@ -11,6 +14,10 @@ export default class SceneNode extends Node{
 		this.isGraphicsNode = true;
 		this.hasGraphicsInput = true;
 		this.isCanvasNode = true;
+
+		this.inputHelpersType = InputHelpers.sceneNode;
+
+		this.enabledInputs = [];
 
 		this.el = document.createElement('div');
 		this.el.className = 'node canvas';
@@ -42,11 +49,15 @@ export default class SceneNode extends Node{
 		// this.texture.minFilter = THREE.LinearFilter;
 
 		const textureUniforms = {};
+		
 		textureUniforms.u_connection0 = {value: 0.0};
 		textureUniforms.u_texture0 = {value: new Image()};
+		
+		textureUniforms.u_connection1 = {value: 0.0};
+		textureUniforms.u_texture1 = {value: new Image()};
 
-		// textureUniforms.u_connection1 = {value: 1.0};
-		// textureUniforms.u_texture1 = {value: new Image()};
+		textureUniforms.u_finalConnection = {value: 0.0};
+		textureUniforms.u_multiConnection = {value: 0.0};
 
 		const uniformsObj = Object.assign({}, resUniforms, textureUniforms);
 		this.material = new THREE.ShaderMaterial({
@@ -58,7 +69,6 @@ export default class SceneNode extends Node{
 		this.mesh = new THREE.Mesh(geometry, this.material);
 
 		this.scene.add(this.mesh);
-
 	}
 
 	init(parentEl, onConnectingCallback, onInputConnectionCallback, type) {
@@ -68,11 +78,37 @@ export default class SceneNode extends Node{
 		const h = window.innerHeight;
 		
 		this.orthoCamera = new THREE.OrthographicCamera( w / - 2, w / 2, h / 2, h / - 2, 1, 1000 );
+
+		this.bottomPartEl.classList.add('multiple-inputs');
+
+		this.onInputClickBackgroundBound = this.onInputClickBackground.bind(this);
+		this.onInputClickForegroundBound = this.onInputClickForeground.bind(this);
+
+		this.inputBackground = new NodeInput(this.bottomPartEl, this.onInputClickBackgroundBound, this.isGraphicsNode, 'Bakgrund In');
+		this.inputForeground = new NodeInput(this.bottomPartEl, this.onInputClickForegroundBound, this.isGraphicsNode, 'Förgrund In');
+
+		this.inputs = {
+			'background': this.inputBackground,
+			'foreground': this.inputForeground,
+		};
 		
 		setTimeout(() => {
-			this.resize();
-		}, 100);
-		
+			this.onResize();
+		}, 100);	
+	}
+
+	onInputClickBackground(param) {
+
+		this.onInputConnectionCallback(this, 'background', param);
+	}
+
+	onInputClickForeground(param) {
+
+		this.onInputConnectionCallback(this, 'foreground', param);
+	}
+
+	getInputEl(inputType) {
+		return this.inputs[inputType].el;
 	}
 
 	getDotPos(el) {
@@ -84,31 +120,55 @@ export default class SceneNode extends Node{
 
 	}
 
-	enableInput(outputNode) {
-		super.enableInput();
-	}
+	enableInput(outputNode, inputType) {
+		this.inputs[inputType].enable();
 
-	disableInput(nodeToDisconnect) {
-		super.disableInput();
-	}
-
-	onConnectionUpdate(connections) {
-
-		if (connections.length > 0) {
+		if (outputNode.isBackgroundNode) {
+			const framebuffer = outputNode.framebuffer.texture;
+			this.mesh.material.uniforms.u_texture0.value = framebuffer;
 			this.mesh.material.uniforms.u_connection0.value = 1.0;
-		} else {
-			this.mesh.material.uniforms.u_connection0.value = 0.0;
-			return;
+		} else if (outputNode.isForegroundNode) {
+			const framebuffer = outputNode.framebuffer.texture;
+			this.mesh.material.uniforms.u_texture1.value = framebuffer;
+			this.mesh.material.uniforms.u_connection1.value = 1.0;
 		}
 
-		const connection = connections[0];
+		const obj = {
+			out: outputNode,
+			type: inputType,
+		};
+		this.enabledInputs.push(obj);
 
-		const framebuffer = connection.out.framebuffer.texture;
-		this.mesh.material.uniforms.u_texture0.value = framebuffer;
+		this.mesh.material.uniforms.u_finalConnection.value = 1.0;
+		if (this.enabledInputs.length === 2) {
+			this.mesh.material.uniforms.u_multiConnection.value = 1.0;
+		}
+	}
+
+
+	disableInput(outNode, inputType) {
+
+		this.inputs[inputType].disable();
+
+		this.enabledInputs = this.enabledInputs.filter(t => t.type !== inputType);
+
+		if (this.enabledInputs.length === 0) {
+			this.mesh.material.uniforms.u_finalConnection.value = 0.0;
+		} else if (this.enabledInputs.length === 1) {
+			this.mesh.material.uniforms.u_multiConnection.value = 0.0;
+		}
+
+		if (outNode.isBackgroundNode) {
+			this.mesh.material.uniforms.u_texture0.value = null;
+			this.mesh.material.uniforms.u_connection0.value = 0.0;
+		} else if (outNode.isForegroundNode) {
+			this.mesh.material.uniforms.u_texture1.value = null;
+			this.mesh.material.uniforms.u_connection1.value = 0.0;
+		}
 	}
 
 	getRenderWindowDimensions() {
-		return {w: this.topPartEl.clientWidth, h: this.topPartEl.clientHeight};
+		return {w: 540, h: 538};
 	}
 
 	update() {
@@ -121,7 +181,7 @@ export default class SceneNode extends Node{
 		this.renderer.render(this.scene, this.orthoCamera);
 	}
 
-	resize() {
+	onResize() {
 		const w = this.topPartEl.clientWidth;
 		const h = this.topPartEl.clientHeight;
 

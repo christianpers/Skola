@@ -33,6 +33,7 @@ export default class NodeManager{
 		this.onConnectingBound = this.onConnecting.bind(this);
 		this.onInputConnectionBound = this.onInputConnection.bind(this);
 		this.addBound = this.add.bind(this);
+		this.removeBound = this.onNodeRemove.bind(this);
 		this.onAudioNodeParamChangeBound = this.onAudioNodeParamChange.bind(this);
 		this.onSequencerTriggerBound = this.onSequencerTrigger.bind(this);
 		
@@ -45,10 +46,9 @@ export default class NodeManager{
 			this.onAudioNodeParamChangeBound,
 			onNodeActive,
 			this.onSequencerTriggerBound,
+			this.removeBound,
 		);
 		this.audioNodeManager.init();
-
-		this.onGraphicsParamChangeBound = this.onGraphicsParamChange.bind(this);
 
 		this.graphicsNodeManager = new GraphicsNodeManager(
 			parentEl,
@@ -56,7 +56,7 @@ export default class NodeManager{
 			this.onInputConnectionBound,
 			this.addBound,
 			onNodeActive,
-			this.onGraphicsParamChangeBound,
+			this.removeBound,
 		);
 
 		if (this.hasConfig) {
@@ -68,13 +68,12 @@ export default class NodeManager{
 				this.onInputConnection(inputNode);
 			}
 
+			this.outputActiveNode = null;
+
 			this.keyboardManager.onAudioNodeConnectionUpdate(this._nodeConnections);
 		}
 
 		this.constructorIsDone = true;
-		// console.log(this._nodes);
-		// this.graphicsNodeManager = new GraphicsNodeManager(document.body, this.onConnectingBound, this.onInputConnectionBound, this.addBound);
-
 	}
 
 	onSequencerTrigger(step, time) {
@@ -89,15 +88,14 @@ export default class NodeManager{
 		}
 	}
 
-	onGraphicsParamChange(node) {
-		// const connection = this._nodeConnections.find(t => t.out.ID === node.ID);
+	onNodeRemove(node) {
+		const connections = this._nodeConnections.filter(t => t.out.ID === node.ID || t.in.ID === node.ID);
 
-		// if (!connection) {
-		// 	return;
-		// }
+		for (let i = 0; i < connections.length; i++) {
+			this.removeConnection(connections[i]);
+		}
 
-		// const param = connection.param;
-		// connection.in.updateParam(param, connection.out);
+		this.remove(node);
 	}
 
 	onAudioNodeParamChange(node, params) {
@@ -191,15 +189,28 @@ export default class NodeManager{
 		
 	}
 
-	onInputConnection(inputNode, param) {
+	onInputConnection(inputNode, inputType ,param) {
 
 		let inputAvailable = true;
 
 		if (!this.isConnecting || !this.outputActiveNode) {
 			inputAvailable = false;
-			const connection = this._nodeConnections.find(t => t.in.ID === inputNode.ID && t.param.title === param.title);
-			if (connection) {
-				this.removeConnection(connection);
+			if (param) {
+				const connection = this._nodeConnections.find(t => t.in.ID === inputNode.ID && t.param.title === param.title);
+				if (connection) {
+					this.removeConnection(connection);
+				}
+			} else if (inputType) {
+
+				const connection = this._nodeConnections.find(t => t.in.ID === inputNode.ID && t.inputType === inputType);
+				if (connection) {
+					this.removeConnection(connection);
+				}
+			} else {
+				const connection = this._nodeConnections.find(t => t.in.ID === inputNode.ID);
+				if (connection) {
+					this.removeConnection(connection);
+				}
 			}
 			
 			return;
@@ -225,7 +236,6 @@ export default class NodeManager{
 					}
 				}
 			}
-		
 
 			if (!inputAvailable) {
 				return;
@@ -235,6 +245,10 @@ export default class NodeManager{
 			
 			if (param && !ParamHelpers[param.paramHelpersType].isValid(this.outputActiveNode, param)) {
 				return;
+			} else {
+				if (!inputNode.inputHelpersType.isValid(this.outputActiveNode, inputNode)) {
+					return;
+				}
 			}
 			
 		}
@@ -248,6 +262,7 @@ export default class NodeManager{
 			out: this.outputActiveNode,
 			in: inputNode,
 			lineEl: this.nodeConnectionRenderer.addLine(inputNode.ID + '---' + this.outputActiveNode.ID),
+			inputType,
 		};
 		connectionData.lineEl.addEventListener('click', (e) => {
 			this.removeConnection(connectionData);
@@ -256,7 +271,7 @@ export default class NodeManager{
 		if (param) {
 			inputNode.enableParam(param, connectionData);
 		} else {
-			inputNode.enableInput(this.outputActiveNode.getConnectNode());
+			inputNode.enableInput(this.outputActiveNode.getConnectNode(), inputType);
 		}
 		
 		this.outputActiveNode.enableOutput(param ? param : undefined, connectionData);
@@ -266,9 +281,9 @@ export default class NodeManager{
 		if (this.constructorIsDone) {
 			if (connectionData.out.isRenderNode) {
 				// const renderConnections = this._nodeConnections.filter(t => t.out.isRenderNode);
-				if (!connectionData.in.hasOutput) {
-					this.graphicsNodeManager.onConnectionUpdate([connectionData]);
-				}
+				// if (!connectionData.in.hasOutput) {
+				// 	this.graphicsNodeManager.onConnectionUpdate([connectionData]);
+				// }
 				
 			} else {
 				const audioConnections = this._nodeConnections.filter(t => !t.out.isGraphicsNode);
@@ -293,7 +308,7 @@ export default class NodeManager{
 
 
 		} else {
-			connectionData.in.disableInput(connectionData.out.getConnectNode());
+			connectionData.in.disableInput(connectionData.out.getConnectNode(), connectionData.inputType);
 		}
 
 		connectionData.out.disableOutput(connectionData.in, connectionData.param);
@@ -317,23 +332,16 @@ export default class NodeManager{
 
 		this._nodeConnections = tempNodeConnections;
 
-		// console.log('audio connection update');
-		if (connectionData.in.isCanvasNode) {
-			// const renderConnections = this._nodeConnections.filter(t => t.out.isRenderNode && t.in);
-			this.graphicsNodeManager.onConnectionUpdate([]);
-		} else {
-			const audioConnections = this._nodeConnections.filter(t => !t.out.isGraphicsNode);
-			this.keyboardManager.onAudioNodeConnectionUpdate(audioConnections);
-		}
+		const audioConnections = this._nodeConnections.filter(t => !t.out.isGraphicsNode);
+		this.keyboardManager.onAudioNodeConnectionUpdate(audioConnections);
 		
-
 		this.nodeConnectionRenderer.removeLine(connectionData.lineEl);
 
 	}
 
 	add(node) {
 		this._nodes.push(node);
-		if (node.isRenderNode) {
+		if (node.isRenderNode || node.isCanvasNode) {
 			this._graphicNodes.push(node);
 			this._graphicNodeLength = this._graphicNodes.length;
 		}
@@ -346,11 +354,9 @@ export default class NodeManager{
 			this._graphicNodeLength = this._graphicNodes.length;
 		}
 
-		node.remove();
+		node.removeFromDom();
 		const tempNodes = this._nodes.filter((t) => t.ID !== node.ID);
 		this._nodes = tempNodes;
-
-
 	}
 
 	update() {
@@ -360,7 +366,7 @@ export default class NodeManager{
 			this._graphicNodes[i].update();
 		}
 
-		this.graphicsNodeManager.update();
+		// this.graphicsNodeManager.update();
 	}
 
 	render() {
@@ -370,6 +376,6 @@ export default class NodeManager{
 			this._graphicNodes[i].render();
 		}
 
-		this.graphicsNodeManager.render();
+		// this.graphicsNodeManager.render();
 	}
 }

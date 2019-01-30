@@ -23,6 +23,7 @@ import ColorNode from './graphicNodes/ColorNode';
 import PositionNode from './graphicNodes/PositionNode';
 import RotationNode from './graphicNodes/RotationNode';
 import ParamDriverNode from './graphicNodes/ParamDriverNode';
+import SceneNode from './graphicNodes/SceneNode';
 
 import Tone from 'tone';
 
@@ -84,6 +85,12 @@ export default class Main{
 				],
 			},
 			graphics: {
+				'Canvas': [
+					{
+						type: 'Canvas',
+						obj: SceneNode,
+					}
+				],
 				'3D - Shapes': [
 					{
 						type: 'Cube',

@@ -16,14 +16,32 @@ precision mediump float;
 	uniform float time;
 	uniform vec2 resolution;
 	uniform sampler2D u_texture0;
+    uniform sampler2D u_texture1;
 	uniform vec2 u_res;
 	uniform float u_connection0;
+    uniform float u_connection1;
+    uniform float u_finalConnection;
+    uniform float u_multiConnection;
 	void main()	{
 		vec2 st = gl_FragCoord.xy/u_res.xy;
-		vec4 color = texture2D(u_texture0, st);
+		vec4 bgColor = texture2D(u_texture0, st);
+        vec4 fgColor = texture2D(u_texture1, st);
 		vec4 whiteColor = vec4(1., 1., 1., 1.);
-		gl_FragColor = mix(whiteColor, color, u_connection0);
-	}
+        vec4 transparentColor = vec4(1.0, 1.0, 1.0, 0.0);
+        vec4 finalFgColor = mix(transparentColor, fgColor, u_connection1);
+        vec4 finalBgColor = mix(transparentColor, bgColor, u_connection0);
+        
+        float ra = (finalFgColor.a) * finalFgColor.r + (1.0 - finalFgColor.a) * finalBgColor.r;
+        float ga = (finalFgColor.a) * finalFgColor.g + (1.0 - finalFgColor.a) * finalBgColor.g;
+        float ba = (finalFgColor.a) * finalFgColor.b + (1.0 - finalFgColor.a) * finalBgColor.b;
+
+        vec4 overlayColor = vec4(ra, ga, ba, 1.0);
+
+        vec4 finalColor = mix(fgColor + bgColor, overlayColor, u_multiConnection);
+
+        gl_FragColor = mix(whiteColor, finalColor, u_finalConnection);
+	} 
+
 `;
 
 

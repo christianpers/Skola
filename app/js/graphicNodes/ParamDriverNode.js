@@ -176,10 +176,17 @@ export default class ParamDriverNode extends GraphicNode{
 			this.reset();
 		}
 		
-		this.currentOutConnections = this.currentOutConnections.filter(t => t.param.param !== param.param);
+		this.currentOutConnections = this.currentOutConnections.filter(t => t.param.title !== param.title);
 		this.currentOutConnectionsLength = this.currentOutConnections.length;
+	}
 
-		
+	removeFromDom() {
+
+		this.reset();
+		window.cancelAnimationFrame(this.animateValues.reqAnimFrame);
+
+		super.removeFromDom();
+
 	}
 
 }

@@ -1,5 +1,6 @@
 import NodeOutput from './NodeComponents/NodeOutput';
 import NodeInput from './NodeComponents/NodeInput';
+import NodeRemove from './NodeComponents/NodeRemove';
 
 export default class Node{
 	constructor() {
@@ -9,7 +10,7 @@ export default class Node{
 		this.hasGraphicsInput = false;
 	}
 
-	init(parentEl, onConnectingCallback, onInputConnectionCallback, type, nodeConfig, onNodeActive) {
+	init(parentEl, onConnectingCallback, onInputConnectionCallback, type, nodeConfig, onNodeActive, onNodeRemove) {
 
 		this.initNodeConfig = !!nodeConfig;
 
@@ -19,6 +20,7 @@ export default class Node{
 		this.hasActiveInput = false;
 		this.type = type;
 		this.onNodeActive = onNodeActive;
+		this.onNodeRemove = onNodeRemove;
 		
 		this.parentEl = parentEl;
 
@@ -34,10 +36,13 @@ export default class Node{
 
 		this.onOutputClickBound = this.onOutputClick.bind(this);
 		this.onInputClickBound = this.onInputClick.bind(this);
+		this.onRemoveClickBound = this.onRemoveClick.bind(this);
+
+		this.remove = new NodeRemove(this.topPartEl, this.onRemoveClickBound);
 
 		const hasInput = !this.isParam && this.hasAudioInput || this.hasGraphicsInput;
 
-		if (hasInput) {
+		if (hasInput && !this.isCanvasNode) {
 			this.input = new NodeInput(this.bottomPartEl, this.onInputClickBound, this.isGraphicsNode);
 		}
 		
@@ -52,8 +57,6 @@ export default class Node{
 			);
 		}
 		
-		
-
 		this.moveCoords = {
 			start: {
 				x: 0,
@@ -72,9 +75,16 @@ export default class Node{
 		this.onMouseUpBound = this.onMouseUp.bind(this);
 	}
 
-	activateDrag() {
+	onRemoveClick() {
+		this.onNodeRemove(this);
+	}
 
+	activateDrag() {
 		this.el.addEventListener('mousedown', this.onMouseDownBound);
+	}
+
+	getInputEl() {
+		return this.input.el;
 	}
 
 	getConnectNode() {
@@ -108,10 +118,10 @@ export default class Node{
 
 	onInputClick(param) {
 
-		this.onInputConnectionCallback(this, param);
+		this.onInputConnectionCallback(this, 'main', param);
 	}
 
-	remove() {
+	removeFromDom() {
 		this.el.removeEventListener('mousedown', this.onMouseDownBound);
 		this.parentEl.removeChild(this.el);
 	}
@@ -159,8 +169,6 @@ export default class Node{
 				
 			}
 		}
-
-		
 
 		window.removeEventListener('mouseup', this.onMouseUpBound);
 		window.removeEventListener('mousemove', this.onMouseMoveBound);

@@ -61,6 +61,7 @@ export default class NodeRenderer{
 			const nodeOut = this.nodeManager._nodeConnections[i].out;
 			const nodeIn = this.nodeManager._nodeConnections[i].in;
 			const param = this.nodeManager._nodeConnections[i].param;
+			const inputType = this.nodeManager._nodeConnections[i].inputType;
 
 			const isParam = !!param;
 
@@ -72,7 +73,7 @@ export default class NodeRenderer{
 					inEl = nodeIn.inputParams[param.title].el;
 				}
 			} else {
-				inEl = nodeIn.input.el;
+				inEl = nodeIn.getInputEl(inputType);
 			}
 			// const inEl = isParam ? nodeIn.inputParams[param.objSettings.param].el : nodeIn.input.el;
 			const outDotPos = nodeOut.getDotPos(nodeOut.output.el);
@@ -93,12 +94,6 @@ export default class NodeRenderer{
 			
 			const endX = nodeIn.moveCoords.offset.x + offsetXIn + 4;
 			const endY = nodeIn.moveCoords.offset.y + offsetYIn + 7;
-
-
-			// const startX = nodeOut.moveCoords.offset.x + outDotPos.left;
-			// const startY = nodeOut.moveCoords.offset.y + outDotPos.top;
-			// const endX = nodeIn.moveCoords.offset.x + inDotPos.left;
-			// const endY = nodeIn.moveCoords.offset.y + inDotPos.top;
 
 			const line = this.nodeManager._nodeConnections[i].lineEl;
 			line.setAttribute('x1', startX);

@@ -1,5 +1,5 @@
 export default class NodeInput{
-	constructor(parentEl, onClickCallback, isGraphicsNode) {
+	constructor(parentEl, onClickCallback, isGraphicsNode, str) {
 
 		this.isActive = false;
 		this.onClickCallback = onClickCallback;
@@ -16,7 +16,7 @@ export default class NodeInput{
 
 		const labelEl = document.createElement('p');
 		labelEl.className = 'label';
-		labelEl.innerHTML = isGraphicsNode ? 'Grafik in' : 'Ljud in';
+		labelEl.innerHTML = isGraphicsNode ? str ? str : 'Grafik in' : 'Ljud in';
 
 		this.el.appendChild(labelEl);
 

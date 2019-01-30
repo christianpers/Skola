@@ -14,7 +14,8 @@ export default class AudioNodeManager{
 		initData,
 		onParameterChange,
 		onNodeActive,
-		onSequencerTrigger
+		onSequencerTrigger,
+		onNodeRemove,
 	) {
 
 		this.parentEl = parentEl;
@@ -25,6 +26,7 @@ export default class AudioNodeManager{
 		this.onParameterChange = onParameterChange;
 		this.onNodeActive = onNodeActive;
 		this.onSequencerTrigger = onSequencerTrigger;
+		this.onNodeRemove = onNodeRemove;
 	}
 
 	init() {
@@ -39,6 +41,7 @@ export default class AudioNodeManager{
 					this.onNodeActive,
 					this.onParameterChange,
 					this.onSequencerTrigger,
+					this.onNodeRemove,
 				);
 				this.addCallback(this.initData[i].node);
 			}
@@ -56,6 +59,7 @@ export default class AudioNodeManager{
 			this.onNodeActive,
 			this.onParameterChange,
 			this.onSequencerTrigger,
+			this.onNodeRemove,
 		);
 		this.addCallback(node);
 	}

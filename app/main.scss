@@ -167,6 +167,13 @@ h1,h2,h3,h4,h5,text,p {
     	padding-right: 0;
     	padding-left: 0;
 		align-items: center;
+
+		&.multiple-inputs{
+			display: block;
+			& .node-input {
+				margin-bottom: 10px;
+			}
+		}
 	}
 }
 
@@ -248,6 +255,20 @@ h1,h2,h3,h4,h5,text,p {
 .node-input{
 	position: relative;
     left: -5px;
+}
+
+.node-remove {
+	position: absolute;
+	top: -22px;
+	right: 0px;
+	padding: 4px;
+	background: black;
+	color: white;
+	cursor: pointer;
+	border: 1px solid black;
+	&:hover {
+		border: 1px solid white;
+	}
 }
 
 .node-settings{

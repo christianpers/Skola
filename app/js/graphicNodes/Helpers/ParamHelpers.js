@@ -15,6 +15,21 @@ const onTextureDisconnect = (inNode) => {
 	inNode.material.map = null;
 };
 
+const onNormalmapParamUpdate = (inNode, outNode) => {
+	
+	inNode.material.normalMap = outNode.framebuffer.texture;
+	// inNode.material.displacementScale = .1;
+	inNode.mesh.needsUpdate = true;
+	inNode.material.needsUpdate = true;
+};
+
+const onNormalmapDisconnect = (inNode) => {
+
+	inNode.material.normalMap = null;
+	inNode.mesh.needsUpdate = true;
+	inNode.material.needsUpdate = true;
+};
+
 const onBumpmapParamUpdate = (inNode, outNode) => {
 	
 	inNode.material.displacementMap = outNode.framebuffer.texture;
@@ -75,6 +90,11 @@ const paramHelpers = {
 		update: onTextureParamUpdate,
 		isValid: isValidParamTextureInput,
 		disconnect: onTextureDisconnect,
+	},
+	normalMap: {
+		update: onNormalmapParamUpdate,
+		isValid: isValidParamTextureInput,
+		disconnect: onNormalmapDisconnect,
 	},
 	bumpMap: {
 		update: onBumpmapParamUpdate,

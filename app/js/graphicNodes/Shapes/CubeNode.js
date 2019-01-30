@@ -4,8 +4,10 @@ import * as THREE from 'three';
 import RangeSlider from '../../views/Nodes/NodeComponents/RangeSlider';
 
 export default class CubeNode extends RenderNode{
-	constructor(FBO, mainRender) {
-		super(FBO, mainRender);
+	constructor(mainRender) {
+		super(mainRender);
+
+		this.isForegroundNode = true;
 
 		this.el.classList.add('no-height');
 
@@ -64,10 +66,11 @@ export default class CubeNode extends RenderNode{
 
 		const bumpMapParam = {
 			title: 'Displacement',
-			param: 'displacementMap',
+			// param: 'displacementMap',
+			param: 'normalMap',
 			useAsInput: true,
 			parent: 'Material',
-			paramHelpersType: 'bumpMap',
+			paramHelpersType: 'normalMap',
 			needsFrameUpdate: false,
 		};
 
@@ -111,7 +114,7 @@ export default class CubeNode extends RenderNode{
 			parent: 'Rotation',
 			paramHelpersType: 'rotation',
 			needsFrameUpdate: false,
-			minMax: {min: -2, max: 2},
+			minMax: {min: -6, max: 6},
 			defaultVal: 0,
 		};
 
@@ -122,7 +125,7 @@ export default class CubeNode extends RenderNode{
 			parent: 'Rotation',
 			paramHelpersType: 'rotation',
 			needsFrameUpdate: false,
-			minMax: {min: -2, max: 2},
+			minMax: {min: -6, max: 6},
 			defaultVal: 0,
 		};
 
@@ -153,12 +156,36 @@ export default class CubeNode extends RenderNode{
 		
 	}
 
-	enableInput(outputNode) {
-		super.enableInput();		
+	enableOutput(param, connection) {
+		super.enableOutput();
+
+		this.currentOutConnections.push(connection);
+		this.currentOutConnectionsLength = this.currentOutConnections.length;
+
+		
 	}
 
-	disableInput(nodeToDisconnect) {
-		super.disableInput();
+	disableOutput(nodeIn, param) {
+		const tempOutConnections = this.currentOutConnections.map(t => t);
+
+		let paramConnections = tempOutConnections.filter(t => t.param);
+		let nodeConnections = tempOutConnections.filter(t => !t.param);
+
+		if (param) {
+			paramConnections = paramConnections.filter(t => t.param && (t.param.title !== param.title));
+		} else {
+			nodeConnections = nodeConnections.filter(t => t.in.ID !== nodeIn.ID);
+		}
+		
+		const finalConnections = paramConnections.concat(nodeConnections);
+		this.currentOutConnections = finalConnections;
+		this.currentOutConnectionsLength = this.currentOutConnections.length;
+
+		if (this.currentOutConnectionsLength <= 0) {
+			super.disableOutput();
+
+		}
+		
 	}
 
 	update() {

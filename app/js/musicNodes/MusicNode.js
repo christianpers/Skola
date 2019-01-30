@@ -35,8 +35,8 @@ export default class MusicNode extends Node{
 		this.inputParams = {};
 	}
 
-	init(parentEl, onConnectingCallback, onInputConnectionCallback, type, nodeConfig, onNodeActive, onParameterChange, onSequencerTrigger) {
-		super.init(parentEl, onConnectingCallback, onInputConnectionCallback, type, nodeConfig, onNodeActive);
+	init(parentEl, onConnectingCallback, onInputConnectionCallback, type, nodeConfig, onNodeActive, onParameterChange, onSequencerTrigger, onNodeRemove) {
+		super.init(parentEl, onConnectingCallback, onInputConnectionCallback, type, nodeConfig, onNodeActive, onNodeRemove);
 
 		this.onParameterChange = onParameterChange;
 		this.onSequencerTrigger = onSequencerTrigger;
