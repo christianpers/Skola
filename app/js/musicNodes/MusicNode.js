@@ -1,5 +1,6 @@
 import Node from '../views/Nodes/Node';
 import NodeParam from '../views/Nodes/NodeComponents/NodeParam';
+import AudioInputHelpers from '../musicHelpers/AudioInputHelpers';
 
 export default class MusicNode extends Node{
 	constructor() {
@@ -14,6 +15,8 @@ export default class MusicNode extends Node{
 		this.isSignalMath = false;
 		this.hasAudioInput = true;
 		this.isSequencer = false;
+
+		this.inputHelpersType = AudioInputHelpers.single;
 
 		this.params = {};
 
@@ -41,10 +44,12 @@ export default class MusicNode extends Node{
 		this.onParameterChange = onParameterChange;
 		this.onSequencerTrigger = onSequencerTrigger;
 
+		this.connectedInputs = [];
+
 		for (const key in this.params) {
 			if (this.params[key].useAsInput) {
 				const param = new NodeParam(this.topPartEl, this.params[key], this.onInputClickBound);
-				this.inputParams[this.params[key].objSettings.param] = param;
+				this.inputParams[this.params[key].title] = param;
 			}
 		}
 
@@ -57,24 +62,25 @@ export default class MusicNode extends Node{
 		this.activateDrag();
 	}
 
-	getDotPos(el) {
-		
-		return el.getBoundingClientRect();
-	}
-
 	enableParam(param) {
-		console.log('enable param', param);
-
-		const paramComponent = this.inputParams[param.objSettings.param];
+		const paramComponent = this.inputParams[param.title];
 		param.isConnected = true;
 		paramComponent.enable();
+
+		if (param.slider) {
+			param.slider.disableSlider();
+		}
 
 	}
 
 	disableParam(param) {
-		const paramComponent = this.inputParams[param.objSettings.param];
+		const paramComponent = this.inputParams[param.title];
 		param.isConnected = false;
 		paramComponent.disable();
+
+		if (param.slider) {
+			param.slider.enableSlider();
+		}
 	}
 
 	onParameterUpdate() {
@@ -88,21 +94,27 @@ export default class MusicNode extends Node{
 		const params = {};
 		for (const key in this.params) {
 			const obj = this.params[key];
-			params[obj.objSettings.param] = this.paramVals[obj.objSettings.param];
+			params[obj.param] = this.params[obj.param].value;
 		}
-
-		// console.log(params);
 		
 		return params;
 	}
 
-	setParamVal(val, key) {
-		this.paramVals[key] = val;
+	enableInput(outNode) {
+		super.enableInput();
+
+		this.connectedInputs.push(outNode.ID);
 	}
 
-	main() {
+	disableInput(outNode) {
 
+		const tempConnectedInputs = this.connectedInputs.filter(t => t !== outNode.ID);
+		this.connectedInputs = tempConnectedInputs;
 
-
+		if (this.connectedInputs.length === 0) {
+			super.disableInput();
+		}
+		
 	}
+
 }

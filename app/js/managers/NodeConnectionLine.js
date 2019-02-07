@@ -1,7 +1,8 @@
 export default class NodeConnectionLine{
-	constructor(parentEl) {
+	constructor(parentEl, resetConnecting) {
 
 		this.ID = 999999999;
+		this.resetConnecting = resetConnecting;
 
 		this.startPos = {x: 0, y: 0};
 		this.endPos = {x: 0, y: 0};
@@ -28,7 +29,7 @@ export default class NodeConnectionLine{
 
 		const nodeH = 100;
 
-		const dotPos = nodeOut.getDotPos(nodeOut.output.el);
+		const dotPos = nodeOut.getOutDotPos(nodeOut.output.el);
 		const offsetX = nodeOut.output.el.offsetLeft;
 		const offsetY = nodeOut.output.el.offsetTop;
 		
@@ -99,6 +100,8 @@ export default class NodeConnectionLine{
 
 		window.removeEventListener('mousemove', this.onMouseMoveBound);
 		window.removeEventListener('click', this.onMouseClickBound);
+
+		this.resetConnecting();
 
 		const line = this.line;
 

@@ -11,6 +11,7 @@ export default class SequencerNode extends MusicNode{
 		this.isSequencer = true;
 		this.loop = null;
 		this.hasAudioInput = false;
+		this.isParam = true;
 
 		this.data = [];
 		
@@ -21,17 +22,30 @@ export default class SequencerNode extends MusicNode{
 
 			const colArr = [];
 			for (let row = 0; row < rows; row++) {
-				const obj = {active: false, el: null, parentEl: null, step: row};
+				const obj = {active: false, el: null, parentEl: null, step: (rows - 1) - row};
+				console.log(obj);
 				colArr.push(obj);
 			}
 			this.data.push(colArr);
 		}
+
+		this.outConnections = [];
+		this.outConnectionsLength = 0;
+
+		this.isPlaying = false;
 
 		this.onBtnClickBound = this.onBtnClick.bind(this);
 	}
 
 	getKey(col, row) {
 		return `col${col}-row${row}`;
+	}
+
+	onRemoveClick() {
+		this.loop.stop();
+		this.playEl.removeEventListener('click', this.onPlayClickBound);
+		this.pauseEl.removeEventListener('click', this.onPauseClickBound);
+		super.onRemoveClick();
 	}
 
 	createUI() {
@@ -61,6 +75,62 @@ export default class SequencerNode extends MusicNode{
 		}
 
 		this.topPartEl.appendChild(container);
+
+		const controlsContainer = document.createElement('div');
+		controlsContainer.className = 'sequencer-controls';
+
+		const innerControls = document.createElement('div');
+		innerControls.className = 'inner-controls';
+
+		this.playEl = document.createElement('h5');
+		this.playEl.innerHTML = 'Spela';
+
+		this.pauseEl = document.createElement('h5');
+		this.pauseEl.innerHTML = 'Nollställ';
+
+		this.onPlayClickBound = this.onPlayClick.bind(this);
+		this.onPauseClickBound = this.onPauseClick.bind(this);
+
+		this.playEl.addEventListener('click', this.onPlayClickBound);
+		this.pauseEl.addEventListener('click', this.onPauseClickBound);
+
+		innerControls.appendChild(this.playEl);
+		innerControls.appendChild(this.pauseEl);
+		controlsContainer.appendChild(innerControls);
+
+		this.topPartEl.appendChild(controlsContainer);
+	}
+
+	onPlayClick() {
+		if (this.isPlaying) {
+			return;
+		}
+		this.isPlaying = true;
+		this.loop.start();
+	}
+
+	onPauseClick() {
+		this.isPlaying = false;
+		this.loop.stop();
+
+		this.reset();
+	}
+
+	reset() {
+		const rows = SequencerNode.ROWS;
+		const cols = SequencerNode.COLS;
+
+		for (let col = 0; col < cols; col++) {
+			const el = this.data[col][0].parentEl;
+			el.classList.remove('active');
+			
+			for (let row = 0; row < rows; row++) {
+			
+				this.data[col][row].active = false;
+			}
+		}
+
+		this.update();
 	}
 
 	setup() {
@@ -83,13 +153,14 @@ export default class SequencerNode extends MusicNode{
 					// var vel = Math.random() * 0.5 + 0.5;
 					// keys.get(noteNames[i]).start(time, 0, "32n", 0, vel);
 					// console.log('play: ', ' col: ', col, ' row: ', row);
-					this.onSequencerTrigger(column[row].step, time);
-
+					if (this.outConnectionsLength > 0) {
+						this.onSequencerTrigger(column[row].step, time);
+					}
 				}
 			}
 		}, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], "16n");
 
-		this.loop.start();
+		// this.loop.start();
 	}
 
 	onBtnClick(e) {
@@ -105,6 +176,22 @@ export default class SequencerNode extends MusicNode{
 
 		this.update();
 
+	}
+
+	enableOutput(param, connectionData) {
+		super.enableOutput();
+
+		this.outConnections.push(connectionData.in);
+		this.outConnectionsLength = this.outConnections.length;
+	}
+
+	disableOutput(inNode, param) {
+		this.outConnections = this.outConnections.filter(t => t.ID !== inNode.ID);
+		this.outConnectionsLength = this.outConnections.length;
+
+		if (this.outConnections.length === 0) {
+			super.disableOutput();
+		}
 	}
 
 	update() {

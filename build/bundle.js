@@ -185,7 +185,7 @@
 
 
 	// module
-	exports.push([module.id, "html, body {\n  width: 100%;\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  position: relative;\n  background: #1b1c1e;\n  font-size: 12px; }\n\nh1, h2, h3, h4, h5, p {\n  margin: 0; }\n\np {\n  font-size: .8rem; }\n\n.editor {\n  max-width: 700px; }\n  .editor .CodeMirror-linebackground.errorBg {\n    background: rgba(240, 10, 10, 0.8); }\n\n.glslCanvas, canvas {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%; }\n\n* {\n  box-sizing: border-box; }\n\na {\n  text-decoration: none;\n  color: rgba(0, 0, 0, 0.8); }\n\nhtml {\n  -webkit-text-size-adjust: none;\n  -moz-text-size-adjust: none;\n  text-size-adjust: none; }\n\nh1, h2, h3, h4, h5, text, p {\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-webkit-font-smoothing: antialiased;\n  font-family: Arial; }\n\n.control-ui {\n  position: fixed;\n  bottom: 20%;\n  left: 5%;\n  padding: 5px;\n  background: white;\n  z-index: 2; }\n  .control-ui .control-ui-inner {\n    display: flex;\n    width: calc(3 * 4vw + 10 * 3px);\n    flex-wrap: nowrap;\n    margin: -10px; }\n  .control-ui .control-btn {\n    flex: 1;\n    margin: 10px;\n    height: 3.4vw;\n    cursor: pointer;\n    position: relative; }\n    .control-ui .control-btn > img {\n      width: 100%;\n      height: auto; }\n    .control-ui .control-btn .control-disabled {\n      position: absolute;\n      background: rgba(255, 255, 255, 0.8);\n      opacity: 0;\n      width: 100%;\n      height: 100%;\n      top: 0; }\n    .control-ui .control-btn.disabled .control-disabled {\n      opacity: 1; }\n\n.workspace-container {\n  overflow: hidden;\n  position: relative; }\n  .workspace-container .workspace {\n    position: absolute;\n    top: 0;\n    left: 0;\n    /*background: radial-gradient(#e66465, #9198e5);\n\t\tbackground: #1b1c1e;\n\t\topacity: 0;*/\n    z-index: 2; }\n\n.node {\n  position: absolute;\n  width: 200px;\n  height: 100px;\n  background: white;\n  top: 0;\n  left: 0;\n  cursor: grab;\n  display: flex;\n  flex-direction: column;\n  border-radius: 3px;\n  background-color: #2b2c2d; }\n  .node:active {\n    cursor: grabbing; }\n  .node .node-type {\n    position: absolute;\n    top: -20px;\n    color: white; }\n  .node.signal-math-node {\n    width: 60px;\n    height: 30px; }\n  .node .top-part {\n    width: 100%;\n    height: 60%;\n    border-bottom: 2px solid #222223;\n    padding: 10px;\n    padding-left: 0; }\n  .node .bottom-part {\n    width: 100%;\n    height: 40%;\n    display: flex;\n    justify-content: space-between;\n    padding: 10px;\n    padding-right: 0;\n    padding-left: 0;\n    align-items: center; }\n\n.node-component {\n  display: flex;\n  flex: 1; }\n  .node-component.right-align {\n    text-align: right; }\n  .node-component .dot {\n    width: 10px;\n    height: 10px;\n    border-radius: 5px;\n    border: 2px solid red; }\n  .node-component .label {\n    margin-right: 5px;\n    margin-left: 5px;\n    color: red; }\n  .node-component.active .dot {\n    background: red; }\n\n.node-param {\n  margin-bottom: 5px;\n  position: relative;\n  left: -5px; }\n  .node-param .dot {\n    border: 2px solid yellow; }\n  .node-param .label {\n    color: yellow; }\n  .node-param.active .dot {\n    background: yellow; }\n\n.node-output {\n  flex-direction: row-reverse;\n  position: relative;\n  right: -5px; }\n  .node-output.param .dot {\n    border: 2px solid yellow; }\n  .node-output.param .label {\n    color: yellow; }\n  .node-output.param.active .dot {\n    background: yellow; }\n\n.node-input {\n  position: relative;\n  left: -5px; }\n\n.node-settings {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 260px;\n  border-right: 1px solid white;\n  height: 100%;\n  padding-left: 10px;\n  padding-right: 10px;\n  padding-top: 10px;\n  background: #66808c;\n  z-index: 3;\n  transform: translate3d(-100%, 0, 0); }\n  .node-settings.visible {\n    transform: translate3d(0, 0, 0); }\n\n.node-library {\n  position: absolute;\n  top: 0;\n  right: 0;\n  width: 260px;\n  border-left: 1px solid white;\n  height: 100%;\n  padding-left: 10px;\n  padding-right: 10px;\n  padding-top: 10px;\n  background: #66808c;\n  z-index: 2;\n  overflow: scroll; }\n  .node-library .inner-scroll {\n    height: 100%; }\n  .node-library .level-title {\n    border-bottom: 1px solid black;\n    margin-top: 10px; }\n  .node-library .level-1 {\n    margin-left: 10px; }\n  .node-library .node-container {\n    display: flex;\n    margin-top: 24px;\n    flex-wrap: wrap; }\n  .node-library .library-node {\n    width: 25%;\n    margin-right: 2%;\n    background: black;\n    padding: 5px;\n    display: flex;\n    flex-direction: column;\n    padding-bottom: 10px;\n    position: relative;\n    cursor: pointer;\n    margin-bottom: 30px; }\n    .node-library .library-node .node-type {\n      color: black;\n      position: absolute;\n      top: -15px;\n      left: 0; }\n    .node-library .library-node .node-add {\n      width: 30px;\n      align-self: center;\n      margin-top: 5px; }\n\n.line-renderer {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%; }\n\n.param-container {\n  margin: 2% auto;\n  width: 80%;\n  display: flex;\n  justify-content: space-between;\n  height: 200px;\n  flex-wrap: wrap; }\n\n.node-range {\n  width: 33%;\n  height: 100%;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: space-evenly; }\n  .node-range .node-range-slider-bg {\n    background: white;\n    position: relative;\n    width: 70%;\n    height: 60%;\n    cursor: pointer; }\n  .node-range .node-range-knob {\n    position: absolute;\n    bottom: 0;\n    left: 0;\n    width: 100%;\n    height: 0;\n    background: #db664c; }\n\n.range-slider-container {\n  width: 80%;\n  height: 90%;\n  margin: 2% auto;\n  display: flex;\n  justify-content: space-between; }\n\n.sequencer {\n  width: 1000px;\n  height: 600px; }\n  .sequencer .top-part {\n    height: 90%;\n    padding-left: 10px; }\n  .sequencer .bottom-part {\n    height: 10%; }\n  .sequencer .sequencer-container {\n    display: flex;\n    flex-wrap: wrap;\n    height: 100%;\n    justify-content: space-between; }\n    .sequencer .sequencer-container .sequencer-col {\n      width: 6%;\n      display: flex;\n      height: 100%;\n      flex-wrap: wrap;\n      padding: 0 5px;\n      align-items: center; }\n      .sequencer .sequencer-container .sequencer-col.active {\n        background: rgba(219, 102, 76, 0.6); }\n        .sequencer .sequencer-container .sequencer-col.active .sequencer-btn.active {\n          background: white; }\n    .sequencer .sequencer-container .sequencer-btn {\n      width: 100%;\n      height: 6%;\n      background: black;\n      cursor: pointer; }\n      .sequencer .sequencer-container .sequencer-btn.active {\n        background: #db664c; }\n\n.lava {\n  height: auto; }\n\n.canvas {\n  width: 540px;\n  height: 600px; }\n  .canvas .top-part {\n    padding: 0;\n    position: relative;\n    height: 90%; }\n  .canvas .bottom-part {\n    height: 10%; }\n", "", {"version":3,"sources":["/./app/main.scss"],"names":[],"mappings":"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","file":"main.scss","sourcesContent":["$mobile      : 'only screen and (max-width : 767px)';\n\n\nhtml, body {\n\twidth:100%;\n\theight: 100%;\n\tmargin:0;\n\tpadding:0;\n\n\t// overflow:hidden;\n\tposition: relative;\n\tbackground: #1b1c1e;\n\tfont-size: 12px;\n}\n\nh1, h2, h3, h4, h5, p{\n\tmargin: 0;\n}\n\np{\n\tfont-size: .8rem;\n}\n\n.editor{\n\tmax-width: 700px;\n\n\t& .CodeMirror-linebackground{\n\t\t&.errorBg{\n\t\t\tbackground: rgba(240, 10, 10, .8);\n\t\t}\n\t}\n}\n\n.glslCanvas, canvas{\n\tposition: absolute;\n\ttop: 0;\n    left: 0;\n    width: 100%;\n    height: 100%;\n}\n\n*{\n\tbox-sizing: border-box;\n}\n\na{\n\ttext-decoration: none;\n\tcolor: rgba(0,0,0,.8);\n}\n\nhtml {\n\t-webkit-text-size-adjust: none;\n\t-moz-text-size-adjust: none;\n\ttext-size-adjust: none;\n}\n\nh1,h2,h3,h4,h5,text,p {\n\t-webkit-font-smoothing: antialiased;\n\t-moz-osx-webkit-font-smoothing: antialiased;\n\tfont-family: Arial;\n}\n\n.control-ui{\n\tposition: fixed;\n\tbottom: 20%;\n\tleft: 5%;\n\tpadding: 5px;\n\tbackground: white;\n\tz-index: 2;\n\t.control-ui-inner{\n\t\tdisplay: flex;\n\t\twidth: calc(3 * 4vw + 10 * 3px);\n\t\tflex-wrap: nowrap;\n        margin:-10px;\n\t}\n\n\t.control-btn{\n\t\t\n\t\t// background: black;\n\t\tflex: 1;\n        margin: 10px;\n        height: 3.4vw;\n\t\tcursor: pointer;\n\t\tposition: relative;\n\n        > img{\n        \twidth: 100%;\n        \theight: auto;\n\n        }\n\n        .control-disabled{\n        \tposition: absolute;\n        \tbackground: rgba(255,255,255,.8);\n        \topacity: 0;\n        \twidth: 100%;\n        \theight: 100%;\n        \ttop: 0;\n        }\n\n        &.disabled{\n        \t.control-disabled{\n\n        \t\topacity: 1;\n        \t}\n        }\n\t}\n}\n\n.workspace-container{\n\toverflow: hidden;\n    position: relative;\n    .workspace{\n\t\tposition: absolute;\n\t\ttop: 0;\n\t\tleft: 0;\n\t\t/*background: radial-gradient(#e66465, #9198e5);\n\t\tbackground: #1b1c1e;\n\t\topacity: 0;*/\n\t    z-index: 2;\n\t}\n}\n\n\n.node{\n\tposition: absolute;\n\twidth: 200px;\n\theight: 100px;\n\tbackground: white;\n\ttop: 0;\n\tleft: 0;\n\tcursor: grab;\n\tdisplay: flex;\n    flex-direction: column;\n    border-radius: 3px;\n    background-color: #2b2c2d;\n\n\t&:active{\n\t\tcursor: grabbing;\n\t}\n\n\t& .node-type{\n\t\tposition: absolute;\n\t\ttop: -20px;\n\t\tcolor: white;\n\t}\n\n\t&.signal-math-node{\n\t\twidth: 60px;\n\t\theight: 30px;\n\t}\n\n\t& .top-part{\n\t\twidth: 100%;\n    \theight: 60%;\n    \tborder-bottom: 2px solid #222223;\n    \tpadding: 10px;\n    \tpadding-left: 0;\n\t}\n\n\t& .bottom-part{\n\t\twidth: 100%;\n    \theight: 40%;\n    \tdisplay: flex;\n    \tjustify-content: space-between;\n    \tpadding: 10px;\n    \tpadding-right: 0;\n    \tpadding-left: 0;\n\t\talign-items: center;\n\t}\n}\n\n.node-component{\n\tdisplay: flex;\n\tflex: 1;\n\t&.right-align{\n\t\ttext-align: right;\n\t}\n\n\t& .dot{\n\t\twidth: 10px;\n\t\theight: 10px;\n\t\tborder-radius: 5px;\n\t\tborder: 2px solid red;\n\n\t}\n\n\t& .label{\n\t\tmargin-right: 5px;\n\t\tmargin-left: 5px;\n\t\tcolor: red;\n\t}\n\n\t&.active{\n\t\t& .dot{\n\t\t\tbackground: red;\n\t\t}\n\t}\n}\n\n.node-param{\n\tmargin-bottom: 5px;\n\tposition: relative;\n    left: -5px;\n    & .dot{\n    \tborder: 2px solid yellow;\n    }\n\n    & .label{\n\t\tcolor: yellow;\n\t}\n\n\t&.active{\n\t\t& .dot{\n\t\t\tbackground: yellow;\n\t\t}\n\t}\n}\n\n.node-output{\n\tflex-direction: row-reverse;\n\tposition: relative;\n    right: -5px;\n    &.param{\n    \t& .dot{\n\t    \tborder: 2px solid yellow;\n\t    }\n\n\t    & .label{\n\t\t\tcolor: yellow;\n\t\t}\n\n\t\t&.active{\n\t\t\t& .dot{\n\t\t\t\tbackground: yellow;\n\t\t\t}\n\t\t}\n    }\n}\n\n.node-input{\n\tposition: relative;\n    left: -5px;\n}\n\n.node-settings{\n\tposition: absolute;\n\ttop: 0;\n\tleft: 0;\n\twidth: 260px;\n\tborder-right: 1px solid white;\n\theight: 100%;\n\tpadding-left: 10px;\n\tpadding-right: 10px;\n\tpadding-top: 10px;\n\tbackground: #66808c;\n\tz-index: 3;\n\ttransform: translate3d(-100%, 0, 0);\n\t&.visible{\n\t\ttransform: translate3d(0, 0, 0);\n\t}\n}\n\n.node-library{\n\tposition: absolute;\n\ttop: 0;\n\tright: 0;\n\twidth: 260px;\n\tborder-left: 1px solid white;\n\theight: 100%;\n\tpadding-left: 10px;\n\tpadding-right: 10px;\n\tpadding-top: 10px;\n\tbackground: #66808c;\n\tz-index: 2;\n\toverflow: scroll;\n\n\t& .inner-scroll{\n\t\theight: 100%;\n\t}\n\n\t& .level-title{\n\t\tborder-bottom: 1px solid black;\n\t\tmargin-top: 10px;\n\t}\n\n\t& .level-1{\n\t\tmargin-left: 10px;\n\t}\n\n\t& .node-container{\n\t\tdisplay: flex;\n\t\tmargin-top: 24px;\n\t\tflex-wrap: wrap;\n\t}\n\n\t& .library-node{\n\t\twidth: 25%;\n\t\tmargin-right: 2%;\n\t\t// height: 60px;\n\t\tbackground: black;\n\t\tpadding: 5px;\n\t\tdisplay: flex;\n\t\tflex-direction: column;\n\t\tpadding-bottom: 10px;\n\t\tposition: relative;\n\t\tcursor: pointer;\n\t\tmargin-bottom: 30px; \n\t\t& .node-type{\n\t\t\tcolor: black;\n\t\t    position: absolute;\n\t\t    top: -15px;\n\t\t    left: 0;\n\t\t}\n\n\t\t& .node-add{\n\t\t\twidth: 30px;\n\t\t\talign-self: center;\n\t\t\tmargin-top: 5px;\n\t\t}\n\t}\n}\n\n.line-renderer{\n\tposition: absolute;\n\ttop: 0;\n\tleft: 0;\n\twidth: 100%;\n\theight: 100%;\n}\n\n.param-container{\n\tmargin: 2% auto;\n\twidth: 80%;\n\tdisplay: flex;\n\tjustify-content: space-between;\n\theight: 200px;\n\tflex-wrap: wrap;\n}\n\n.node-range{\n\twidth: 33%;\n\theight: 100%;\n\tdisplay: flex;\n\tflex-direction: column;\n\talign-items: center;\n\tjustify-content: space-evenly;\n\t& .node-range-slider-bg{\n\t\tbackground: white;\n\t\tposition: relative;\n\t\twidth: 70%;\n\t\theight: 60%;\n\t\tcursor: pointer;\n\t}\n\n\t& .node-range-knob{\n\t\tposition: absolute;\n\t\tbottom: 0;\n\t\tleft: 0;\n\t\twidth: 100%;\n\t\theight: 0;\n\t\tbackground: #db664c;\n\t}\n\n\t& .node-range-value{\n\n\t}\n}\n\n.range-slider-container{\n\twidth: 80%;\n\theight: 90%;\n\tmargin: 2% auto;\n\tdisplay: flex;\n\tjustify-content: space-between;\n\t\n}\n\n.sequencer{\n\twidth: 1000px;\n\theight: 600px;\n\t& .top-part{\n\t\theight: 90%;\n\t\tpadding-left: 10px;\n\t}\n\n\t& .bottom-part{\n\t\theight: 10%;\n\t}\n\n\t& .sequencer-container{\n\t\tdisplay: flex;\n\t\tflex-wrap: wrap;\n\t\theight: 100%;\n\t\tjustify-content: space-between;\n\t\t& .sequencer-col{\n\t\t\twidth: 6%;\n\t\t\tdisplay: flex;\n\t\t\theight: 100%;\n\t\t\tflex-wrap: wrap;\n\t\t\tpadding: 0 5px;\n\t\t\talign-items: center;\n\t\t\t&.active{\n\t\t\t\tbackground: rgba(219, 102, 76, .6);\n\t\t\t\t& .sequencer-btn{\n\t\t\t\t\t\n\t\t\t\t\t&.active{\n\t\t\t\t\t\tbackground: white;\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\n\t\t}\n\t\t& .sequencer-btn{\n\t\t\twidth: 100%;\n\t\t\theight: 6%;\n\t\t\tbackground: black;\n\t\t\tcursor: pointer;\n\t\t\t&.active{\n\t\t\t\tbackground: #db664c;\n\t\t\t}\n\t\t}\n\t}\n}\n\n.lava{\n\theight: auto;\n}\n\n.canvas{\n\twidth: 540px;\n\theight: 600px;\n\t& .top-part{\n\t\tpadding: 0;\n\t\tposition: relative;\n\t\theight: 90%;\n\t}\n\n\t& .bottom-part{\n\t\theight: 10%;\n\t}\n}\n\n"],"sourceRoot":"webpack://"}]);
+	exports.push([module.id, "html, body {\n  width: 100%;\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  position: relative;\n  background: #1b1c1e;\n  font-size: 12px; }\n\nh1, h2, h3, h4, h5, p {\n  margin: 0; }\n\np {\n  font-size: .8rem; }\n\n.editor {\n  max-width: 700px; }\n  .editor .CodeMirror-linebackground.errorBg {\n    background: rgba(240, 10, 10, 0.8); }\n\n.glslCanvas, canvas {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%; }\n\n* {\n  box-sizing: border-box; }\n\na {\n  text-decoration: none;\n  color: rgba(0, 0, 0, 0.8); }\n\nhtml {\n  -webkit-text-size-adjust: none;\n  -moz-text-size-adjust: none;\n  text-size-adjust: none; }\n\nh1, h2, h3, h4, h5, text, p {\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-webkit-font-smoothing: antialiased;\n  font-family: Arial; }\n\n.control-ui {\n  position: fixed;\n  bottom: 20%;\n  left: 5%;\n  padding: 5px;\n  background: white;\n  z-index: 2; }\n  .control-ui .control-ui-inner {\n    display: flex;\n    width: calc(3 * 4vw + 10 * 3px);\n    flex-wrap: nowrap;\n    margin: -10px; }\n  .control-ui .control-btn {\n    flex: 1;\n    margin: 10px;\n    height: 3.4vw;\n    cursor: pointer;\n    position: relative; }\n    .control-ui .control-btn > img {\n      width: 100%;\n      height: auto; }\n    .control-ui .control-btn .control-disabled {\n      position: absolute;\n      background: rgba(255, 255, 255, 0.8);\n      opacity: 0;\n      width: 100%;\n      height: 100%;\n      top: 0; }\n    .control-ui .control-btn.disabled .control-disabled {\n      opacity: 1; }\n\n.workspace-container {\n  overflow: hidden;\n  position: relative; }\n  .workspace-container .workspace {\n    position: absolute;\n    top: 0;\n    left: 0;\n    /*background: radial-gradient(#e66465, #9198e5);\n\t\tbackground: #1b1c1e;\n\t\topacity: 0;*/\n    z-index: 2; }\n\n.node {\n  position: absolute;\n  width: 200px;\n  height: 100px;\n  background: white;\n  top: 0;\n  left: 0;\n  cursor: grab;\n  display: flex;\n  flex-direction: column;\n  border-radius: 3px;\n  background-color: #2b2c2d; }\n  .node:active {\n    cursor: grabbing; }\n  .node .node-type {\n    position: absolute;\n    top: -20px;\n    color: white; }\n  .node.signal-math-node {\n    width: 60px;\n    height: 30px; }\n  .node .top-part {\n    width: 100%;\n    height: 60%;\n    border-bottom: 2px solid #222223;\n    padding: 10px;\n    padding-left: 0; }\n  .node .bottom-part {\n    width: 100%;\n    height: 40%;\n    display: flex;\n    justify-content: space-between;\n    padding: 10px;\n    padding-right: 0;\n    padding-left: 0;\n    align-items: center; }\n    .node .bottom-part.multiple-inputs {\n      display: block; }\n      .node .bottom-part.multiple-inputs .node-input {\n        margin-bottom: 10px; }\n\n.node-component {\n  display: flex;\n  flex: 1; }\n  .node-component.right-align {\n    text-align: right; }\n  .node-component .dot {\n    width: 10px;\n    height: 10px;\n    border-radius: 5px;\n    border: 2px solid red; }\n  .node-component .label {\n    margin-right: 5px;\n    margin-left: 5px;\n    color: red; }\n  .node-component.active .dot {\n    background: red; }\n\n.node-param-header {\n  color: yellow;\n  margin-bottom: 5px;\n  margin-left: 5px;\n  font-size: 8px; }\n\n.node-param {\n  margin-bottom: 5px;\n  position: relative;\n  left: -5px; }\n  .node-param .dot {\n    border: 2px solid yellow; }\n  .node-param .label {\n    color: yellow; }\n  .node-param.active .dot {\n    background: yellow; }\n\n.node-output {\n  flex-direction: row-reverse;\n  position: relative;\n  right: -5px; }\n  .node-output.param .dot {\n    border: 2px solid yellow; }\n  .node-output.param .label {\n    color: yellow; }\n  .node-output.param.active .dot {\n    background: yellow; }\n\n.node-input {\n  position: relative;\n  left: -5px; }\n\n.node-remove {\n  position: absolute;\n  top: -22px;\n  right: 0px;\n  padding: 4px;\n  background: black;\n  color: white;\n  cursor: pointer;\n  border: 1px solid black; }\n  .node-remove:hover {\n    border: 1px solid white; }\n\n.node-settings {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 260px;\n  border-right: 1px solid white;\n  height: 100%;\n  padding-left: 10px;\n  padding-right: 10px;\n  padding-top: 10px;\n  background: #66808c;\n  z-index: 3;\n  transform: translate3d(-100%, 0, 0); }\n  .node-settings.visible {\n    transform: translate3d(0, 0, 0); }\n\n.node-library {\n  position: absolute;\n  top: 0;\n  right: 0;\n  width: 260px;\n  border-left: 1px solid white;\n  height: 100%;\n  padding-left: 10px;\n  padding-right: 10px;\n  padding-top: 10px;\n  background: #66808c;\n  z-index: 2;\n  overflow: scroll; }\n  .node-library .inner-scroll {\n    height: 100%; }\n  .node-library .level-title {\n    border-bottom: 1px solid black;\n    margin-top: 10px; }\n  .node-library .level-1 {\n    margin-left: 10px; }\n  .node-library .node-container {\n    display: flex;\n    margin-top: 24px;\n    flex-wrap: wrap; }\n  .node-library .library-node {\n    width: 25%;\n    margin-right: 2%;\n    background: black;\n    padding: 5px;\n    display: flex;\n    flex-direction: column;\n    padding-bottom: 10px;\n    position: relative;\n    cursor: pointer;\n    margin-bottom: 30px; }\n    .node-library .library-node .node-type {\n      color: black;\n      position: absolute;\n      top: -15px;\n      left: 0; }\n    .node-library .library-node .node-add {\n      width: 30px;\n      align-self: center;\n      margin-top: 5px; }\n\n.line-renderer {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%; }\n\n.param-container {\n  margin: 2% auto;\n  width: 80%;\n  display: flex;\n  justify-content: space-between;\n  height: 200px;\n  flex-wrap: wrap; }\n\n.node-range {\n  width: 33%;\n  height: 100%;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: space-evenly; }\n  .node-range .node-range-slider-bg {\n    background: white;\n    position: relative;\n    width: 70%;\n    height: 60%;\n    cursor: pointer; }\n  .node-range .node-range-knob {\n    position: absolute;\n    bottom: 0;\n    left: 0;\n    width: 100%;\n    height: 0;\n    background: #db664c; }\n\n.range-slider-container {\n  width: 80%;\n  height: 90%;\n  margin: 2% auto;\n  display: flex;\n  justify-content: space-between; }\n\n.horizontal-range-slider {\n  text-align: center; }\n  .horizontal-range-slider .range-container {\n    display: flex;\n    justify-content: space-between;\n    align-items: center; }\n    .horizontal-range-slider .range-container .input-container {\n      width: 40%; }\n      .horizontal-range-slider .range-container .input-container > p {\n        color: yellow;\n        font-size: 10px;\n        margin-top: 0;\n        margin-bottom: 4px;\n        text-align: left; }\n      .horizontal-range-slider .range-container .input-container > input {\n        width: 100%;\n        height: 20px;\n        padding: 5px;\n        background: black;\n        color: yellow;\n        border: 0; }\n    .horizontal-range-slider .range-container .range-inner-container {\n      width: 10px;\n      margin-left: 5%;\n      margin-right: 5%;\n      height: 100px;\n      background: black;\n      position: relative; }\n      .horizontal-range-slider .range-container .range-inner-container .range-knob {\n        position: absolute;\n        top: 0;\n        left: 50%;\n        width: 20px;\n        height: 8px;\n        background: yellow;\n        margin-left: -10px; }\n  .horizontal-range-slider .value-container {\n    margin-top: 10px;\n    display: inline-block; }\n    .horizontal-range-slider .value-container > p {\n      color: yellow;\n      margin-bottom: 4px;\n      text-align: left; }\n    .horizontal-range-slider .value-container .value-display {\n      background: black;\n      color: yellow;\n      padding: 5px 10px;\n      width: 70px;\n      font-family: Arial; }\n\n.param-driver-node .top-bottom-container {\n  display: flex;\n  justify-content: space-between;\n  margin-top: 14px;\n  align-items: flex-end; }\n\n.param-driver-node .duration-container {\n  width: 40%; }\n  .param-driver-node .duration-container > p {\n    color: yellow;\n    font-size: 10px;\n    margin-top: 0;\n    margin-bottom: 4px;\n    text-align: left; }\n  .param-driver-node .duration-container > input {\n    width: 100%;\n    height: 20px;\n    padding: 5px;\n    background: black;\n    color: yellow;\n    border: 0; }\n\n.param-driver-node .toggle-start {\n  width: 40%;\n  padding: 5px;\n  color: black;\n  background: yellow;\n  cursor: pointer; }\n  .param-driver-node .toggle-start > p {\n    text-align: center; }\n  .param-driver-node .toggle-start:hover {\n    background: black;\n    color: yellow; }\n\n.sequencer {\n  width: 1000px;\n  height: 600px; }\n  .sequencer .top-part {\n    height: 90%;\n    padding-left: 10px; }\n  .sequencer .bottom-part {\n    height: 10%; }\n  .sequencer .sequencer-container {\n    display: flex;\n    flex-wrap: wrap;\n    height: 100%;\n    justify-content: space-between; }\n    .sequencer .sequencer-container .sequencer-col {\n      width: 6%;\n      display: flex;\n      height: 100%;\n      flex-wrap: wrap;\n      padding: 0 5px;\n      align-items: center; }\n      .sequencer .sequencer-container .sequencer-col.active {\n        background: rgba(219, 102, 76, 0.6); }\n        .sequencer .sequencer-container .sequencer-col.active .sequencer-btn.active {\n          background: white; }\n    .sequencer .sequencer-container .sequencer-btn {\n      width: 100%;\n      height: 6%;\n      background: black;\n      cursor: pointer; }\n      .sequencer .sequencer-container .sequencer-btn.active {\n        background: #db664c; }\n\n.no-height {\n  height: auto; }\n\n.left-padding .top-part {\n  padding-left: 10px; }\n\n.canvas {\n  width: 540px;\n  height: 600px; }\n  .canvas .top-part {\n    padding: 0;\n    position: relative;\n    height: 90%; }\n  .canvas .bottom-part {\n    height: 10%; }\n", "", {"version":3,"sources":["/./app/main.scss"],"names":[],"mappings":"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","file":"main.scss","sourcesContent":["$mobile      : 'only screen and (max-width : 767px)';\n\n\nhtml, body {\n\twidth:100%;\n\theight: 100%;\n\tmargin:0;\n\tpadding:0;\n\n\t// overflow:hidden;\n\tposition: relative;\n\tbackground: #1b1c1e;\n\tfont-size: 12px;\n}\n\nh1, h2, h3, h4, h5, p{\n\tmargin: 0;\n}\n\np{\n\tfont-size: .8rem;\n}\n\n.editor{\n\tmax-width: 700px;\n\n\t& .CodeMirror-linebackground{\n\t\t&.errorBg{\n\t\t\tbackground: rgba(240, 10, 10, .8);\n\t\t}\n\t}\n}\n\n.glslCanvas, canvas{\n\tposition: absolute;\n\ttop: 0;\n    left: 0;\n    width: 100%;\n    height: 100%;\n}\n\n*{\n\tbox-sizing: border-box;\n}\n\na{\n\ttext-decoration: none;\n\tcolor: rgba(0,0,0,.8);\n}\n\nhtml {\n\t-webkit-text-size-adjust: none;\n\t-moz-text-size-adjust: none;\n\ttext-size-adjust: none;\n}\n\nh1,h2,h3,h4,h5,text,p {\n\t-webkit-font-smoothing: antialiased;\n\t-moz-osx-webkit-font-smoothing: antialiased;\n\tfont-family: Arial;\n}\n\n.control-ui{\n\tposition: fixed;\n\tbottom: 20%;\n\tleft: 5%;\n\tpadding: 5px;\n\tbackground: white;\n\tz-index: 2;\n\t.control-ui-inner{\n\t\tdisplay: flex;\n\t\twidth: calc(3 * 4vw + 10 * 3px);\n\t\tflex-wrap: nowrap;\n        margin:-10px;\n\t}\n\n\t.control-btn{\n\t\t\n\t\t// background: black;\n\t\tflex: 1;\n        margin: 10px;\n        height: 3.4vw;\n\t\tcursor: pointer;\n\t\tposition: relative;\n\n        > img{\n        \twidth: 100%;\n        \theight: auto;\n\n        }\n\n        .control-disabled{\n        \tposition: absolute;\n        \tbackground: rgba(255,255,255,.8);\n        \topacity: 0;\n        \twidth: 100%;\n        \theight: 100%;\n        \ttop: 0;\n        }\n\n        &.disabled{\n        \t.control-disabled{\n\n        \t\topacity: 1;\n        \t}\n        }\n\t}\n}\n\n.workspace-container{\n\toverflow: hidden;\n    position: relative;\n    .workspace{\n\t\tposition: absolute;\n\t\ttop: 0;\n\t\tleft: 0;\n\t\t/*background: radial-gradient(#e66465, #9198e5);\n\t\tbackground: #1b1c1e;\n\t\topacity: 0;*/\n\t    z-index: 2;\n\t}\n}\n\n\n.node{\n\tposition: absolute;\n\twidth: 200px;\n\theight: 100px;\n\tbackground: white;\n\ttop: 0;\n\tleft: 0;\n\tcursor: grab;\n\tdisplay: flex;\n    flex-direction: column;\n    border-radius: 3px;\n    background-color: #2b2c2d;\n\n\t&:active{\n\t\tcursor: grabbing;\n\t}\n\n\t& .node-type{\n\t\tposition: absolute;\n\t\ttop: -20px;\n\t\tcolor: white;\n\t}\n\n\t&.signal-math-node{\n\t\twidth: 60px;\n\t\theight: 30px;\n\t}\n\n\t& .top-part{\n\t\twidth: 100%;\n    \theight: 60%;\n    \tborder-bottom: 2px solid #222223;\n    \tpadding: 10px;\n    \tpadding-left: 0;\n\t}\n\n\t& .bottom-part{\n\t\twidth: 100%;\n    \theight: 40%;\n    \tdisplay: flex;\n    \tjustify-content: space-between;\n    \tpadding: 10px;\n    \tpadding-right: 0;\n    \tpadding-left: 0;\n\t\talign-items: center;\n\n\t\t&.multiple-inputs{\n\t\t\tdisplay: block;\n\t\t\t& .node-input {\n\t\t\t\tmargin-bottom: 10px;\n\t\t\t}\n\t\t}\n\t}\n}\n\n.node-component{\n\tdisplay: flex;\n\tflex: 1;\n\t&.right-align{\n\t\ttext-align: right;\n\t}\n\n\t& .dot{\n\t\twidth: 10px;\n\t\theight: 10px;\n\t\tborder-radius: 5px;\n\t\tborder: 2px solid red;\n\n\t}\n\n\t& .label{\n\t\tmargin-right: 5px;\n\t\tmargin-left: 5px;\n\t\tcolor: red;\n\t}\n\n\t&.active{\n\t\t& .dot{\n\t\t\tbackground: red;\n\t\t}\n\t}\n}\n\n.node-param-header {\n\tcolor: yellow;\n\tmargin-bottom: 5px;\n\tmargin-left: 5px;\n\tfont-size: 8px;\n}\n\n.node-param{\n\tmargin-bottom: 5px;\n\tposition: relative;\n    left: -5px;\n    & .dot{\n    \tborder: 2px solid yellow;\n    }\n\n    & .label{\n\t\tcolor: yellow;\n\t}\n\n\t&.active{\n\t\t& .dot{\n\t\t\tbackground: yellow;\n\t\t}\n\t}\n}\n\n.node-output{\n\tflex-direction: row-reverse;\n\tposition: relative;\n    right: -5px;\n    &.param{\n    \t& .dot{\n\t    \tborder: 2px solid yellow;\n\t    }\n\n\t    & .label{\n\t\t\tcolor: yellow;\n\t\t}\n\n\t\t&.active{\n\t\t\t& .dot{\n\t\t\t\tbackground: yellow;\n\t\t\t}\n\t\t}\n    }\n}\n\n.node-input{\n\tposition: relative;\n    left: -5px;\n}\n\n.node-remove {\n\tposition: absolute;\n\ttop: -22px;\n\tright: 0px;\n\tpadding: 4px;\n\tbackground: black;\n\tcolor: white;\n\tcursor: pointer;\n\tborder: 1px solid black;\n\t&:hover {\n\t\tborder: 1px solid white;\n\t}\n}\n\n.node-settings{\n\tposition: absolute;\n\ttop: 0;\n\tleft: 0;\n\twidth: 260px;\n\tborder-right: 1px solid white;\n\theight: 100%;\n\tpadding-left: 10px;\n\tpadding-right: 10px;\n\tpadding-top: 10px;\n\tbackground: #66808c;\n\tz-index: 3;\n\ttransform: translate3d(-100%, 0, 0);\n\t&.visible{\n\t\ttransform: translate3d(0, 0, 0);\n\t}\n}\n\n.node-library{\n\tposition: absolute;\n\ttop: 0;\n\tright: 0;\n\twidth: 260px;\n\tborder-left: 1px solid white;\n\theight: 100%;\n\tpadding-left: 10px;\n\tpadding-right: 10px;\n\tpadding-top: 10px;\n\tbackground: #66808c;\n\tz-index: 2;\n\toverflow: scroll;\n\n\t& .inner-scroll{\n\t\theight: 100%;\n\t}\n\n\t& .level-title{\n\t\tborder-bottom: 1px solid black;\n\t\tmargin-top: 10px;\n\t}\n\n\t& .level-1{\n\t\tmargin-left: 10px;\n\t}\n\n\t& .node-container{\n\t\tdisplay: flex;\n\t\tmargin-top: 24px;\n\t\tflex-wrap: wrap;\n\t}\n\n\t& .library-node{\n\t\twidth: 25%;\n\t\tmargin-right: 2%;\n\t\t// height: 60px;\n\t\tbackground: black;\n\t\tpadding: 5px;\n\t\tdisplay: flex;\n\t\tflex-direction: column;\n\t\tpadding-bottom: 10px;\n\t\tposition: relative;\n\t\tcursor: pointer;\n\t\tmargin-bottom: 30px; \n\t\t& .node-type{\n\t\t\tcolor: black;\n\t\t    position: absolute;\n\t\t    top: -15px;\n\t\t    left: 0;\n\t\t}\n\n\t\t& .node-add{\n\t\t\twidth: 30px;\n\t\t\talign-self: center;\n\t\t\tmargin-top: 5px;\n\t\t}\n\t}\n}\n\n.line-renderer{\n\tposition: absolute;\n\ttop: 0;\n\tleft: 0;\n\twidth: 100%;\n\theight: 100%;\n}\n\n.param-container{\n\tmargin: 2% auto;\n\twidth: 80%;\n\tdisplay: flex;\n\tjustify-content: space-between;\n\theight: 200px;\n\tflex-wrap: wrap;\n}\n\n.node-range{\n\twidth: 33%;\n\theight: 100%;\n\tdisplay: flex;\n\tflex-direction: column;\n\talign-items: center;\n\tjustify-content: space-evenly;\n\t& .node-range-slider-bg{\n\t\tbackground: white;\n\t\tposition: relative;\n\t\twidth: 70%;\n\t\theight: 60%;\n\t\tcursor: pointer;\n\t}\n\n\t& .node-range-knob{\n\t\tposition: absolute;\n\t\tbottom: 0;\n\t\tleft: 0;\n\t\twidth: 100%;\n\t\theight: 0;\n\t\tbackground: #db664c;\n\t}\n\n\t& .node-range-value{\n\n\t}\n}\n\n.range-slider-container{\n\twidth: 80%;\n\theight: 90%;\n\tmargin: 2% auto;\n\tdisplay: flex;\n\tjustify-content: space-between;\n\t\n}\n\n.horizontal-range-slider {\n\ttext-align: center;\n\t& .range-container {\n\t\tdisplay: flex;\n\t\tjustify-content: space-between;\n\t\talign-items: center;\n\n\t\t& .input-container{\n\t\t\twidth: 40%;\n\t\t\t& > p {\n\t\t\t\tcolor: yellow;\n\t\t\t\tfont-size: 10px;\n\t\t\t\tmargin-top: 0;\n\t\t\t\tmargin-bottom: 4px;\n\t\t\t\ttext-align: left;\n\t\t\t}\n\n\t\t\t& > input {\n\t\t\t\twidth: 100%;\n\t\t\t\theight: 20px;\n\t\t\t\tpadding: 5px;\n\t\t\t\tbackground: black;\n\t\t\t\tcolor: yellow;\n\t\t\t\tborder: 0;\n\t\t\t}\n\t\t}\n\n\t\t& .range-inner-container {\n\t\t\twidth: 10px;\n\t\t\tmargin-left: 5%;\n\t\t\tmargin-right: 5%;\n\t\t\theight: 100px;\n\t\t\tbackground: black;\n\t\t\tposition: relative;\n\n\t\t\t& .range-knob {\n\t\t\t\tposition: absolute;\n\t\t\t\ttop: 0;\n\t\t\t\tleft: 50%;\n\t\t\t\twidth: 20px;\n\t\t\t\theight: 8px;\n\t\t\t\tbackground: yellow;\n\t\t\t\tmargin-left: -10px;\n\t\t\t}\n\t\t}\n\t}\n\n\t& .value-container{\n\t\tmargin-top: 10px;\n\t\tdisplay: inline-block;\n\n\t\t& > p{\n\t\t\tcolor: yellow;\n\t\t\tmargin-bottom: 4px;\n\t\t\ttext-align: left;\n\t\t}\n\n\t\t& .value-display{\n\t\t\tbackground: black;\n\t\t\tcolor: yellow;\n\t\t\tpadding: 5px 10px;\n\t\t\twidth: 70px;\n\t\t\tfont-family: Arial;\n\t\t}\n\t}\n}\n\n.param-driver-node {\n\t& .top-bottom-container {\n\t\tdisplay: flex;\n\t\tjustify-content: space-between;\n\t\tmargin-top: 14px;\n\t\talign-items: flex-end;\n\t}\n\t& .duration-container {\n\t\twidth: 40%;\n\t\t& > p{\n\t\t\tcolor: yellow;\n\t\t\tfont-size: 10px;\n\t\t\tmargin-top: 0;\n\t\t\tmargin-bottom: 4px;\n\t\t\ttext-align: left;\n\t\t}\n\n\t\t& > input {\n\t\t\twidth: 100%;\n\t\t\theight: 20px;\n\t\t\tpadding: 5px;\n\t\t\tbackground: black;\n\t\t\tcolor: yellow;\n\t\t\tborder: 0;\n\t\t}\n\t}\n\n\t& .toggle-start{\n\t\twidth: 40%;\n\t\tpadding: 5px;\n\t\tcolor: black;\n\t\tbackground: yellow;\n\t\tcursor: pointer;\n\t\t& > p{\n\t\t\ttext-align: center;\n\t\t}\n\n\t\t&:hover {\n\t\t\tbackground: black;\n\t\t\tcolor: yellow;\n\t\t}\n\t}\n}\n\n.sequencer{\n\twidth: 1000px;\n\theight: 600px;\n\t& .top-part{\n\t\theight: 90%;\n\t\tpadding-left: 10px;\n\t}\n\n\t& .bottom-part{\n\t\theight: 10%;\n\t}\n\n\t& .sequencer-container{\n\t\tdisplay: flex;\n\t\tflex-wrap: wrap;\n\t\theight: 100%;\n\t\tjustify-content: space-between;\n\t\t& .sequencer-col{\n\t\t\twidth: 6%;\n\t\t\tdisplay: flex;\n\t\t\theight: 100%;\n\t\t\tflex-wrap: wrap;\n\t\t\tpadding: 0 5px;\n\t\t\talign-items: center;\n\t\t\t&.active{\n\t\t\t\tbackground: rgba(219, 102, 76, .6);\n\t\t\t\t& .sequencer-btn{\n\t\t\t\t\t\n\t\t\t\t\t&.active{\n\t\t\t\t\t\tbackground: white;\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\n\t\t}\n\t\t& .sequencer-btn{\n\t\t\twidth: 100%;\n\t\t\theight: 6%;\n\t\t\tbackground: black;\n\t\t\tcursor: pointer;\n\t\t\t&.active{\n\t\t\t\tbackground: #db664c;\n\t\t\t}\n\t\t}\n\t}\n}\n\n.no-height{\n\theight: auto;\n}\n\n.left-padding{\n\t& .top-part{\n\t\tpadding-left: 10px;\n\t}\n}\n\n\n\n.canvas{\n\twidth: 540px;\n\theight: 600px;\n\t& .top-part{\n\t\tpadding: 0;\n\t\tposition: relative;\n\t\theight: 90%;\n\t}\n\n\t& .bottom-part{\n\t\theight: 10%;\n\t}\n}\n\n"],"sourceRoot":"webpack://"}]);
 
 	// exports
 
@@ -514,91 +514,107 @@
 
 	var _NodeManager2 = _interopRequireDefault(_NodeManager);
 
-	var _NodeLibrary = __webpack_require__(52);
+	var _NodeLibrary = __webpack_require__(56);
 
 	var _NodeLibrary2 = _interopRequireDefault(_NodeLibrary);
 
-	var _KeyboardManager = __webpack_require__(53);
+	var _KeyboardManager = __webpack_require__(57);
 
 	var _KeyboardManager2 = _interopRequireDefault(_KeyboardManager);
 
-	var _NodeSettings = __webpack_require__(55);
+	var _NodeSettings = __webpack_require__(59);
 
 	var _NodeSettings2 = _interopRequireDefault(_NodeSettings);
 
-	var _WorkspaceManager = __webpack_require__(56);
+	var _WorkspaceManager = __webpack_require__(60);
 
 	var _WorkspaceManager2 = _interopRequireDefault(_WorkspaceManager);
 
-	var _OscillatorNode = __webpack_require__(42);
+	var _OscillatorNode = __webpack_require__(46);
 
 	var _OscillatorNode2 = _interopRequireDefault(_OscillatorNode);
 
-	var _GainNode = __webpack_require__(46);
+	var _GainNode = __webpack_require__(50);
 
 	var _GainNode2 = _interopRequireDefault(_GainNode);
 
-	var _SpeakerNode = __webpack_require__(47);
+	var _SpeakerNode = __webpack_require__(51);
 
 	var _SpeakerNode2 = _interopRequireDefault(_SpeakerNode);
 
-	var _AnalyserNode = __webpack_require__(48);
+	var _AnalyserNode = __webpack_require__(52);
 
 	var _AnalyserNode2 = _interopRequireDefault(_AnalyserNode);
 
-	var _LowpassFilterNode = __webpack_require__(49);
+	var _LowpassFilterNode = __webpack_require__(53);
 
 	var _LowpassFilterNode2 = _interopRequireDefault(_LowpassFilterNode);
 
-	var _EnvelopeNode = __webpack_require__(50);
+	var _EnvelopeNode = __webpack_require__(54);
 
 	var _EnvelopeNode2 = _interopRequireDefault(_EnvelopeNode);
 
-	var _FrequencyEnvelopeNode = __webpack_require__(57);
+	var _FrequencyEnvelopeNode = __webpack_require__(61);
 
 	var _FrequencyEnvelopeNode2 = _interopRequireDefault(_FrequencyEnvelopeNode);
 
-	var _LFONode = __webpack_require__(58);
+	var _LFONode = __webpack_require__(62);
 
 	var _LFONode2 = _interopRequireDefault(_LFONode);
 
-	var _SignalMultiplier = __webpack_require__(59);
+	var _SignalMultiplier = __webpack_require__(63);
 
 	var _SignalMultiplier2 = _interopRequireDefault(_SignalMultiplier);
 
-	var _CompressorNode = __webpack_require__(60);
+	var _CompressorNode = __webpack_require__(64);
 
 	var _CompressorNode2 = _interopRequireDefault(_CompressorNode);
 
-	var _SequencerNode = __webpack_require__(61);
+	var _SequencerNode = __webpack_require__(65);
 
 	var _SequencerNode2 = _interopRequireDefault(_SequencerNode);
 
-	var _LavaNoise = __webpack_require__(62);
+	var _LavaNoise = __webpack_require__(66);
 
 	var _LavaNoise2 = _interopRequireDefault(_LavaNoise);
 
-	var _CircleNode = __webpack_require__(64);
+	var _Voronoi = __webpack_require__(68);
+
+	var _Voronoi2 = _interopRequireDefault(_Voronoi);
+
+	var _CircleNode = __webpack_require__(69);
 
 	var _CircleNode2 = _interopRequireDefault(_CircleNode);
 
-	var _CubeNode = __webpack_require__(65);
+	var _CubeNode = __webpack_require__(70);
 
 	var _CubeNode2 = _interopRequireDefault(_CubeNode);
 
-	var _ColorNode = __webpack_require__(66);
+	var _SphereNode = __webpack_require__(71);
+
+	var _SphereNode2 = _interopRequireDefault(_SphereNode);
+
+	var _ColorNode = __webpack_require__(72);
 
 	var _ColorNode2 = _interopRequireDefault(_ColorNode);
 
-	var _PositionNode = __webpack_require__(67);
+	var _PositionNode = __webpack_require__(73);
 
 	var _PositionNode2 = _interopRequireDefault(_PositionNode);
 
-	var _RotationNode = __webpack_require__(68);
+	var _RotationNode = __webpack_require__(74);
 
 	var _RotationNode2 = _interopRequireDefault(_RotationNode);
 
-	var _tone = __webpack_require__(44);
+	var _ParamDriverNode = __webpack_require__(75);
+
+	var _ParamDriverNode2 = _interopRequireDefault(_ParamDriverNode);
+
+	var _SceneNode = __webpack_require__(42);
+
+	var _SceneNode2 = _interopRequireDefault(_SceneNode);
+
+	var _tone = __webpack_require__(48);
 
 	var _tone2 = _interopRequireDefault(_tone);
 
@@ -655,9 +671,16 @@
 					}]
 				},
 				graphics: {
+					'Canvas': [{
+						type: 'Canvas',
+						obj: _SceneNode2.default
+					}],
 					'3D - Shapes': [{
 						type: 'Cube',
 						obj: _CubeNode2.default
+					}, {
+						type: 'Sphere',
+						obj: _SphereNode2.default
 					}],
 					'Procedural Texture (Material)': [{
 						type: 'Circle',
@@ -665,16 +688,13 @@
 					}, {
 						type: 'LavaNoise',
 						obj: _LavaNoise2.default
+					}, {
+						type: 'Voronoi',
+						obj: _Voronoi2.default
 					}],
 					'Modifiers': [{
-						type: 'Color',
-						obj: _ColorNode2.default
-					}, {
-						type: 'Position',
-						obj: _PositionNode2.default
-					}, {
-						type: 'Rotation',
-						obj: _RotationNode2.default
+						type: 'ParamDriver',
+						obj: _ParamDriverNode2.default
 					}]
 				}
 			};
@@ -813,21 +833,25 @@
 
 	var _Node2 = _interopRequireDefault(_Node);
 
-	var _NodeRenderer = __webpack_require__(10);
+	var _NodeRenderer = __webpack_require__(11);
 
 	var _NodeRenderer2 = _interopRequireDefault(_NodeRenderer);
 
-	var _GraphicsNodeManager = __webpack_require__(11);
+	var _GraphicsNodeManager = __webpack_require__(12);
 
 	var _GraphicsNodeManager2 = _interopRequireDefault(_GraphicsNodeManager);
 
-	var _AudioNodeManager = __webpack_require__(41);
+	var _AudioNodeManager = __webpack_require__(45);
 
 	var _AudioNodeManager2 = _interopRequireDefault(_AudioNodeManager);
 
-	var _NodeConnectionLine = __webpack_require__(51);
+	var _NodeConnectionLine = __webpack_require__(55);
 
 	var _NodeConnectionLine2 = _interopRequireDefault(_NodeConnectionLine);
+
+	var _ParamHelpers = __webpack_require__(37);
+
+	var _ParamHelpers2 = _interopRequireDefault(_ParamHelpers);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -853,8 +877,10 @@
 			this._graphicNodes = [];
 			this._graphicNodeLength = 0;
 
+			this.resetConnectingBound = this.resetConnecting.bind(this);
+
 			this.nodeConnectionRenderer = new _NodeRenderer2.default(parentEl, this);
-			this.nodeConnectionLine = new _NodeConnectionLine2.default(this.nodeConnectionRenderer.el);
+			this.nodeConnectionLine = new _NodeConnectionLine2.default(this.nodeConnectionRenderer.el, this.resetConnectingBound);
 
 			this.isConnecting = false;
 
@@ -863,15 +889,14 @@
 			this.onConnectingBound = this.onConnecting.bind(this);
 			this.onInputConnectionBound = this.onInputConnection.bind(this);
 			this.addBound = this.add.bind(this);
+			this.removeBound = this.onNodeRemove.bind(this);
 			this.onAudioNodeParamChangeBound = this.onAudioNodeParamChange.bind(this);
 			this.onSequencerTriggerBound = this.onSequencerTrigger.bind(this);
 
-			this.audioNodeManager = new _AudioNodeManager2.default(parentEl, this.onConnectingBound, this.onInputConnectionBound, this.addBound, this.hasConfig ? this.config.nodes : [], this.onAudioNodeParamChangeBound, onNodeActive, this.onSequencerTriggerBound);
+			this.audioNodeManager = new _AudioNodeManager2.default(parentEl, this.onConnectingBound, this.onInputConnectionBound, this.addBound, this.hasConfig ? this.config.nodes : [], this.onAudioNodeParamChangeBound, onNodeActive, this.onSequencerTriggerBound, this.removeBound);
 			this.audioNodeManager.init();
 
-			this.onGraphicsParamChangeBound = this.onGraphicsParamChange.bind(this);
-
-			this.graphicsNodeManager = new _GraphicsNodeManager2.default(parentEl, this.onConnectingBound, this.onInputConnectionBound, this.addBound, onNodeActive, this.onGraphicsParamChangeBound);
+			this.graphicsNodeManager = new _GraphicsNodeManager2.default(parentEl, this.onConnectingBound, this.onInputConnectionBound, this.addBound, onNodeActive, this.removeBound);
 
 			if (this.hasConfig) {
 				var _loop = function _loop(i) {
@@ -890,12 +915,12 @@
 					_loop(i);
 				}
 
+				this.outputActiveNode = null;
+
 				this.keyboardManager.onAudioNodeConnectionUpdate(this._nodeConnections);
 			}
 
 			this.constructorIsDone = true;
-			// console.log(this._nodes);
-			// this.graphicsNodeManager = new GraphicsNodeManager(document.body, this.onConnectingBound, this.onInputConnectionBound, this.addBound);
 		}
 
 		_createClass(NodeManager, [{
@@ -907,25 +932,40 @@
 			key: 'onNodeAddedFromLibrary',
 			value: function onNodeAddedFromLibrary(type, data) {
 				if (type === 'graphics') {
+					var hasSceneNode = this._graphicNodes.some(function (t) {
+						return t.isCanvasNode;
+					});
+					if (hasSceneNode && data.type === 'Canvas') {
+						return;
+					}
 					this.graphicsNodeManager.createNode(data);
 				} else {
 					this.audioNodeManager.createNode(data);
 				}
 			}
 		}, {
-			key: 'onGraphicsParamChange',
-			value: function onGraphicsParamChange(node) {
-				var connection = this._nodeConnections.find(function (t) {
-					return t.out.ID === node.ID;
+			key: 'onNodeRemove',
+			value: function onNodeRemove(node) {
+				var connections = this._nodeConnections.filter(function (t) {
+					return t.out.ID === node.ID || t.in.ID === node.ID;
 				});
 
-				var param = connection.param;
-				connection.in.updateParam(param, connection.out);
+				for (var i = 0; i < connections.length; i++) {
+					this.removeConnection(connections[i]);
+				}
+
+				this.remove(node);
 			}
 		}, {
 			key: 'onAudioNodeParamChange',
 			value: function onAudioNodeParamChange(node, params) {
 				this.keyboardManager.onAudioNodeParamChange(node, params);
+			}
+		}, {
+			key: 'resetConnecting',
+			value: function resetConnecting() {
+				this.isConnecting = false;
+				this.outputActiveNode = null;
 			}
 		}, {
 			key: 'onConnecting',
@@ -934,12 +974,10 @@
 				var outputHasConnection = this._nodeConnections.some(function (t) {
 					return t.out.ID === node.ID;
 				});
-				if (outputHasConnection) {
-					this.removeConnection(this._nodeConnections.find(function (t) {
-						return t.out.ID === node.ID;
-					}));
-					return;
-				}
+				// if (outputHasConnection) {
+				// 	this.removeConnection(this._nodeConnections.find(t => t.out.ID === node.ID));
+				// 	return;
+				// }
 
 				console.log('on connecting');
 
@@ -1010,44 +1048,67 @@
 					return availableParams.length > 0;
 				};
 
-				var audioNodesWithInputParams = otherNodes.filter(function (t) {
-					return hasAvailableInputParams(t);
-				});
+				if (!this.outputActiveNode.isGraphicsNode) {
+					var audioNodesWithInputParams = otherNodes.filter(function (t) {
+						return hasAvailableInputParams(t);
+					});
 
-				var notConnectedAudioInNodes = [];
+					var notConnectedAudioInNodes = [];
 
-				var _loop3 = function _loop3(i) {
-					var node = otherNodes[i];
-					if (!audioConnections.some(function (t) {
-						return t.in.ID === node.ID;
-					}) && !node.isParam) {
-						notConnectedAudioInNodes.push(node);
+					var _loop3 = function _loop3(i) {
+						var node = otherNodes[i];
+						if (!audioConnections.some(function (t) {
+							return t.in.ID === node.ID;
+						}) && !node.isParam) {
+							notConnectedAudioInNodes.push(node);
+						}
+					};
+
+					for (var i = 0; i < otherNodes.length; i++) {
+						_loop3(i);
 					}
-				};
 
-				for (var i = 0; i < otherNodes.length; i++) {
-					_loop3(i);
-				}
+					var nodesToLoop = node.isParam ? audioNodesWithInputParams : notConnectedAudioInNodes;
 
-				console.log('param nodes: ', audioNodesWithInputParams);
-
-				console.log('audio nodes: ', notConnectedAudioInNodes);
-
-				var nodesToLoop = node.isParam ? audioNodesWithInputParams : notConnectedAudioInNodes;
-
-				for (var i = 0; i < nodesToLoop.length; i++) {
-					nodesToLoop[i].canBeConnected = true;
+					for (var i = 0; i < nodesToLoop.length; i++) {
+						nodesToLoop[i].canBeConnected = true;
+					}
 				}
 			}
 		}, {
 			key: 'onInputConnection',
-			value: function onInputConnection(inputNode, param) {
+			value: function onInputConnection(inputNode, inputType, param) {
 				var _this2 = this;
 
 				var inputAvailable = true;
 
+				console.log(this.isConnecting, this.outputActiveNode);
+
 				if (!this.isConnecting || !this.outputActiveNode) {
 					inputAvailable = false;
+					if (param) {
+						var connection = this._nodeConnections.find(function (t) {
+							return t.in.ID === inputNode.ID && t.param.title === param.title;
+						});
+						if (connection) {
+							this.removeConnection(connection);
+						}
+					} else if (inputType) {
+						var _connection = this._nodeConnections.find(function (t) {
+							return t.in.ID === inputNode.ID && t.inputType === inputType;
+						});
+						if (_connection) {
+							this.removeConnection(_connection);
+						}
+					} else {
+						var _connection2 = this._nodeConnections.find(function (t) {
+							return t.in.ID === inputNode.ID;
+						});
+						if (_connection2) {
+							this.removeConnection(_connection2);
+						}
+					}
+
 					return;
 				}
 
@@ -1076,10 +1137,13 @@
 						return;
 					}
 				} else {
-					if (param) {
-						if (param.objSettings.param !== 'material' && this.outputActiveNode.isRenderNode) {
-							return;
-						} else if (param.objSettings.param === 'material' && !this.outputActiveNode.canConnectToMaterial) {
+
+					if (param && !_ParamHelpers2.default[param.paramHelpersType].isValid(this.outputActiveNode, param)) {
+						this.resetConnecting();
+						return;
+					} else {
+						if (!inputNode.inputHelpersType.isValid(this.outputActiveNode, inputNode)) {
+							this.resetConnecting();
 							return;
 						}
 					}
@@ -1093,7 +1157,8 @@
 					param: param,
 					out: this.outputActiveNode,
 					in: inputNode,
-					lineEl: this.nodeConnectionRenderer.addLine(inputNode.ID + '---' + this.outputActiveNode.ID)
+					lineEl: this.nodeConnectionRenderer.addLine(inputNode.ID + '---' + this.outputActiveNode.ID),
+					inputType: inputType
 				};
 				connectionData.lineEl.addEventListener('click', function (e) {
 					_this2.removeConnection(connectionData);
@@ -1102,19 +1167,20 @@
 				if (param) {
 					inputNode.enableParam(param, connectionData);
 				} else {
-					inputNode.enableInput(this.outputActiveNode.getConnectNode());
+					inputNode.enableInput(this.outputActiveNode.getConnectNode(), inputType);
 				}
 
-				this.outputActiveNode.enableOutput();
+				this.outputActiveNode.enableOutput(param ? param : undefined, connectionData);
 
 				this._nodeConnections.push(connectionData);
 
 				if (this.constructorIsDone) {
 					if (connectionData.out.isRenderNode) {
 						// const renderConnections = this._nodeConnections.filter(t => t.out.isRenderNode);
-						if (!connectionData.in.hasOutput) {
-							this.graphicsNodeManager.onConnectionUpdate([connectionData]);
-						}
+						// if (!connectionData.in.hasOutput) {
+						// 	this.graphicsNodeManager.onConnectionUpdate([connectionData]);
+						// }
+
 					} else {
 						var audioConnections = this._nodeConnections.filter(function (t) {
 							return !t.out.isGraphicsNode;
@@ -1139,14 +1205,23 @@
 				if (connectionData.param) {
 					connectionData.in.disableParam(connectionData.param, connectionData);
 				} else {
-					connectionData.in.disableInput(connectionData.out.getConnectNode());
+					connectionData.in.disableInput(connectionData.out.getConnectNode(), connectionData.inputType);
 				}
 
-				connectionData.out.disableOutput(connectionData.in);
+				connectionData.out.disableOutput(connectionData.in, connectionData.param);
 
 				var tempNodeConnections = this._nodeConnections.filter(function (t) {
 					return t.out.ID !== connectionData.out.ID;
 				});
+
+				if (connectionData.param) {
+					tempNodeConnections = this._nodeConnections.filter(function (t) {
+						var hasParam = t.param;
+						if (!hasParam) return true;
+
+						return t.param.title !== connectionData.param.title;
+					});
+				}
 
 				// for (let i = 0; i < tempNodeConnections.length; i++) {
 				// 	tempNodeConnections[i].in.enableInput(tempNodeConnections[i].out.getConnectNode());
@@ -1154,16 +1229,10 @@
 
 				this._nodeConnections = tempNodeConnections;
 
-				// console.log('audio connection update');
-				if (connectionData.out.isRenderNode) {
-					// const renderConnections = this._nodeConnections.filter(t => t.out.isRenderNode && t.in);
-					this.graphicsNodeManager.onConnectionUpdate([]);
-				} else {
-					var audioConnections = this._nodeConnections.filter(function (t) {
-						return !t.out.isGraphicsNode;
-					});
-					this.keyboardManager.onAudioNodeConnectionUpdate(audioConnections);
-				}
+				var audioConnections = this._nodeConnections.filter(function (t) {
+					return !t.out.isGraphicsNode;
+				});
+				this.keyboardManager.onAudioNodeConnectionUpdate(audioConnections);
 
 				this.nodeConnectionRenderer.removeLine(connectionData.lineEl);
 			}
@@ -1171,7 +1240,7 @@
 			key: 'add',
 			value: function add(node) {
 				this._nodes.push(node);
-				if (node.isRenderNode) {
+				if (node.isRenderNode || node.isCanvasNode) {
 					this._graphicNodes.push(node);
 					this._graphicNodeLength = this._graphicNodes.length;
 				}
@@ -1187,7 +1256,7 @@
 					this._graphicNodeLength = this._graphicNodes.length;
 				}
 
-				node.remove();
+				node.removeFromDom();
 				var tempNodes = this._nodes.filter(function (t) {
 					return t.ID !== node.ID;
 				});
@@ -1202,7 +1271,7 @@
 					this._graphicNodes[i].update();
 				}
 
-				this.graphicsNodeManager.update();
+				// this.graphicsNodeManager.update();
 			}
 		}, {
 			key: 'render',
@@ -1213,7 +1282,7 @@
 					this._graphicNodes[i].render();
 				}
 
-				this.graphicsNodeManager.render();
+				// this.graphicsNodeManager.render();
 			}
 		}]);
 
@@ -1242,6 +1311,10 @@
 
 	var _NodeInput2 = _interopRequireDefault(_NodeInput);
 
+	var _NodeRemove = __webpack_require__(10);
+
+	var _NodeRemove2 = _interopRequireDefault(_NodeRemove);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1252,11 +1325,12 @@
 
 			this.hasOutput = true;
 			this.isGraphicsNode = false;
+			this.hasGraphicsInput = false;
 		}
 
 		_createClass(Node, [{
 			key: 'init',
-			value: function init(parentEl, onConnectingCallback, onInputConnectionCallback, type, nodeConfig, onNodeActive) {
+			value: function init(parentEl, onConnectingCallback, onInputConnectionCallback, type, nodeConfig, onNodeActive, onNodeRemove) {
 
 				this.initNodeConfig = !!nodeConfig;
 
@@ -1266,6 +1340,7 @@
 				this.hasActiveInput = false;
 				this.type = type;
 				this.onNodeActive = onNodeActive;
+				this.onNodeRemove = onNodeRemove;
 
 				this.parentEl = parentEl;
 
@@ -1281,10 +1356,13 @@
 
 				this.onOutputClickBound = this.onOutputClick.bind(this);
 				this.onInputClickBound = this.onInputClick.bind(this);
+				this.onRemoveClickBound = this.onRemoveClick.bind(this);
 
-				var hasInput = !this.isParam && this.hasAudioInput || this.isGraphicsNode;
+				this.remove = new _NodeRemove2.default(this.topPartEl, this.onRemoveClickBound);
 
-				if (hasInput) {
+				var hasInput = !this.isParam && this.hasAudioInput || this.hasGraphicsInput;
+
+				if (hasInput && !this.isCanvasNode) {
 					this.input = new _NodeInput2.default(this.bottomPartEl, this.onInputClickBound, this.isGraphicsNode);
 				}
 
@@ -1310,10 +1388,19 @@
 				this.onMouseUpBound = this.onMouseUp.bind(this);
 			}
 		}, {
+			key: 'onRemoveClick',
+			value: function onRemoveClick() {
+				this.onNodeRemove(this);
+			}
+		}, {
 			key: 'activateDrag',
 			value: function activateDrag() {
-
 				this.el.addEventListener('mousedown', this.onMouseDownBound);
+			}
+		}, {
+			key: 'getInputEl',
+			value: function getInputEl() {
+				return this.input.el;
 			}
 		}, {
 			key: 'getConnectNode',
@@ -1354,17 +1441,21 @@
 			key: 'onInputClick',
 			value: function onInputClick(param) {
 
-				this.onInputConnectionCallback(this, param);
+				this.onInputConnectionCallback(this, 'main', param);
 			}
 		}, {
-			key: 'remove',
-			value: function remove() {
+			key: 'removeFromDom',
+			value: function removeFromDom() {
 				this.el.removeEventListener('mousedown', this.onMouseDownBound);
 				this.parentEl.removeChild(this.el);
 			}
 		}, {
 			key: 'onMouseDown',
 			value: function onMouseDown(e) {
+
+				if (e.target.nodeName === 'INPUT' || e.target.classList.contains('prevent-drag')) {
+					return;
+				}
 
 				e.stopPropagation();
 				e.preventDefault();
@@ -1397,7 +1488,7 @@
 			key: 'onMouseUp',
 			value: function onMouseUp(e) {
 
-				if (this.output.el) {
+				if (this.output && this.output.el) {
 					if (e.target.parentNode !== this.output.el && Math.abs(this.lastDelta.x) < 2 && Math.abs(this.lastDelta.y) < 2) {
 						if (this.onNodeActive) {
 							this.onNodeActive(this);
@@ -1448,7 +1539,7 @@
 
 			var labelEl = document.createElement('p');
 			labelEl.className = 'label';
-			labelEl.innerHTML = isParam || isGraphicsNode ? 'Data ut' : 'Ljud ut';
+			labelEl.innerHTML = isParam ? 'Data ut' : isGraphicsNode ? 'Grafik ut' : 'Ljud ut';
 
 			this.el.appendChild(labelEl);
 
@@ -1512,7 +1603,7 @@
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var NodeInput = function () {
-		function NodeInput(parentEl, onClickCallback, isGraphicsNode) {
+		function NodeInput(parentEl, onClickCallback, isGraphicsNode, str) {
 			_classCallCheck(this, NodeInput);
 
 			this.isActive = false;
@@ -1530,7 +1621,7 @@
 
 			var labelEl = document.createElement('p');
 			labelEl.className = 'label';
-			labelEl.innerHTML = isGraphicsNode ? 'Data in' : 'Ljud in';
+			labelEl.innerHTML = isGraphicsNode ? str ? str : 'Grafik in' : 'Ljud in';
 
 			this.el.appendChild(labelEl);
 
@@ -1584,6 +1675,60 @@
 
 /***/ }),
 /* 10 */
+/***/ (function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var NodeRemove = function () {
+		function NodeRemove(parentEl, onClickCallback) {
+			_classCallCheck(this, NodeRemove);
+
+			this.onClickCallback = onClickCallback;
+
+			this.parentEl = parentEl;
+
+			this.el = document.createElement('div');
+			this.el.className = 'node-remove';
+
+			var labelEl = document.createElement('h5');
+			labelEl.className = 'label';
+			labelEl.innerHTML = 'Remove';
+
+			this.el.appendChild(labelEl);
+
+			this.parentEl.appendChild(this.el);
+
+			this.onClickBound = this.onClick.bind(this);
+
+			this.el.addEventListener('click', this.onClickBound);
+		}
+
+		_createClass(NodeRemove, [{
+			key: 'onClick',
+			value: function onClick(e) {
+
+				e.stopPropagation();
+				e.preventDefault();
+
+				this.onClickCallback();
+			}
+		}]);
+
+		return NodeRemove;
+	}();
+
+	exports.default = NodeRemove;
+
+/***/ }),
+/* 11 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -1664,10 +1809,21 @@
 					var nodeOut = this.nodeManager._nodeConnections[i].out;
 					var nodeIn = this.nodeManager._nodeConnections[i].in;
 					var param = this.nodeManager._nodeConnections[i].param;
+					var inputType = this.nodeManager._nodeConnections[i].inputType;
 
 					var isParam = !!param;
 
-					var inEl = isParam ? nodeIn.inputParams[param.objSettings.param].el : nodeIn.input.el;
+					var inEl = void 0;
+					if (isParam) {
+						if (param.objSettings) {
+							inEl = nodeIn.inputParams[param.objSettings.param].el;
+						} else {
+							inEl = nodeIn.inputParams[param.title].el;
+						}
+					} else {
+						inEl = nodeIn.getInputEl(inputType);
+					}
+					// const inEl = isParam ? nodeIn.inputParams[param.objSettings.param].el : nodeIn.input.el;
 					var outDotPos = nodeOut.getDotPos(nodeOut.output.el);
 					var inDotPos = nodeIn.getDotPos(inEl);
 
@@ -1684,11 +1840,6 @@
 
 					var endX = nodeIn.moveCoords.offset.x + offsetXIn + 4;
 					var endY = nodeIn.moveCoords.offset.y + offsetYIn + 7;
-
-					// const startX = nodeOut.moveCoords.offset.x + outDotPos.left;
-					// const startY = nodeOut.moveCoords.offset.y + outDotPos.top;
-					// const endX = nodeIn.moveCoords.offset.x + inDotPos.left;
-					// const endY = nodeIn.moveCoords.offset.y + inDotPos.top;
 
 					var line = this.nodeManager._nodeConnections[i].lineEl;
 					line.setAttribute('x1', startX);
@@ -1707,7 +1858,7 @@
 	exports.default = NodeRenderer;
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1718,19 +1869,19 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _GraphicNode = __webpack_require__(12);
+	var _GraphicNode = __webpack_require__(13);
 
 	var _GraphicNode2 = _interopRequireDefault(_GraphicNode);
 
-	var _CanvasNode = __webpack_require__(35);
+	var _CanvasNode = __webpack_require__(39);
 
 	var _CanvasNode2 = _interopRequireDefault(_CanvasNode);
 
-	var _SceneNode = __webpack_require__(38);
+	var _SceneNode = __webpack_require__(42);
 
 	var _SceneNode2 = _interopRequireDefault(_SceneNode);
 
-	var _Render = __webpack_require__(40);
+	var _Render = __webpack_require__(44);
 
 	var _Render2 = _interopRequireDefault(_Render);
 
@@ -1739,7 +1890,7 @@
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var GraphicsNodeManager = function () {
-		function GraphicsNodeManager(parentEl, onConnectingCallback, onInputConnectionCallback, addCallback, onNodeActive, onGraphicsParamChange) {
+		function GraphicsNodeManager(parentEl, onConnectingCallback, onInputConnectionCallback, addCallback, onNodeActive, removeCallback) {
 			_classCallCheck(this, GraphicsNodeManager);
 
 			this.parentEl = parentEl;
@@ -1747,34 +1898,32 @@
 			this.onInputConnectionCallback = onInputConnectionCallback;
 			this.addCallback = addCallback;
 			this.onNodeActive = onNodeActive;
-			this.onGraphicsParamChange = onGraphicsParamChange;
+			this.removeCallback = removeCallback;
 
 			this.mainRender = new _Render2.default();
 
-			this.sceneNode = new _SceneNode2.default(this.mainRender);
-			this.sceneNode.init(parentEl, onConnectingCallback, onInputConnectionCallback, 'Canvas');
+			// this.sceneNode = new SceneNode(this.mainRender);
+			// this.sceneNode.init(
+			// 	parentEl,
+			// 	onConnectingCallback,
+			// 	onInputConnectionCallback,
+			// 	'Canvas',
+			// 	this.removeCallback,
+			// );
 
-			this.addCallback(this.sceneNode);
+			// this.addCallback(this.sceneNode);
 		}
 
 		_createClass(GraphicsNodeManager, [{
 			key: 'createNode',
 			value: function createNode(data) {
-				var node = new data.obj(this.sceneNode.framebuffer, this.mainRender);
-				node.init(this.parentEl, this.onConnectingCallback, this.onInputConnectionCallback, data.type, undefined, this.onNodeActive, this.onGraphicsParamChange);
+				var node = new data.obj(this.mainRender);
+				node.init(this.parentEl, this.onConnectingCallback, this.onInputConnectionCallback, data.type, undefined, undefined, this.removeCallback);
 
-				node.onResize(this.sceneNode.getRenderWindowDimensions());
+				node.onResize({ w: 540, h: 538 });
 
 				this.addCallback(node);
 			}
-		}, {
-			key: 'onConnectionUpdate',
-			value: function onConnectionUpdate(connections) {
-				this.sceneNode.onConnectionUpdate(connections);
-			}
-		}, {
-			key: 'onNodeParamChange',
-			value: function onNodeParamChange() {}
 		}, {
 			key: 'update',
 			value: function update() {
@@ -1793,7 +1942,7 @@
 	exports.default = GraphicsNodeManager;
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1810,13 +1959,25 @@
 
 	var _Node3 = _interopRequireDefault(_Node2);
 
-	var _Editor = __webpack_require__(13);
+	var _Editor = __webpack_require__(14);
 
 	var _Editor2 = _interopRequireDefault(_Editor);
 
-	var _NodeParam = __webpack_require__(34);
+	var _NodeParam = __webpack_require__(35);
 
 	var _NodeParam2 = _interopRequireDefault(_NodeParam);
+
+	var _NodeHeader = __webpack_require__(36);
+
+	var _NodeHeader2 = _interopRequireDefault(_NodeHeader);
+
+	var _ParamHelpers = __webpack_require__(37);
+
+	var _ParamHelpers2 = _interopRequireDefault(_ParamHelpers);
+
+	var _InputHelpers = __webpack_require__(38);
+
+	var _InputHelpers2 = _interopRequireDefault(_InputHelpers);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1836,6 +1997,11 @@
 
 			_this.params = {};
 			_this.inputParams = {};
+			_this.isForegroundNode = false;
+			_this.isBackgroundNode = false;
+
+			_this.currentOutConnections = [];
+			_this.currentOutConnectionsLength = 0;
 
 			_this.el = document.createElement('div');
 			_this.el.className = 'node';
@@ -1850,23 +2016,58 @@
 
 			_this.el.appendChild(_this.bottomPartEl);
 
+			_this.inputHelpersType = _InputHelpers2.default.general;
+
 			_this.isGraphicsNode = true;
 			_this.isRenderNode = false;
 			_this.canConnectToMaterial = false;
+			_this.isCanvasNode = false;
 			return _this;
 		}
 
 		_createClass(GraphicNode, [{
 			key: 'init',
-			value: function init(parentEl, onConnectingCallback, onInputConnectionCallback, type, initData, onNodeActive, onGraphicsParamChange) {
-				_get(GraphicNode.prototype.__proto__ || Object.getPrototypeOf(GraphicNode.prototype), 'init', this).call(this, parentEl, onConnectingCallback, onInputConnectionCallback, type, initData, onNodeActive);
+			value: function init(parentEl, onConnectingCallback, onInputConnectionCallback, type, initData, onNodeActive, onNodeRemove) {
+				var _this2 = this;
 
-				this.onGraphicsParamChange = onGraphicsParamChange;
+				_get(GraphicNode.prototype.__proto__ || Object.getPrototypeOf(GraphicNode.prototype), 'init', this).call(this, parentEl, onConnectingCallback, onInputConnectionCallback, type, initData, onNodeActive, onNodeRemove);
 
+				var paramParents = [];
 				for (var key in this.params) {
-					if (this.params[key].useAsInput) {
-						var param = new _NodeParam2.default(this.topPartEl, this.params[key], this.onInputClickBound);
-						this.inputParams[this.params[key].objSettings.param] = param;
+					if (this.params[key].useAsInput && this.params[key].parent) {
+						(function () {
+							var parent = _this2.params[key].parent;
+							if (!paramParents.some(function (t) {
+								return t.parent === parent;
+							})) {
+								var obj = { parent: parent, children: [] };
+								paramParents.push(obj);
+								obj.children.push(_this2.params[key]);
+							} else {
+								var _obj = paramParents.find(function (t) {
+									return t.parent === parent;
+								});
+								_obj.children.push(_this2.params[key]);
+							}
+						})();
+					}
+				}
+
+				if (paramParents.length > 0) {
+					for (var i = 0; i < paramParents.length; i++) {
+						var obj = paramParents[i];
+						var paramHeader = new _NodeHeader2.default(this.topPartEl, obj.parent, i > 0);
+						for (var q = 0; q < obj.children.length; q++) {
+							var param = new _NodeParam2.default(this.topPartEl, obj.children[q], this.onInputClickBound);
+							this.inputParams[obj.children[q].title] = param;
+						}
+					}
+				} else {
+					for (var _key in this.params) {
+						if (this.params[_key].useAsInput) {
+							var _param = new _NodeParam2.default(this.topPartEl, this.params[_key], this.onInputClickBound);
+							this.inputParams[this.params[_key].title] = _param;
+						}
 					}
 				}
 
@@ -1874,22 +2075,26 @@
 			}
 		}, {
 			key: 'enableParam',
-			value: function enableParam(param) {
-				console.log('enable param', param);
-
-				var paramComponent = this.inputParams[param.objSettings.param];
+			value: function enableParam(param, connectionData) {
+				var paramComponent = this.inputParams[param.title];
 				param.isConnected = true;
 				paramComponent.enable();
+
+				_ParamHelpers2.default[param.paramHelpersType].update(this, connectionData.out, param);
 			}
 		}, {
 			key: 'updateParam',
-			value: function updateParam(param, outNode) {}
+			value: function updateParam(param, outNode) {
+				_ParamHelpers2.default[param.paramHelpersType].update(this, outNode, param);
+			}
 		}, {
 			key: 'disableParam',
-			value: function disableParam(param) {
-				var paramComponent = this.inputParams[param.objSettings.param];
+			value: function disableParam(param, connectionData) {
+				var paramComponent = this.inputParams[param.title];
 				param.isConnected = false;
 				paramComponent.disable();
+
+				_ParamHelpers2.default[param.paramHelpersType].disconnect(this, param, connectionData.out);
 			}
 		}, {
 			key: 'getDotPos',
@@ -1929,7 +2134,7 @@
 	exports.default = GraphicNode;
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1943,21 +2148,19 @@
 	// Import CodeMirror addons and modules
 
 
-	var _codemirror = __webpack_require__(14);
+	var _codemirror = __webpack_require__(15);
 
 	var _codemirror2 = _interopRequireDefault(_codemirror);
 
-	__webpack_require__(15);
-
-	__webpack_require__(17);
+	__webpack_require__(16);
 
 	__webpack_require__(18);
-
-	__webpack_require__(20);
 
 	__webpack_require__(19);
 
 	__webpack_require__(21);
+
+	__webpack_require__(20);
 
 	__webpack_require__(22);
 
@@ -1980,6 +2183,8 @@
 	__webpack_require__(31);
 
 	__webpack_require__(32);
+
+	__webpack_require__(33);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2066,7 +2271,7 @@
 	exports.default = Editor;
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -11770,13 +11975,13 @@
 
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(16);
+	var content = __webpack_require__(17);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -11796,7 +12001,7 @@
 	}
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -11810,7 +12015,7 @@
 
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -11826,7 +12031,7 @@
 
 	(function(mod) {
 	  if (true) // CommonJS
-	    mod(__webpack_require__(14), __webpack_require__(18), __webpack_require__(19));
+	    mod(__webpack_require__(15), __webpack_require__(19), __webpack_require__(20));
 	  else if (typeof define == "function" && define.amd) // AMD
 	    define(["../../lib/codemirror", "./searchcursor", "../dialog/dialog"], mod);
 	  else // Plain browser env
@@ -12074,7 +12279,7 @@
 
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -12082,7 +12287,7 @@
 
 	(function(mod) {
 	  if (true) // CommonJS
-	    mod(__webpack_require__(14))
+	    mod(__webpack_require__(15))
 	  else if (typeof define == "function" && define.amd) // AMD
 	    define(["../../lib/codemirror"], mod)
 	  else // Plain browser env
@@ -12373,7 +12578,7 @@
 
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -12383,7 +12588,7 @@
 
 	(function(mod) {
 	  if (true) // CommonJS
-	    mod(__webpack_require__(14));
+	    mod(__webpack_require__(15));
 	  else if (typeof define == "function" && define.amd) // AMD
 	    define(["../../lib/codemirror"], mod);
 	  else // Plain browser env
@@ -12540,7 +12745,7 @@
 
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -12548,7 +12753,7 @@
 
 	(function(mod) {
 	  if (true) // CommonJS
-	    mod(__webpack_require__(14));
+	    mod(__webpack_require__(15));
 	  else if (typeof define == "function" && define.amd) // AMD
 	    define(["../../lib/codemirror"], mod);
 	  else // Plain browser env
@@ -12755,7 +12960,7 @@
 
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -12763,7 +12968,7 @@
 
 	(function(mod) {
 	  if (true) // CommonJS
-	    mod(__webpack_require__(14));
+	    mod(__webpack_require__(15));
 	  else if (typeof define == "function" && define.amd) // AMD
 	    define(["../../lib/codemirror"], mod);
 	  else // Plain browser env
@@ -12906,7 +13111,7 @@
 
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -12914,7 +13119,7 @@
 
 	(function(mod) {
 	  if (true) // CommonJS
-	    mod(__webpack_require__(14));
+	    mod(__webpack_require__(15));
 	  else if (typeof define == "function" && define.amd) // AMD
 	    define(["../../lib/codemirror"], mod);
 	  else // Plain browser env
@@ -13099,7 +13304,7 @@
 
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -13107,7 +13312,7 @@
 
 	(function(mod) {
 	  if (true) // CommonJS
-	    mod(__webpack_require__(14));
+	    mod(__webpack_require__(15));
 	  else if (typeof define == "function" && define.amd) // AMD
 	    define(["../../lib/codemirror"], mod);
 	  else // Plain browser env
@@ -13250,7 +13455,7 @@
 
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -13258,7 +13463,7 @@
 
 	(function(mod) {
 	  if (true) // CommonJS
-	    mod(__webpack_require__(14));
+	    mod(__webpack_require__(15));
 	  else if (typeof define == "function" && define.amd) // AMD
 	    define(["../../lib/codemirror"], mod);
 	  else // Plain browser env
@@ -13408,7 +13613,7 @@
 
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -13416,7 +13621,7 @@
 
 	(function(mod) {
 	  if (true) // CommonJS
-	    mod(__webpack_require__(14), __webpack_require__(24));
+	    mod(__webpack_require__(15), __webpack_require__(25));
 	  else if (typeof define == "function" && define.amd) // AMD
 	    define(["../../lib/codemirror", "./foldcode"], mod);
 	  else // Plain browser env
@@ -13560,7 +13765,7 @@
 
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -13568,7 +13773,7 @@
 
 	(function(mod) {
 	  if (true) // CommonJS
-	    mod(__webpack_require__(14));
+	    mod(__webpack_require__(15));
 	  else if (typeof define == "function" && define.amd) // AMD
 	    define(["../../lib/codemirror"], mod);
 	  else // Plain browser env
@@ -13614,7 +13819,7 @@
 
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -13622,7 +13827,7 @@
 
 	(function(mod) {
 	  if (true) // CommonJS
-	    mod(__webpack_require__(14));
+	    mod(__webpack_require__(15));
 	  else if (typeof define == "function" && define.amd) // AMD
 	    define(["../../lib/codemirror"], mod);
 	  else // Plain browser env
@@ -14054,7 +14259,7 @@
 
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -14062,7 +14267,7 @@
 
 	(function(mod) {
 	  if (true) // CommonJS
-	    mod(__webpack_require__(14));
+	    mod(__webpack_require__(15));
 	  else if (typeof define == "function" && define.amd) // AMD
 	    define(["../../lib/codemirror"], mod);
 	  else // Plain browser env
@@ -14217,7 +14422,7 @@
 
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -14225,7 +14430,7 @@
 
 	(function(mod) {
 	  if (true) // CommonJS
-	    mod(__webpack_require__(14));
+	    mod(__webpack_require__(15));
 	  else if (typeof define == "function" && define.amd) // AMD
 	    define(["../../lib/codemirror"], mod);
 	  else // Plain browser env
@@ -14274,7 +14479,7 @@
 
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -14282,7 +14487,7 @@
 
 	(function(mod) {
 	  if (true) // CommonJS
-	    mod(__webpack_require__(14));
+	    mod(__webpack_require__(15));
 	  else if (typeof define == "function" && define.amd) // AMD
 	    define(["../../lib/codemirror"], mod);
 	  else // Plain browser env
@@ -14407,7 +14612,7 @@
 
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -14415,7 +14620,7 @@
 
 	(function(mod) {
 	  if (true) // CommonJS
-	    mod(__webpack_require__(14));
+	    mod(__webpack_require__(15));
 	  else if (typeof define == "function" && define.amd) // AMD
 	    define(["../../lib/codemirror"], mod);
 	  else // Plain browser env
@@ -15292,13 +15497,13 @@
 
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(33);
+	var content = __webpack_require__(34);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -15318,7 +15523,7 @@
 	}
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -15332,7 +15537,7 @@
 
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -15346,7 +15551,7 @@
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var NodeParam = function () {
-		function NodeParam(parentEl, param, onClickCallback) {
+		function NodeParam(parentEl, param, onClickCallback, parentTitle) {
 			_classCallCheck(this, NodeParam);
 
 			this.el = document.createElement('div');
@@ -15360,8 +15565,13 @@
 			this.el.appendChild(dotEl);
 
 			var labelEl = document.createElement('p');
+
 			labelEl.className = 'label';
-			labelEl.innerHTML = param.objSettings.param;
+			if (param.objSettings) {
+				labelEl.innerHTML = param.objSettings.param;
+			} else {
+				labelEl.innerHTML = param.param;
+			}
 
 			this.el.appendChild(labelEl);
 
@@ -15390,7 +15600,208 @@
 	exports.default = NodeParam;
 
 /***/ }),
-/* 35 */
+/* 36 */
+/***/ (function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var NodeHeader = function NodeHeader(parentEl, parentTitle, addMarginTop) {
+		_classCallCheck(this, NodeHeader);
+
+		this.el = document.createElement('div');
+		this.el.className = 'node-param-header node-component';
+		if (addMarginTop) {
+			this.el.style.marginTop = '10px';
+		}
+
+		var labelEl = document.createElement('h2');
+		labelEl.innerHTML = parentTitle;
+
+		this.el.appendChild(labelEl);
+
+		parentEl.appendChild(this.el);
+	};
+
+	exports.default = NodeHeader;
+
+/***/ }),
+/* 37 */
+/***/ (function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	var isValidParamTextureInput = function isValidParamTextureInput(outNode) {
+
+		return outNode.framebuffer || outNode.texture;
+	};
+
+	var onTextureParamUpdate = function onTextureParamUpdate(inNode, outNode) {
+
+		inNode.material.needsUpdate = true;
+		inNode.material.map = outNode.framebuffer.texture;
+	};
+
+	var onTextureDisconnect = function onTextureDisconnect(inNode) {
+
+		inNode.material.needsUpdate = true;
+		inNode.material.map = null;
+	};
+
+	var onNormalmapParamUpdate = function onNormalmapParamUpdate(inNode, outNode) {
+
+		inNode.material.normalMap = outNode.framebuffer.texture;
+		// inNode.material.displacementScale = .1;
+		inNode.mesh.needsUpdate = true;
+		inNode.material.needsUpdate = true;
+	};
+
+	var onNormalmapDisconnect = function onNormalmapDisconnect(inNode) {
+
+		inNode.material.normalMap = null;
+		inNode.mesh.needsUpdate = true;
+		inNode.material.needsUpdate = true;
+	};
+
+	var onBumpmapParamUpdate = function onBumpmapParamUpdate(inNode, outNode) {
+
+		inNode.material.displacementMap = outNode.framebuffer.texture;
+		inNode.material.displacementScale = .1;
+		inNode.mesh.needsUpdate = true;
+		inNode.material.needsUpdate = true;
+	};
+
+	var onBumpmapDisconnect = function onBumpmapDisconnect(inNode) {
+
+		inNode.material.displacementMap = null;
+		inNode.mesh.needsUpdate = true;
+		inNode.material.needsUpdate = true;
+	};
+
+	var isValidParamColorInput = function isValidParamColorInput(outNode) {
+
+		return outNode.modifier.isColor;
+	};
+
+	var onColorParamUpdate = function onColorParamUpdate(inNode, outNode) {
+
+		inNode.material.color = outNode.modifier.value;
+	};
+
+	var isValidParamPositionInput = function isValidParamPositionInput(outNode, param) {
+
+		return outNode.isParam && !param.isConnected;
+	};
+
+	var onPositionParamUpdate = function onPositionParamUpdate(inNode, outNode, param) {
+
+		inNode.mesh.position[param.param] = outNode.getValue();
+	};
+
+	var onPositionDisconnect = function onPositionDisconnect(inNode, param, outNode) {
+
+		param.defaultVal = outNode.getValue();
+	};
+
+	var onRotationParamUpdate = function onRotationParamUpdate(inNode, outNode, param) {
+
+		inNode.mesh.rotation[param.param] = outNode.getValue();
+	};
+
+	var onShaderParamUpdate = function onShaderParamUpdate(inNode, outNode, param) {
+
+		inNode.mesh.material.uniforms[param.param].value = outNode.getValue();
+	};
+
+	var paramHelpers = {
+		texture: {
+			update: onTextureParamUpdate,
+			isValid: isValidParamTextureInput,
+			disconnect: onTextureDisconnect
+		},
+		normalMap: {
+			update: onNormalmapParamUpdate,
+			isValid: isValidParamTextureInput,
+			disconnect: onNormalmapDisconnect
+		},
+		bumpMap: {
+			update: onBumpmapParamUpdate,
+			isValid: isValidParamTextureInput,
+			disconnect: onBumpmapDisconnect
+		},
+		color: {
+			update: onColorParamUpdate,
+			isValid: isValidParamColorInput,
+			disconnect: onPositionDisconnect
+		},
+		position: {
+			update: onPositionParamUpdate,
+			isValid: isValidParamPositionInput,
+			disconnect: onPositionDisconnect
+		},
+		rotation: {
+			update: onRotationParamUpdate,
+			isValid: isValidParamPositionInput,
+			disconnect: onPositionDisconnect
+		},
+		shaderParam: {
+			update: onShaderParamUpdate,
+			isValid: isValidParamPositionInput,
+			disconnect: onPositionDisconnect
+		}
+	};
+
+	exports.default = paramHelpers;
+
+/***/ }),
+/* 38 */
+/***/ (function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	var isValidNeedsFramebufferInput = function isValidNeedsFramebufferInput(outNode) {
+		return outNode.framebuffer;
+	};
+
+	var isValidSceneNodeConnection = function isValidSceneNodeConnection(outNode, inNode) {
+		var hasOutputConnection = inNode.enabledInputs.some(function (t) {
+			return t.out.ID === outNode.ID;
+		});
+
+		return isValidNeedsFramebufferInput(outNode) && !hasOutputConnection;
+	};
+
+	var isValidGeneralInput = function isValidGeneralInput(outNode) {
+		return true;
+	};
+
+	var inputHelpers = {
+		general: {
+			isValid: isValidGeneralInput
+		},
+		needsFramebuffer: {
+			isValid: isValidNeedsFramebufferInput
+		},
+		sceneNode: {
+			isValid: isValidSceneNodeConnection
+		}
+	};
+
+	exports.default = inputHelpers;
+
+/***/ }),
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -15403,7 +15814,7 @@
 
 	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-	var _glslCanvas = __webpack_require__(36);
+	var _glslCanvas = __webpack_require__(40);
 
 	var _glslCanvas2 = _interopRequireDefault(_glslCanvas);
 
@@ -15411,7 +15822,7 @@
 
 	var _Node3 = _interopRequireDefault(_Node2);
 
-	var _SHADERS = __webpack_require__(37);
+	var _SHADERS = __webpack_require__(41);
 
 	var SHADERS = _interopRequireWildcard(_SHADERS);
 
@@ -15545,7 +15956,7 @@
 	exports.default = CanvasNode;
 
 /***/ }),
-/* 36 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {(function (global, factory) {
@@ -17628,17 +18039,17 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ }),
-/* 37 */
+/* 41 */
 /***/ (function(module, exports) {
 
 	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
-	  value: true
+	    value: true
 	});
 	var CANVAS_RENDER_VERTEX = exports.CANVAS_RENDER_VERTEX = "\n#ifdef GL_ES\nprecision mediump float;\n#endif\n\tuniform float time;\n\tuniform vec2 resolution;\n\tvoid main()\t{\n\t\tgl_Position = vec4( position, 1.0 );\n\t}\n";
 
-	var CANVAS_RENDER_FRAGMENT = exports.CANVAS_RENDER_FRAGMENT = "\n#ifdef GL_ES\nprecision mediump float;\n#endif\n\tuniform float time;\n\tuniform vec2 resolution;\n\tuniform sampler2D u_texture0;\n\tuniform vec2 u_res;\n\tuniform float u_connection0;\n\tvoid main()\t{\n\t\tvec2 st = gl_FragCoord.xy/u_res.xy;\n\t\tvec4 color = texture2D(u_texture0, st);\n\t\tvec4 whiteColor = vec4(1., 1., 1., 1.);\n\t\tgl_FragColor = mix(whiteColor, color, u_connection0);\n\t}\n";
+	var CANVAS_RENDER_FRAGMENT = exports.CANVAS_RENDER_FRAGMENT = "\n#ifdef GL_ES\nprecision mediump float;\n#endif\n\tuniform float time;\n\tuniform vec2 resolution;\n\tuniform sampler2D u_texture0;\n    uniform sampler2D u_texture1;\n\tuniform vec2 u_res;\n\tuniform float u_connection0;\n    uniform float u_connection1;\n    uniform float u_finalConnection;\n    uniform float u_multiConnection;\n\tvoid main()\t{\n\t\tvec2 st = gl_FragCoord.xy/u_res.xy;\n\t\tvec4 bgColor = texture2D(u_texture0, st);\n        vec4 fgColor = texture2D(u_texture1, st);\n\t\tvec4 whiteColor = vec4(1., 1., 1., 1.);\n        vec4 transparentColor = vec4(1.0, 1.0, 1.0, 0.0);\n        vec4 finalFgColor = mix(transparentColor, fgColor, u_connection1);\n        vec4 finalBgColor = mix(transparentColor, bgColor, u_connection0);\n        \n        float ra = (finalFgColor.a) * finalFgColor.r + (1.0 - finalFgColor.a) * finalBgColor.r;\n        float ga = (finalFgColor.a) * finalFgColor.g + (1.0 - finalFgColor.a) * finalBgColor.g;\n        float ba = (finalFgColor.a) * finalFgColor.b + (1.0 - finalFgColor.a) * finalBgColor.b;\n\n        vec4 overlayColor = vec4(ra, ga, ba, 1.0);\n\n        vec4 finalColor = mix(fgColor + bgColor, overlayColor, u_multiConnection);\n\n        gl_FragColor = mix(whiteColor, finalColor, u_finalConnection);\n\t} \n\n";
 
 	var BASE_MAIN_HEADER = exports.BASE_MAIN_HEADER = "\nvoid main() {\n\tvec2 st = gl_FragCoord.xy/u_resolution.xy;\n    //st.x *= u_resolution.x/u_resolution.y;\n    vec3 color = vec3(1.);\n";
 
@@ -17652,6 +18063,8 @@
 
 	var LAVA_SHAPE_MAIN = exports.LAVA_SHAPE_MAIN = "\n    \n    // float u_user_speed3 = 0.500;\n    // float u_user_pattern_scale = -0.294;\n    // float u_user_scale = 6.632;\n    // float u_user_rotation = 0.804;\n    // float u_user_speed2 = 0.028;\n    // float u_user_blur = 0.7;\n    // vec3 u_user_color1 = vec3(0.256,0.351,0.620);\n    // vec3 u_user_color2 = vec3(1.000,0.420,0.420);\n    \n    \n    // vec2 st = gl_FragCoord.xy/u_resolution.xy;\n    st.x *= u_resolution.x/u_resolution.y;\n    color = vec3(0.0);\n    vec2 pos = vec2(st*u_user_scale);\n\n    float DF = 0.0;\n\n    \n    // Add a random position\n    float a = 0.0;\n    vec2 vel = vec2(u_time*u_user_speed3);\n    DF += snoise(pos+vel)*u_user_pattern_scale+.25;\n\n    // Add a random position\n    a = snoise(pos*vec2(cos(u_time*.15),sin(u_time*u_user_rotation))*u_user_speed2)*3.405;\n    vel = vec2(cos(a),sin(a));\n    DF += snoise(pos+vel)*.25+.25;\n\n    color = vec3( smoothstep(u_user_blur,.75,fract(DF)) );\n    \n    color = mix(u_user_color1, u_user_color2, color);\n";
 
+	var VORONOI_MAIN = exports.VORONOI_MAIN = "\n    // vec2 st = gl_FragCoord.xy/u_resolution.xy;\n    st.x *= u_resolution.x/u_resolution.y;\n    color = vec3(.0);\n    \n    // Scale \n    st *= 5.;\n    \n    // Tile the space\n    vec2 i_st = floor(st);\n    vec2 f_st = fract(st);\n\n    float m_dist = 10.;  // minimun distance\n    vec2 m_point;        // minimum point\n    \n    for (int j=-1; j<=1; j++ ) {\n        for (int i=-1; i<=1; i++ ) {\n            vec2 neighbor = vec2(float(i),float(j));\n            vec2 point = random2(i_st + neighbor);\n            point = 0.5 + 0.5*sin(u_time + 6.2831*point);\n            vec2 diff = neighbor + point - f_st;\n            float dist = length(diff);\n\n            if( dist < m_dist ) {\n                m_dist = dist;\n                m_point = point;\n            }\n        }\n    }\n\n    // Assign a color using the closest point position\n    color += dot(m_point,vec2(0.30,0.60));\n    \n    // Add distance field to closest point center \n    color.g = m_dist;\n\n    // Show isolines\n    //color -= abs(sin(40.0*m_dist*(u_mouse.x/u_resolution.x)))*0.07;\n    \n    color = mix(vec3(1.0, 1.0, 1.0), vec3(0.0, 0.0, .0), m_dist);\n    color *= vec3(.2, .6, .8);\n";
+
 	var GRADIENT_MAIN = exports.GRADIENT_MAIN = "\n\tcolor *= vec3(st.x,st.y,abs(sin(u_time)));\n";
 
 	// ------ BASE SHADER -----
@@ -17661,7 +18074,7 @@
 	exports.default = BASE_SHADER;
 
 /***/ }),
-/* 38 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -17674,7 +18087,7 @@
 
 	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-	var _three = __webpack_require__(39);
+	var _three = __webpack_require__(43);
 
 	var THREE = _interopRequireWildcard(_three);
 
@@ -17682,9 +18095,17 @@
 
 	var _Node3 = _interopRequireDefault(_Node2);
 
-	var _SHADERS = __webpack_require__(37);
+	var _SHADERS = __webpack_require__(41);
 
 	var SHADERS = _interopRequireWildcard(_SHADERS);
+
+	var _NodeInput = __webpack_require__(9);
+
+	var _NodeInput2 = _interopRequireDefault(_NodeInput);
+
+	var _InputHelpers = __webpack_require__(38);
+
+	var _InputHelpers2 = _interopRequireDefault(_InputHelpers);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -17706,6 +18127,12 @@
 
 			_this.hasOutput = false;
 			_this.isGraphicsNode = true;
+			_this.hasGraphicsInput = true;
+			_this.isCanvasNode = true;
+
+			_this.inputHelpersType = _InputHelpers2.default.sceneNode;
+
+			_this.enabledInputs = [];
 
 			_this.el = document.createElement('div');
 			_this.el.className = 'node canvas';
@@ -17737,11 +18164,15 @@
 			// this.texture.minFilter = THREE.LinearFilter;
 
 			var textureUniforms = {};
+
 			textureUniforms.u_connection0 = { value: 0.0 };
 			textureUniforms.u_texture0 = { value: new Image() };
 
-			// textureUniforms.u_connection1 = {value: 1.0};
-			// textureUniforms.u_texture1 = {value: new Image()};
+			textureUniforms.u_connection1 = { value: 0.0 };
+			textureUniforms.u_texture1 = { value: new Image() };
+
+			textureUniforms.u_finalConnection = { value: 0.0 };
+			textureUniforms.u_multiConnection = { value: 0.0 };
 
 			var uniformsObj = Object.assign({}, resUniforms, textureUniforms);
 			_this.material = new THREE.ShaderMaterial({
@@ -17753,25 +18184,56 @@
 			_this.mesh = new THREE.Mesh(geometry, _this.material);
 
 			_this.scene.add(_this.mesh);
-
 			return _this;
 		}
 
 		_createClass(SceneNode, [{
 			key: 'init',
-			value: function init(parentEl, onConnectingCallback, onInputConnectionCallback, type) {
+			value: function init(parentEl, onConnectingCallback, onInputConnectionCallback, type, initData, onNodeActive, onRemoveCallback) {
 				var _this2 = this;
 
-				_get(SceneNode.prototype.__proto__ || Object.getPrototypeOf(SceneNode.prototype), 'init', this).call(this, parentEl, onConnectingCallback, onInputConnectionCallback, type);
+				_get(SceneNode.prototype.__proto__ || Object.getPrototypeOf(SceneNode.prototype), 'init', this).call(this, parentEl, onConnectingCallback, onInputConnectionCallback, type, initData, onNodeActive, onRemoveCallback);
 
 				var w = window.innerWidth;
 				var h = window.innerHeight;
 
 				this.orthoCamera = new THREE.OrthographicCamera(w / -2, w / 2, h / 2, h / -2, 1, 1000);
 
+				this.bottomPartEl.classList.add('multiple-inputs');
+
+				this.onInputClickBackgroundBound = this.onInputClickBackground.bind(this);
+				this.onInputClickForegroundBound = this.onInputClickForeground.bind(this);
+
+				this.inputBackground = new _NodeInput2.default(this.bottomPartEl, this.onInputClickBackgroundBound, this.isGraphicsNode, 'Bakgrund In');
+				this.inputForeground = new _NodeInput2.default(this.bottomPartEl, this.onInputClickForegroundBound, this.isGraphicsNode, 'Förgrund In');
+
+				this.inputs = {
+					'background': this.inputBackground,
+					'foreground': this.inputForeground
+				};
+
 				setTimeout(function () {
-					_this2.resize();
+					_this2.onResize();
 				}, 100);
+
+				this.activateDrag();
+			}
+		}, {
+			key: 'onInputClickBackground',
+			value: function onInputClickBackground(param) {
+
+				this.onInputConnectionCallback(this, 'background', param);
+			}
+		}, {
+			key: 'onInputClickForeground',
+			value: function onInputClickForeground(param) {
+
+				this.onInputConnectionCallback(this, 'foreground', param);
+			}
+		}, {
+			key: 'getInputEl',
+			value: function getInputEl(inputType) {
+				return this.inputs[inputType].el;
 			}
 		}, {
 			key: 'getDotPos',
@@ -17784,34 +18246,58 @@
 			value: function setup() {}
 		}, {
 			key: 'enableInput',
-			value: function enableInput(outputNode) {
-				_get(SceneNode.prototype.__proto__ || Object.getPrototypeOf(SceneNode.prototype), 'enableInput', this).call(this);
+			value: function enableInput(outputNode, inputType) {
+				this.inputs[inputType].enable();
+
+				if (outputNode.isBackgroundNode) {
+					var framebuffer = outputNode.framebuffer.texture;
+					this.mesh.material.uniforms.u_texture0.value = framebuffer;
+					this.mesh.material.uniforms.u_connection0.value = 1.0;
+				} else if (outputNode.isForegroundNode) {
+					var _framebuffer = outputNode.framebuffer.texture;
+					this.mesh.material.uniforms.u_texture1.value = _framebuffer;
+					this.mesh.material.uniforms.u_connection1.value = 1.0;
+				}
+
+				var obj = {
+					out: outputNode,
+					type: inputType
+				};
+				this.enabledInputs.push(obj);
+
+				this.mesh.material.uniforms.u_finalConnection.value = 1.0;
+				if (this.enabledInputs.length === 2) {
+					this.mesh.material.uniforms.u_multiConnection.value = 1.0;
+				}
 			}
 		}, {
 			key: 'disableInput',
-			value: function disableInput(nodeToDisconnect) {
-				_get(SceneNode.prototype.__proto__ || Object.getPrototypeOf(SceneNode.prototype), 'disableInput', this).call(this);
-			}
-		}, {
-			key: 'onConnectionUpdate',
-			value: function onConnectionUpdate(connections) {
+			value: function disableInput(outNode, inputType) {
 
-				if (connections.length > 0) {
-					this.mesh.material.uniforms.u_connection0.value = 1.0;
-				} else {
-					this.mesh.material.uniforms.u_connection0.value = 0.0;
-					return;
+				this.inputs[inputType].disable();
+
+				this.enabledInputs = this.enabledInputs.filter(function (t) {
+					return t.type !== inputType;
+				});
+
+				if (this.enabledInputs.length === 0) {
+					this.mesh.material.uniforms.u_finalConnection.value = 0.0;
+				} else if (this.enabledInputs.length === 1) {
+					this.mesh.material.uniforms.u_multiConnection.value = 0.0;
 				}
 
-				var connection = connections[0];
-
-				var framebuffer = connection.out.framebuffer.texture;
-				this.mesh.material.uniforms.u_texture0.value = framebuffer;
+				if (outNode.isBackgroundNode) {
+					this.mesh.material.uniforms.u_texture0.value = null;
+					this.mesh.material.uniforms.u_connection0.value = 0.0;
+				} else if (outNode.isForegroundNode) {
+					this.mesh.material.uniforms.u_texture1.value = null;
+					this.mesh.material.uniforms.u_connection1.value = 0.0;
+				}
 			}
 		}, {
 			key: 'getRenderWindowDimensions',
 			value: function getRenderWindowDimensions() {
-				return { w: this.topPartEl.clientWidth, h: this.topPartEl.clientHeight };
+				return { w: 540, h: 538 };
 			}
 		}, {
 			key: 'update',
@@ -17824,8 +18310,8 @@
 				this.renderer.render(this.scene, this.orthoCamera);
 			}
 		}, {
-			key: 'resize',
-			value: function resize() {
+			key: 'onResize',
+			value: function onResize() {
 				var w = this.topPartEl.clientWidth;
 				var h = this.topPartEl.clientHeight;
 
@@ -17852,7 +18338,7 @@
 	exports.default = SceneNode;
 
 /***/ }),
-/* 39 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	(function (global, factory) {
@@ -65586,7 +66072,7 @@
 
 
 /***/ }),
-/* 40 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -65595,11 +66081,11 @@
 		value: true
 	});
 
-	var _three = __webpack_require__(39);
+	var _three = __webpack_require__(43);
 
 	var THREE = _interopRequireWildcard(_three);
 
-	var _SHADERS = __webpack_require__(37);
+	var _SHADERS = __webpack_require__(41);
 
 	var SHADERS = _interopRequireWildcard(_SHADERS);
 
@@ -65616,7 +66102,7 @@
 	exports.default = Render;
 
 /***/ }),
-/* 41 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -65627,27 +66113,27 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _OscillatorNode = __webpack_require__(42);
+	var _OscillatorNode = __webpack_require__(46);
 
 	var _OscillatorNode2 = _interopRequireDefault(_OscillatorNode);
 
-	var _GainNode = __webpack_require__(46);
+	var _GainNode = __webpack_require__(50);
 
 	var _GainNode2 = _interopRequireDefault(_GainNode);
 
-	var _SpeakerNode = __webpack_require__(47);
+	var _SpeakerNode = __webpack_require__(51);
 
 	var _SpeakerNode2 = _interopRequireDefault(_SpeakerNode);
 
-	var _AnalyserNode = __webpack_require__(48);
+	var _AnalyserNode = __webpack_require__(52);
 
 	var _AnalyserNode2 = _interopRequireDefault(_AnalyserNode);
 
-	var _LowpassFilterNode = __webpack_require__(49);
+	var _LowpassFilterNode = __webpack_require__(53);
 
 	var _LowpassFilterNode2 = _interopRequireDefault(_LowpassFilterNode);
 
-	var _EnvelopeNode = __webpack_require__(50);
+	var _EnvelopeNode = __webpack_require__(54);
 
 	var _EnvelopeNode2 = _interopRequireDefault(_EnvelopeNode);
 
@@ -65656,7 +66142,7 @@
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var AudioNodeManager = function () {
-		function AudioNodeManager(parentEl, onConnectingCallback, onInputConnectionCallback, addCallback, initData, onParameterChange, onNodeActive, onSequencerTrigger) {
+		function AudioNodeManager(parentEl, onConnectingCallback, onInputConnectionCallback, addCallback, initData, onParameterChange, onNodeActive, onSequencerTrigger, onNodeRemove) {
 			_classCallCheck(this, AudioNodeManager);
 
 			this.parentEl = parentEl;
@@ -65667,6 +66153,7 @@
 			this.onParameterChange = onParameterChange;
 			this.onNodeActive = onNodeActive;
 			this.onSequencerTrigger = onSequencerTrigger;
+			this.onNodeRemove = onNodeRemove;
 		}
 
 		_createClass(AudioNodeManager, [{
@@ -65674,7 +66161,7 @@
 			value: function init() {
 				if (this.initData) {
 					for (var i = 0; i < this.initData.length; i++) {
-						this.initData[i].node.init(this.parentEl, this.onConnectingCallback, this.onInputConnectionCallback, this.initData[i].type, this.initData[i], this.onNodeActive, this.onParameterChange, this.onSequencerTrigger);
+						this.initData[i].node.init(this.parentEl, this.onConnectingCallback, this.onInputConnectionCallback, this.initData[i].type, this.initData[i], this.onNodeActive, this.onParameterChange, this.onSequencerTrigger, this.onNodeRemove);
 						this.addCallback(this.initData[i].node);
 					}
 				}
@@ -65683,7 +66170,7 @@
 			key: 'createNode',
 			value: function createNode(data) {
 				var node = new data.obj();
-				node.init(this.parentEl, this.onConnectingCallback, this.onInputConnectionCallback, data.type, undefined, this.onNodeActive, this.onParameterChange, this.onSequencerTrigger);
+				node.init(this.parentEl, this.onConnectingCallback, this.onInputConnectionCallback, data.type, undefined, this.onNodeActive, this.onParameterChange, this.onSequencerTrigger, this.onNodeRemove);
 				this.addCallback(node);
 			}
 		}]);
@@ -65694,7 +66181,7 @@
 	exports.default = AudioNodeManager;
 
 /***/ }),
-/* 42 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -65705,15 +66192,15 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _MusicNode2 = __webpack_require__(43);
+	var _MusicNode2 = __webpack_require__(47);
 
 	var _MusicNode3 = _interopRequireDefault(_MusicNode2);
 
-	var _tone = __webpack_require__(44);
+	var _tone = __webpack_require__(48);
 
 	var _tone2 = _interopRequireDefault(_tone);
 
-	var _RangeSlider = __webpack_require__(45);
+	var _RangeSlider = __webpack_require__(49);
 
 	var _RangeSlider2 = _interopRequireDefault(_RangeSlider);
 
@@ -65845,7 +66332,7 @@
 	exports.default = OscillatorNode;
 
 /***/ }),
-/* 43 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -65862,7 +66349,7 @@
 
 	var _Node3 = _interopRequireDefault(_Node2);
 
-	var _NodeParam = __webpack_require__(34);
+	var _NodeParam = __webpack_require__(35);
 
 	var _NodeParam2 = _interopRequireDefault(_NodeParam);
 
@@ -65915,8 +66402,8 @@
 
 		_createClass(MusicNode, [{
 			key: 'init',
-			value: function init(parentEl, onConnectingCallback, onInputConnectionCallback, type, nodeConfig, onNodeActive, onParameterChange, onSequencerTrigger) {
-				_get(MusicNode.prototype.__proto__ || Object.getPrototypeOf(MusicNode.prototype), 'init', this).call(this, parentEl, onConnectingCallback, onInputConnectionCallback, type, nodeConfig, onNodeActive);
+			value: function init(parentEl, onConnectingCallback, onInputConnectionCallback, type, nodeConfig, onNodeActive, onParameterChange, onSequencerTrigger, onNodeRemove) {
+				_get(MusicNode.prototype.__proto__ || Object.getPrototypeOf(MusicNode.prototype), 'init', this).call(this, parentEl, onConnectingCallback, onInputConnectionCallback, type, nodeConfig, onNodeActive, onNodeRemove);
 
 				this.onParameterChange = onParameterChange;
 				this.onSequencerTrigger = onSequencerTrigger;
@@ -65995,7 +66482,7 @@
 	exports.default = MusicNode;
 
 /***/ }),
-/* 44 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;(function(root, factory){
@@ -90382,7 +90869,7 @@
 	}));
 
 /***/ }),
-/* 45 */
+/* 49 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -90546,7 +91033,7 @@
 	exports.default = RangeSlider;
 
 /***/ }),
-/* 46 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -90559,15 +91046,15 @@
 
 	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-	var _MusicNode2 = __webpack_require__(43);
+	var _MusicNode2 = __webpack_require__(47);
 
 	var _MusicNode3 = _interopRequireDefault(_MusicNode2);
 
-	var _tone = __webpack_require__(44);
+	var _tone = __webpack_require__(48);
 
 	var _tone2 = _interopRequireDefault(_tone);
 
-	var _RangeSlider = __webpack_require__(45);
+	var _RangeSlider = __webpack_require__(49);
 
 	var _RangeSlider2 = _interopRequireDefault(_RangeSlider);
 
@@ -90679,7 +91166,7 @@
 	exports.default = GainNode;
 
 /***/ }),
-/* 47 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -90690,11 +91177,11 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _MusicNode2 = __webpack_require__(43);
+	var _MusicNode2 = __webpack_require__(47);
 
 	var _MusicNode3 = _interopRequireDefault(_MusicNode2);
 
-	var _tone = __webpack_require__(44);
+	var _tone = __webpack_require__(48);
 
 	var _tone2 = _interopRequireDefault(_tone);
 
@@ -90734,7 +91221,7 @@
 	exports.default = SpeakerNode;
 
 /***/ }),
-/* 48 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -90993,7 +91480,7 @@
 	exports.default = AnalyserNode;
 
 /***/ }),
-/* 49 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -91006,15 +91493,15 @@
 
 	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-	var _MusicNode2 = __webpack_require__(43);
+	var _MusicNode2 = __webpack_require__(47);
 
 	var _MusicNode3 = _interopRequireDefault(_MusicNode2);
 
-	var _tone = __webpack_require__(44);
+	var _tone = __webpack_require__(48);
 
 	var _tone2 = _interopRequireDefault(_tone);
 
-	var _RangeSlider = __webpack_require__(45);
+	var _RangeSlider = __webpack_require__(49);
 
 	var _RangeSlider2 = _interopRequireDefault(_RangeSlider);
 
@@ -91127,7 +91614,7 @@
 	exports.default = LowpassFilterNode;
 
 /***/ }),
-/* 50 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -91138,15 +91625,15 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _MusicNode2 = __webpack_require__(43);
+	var _MusicNode2 = __webpack_require__(47);
 
 	var _MusicNode3 = _interopRequireDefault(_MusicNode2);
 
-	var _tone = __webpack_require__(44);
+	var _tone = __webpack_require__(48);
 
 	var _tone2 = _interopRequireDefault(_tone);
 
-	var _RangeSlider = __webpack_require__(45);
+	var _RangeSlider = __webpack_require__(49);
 
 	var _RangeSlider2 = _interopRequireDefault(_RangeSlider);
 
@@ -91316,7 +91803,7 @@
 	exports.default = EnvelopeNode;
 
 /***/ }),
-/* 51 */
+/* 55 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -91330,10 +91817,11 @@
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var NodeConnectionLine = function () {
-		function NodeConnectionLine(parentEl) {
+		function NodeConnectionLine(parentEl, resetConnecting) {
 			_classCallCheck(this, NodeConnectionLine);
 
 			this.ID = 999999999;
+			this.resetConnecting = resetConnecting;
 
 			this.startPos = { x: 0, y: 0 };
 			this.endPos = { x: 0, y: 0 };
@@ -91436,6 +91924,8 @@
 				window.removeEventListener('mousemove', this.onMouseMoveBound);
 				window.removeEventListener('click', this.onMouseClickBound);
 
+				this.resetConnecting();
+
 				var line = this.line;
 
 				var x = 0;
@@ -91457,7 +91947,7 @@
 	exports.default = NodeConnectionLine;
 
 /***/ }),
-/* 52 */
+/* 56 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -91574,7 +92064,7 @@
 	exports.default = NodeLibrary;
 
 /***/ }),
-/* 53 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -91585,7 +92075,7 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _SynthCopy = __webpack_require__(54);
+	var _SynthCopy = __webpack_require__(58);
 
 	var _SynthCopy2 = _interopRequireDefault(_SynthCopy);
 
@@ -91682,7 +92172,7 @@
 	exports.default = KeyboardManager;
 
 /***/ }),
-/* 54 */
+/* 58 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -91905,7 +92395,7 @@
 	exports.default = SynthCopy;
 
 /***/ }),
-/* 55 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -91916,7 +92406,7 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _RangeSlider = __webpack_require__(45);
+	var _RangeSlider = __webpack_require__(49);
 
 	var _RangeSlider2 = _interopRequireDefault(_RangeSlider);
 
@@ -92013,7 +92503,7 @@
 	exports.default = NodeSettings;
 
 /***/ }),
-/* 56 */
+/* 60 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -92070,6 +92560,12 @@
 			key: 'onMouseDown',
 			value: function onMouseDown(e) {
 
+				if (e.target.nodeName === 'INPUT' || e.target.classList.contains('prevent-drag')) {
+					return;
+				}
+
+				console.log('mouse down');
+
 				e.preventDefault();
 
 				this.moveCoords.start.x = e.x - this.moveCoords.offset.x;
@@ -92113,7 +92609,7 @@
 	exports.default = WorkspaceManager;
 
 /***/ }),
-/* 57 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -92124,15 +92620,15 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _MusicNode2 = __webpack_require__(43);
+	var _MusicNode2 = __webpack_require__(47);
 
 	var _MusicNode3 = _interopRequireDefault(_MusicNode2);
 
-	var _tone = __webpack_require__(44);
+	var _tone = __webpack_require__(48);
 
 	var _tone2 = _interopRequireDefault(_tone);
 
-	var _RangeSlider = __webpack_require__(45);
+	var _RangeSlider = __webpack_require__(49);
 
 	var _RangeSlider2 = _interopRequireDefault(_RangeSlider);
 
@@ -92239,7 +92735,7 @@
 	exports.default = FrequencyEnvelopeNode;
 
 /***/ }),
-/* 58 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -92250,15 +92746,15 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _MusicNode2 = __webpack_require__(43);
+	var _MusicNode2 = __webpack_require__(47);
 
 	var _MusicNode3 = _interopRequireDefault(_MusicNode2);
 
-	var _tone = __webpack_require__(44);
+	var _tone = __webpack_require__(48);
 
 	var _tone2 = _interopRequireDefault(_tone);
 
-	var _RangeSlider = __webpack_require__(45);
+	var _RangeSlider = __webpack_require__(49);
 
 	var _RangeSlider2 = _interopRequireDefault(_RangeSlider);
 
@@ -92340,7 +92836,7 @@
 	exports.default = LFONode;
 
 /***/ }),
-/* 59 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -92353,11 +92849,11 @@
 
 	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-	var _MusicNode2 = __webpack_require__(43);
+	var _MusicNode2 = __webpack_require__(47);
 
 	var _MusicNode3 = _interopRequireDefault(_MusicNode2);
 
-	var _tone = __webpack_require__(44);
+	var _tone = __webpack_require__(48);
 
 	var _tone2 = _interopRequireDefault(_tone);
 
@@ -92439,7 +92935,7 @@
 	exports.default = SignalMultiplier;
 
 /***/ }),
-/* 60 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -92450,15 +92946,15 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _MusicNode2 = __webpack_require__(43);
+	var _MusicNode2 = __webpack_require__(47);
 
 	var _MusicNode3 = _interopRequireDefault(_MusicNode2);
 
-	var _tone = __webpack_require__(44);
+	var _tone = __webpack_require__(48);
 
 	var _tone2 = _interopRequireDefault(_tone);
 
-	var _RangeSlider = __webpack_require__(45);
+	var _RangeSlider = __webpack_require__(49);
 
 	var _RangeSlider2 = _interopRequireDefault(_RangeSlider);
 
@@ -92534,7 +93030,7 @@
 	exports.default = CompressorNode;
 
 /***/ }),
-/* 61 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -92545,11 +93041,11 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _MusicNode2 = __webpack_require__(43);
+	var _MusicNode2 = __webpack_require__(47);
 
 	var _MusicNode3 = _interopRequireDefault(_MusicNode2);
 
-	var _tone = __webpack_require__(44);
+	var _tone = __webpack_require__(48);
 
 	var _tone2 = _interopRequireDefault(_tone);
 
@@ -92702,7 +93198,7 @@
 	exports.default = SequencerNode;
 
 /***/ }),
-/* 62 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -92715,19 +93211,15 @@
 
 	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-	var _RenderNode2 = __webpack_require__(63);
+	var _RenderNode2 = __webpack_require__(67);
 
 	var _RenderNode3 = _interopRequireDefault(_RenderNode2);
 
-	var _SHADERS = __webpack_require__(37);
+	var _SHADERS = __webpack_require__(41);
 
 	var SHADERS = _interopRequireWildcard(_SHADERS);
 
-	var _RangeSlider = __webpack_require__(45);
-
-	var _RangeSlider2 = _interopRequireDefault(_RangeSlider);
-
-	var _three = __webpack_require__(39);
+	var _three = __webpack_require__(43);
 
 	var THREE = _interopRequireWildcard(_three);
 
@@ -92744,12 +93236,14 @@
 	var LavaNoiseNode = function (_RenderNode) {
 		_inherits(LavaNoiseNode, _RenderNode);
 
-		function LavaNoiseNode(FBO, mainRender) {
+		function LavaNoiseNode(mainRender) {
 			_classCallCheck(this, LavaNoiseNode);
 
-			var _this = _possibleConstructorReturn(this, (LavaNoiseNode.__proto__ || Object.getPrototypeOf(LavaNoiseNode)).call(this, FBO, mainRender));
+			var _this = _possibleConstructorReturn(this, (LavaNoiseNode.__proto__ || Object.getPrototypeOf(LavaNoiseNode)).call(this, mainRender));
 
-			_this.el.classList.add('lava');
+			_this.isBackgroundNode = true;
+
+			_this.el.classList.add('no-height');
 
 			_this.shader = '' + SHADERS.BASE_SHADER + SHADERS.BASE_MAIN_HEADER + SHADERS.LAVA_SHAPE_MAIN + SHADERS.BASE_MAIN_FOOTER;
 
@@ -92789,116 +93283,122 @@
 
 			_this.paramVals = {};
 
-			_this.params = {
-				'Speed3': {
-					obj: _RangeSlider2.default,
-					objSettings: {
-						title: 'Speed3',
-						defaultVal: .5,
-						range: { min: 0, max: 2 },
-						param: 'u_user_speed3',
-						decimals: 2
-					},
-					useAsInput: true
-				},
-				'Pattern Scale': {
-					obj: _RangeSlider2.default,
-					objSettings: {
-						title: 'Pattern Scale',
-						defaultVal: .0,
-						range: { min: -2.0, max: 2.0 },
-						param: 'u_user_pattern_scale',
-						decimals: 2
-					},
-					useAsInput: true
-				},
-				'Scale': {
-					obj: _RangeSlider2.default,
-					objSettings: {
-						title: 'Scale',
-						defaultVal: 7.0,
-						range: { min: 1.0, max: 20.0 },
-						param: 'u_user_scale',
-						decimals: 2
-					},
-					useAsInput: true
-				},
-				'Rotation': {
-					obj: _RangeSlider2.default,
-					objSettings: {
-						title: 'Rotation',
-						defaultVal: .8,
-						range: { min: .01, max: 2.0 },
-						param: 'u_user_rotation',
-						decimals: 2
-					},
-					useAsInput: true
-				},
-				'Speed 2': {
-					obj: _RangeSlider2.default,
-					objSettings: {
-						title: 'Distortion',
-						defaultVal: .02,
-						range: { min: .001, max: 10.0 },
-						param: 'u_user_speed2',
-						decimals: 2
-					},
-					useAsInput: true
-				},
-				'Blur': {
-					obj: _RangeSlider2.default,
-					objSettings: {
-						title: 'Blur',
-						defaultVal: .7,
-						range: { min: .01, max: 10.0 },
-						param: 'u_user_pattern_scale',
-						decimals: 2
-					},
-					useAsInput: true
-				}
+			var speed3Param = {
+				title: 'Speed3',
+				param: 'u_user_speed3',
+				useAsInput: true,
+				paramHelpersType: 'shaderParam',
+				needsFrameUpdate: false,
+				minMax: { min: 0, max: 2 },
+				value: .5,
+				decimals: 2
 			};
 
-			for (var loopKey in _this.params) {
-				var key = _this.params[loopKey].objSettings.param;
-				_this.paramVals[key] = _this.params[loopKey].objSettings.defaultVal;
-			}
+			var patternScaleParam = {
+				title: 'Pattern Scale',
+				param: 'u_user_pattern_scale',
+				useAsInput: true,
+				paramHelpersType: 'shaderParam',
+				needsFrameUpdate: false,
+				minMax: { min: -2, max: 2 },
+				defaultVal: 0.0,
+				decimals: 2
+			};
+
+			var scaleParam = {
+				title: 'Scale',
+				param: 'u_user_scale',
+				useAsInput: true,
+				paramHelpersType: 'shaderParam',
+				needsFrameUpdate: false,
+				minMax: { min: 1, max: 20 },
+				defaultVal: 7.0,
+				decimals: 2
+			};
+
+			var rotationParam = {
+				title: 'Rotation',
+				param: 'u_user_rotation',
+				useAsInput: true,
+				paramHelpersType: 'shaderParam',
+				needsFrameUpdate: false,
+				minMax: { min: .01, max: 2.0 },
+				defaultVal: .8,
+				decimals: 2
+			};
+
+			var distortionParam = {
+				title: 'Distortion',
+				param: 'u_user_speed2',
+				useAsInput: true,
+				paramHelpersType: 'shaderParam',
+				needsFrameUpdate: false,
+				minMax: { min: .001, max: 10.0 },
+				defaultVal: .02,
+				decimals: 2
+			};
+
+			var blurParam = {
+				title: 'Blur',
+				param: 'u_user_blur',
+				useAsInput: true,
+				paramHelpersType: 'shaderParam',
+				needsFrameUpdate: false,
+				minMax: { min: .01, max: 10.0 },
+				defaultVal: .7,
+				decimals: 2
+			};
+
+			_this.params = {
+				blurParam: blurParam,
+				distortionParam: distortionParam,
+				rotationParam: rotationParam,
+				patternScaleParam: patternScaleParam,
+				scaleParam: scaleParam,
+				speed3Param: speed3Param
+			};
+
 			return _this;
 		}
 
 		_createClass(LavaNoiseNode, [{
-			key: 'enableParam',
-			value: function enableParam(param, connectionData) {
-				_get(LavaNoiseNode.prototype.__proto__ || Object.getPrototypeOf(LavaNoiseNode.prototype), 'enableParam', this).call(this, param);
+			key: 'enableOutput',
+			value: function enableOutput(param, connection) {
+				_get(LavaNoiseNode.prototype.__proto__ || Object.getPrototypeOf(LavaNoiseNode.prototype), 'enableOutput', this).call(this);
 
-				var outNode = connectionData.out;
+				this.currentOutConnections.push(connection);
+				this.currentOutConnectionsLength = this.currentOutConnections.length;
 			}
 		}, {
-			key: 'updateParam',
-			value: function updateParam(param, outNode) {}
-		}, {
-			key: 'disableParam',
-			value: function disableParam(param, connectionData) {
-				_get(LavaNoiseNode.prototype.__proto__ || Object.getPrototypeOf(LavaNoiseNode.prototype), 'disableParam', this).call(this, param);
+			key: 'disableOutput',
+			value: function disableOutput(nodeIn, param) {
+				var tempOutConnections = this.currentOutConnections.map(function (t) {
+					return t;
+				});
 
-				var outNode = connectionData.out;
-			}
-		}, {
-			key: 'enableInput',
-			value: function enableInput(outputNode) {
-				_get(LavaNoiseNode.prototype.__proto__ || Object.getPrototypeOf(LavaNoiseNode.prototype), 'enableInput', this).call(this);
-			}
-		}, {
-			key: 'disableInput',
-			value: function disableInput(nodeToDisconnect) {
-				_get(LavaNoiseNode.prototype.__proto__ || Object.getPrototypeOf(LavaNoiseNode.prototype), 'disableInput', this).call(this);
-			}
-		}, {
-			key: 'onParameterUpdate',
-			value: function onParameterUpdate() {
-				var params = this.getParams();
+				var paramConnections = tempOutConnections.filter(function (t) {
+					return t.param;
+				});
+				var nodeConnections = tempOutConnections.filter(function (t) {
+					return !t.param;
+				});
 
-				for (var key in params) {
-					this.mesh.material.uniforms[key].value = params[key];
+				if (param) {
+					paramConnections = paramConnections.filter(function (t) {
+						return t.param && t.param.title !== param.title;
+					});
+				} else {
+					nodeConnections = nodeConnections.filter(function (t) {
+						return t.in.ID !== nodeIn.ID;
+					});
+				}
+
+				var finalConnections = paramConnections.concat(nodeConnections);
+				this.currentOutConnections = finalConnections;
+				this.currentOutConnectionsLength = this.currentOutConnections.length;
+
+				if (this.currentOutConnectionsLength <= 0) {
+					_get(LavaNoiseNode.prototype.__proto__ || Object.getPrototypeOf(LavaNoiseNode.prototype), 'disableOutput', this).call(this);
 				}
 			}
 		}, {
@@ -92929,7 +93429,7 @@
 	exports.default = LavaNoiseNode;
 
 /***/ }),
-/* 63 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -92940,11 +93440,11 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _GraphicNode2 = __webpack_require__(12);
+	var _GraphicNode2 = __webpack_require__(13);
 
 	var _GraphicNode3 = _interopRequireDefault(_GraphicNode2);
 
-	var _three = __webpack_require__(39);
+	var _three = __webpack_require__(43);
 
 	var THREE = _interopRequireWildcard(_three);
 
@@ -92961,7 +93461,7 @@
 	var RenderNode = function (_GraphicNode) {
 		_inherits(RenderNode, _GraphicNode);
 
-		function RenderNode(FBO, mainRender) {
+		function RenderNode(mainRender) {
 			_classCallCheck(this, RenderNode);
 
 			var _this = _possibleConstructorReturn(this, (RenderNode.__proto__ || Object.getPrototypeOf(RenderNode)).call(this));
@@ -93010,7 +93510,231 @@
 	exports.default = RenderNode;
 
 /***/ }),
-/* 64 */
+/* 68 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+	var _RenderNode2 = __webpack_require__(67);
+
+	var _RenderNode3 = _interopRequireDefault(_RenderNode2);
+
+	var _SHADERS = __webpack_require__(41);
+
+	var SHADERS = _interopRequireWildcard(_SHADERS);
+
+	var _three = __webpack_require__(43);
+
+	var THREE = _interopRequireWildcard(_three);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var VoronoiNode = function (_RenderNode) {
+	    _inherits(VoronoiNode, _RenderNode);
+
+	    function VoronoiNode(mainRender) {
+	        _classCallCheck(this, VoronoiNode);
+
+	        var _this = _possibleConstructorReturn(this, (VoronoiNode.__proto__ || Object.getPrototypeOf(VoronoiNode)).call(this, mainRender));
+
+	        _this.isBackgroundNode = true;
+
+	        _this.el.classList.add('no-height');
+
+	        _this.shader = '' + SHADERS.BASE_SHADER + SHADERS.BASE_MAIN_HEADER + SHADERS.VORONOI_MAIN + SHADERS.BASE_MAIN_FOOTER;
+
+	        var w = window.innerWidth;
+	        var h = window.innerHeight;
+
+	        _this.camera = new THREE.OrthographicCamera(w / -2, w / 2, h / 2, h / -2, 1, 1000);
+
+	        _this.startTime = Date.now();
+
+	        var geometry = new THREE.PlaneGeometry(2, 2);
+
+	        var resUniforms = {};
+	        resUniforms.u_resolution = { value: new THREE.Vector2(window.innerWidth, window.innerHeight) };
+	        resUniforms.u_time = { value: 0 };
+
+	        var settingUniforms = {};
+	        // settingUniforms.u_user_speed3 = {value: .5};
+	        // settingUniforms.u_user_pattern_scale = {value:-0.358};
+	        // settingUniforms.u_user_scale = {value:7.032};
+	        // settingUniforms.u_user_rotation = {value:0.804};
+	        // settingUniforms.u_user_speed2 = {value:0.028};
+	        // settingUniforms.u_user_blur = {value:0.7};
+	        // settingUniforms.u_user_color1 = {value: new THREE.Color(0.256,0.351,0.620)};
+	        // settingUniforms.u_user_color2 = {value: new THREE.Color(1.000,0.420,0.420)};
+
+	        var uniformsObj = Object.assign({}, resUniforms, settingUniforms);
+	        _this.material = new THREE.ShaderMaterial({
+	            uniforms: uniformsObj,
+	            vertexShader: SHADERS.CANVAS_RENDER_VERTEX,
+	            fragmentShader: _this.shader
+	        });
+
+	        _this.mesh = new THREE.Mesh(geometry, _this.material);
+
+	        _this.scene.add(_this.mesh);
+
+	        _this.paramVals = {};
+
+	        var speed3Param = {
+	            title: 'Speed3',
+	            param: 'u_user_speed3',
+	            useAsInput: true,
+	            paramHelpersType: 'shaderParam',
+	            needsFrameUpdate: false,
+	            minMax: { min: 0, max: 2 },
+	            value: .5,
+	            decimals: 2
+	        };
+
+	        var patternScaleParam = {
+	            title: 'Pattern Scale',
+	            param: 'u_user_pattern_scale',
+	            useAsInput: true,
+	            paramHelpersType: 'shaderParam',
+	            needsFrameUpdate: false,
+	            minMax: { min: -2, max: 2 },
+	            defaultVal: 0.0,
+	            decimals: 2
+	        };
+
+	        var scaleParam = {
+	            title: 'Scale',
+	            param: 'u_user_scale',
+	            useAsInput: true,
+	            paramHelpersType: 'shaderParam',
+	            needsFrameUpdate: false,
+	            minMax: { min: 1, max: 20 },
+	            defaultVal: 7.0,
+	            decimals: 2
+	        };
+
+	        var rotationParam = {
+	            title: 'Rotation',
+	            param: 'u_user_rotation',
+	            useAsInput: true,
+	            paramHelpersType: 'shaderParam',
+	            needsFrameUpdate: false,
+	            minMax: { min: .01, max: 2.0 },
+	            defaultVal: .8,
+	            decimals: 2
+	        };
+
+	        var distortionParam = {
+	            title: 'Distortion',
+	            param: 'u_user_speed2',
+	            useAsInput: true,
+	            paramHelpersType: 'shaderParam',
+	            needsFrameUpdate: false,
+	            minMax: { min: .001, max: 10.0 },
+	            defaultVal: .02,
+	            decimals: 2
+	        };
+
+	        var blurParam = {
+	            title: 'Blur',
+	            param: 'u_user_blur',
+	            useAsInput: true,
+	            paramHelpersType: 'shaderParam',
+	            needsFrameUpdate: false,
+	            minMax: { min: .01, max: 10.0 },
+	            defaultVal: .7,
+	            decimals: 2
+	        };
+
+	        _this.params = {};
+
+	        return _this;
+	    }
+
+	    _createClass(VoronoiNode, [{
+	        key: 'enableOutput',
+	        value: function enableOutput(param, connection) {
+	            _get(VoronoiNode.prototype.__proto__ || Object.getPrototypeOf(VoronoiNode.prototype), 'enableOutput', this).call(this);
+
+	            this.currentOutConnections.push(connection);
+	            this.currentOutConnectionsLength = this.currentOutConnections.length;
+	        }
+	    }, {
+	        key: 'disableOutput',
+	        value: function disableOutput(nodeIn, param) {
+	            var tempOutConnections = this.currentOutConnections.map(function (t) {
+	                return t;
+	            });
+
+	            var paramConnections = tempOutConnections.filter(function (t) {
+	                return t.param;
+	            });
+	            var nodeConnections = tempOutConnections.filter(function (t) {
+	                return !t.param;
+	            });
+
+	            if (param) {
+	                paramConnections = paramConnections.filter(function (t) {
+	                    return t.param && t.param.title !== param.title;
+	                });
+	            } else {
+	                nodeConnections = nodeConnections.filter(function (t) {
+	                    return t.in.ID !== nodeIn.ID;
+	                });
+	            }
+
+	            var finalConnections = paramConnections.concat(nodeConnections);
+	            this.currentOutConnections = finalConnections;
+	            this.currentOutConnectionsLength = this.currentOutConnections.length;
+
+	            if (this.currentOutConnectionsLength <= 0) {
+	                _get(VoronoiNode.prototype.__proto__ || Object.getPrototypeOf(VoronoiNode.prototype), 'disableOutput', this).call(this);
+	            }
+	        }
+	    }, {
+	        key: 'update',
+	        value: function update() {
+	            _get(VoronoiNode.prototype.__proto__ || Object.getPrototypeOf(VoronoiNode.prototype), 'update', this).call(this);
+
+	            var now = Date.now();
+	            var deltaTime = now - this.startTime;
+
+	            this.mesh.material.uniforms.u_time.value = deltaTime * .005;
+	        }
+	    }, {
+	        key: 'onResize',
+	        value: function onResize(dims) {
+	            _get(VoronoiNode.prototype.__proto__ || Object.getPrototypeOf(VoronoiNode.prototype), 'onResize', this).call(this, dims);
+
+	            var w = dims.w;
+	            var h = dims.h;
+
+	            this.mesh.material.uniforms.u_resolution.value = new THREE.Vector2(w, h);
+	        }
+	    }]);
+
+	    return VoronoiNode;
+	}(_RenderNode3.default);
+
+	exports.default = VoronoiNode;
+
+/***/ }),
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -93023,19 +93747,19 @@
 
 	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-	var _RenderNode2 = __webpack_require__(63);
+	var _RenderNode2 = __webpack_require__(67);
 
 	var _RenderNode3 = _interopRequireDefault(_RenderNode2);
 
-	var _SHADERS = __webpack_require__(37);
+	var _SHADERS = __webpack_require__(41);
 
 	var SHADERS = _interopRequireWildcard(_SHADERS);
 
-	var _RangeSlider = __webpack_require__(45);
+	var _RangeSlider = __webpack_require__(49);
 
 	var _RangeSlider2 = _interopRequireDefault(_RangeSlider);
 
-	var _three = __webpack_require__(39);
+	var _three = __webpack_require__(43);
 
 	var THREE = _interopRequireWildcard(_three);
 
@@ -93052,10 +93776,12 @@
 	var CircleNode = function (_RenderNode) {
 		_inherits(CircleNode, _RenderNode);
 
-		function CircleNode(FBO, mainRender) {
+		function CircleNode(mainRender) {
 			_classCallCheck(this, CircleNode);
 
-			var _this = _possibleConstructorReturn(this, (CircleNode.__proto__ || Object.getPrototypeOf(CircleNode)).call(this, FBO, mainRender));
+			var _this = _possibleConstructorReturn(this, (CircleNode.__proto__ || Object.getPrototypeOf(CircleNode)).call(this, mainRender));
+
+			_this.isBackgroundNode = true;
 
 			_this.shader = '' + SHADERS.BASE_SHADER + SHADERS.BASE_MAIN_HEADER + SHADERS.CIRCLE_SHAPE_MAIN + SHADERS.BASE_MAIN_FOOTER;
 
@@ -93088,53 +93814,62 @@
 
 			_this.paramVals = {};
 
-			_this.params = {
-				'Amount': {
-					obj: _RangeSlider2.default,
-					objSettings: {
-						title: 'Amount',
-						defaultVal: 0,
-						range: { min: 0, max: 2 },
-						param: 'circle_amount',
-						decimals: 2
-					},
-					useAsInput: true
-				}
+			var amountParam = {
+				title: 'Amount',
+				param: 'u_noise_amount',
+				useAsInput: true,
+				paramHelpersType: 'shaderParam',
+				needsFrameUpdate: false,
+				minMax: { min: -2, max: 2 },
+				defaultVal: 0
 			};
 
-			for (var loopKey in _this.params) {
-				var key = _this.params[loopKey].objSettings.param;
-				_this.paramVals[key] = _this.params[loopKey].objSettings.defaultVal;
-			}
+			_this.params = {
+				amountParam: amountParam
+			};
+
 			return _this;
 		}
 
 		_createClass(CircleNode, [{
-			key: 'enableParam',
-			value: function enableParam(param, connectionData) {
-				_get(CircleNode.prototype.__proto__ || Object.getPrototypeOf(CircleNode.prototype), 'enableParam', this).call(this, param);
+			key: 'enableOutput',
+			value: function enableOutput(param, connection) {
+				_get(CircleNode.prototype.__proto__ || Object.getPrototypeOf(CircleNode.prototype), 'enableOutput', this).call(this);
 
-				var outNode = connectionData.out;
+				this.currentOutConnections.push(connection);
+				this.currentOutConnectionsLength = this.currentOutConnections.length;
 			}
 		}, {
-			key: 'updateParam',
-			value: function updateParam(param, outNode) {}
-		}, {
-			key: 'disableParam',
-			value: function disableParam(param, connectionData) {
-				_get(CircleNode.prototype.__proto__ || Object.getPrototypeOf(CircleNode.prototype), 'disableParam', this).call(this, param);
+			key: 'disableOutput',
+			value: function disableOutput(nodeIn, param) {
+				var tempOutConnections = this.currentOutConnections.map(function (t) {
+					return t;
+				});
 
-				var outNode = connectionData.out;
-			}
-		}, {
-			key: 'enableInput',
-			value: function enableInput(outputNode) {
-				_get(CircleNode.prototype.__proto__ || Object.getPrototypeOf(CircleNode.prototype), 'enableInput', this).call(this);
-			}
-		}, {
-			key: 'disableInput',
-			value: function disableInput(nodeToDisconnect) {
-				_get(CircleNode.prototype.__proto__ || Object.getPrototypeOf(CircleNode.prototype), 'disableInput', this).call(this);
+				var paramConnections = tempOutConnections.filter(function (t) {
+					return t.param;
+				});
+				var nodeConnections = tempOutConnections.filter(function (t) {
+					return !t.param;
+				});
+
+				if (param) {
+					paramConnections = paramConnections.filter(function (t) {
+						return t.param && t.param.title !== param.title;
+					});
+				} else {
+					nodeConnections = nodeConnections.filter(function (t) {
+						return t.in.ID !== nodeIn.ID;
+					});
+				}
+
+				var finalConnections = paramConnections.concat(nodeConnections);
+				this.currentOutConnections = finalConnections;
+				this.currentOutConnectionsLength = this.currentOutConnections.length;
+
+				if (this.currentOutConnectionsLength <= 0) {
+					_get(CircleNode.prototype.__proto__ || Object.getPrototypeOf(CircleNode.prototype), 'disableOutput', this).call(this);
+				}
 			}
 		}, {
 			key: 'update',
@@ -93164,7 +93899,7 @@
 	exports.default = CircleNode;
 
 /***/ }),
-/* 65 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -93177,19 +93912,15 @@
 
 	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-	var _RenderNode2 = __webpack_require__(63);
+	var _RenderNode2 = __webpack_require__(67);
 
 	var _RenderNode3 = _interopRequireDefault(_RenderNode2);
 
-	var _SHADERS = __webpack_require__(37);
-
-	var SHADERS = _interopRequireWildcard(_SHADERS);
-
-	var _three = __webpack_require__(39);
+	var _three = __webpack_require__(43);
 
 	var THREE = _interopRequireWildcard(_three);
 
-	var _RangeSlider = __webpack_require__(45);
+	var _RangeSlider = __webpack_require__(49);
 
 	var _RangeSlider2 = _interopRequireDefault(_RangeSlider);
 
@@ -93202,180 +93933,196 @@
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	// import * as SHADERS from '../../../shaders/SHADERS';
+
 
 	var CubeNode = function (_RenderNode) {
 		_inherits(CubeNode, _RenderNode);
 
-		function CubeNode(FBO, mainRender) {
+		function CubeNode(mainRender) {
 			_classCallCheck(this, CubeNode);
 
-			var _this = _possibleConstructorReturn(this, (CubeNode.__proto__ || Object.getPrototypeOf(CubeNode)).call(this, FBO, mainRender));
+			var _this = _possibleConstructorReturn(this, (CubeNode.__proto__ || Object.getPrototypeOf(CubeNode)).call(this, mainRender));
 
-			_this.shader = SHADERS.CIRCLE_SHAPE_MAIN;
+			_this.isForegroundNode = true;
+
+			_this.el.classList.add('no-height');
+
+			// this.shader = SHADERS.CIRCLE_SHAPE_MAIN;
 
 			var w = window.innerWidth;
 			var h = window.innerHeight;
 
 			_this.camera = new THREE.PerspectiveCamera(75, w / h, 0.1, 1000);
 
-			_this.camera.position.z = 5;
+			_this.camera.position.z = 3;
 
-			_this.texture = THREE.ImageUtils.loadTexture('assets/test/Image1.png', null);
-			_this.texture.magFilter = THREE.LinearFilter;
-			_this.texture.minFilter = THREE.LinearFilter;
+			// this.texture = THREE.ImageUtils.loadTexture( 'assets/test/Image1.png', null );
+			// this.texture.magFilter = THREE.LinearFilter;
+			// this.texture.minFilter = THREE.LinearFilter;
 
-			_this.geometry = new THREE.BoxGeometry(1, 1, 1);
+			_this.geometry = new THREE.BoxGeometry(1, 1, 1, 10, 10, 10);
 			_this.material = new THREE.MeshPhongMaterial({});
 			_this.mesh = new THREE.Mesh(_this.geometry, _this.material);
 
-			var light = new THREE.AmbientLight(0x404040); // soft white light
-			var directionalLight = new THREE.DirectionalLight(0xffffff, .6);
 			var directionalLightBtm = new THREE.DirectionalLight(0xffffff, 1);
 
 			directionalLightBtm.position.set(0, 0, 4);
-			// this.scene.add( directionalLight );
 			_this.scene.add(directionalLightBtm);
 
 			_this.scene.add(_this.mesh);
 
-			// directionalLight.target = this.mesh;
 			directionalLightBtm.target = _this.mesh;
 
-			_this.paramVals = {};
-
-			_this.params = {
-				'Material': {
-					objSettings: {
-						title: 'Material',
-						defaultVal: 0,
-						range: { min: 0, max: 2 },
-						param: 'material',
-						decimals: 2
-					},
-					useAsInput: true
-				},
-				'Position': {
-					objSettings: {
-						title: 'Position',
-						defaultVal: 0,
-						range: { min: 0, max: 2 },
-						param: 'position',
-						decimals: 2
-					},
-					useAsInput: true
-				},
-				'Rotation': {
-					objSettings: {
-						title: 'Rotation',
-						defaultVal: 0,
-						range: { min: 0, max: 2 },
-						param: 'rotation',
-						decimals: 2
-					},
-					useAsInput: true
-				}
+			var textureParam = {
+				title: 'Texture',
+				param: 'map',
+				useAsInput: true,
+				parent: 'Material',
+				paramHelpersType: 'texture',
+				needsFrameUpdate: false
 			};
 
-			for (var loopKey in _this.params) {
-				var key = _this.params[loopKey].objSettings.param;
-				_this.paramVals[key] = _this.params[loopKey].objSettings.defaultVal;
-			}
+			var colorParam = {
+				title: 'Color',
+				param: 'color',
+				useAsInput: true,
+				defaultVal: new THREE.Color(1, 1, 1),
+				parent: 'Material',
+				paramHelpersType: 'color',
+				needsFrameUpdate: false
+			};
+
+			var bumpMapParam = {
+				title: 'Displacement',
+				// param: 'displacementMap',
+				param: 'normalMap',
+				useAsInput: true,
+				parent: 'Material',
+				paramHelpersType: 'normalMap',
+				needsFrameUpdate: false
+			};
+
+			var positionXParam = {
+				title: 'Position X',
+				param: 'x',
+				useAsInput: true,
+				parent: 'Position',
+				paramHelpersType: 'position',
+				needsFrameUpdate: false,
+				minMax: { min: -2, max: 2 },
+				defaultVal: 0
+			};
+
+			var positionYParam = {
+				title: 'Position Y',
+				param: 'y',
+				useAsInput: true,
+				parent: 'Position',
+				paramHelpersType: 'position',
+				needsFrameUpdate: false,
+				minMax: { min: -2, max: 2 },
+				defaultVal: 0
+			};
+
+			var positionZParam = {
+				title: 'Position Z',
+				param: 'z',
+				useAsInput: true,
+				parent: 'Position',
+				paramHelpersType: 'position',
+				needsFrameUpdate: false,
+				minMax: { min: -2, max: 2 },
+				defaultVal: 0
+			};
+
+			var rotationXParam = {
+				title: 'Rotation x',
+				param: 'x',
+				useAsInput: true,
+				parent: 'Rotation',
+				paramHelpersType: 'rotation',
+				needsFrameUpdate: false,
+				minMax: { min: -6, max: 6 },
+				defaultVal: 0
+			};
+
+			var rotationYParam = {
+				title: 'Rotation y',
+				param: 'y',
+				useAsInput: true,
+				parent: 'Rotation',
+				paramHelpersType: 'rotation',
+				needsFrameUpdate: false,
+				minMax: { min: -6, max: 6 },
+				defaultVal: 0
+			};
+
+			_this.params = {
+				textureParam: textureParam,
+				colorParam: colorParam,
+				bumpMapParam: bumpMapParam,
+				positionXParam: positionXParam,
+				positionYParam: positionYParam,
+				positionZParam: positionZParam,
+				rotationXParam: rotationXParam,
+				rotationYParam: rotationYParam
+			};
+
+			_this.paramVals = {};
 			return _this;
 		}
 
 		_createClass(CubeNode, [{
-			key: 'enableParam',
-			value: function enableParam(param, connectionData) {
-				_get(CubeNode.prototype.__proto__ || Object.getPrototypeOf(CubeNode.prototype), 'enableParam', this).call(this, param);
-
-				var outNode = connectionData.out;
-
-				if (param.objSettings.param === 'material') {
-					if (outNode.framebuffer) {
-						this.material.needsUpdate = true;
-						this.material.map = connectionData.out.framebuffer.texture;
-					} else if (outNode.modifier) {
-						this.material[outNode.modifier.param] = outNode.modifier.value;
-					}
-				} else if (param.objSettings.param === 'position') {
-					this.mesh.position.x = outNode.modifier.value.x;
-					this.mesh.position.y = outNode.modifier.value.y;
-					this.mesh.position.z = outNode.modifier.value.z;
-				} else if (param.objSettings.param === 'rotation') {
-					this.mesh.rotation.x = outNode.modifier.value.x;
-					this.mesh.rotation.y = outNode.modifier.value.y;
-				}
-			}
-		}, {
-			key: 'updateParam',
-			value: function updateParam(param, outNode) {
-				if (param.objSettings.param === 'material') {
-					if (outNode.framebuffer) {
-						this.material.map = connectionData.out.framebuffer.texture;
-					} else if (outNode.modifier) {
-						this.material[outNode.modifier.param] = outNode.modifier.value;
-					}
-				} else if (param.objSettings.param === 'position') {
-					this.mesh.position.x = outNode.modifier.value.x;
-					this.mesh.position.y = outNode.modifier.value.y;
-					this.mesh.position.z = outNode.modifier.value.z;
-				} else if (param.objSettings.param === 'rotation') {
-					this.mesh.rotation.x = outNode.modifier.value.x;
-					this.mesh.rotation.y = outNode.modifier.value.y;
-				}
-			}
-		}, {
-			key: 'disableParam',
-			value: function disableParam(param, connectionData) {
-				_get(CubeNode.prototype.__proto__ || Object.getPrototypeOf(CubeNode.prototype), 'disableParam', this).call(this, param);
-
-				var outNode = connectionData.out;
-
-				if (param.objSettings.param === 'material') {
-					if (outNode.framebuffer) {
-						this.material.needsUpdate = true;
-						this.material.map = null;
-					} else if (outNode.modifier) {
-						this.material[outNode.modifier.param] = outNode.modifier.default;
-					}
-				} else if (param.objSettings.param === 'position') {
-					this.mesh.position.x = outNode.modifier.default.x;
-					this.mesh.position.y = outNode.modifier.default.y;
-					this.mesh.position.z = outNode.modifier.default.z;
-				} else if (param.objSettings.param === 'rotation') {
-					this.mesh.rotation.x = outNode.modifier.default.x;
-					this.mesh.rotation.y = outNode.modifier.default.y;
-				}
-			}
-		}, {
 			key: 'getMesh',
 			value: function getMesh() {
 				return this.mesh;
 			}
 		}, {
-			key: 'setup',
-			value: function setup() {}
-		}, {
-			key: 'enableInput',
-			value: function enableInput(outputNode) {
-				_get(CubeNode.prototype.__proto__ || Object.getPrototypeOf(CubeNode.prototype), 'enableInput', this).call(this);
+			key: 'enableOutput',
+			value: function enableOutput(param, connection) {
+				_get(CubeNode.prototype.__proto__ || Object.getPrototypeOf(CubeNode.prototype), 'enableOutput', this).call(this);
+
+				this.currentOutConnections.push(connection);
+				this.currentOutConnectionsLength = this.currentOutConnections.length;
 			}
 		}, {
-			key: 'disableInput',
-			value: function disableInput(nodeToDisconnect) {
-				_get(CubeNode.prototype.__proto__ || Object.getPrototypeOf(CubeNode.prototype), 'disableInput', this).call(this);
+			key: 'disableOutput',
+			value: function disableOutput(nodeIn, param) {
+				var tempOutConnections = this.currentOutConnections.map(function (t) {
+					return t;
+				});
+
+				var paramConnections = tempOutConnections.filter(function (t) {
+					return t.param;
+				});
+				var nodeConnections = tempOutConnections.filter(function (t) {
+					return !t.param;
+				});
+
+				if (param) {
+					paramConnections = paramConnections.filter(function (t) {
+						return t.param && t.param.title !== param.title;
+					});
+				} else {
+					nodeConnections = nodeConnections.filter(function (t) {
+						return t.in.ID !== nodeIn.ID;
+					});
+				}
+
+				var finalConnections = paramConnections.concat(nodeConnections);
+				this.currentOutConnections = finalConnections;
+				this.currentOutConnectionsLength = this.currentOutConnections.length;
+
+				if (this.currentOutConnectionsLength <= 0) {
+					_get(CubeNode.prototype.__proto__ || Object.getPrototypeOf(CubeNode.prototype), 'disableOutput', this).call(this);
+				}
 			}
 		}, {
 			key: 'update',
 			value: function update() {
 				_get(CubeNode.prototype.__proto__ || Object.getPrototypeOf(CubeNode.prototype), 'update', this).call(this);
-
-				this.mesh.rotation.x += 0.01;
-				this.mesh.rotation.y += 0.01;
 			}
-		}, {
-			key: 'main',
-			value: function main() {}
 		}]);
 
 		return CubeNode;
@@ -93384,7 +94131,7 @@
 	exports.default = CubeNode;
 
 /***/ }),
-/* 66 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -93397,15 +94144,241 @@
 
 	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-	var _GraphicNode2 = __webpack_require__(12);
+	var _RenderNode2 = __webpack_require__(67);
+
+	var _RenderNode3 = _interopRequireDefault(_RenderNode2);
+
+	var _three = __webpack_require__(43);
+
+	var THREE = _interopRequireWildcard(_three);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var SphereNode = function (_RenderNode) {
+		_inherits(SphereNode, _RenderNode);
+
+		function SphereNode(mainRender) {
+			_classCallCheck(this, SphereNode);
+
+			var _this = _possibleConstructorReturn(this, (SphereNode.__proto__ || Object.getPrototypeOf(SphereNode)).call(this, mainRender));
+
+			_this.isForegroundNode = true;
+
+			_this.el.classList.add('no-height');
+
+			// this.shader = SHADERS.CIRCLE_SHAPE_MAIN;
+
+			var w = window.innerWidth;
+			var h = window.innerHeight;
+
+			_this.camera = new THREE.PerspectiveCamera(75, w / h, 0.1, 1000);
+
+			_this.camera.position.z = 10;
+
+			// this.texture = THREE.ImageUtils.loadTexture( 'assets/test/Image1.png', null );
+			// this.texture.magFilter = THREE.LinearFilter;
+			// this.texture.minFilter = THREE.LinearFilter;
+
+			_this.geometry = new THREE.SphereGeometry(5, 32, 32);
+			_this.material = new THREE.MeshPhongMaterial({});
+			_this.mesh = new THREE.Mesh(_this.geometry, _this.material);
+
+			var directionalLightBtm = new THREE.DirectionalLight(0xffffff, 1);
+
+			directionalLightBtm.position.set(0, 0, 4);
+			_this.scene.add(directionalLightBtm);
+
+			_this.scene.add(_this.mesh);
+
+			directionalLightBtm.target = _this.mesh;
+
+			var textureParam = {
+				title: 'Texture',
+				param: 'map',
+				useAsInput: true,
+				parent: 'Material',
+				paramHelpersType: 'texture',
+				needsFrameUpdate: false
+			};
+
+			var colorParam = {
+				title: 'Color',
+				param: 'color',
+				useAsInput: true,
+				defaultVal: new THREE.Color(1, 1, 1),
+				parent: 'Material',
+				paramHelpersType: 'color',
+				needsFrameUpdate: false
+			};
+
+			var bumpMapParam = {
+				title: 'Displacement',
+				// param: 'displacementMap',
+				param: 'normalMap',
+				useAsInput: true,
+				parent: 'Material',
+				paramHelpersType: 'normalMap',
+				needsFrameUpdate: false
+			};
+
+			var positionXParam = {
+				title: 'Position X',
+				param: 'x',
+				useAsInput: true,
+				parent: 'Position',
+				paramHelpersType: 'position',
+				needsFrameUpdate: false,
+				minMax: { min: -2, max: 2 },
+				defaultVal: 0
+			};
+
+			var positionYParam = {
+				title: 'Position Y',
+				param: 'y',
+				useAsInput: true,
+				parent: 'Position',
+				paramHelpersType: 'position',
+				needsFrameUpdate: false,
+				minMax: { min: -2, max: 2 },
+				defaultVal: 0
+			};
+
+			var positionZParam = {
+				title: 'Position Z',
+				param: 'z',
+				useAsInput: true,
+				parent: 'Position',
+				paramHelpersType: 'position',
+				needsFrameUpdate: false,
+				minMax: { min: -2, max: 2 },
+				defaultVal: 0
+			};
+
+			var rotationXParam = {
+				title: 'Rotation x',
+				param: 'x',
+				useAsInput: true,
+				parent: 'Rotation',
+				paramHelpersType: 'rotation',
+				needsFrameUpdate: false,
+				minMax: { min: -6, max: 6 },
+				defaultVal: 0
+			};
+
+			var rotationYParam = {
+				title: 'Rotation y',
+				param: 'y',
+				useAsInput: true,
+				parent: 'Rotation',
+				paramHelpersType: 'rotation',
+				needsFrameUpdate: false,
+				minMax: { min: -6, max: 6 },
+				defaultVal: 0
+			};
+
+			_this.params = {
+				textureParam: textureParam,
+				colorParam: colorParam,
+				bumpMapParam: bumpMapParam,
+				positionXParam: positionXParam,
+				positionYParam: positionYParam,
+				positionZParam: positionZParam,
+				rotationXParam: rotationXParam,
+				rotationYParam: rotationYParam
+			};
+
+			_this.paramVals = {};
+			return _this;
+		}
+
+		_createClass(SphereNode, [{
+			key: 'getMesh',
+			value: function getMesh() {
+				return this.mesh;
+			}
+		}, {
+			key: 'enableOutput',
+			value: function enableOutput(param, connection) {
+				_get(SphereNode.prototype.__proto__ || Object.getPrototypeOf(SphereNode.prototype), 'enableOutput', this).call(this);
+
+				this.currentOutConnections.push(connection);
+				this.currentOutConnectionsLength = this.currentOutConnections.length;
+			}
+		}, {
+			key: 'disableOutput',
+			value: function disableOutput(nodeIn, param) {
+				var tempOutConnections = this.currentOutConnections.map(function (t) {
+					return t;
+				});
+
+				var paramConnections = tempOutConnections.filter(function (t) {
+					return t.param;
+				});
+				var nodeConnections = tempOutConnections.filter(function (t) {
+					return !t.param;
+				});
+
+				if (param) {
+					paramConnections = paramConnections.filter(function (t) {
+						return t.param && t.param.title !== param.title;
+					});
+				} else {
+					nodeConnections = nodeConnections.filter(function (t) {
+						return t.in.ID !== nodeIn.ID;
+					});
+				}
+
+				var finalConnections = paramConnections.concat(nodeConnections);
+				this.currentOutConnections = finalConnections;
+				this.currentOutConnectionsLength = this.currentOutConnections.length;
+
+				if (this.currentOutConnectionsLength <= 0) {
+					_get(SphereNode.prototype.__proto__ || Object.getPrototypeOf(SphereNode.prototype), 'disableOutput', this).call(this);
+				}
+			}
+		}, {
+			key: 'update',
+			value: function update() {
+				_get(SphereNode.prototype.__proto__ || Object.getPrototypeOf(SphereNode.prototype), 'update', this).call(this);
+			}
+		}]);
+
+		return SphereNode;
+	}(_RenderNode3.default);
+
+	exports.default = SphereNode;
+
+/***/ }),
+/* 72 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+	var _GraphicNode2 = __webpack_require__(13);
 
 	var _GraphicNode3 = _interopRequireDefault(_GraphicNode2);
 
-	var _RangeSlider = __webpack_require__(45);
+	var _RangeSlider = __webpack_require__(49);
 
 	var _RangeSlider2 = _interopRequireDefault(_RangeSlider);
 
-	var _three = __webpack_require__(39);
+	var _three = __webpack_require__(43);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -93503,7 +94476,7 @@
 	exports.default = ColorNode;
 
 /***/ }),
-/* 67 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -93516,15 +94489,15 @@
 
 	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-	var _GraphicNode2 = __webpack_require__(12);
+	var _GraphicNode2 = __webpack_require__(13);
 
 	var _GraphicNode3 = _interopRequireDefault(_GraphicNode2);
 
-	var _RangeSlider = __webpack_require__(45);
+	var _RangeSlider = __webpack_require__(49);
 
 	var _RangeSlider2 = _interopRequireDefault(_RangeSlider);
 
-	var _three = __webpack_require__(39);
+	var _three = __webpack_require__(43);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -93620,7 +94593,7 @@
 	exports.default = PositionNode;
 
 /***/ }),
-/* 68 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -93633,15 +94606,15 @@
 
 	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-	var _GraphicNode2 = __webpack_require__(12);
+	var _GraphicNode2 = __webpack_require__(13);
 
 	var _GraphicNode3 = _interopRequireDefault(_GraphicNode2);
 
-	var _RangeSlider = __webpack_require__(45);
+	var _RangeSlider = __webpack_require__(49);
 
 	var _RangeSlider2 = _interopRequireDefault(_RangeSlider);
 
-	var _three = __webpack_require__(39);
+	var _three = __webpack_require__(43);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -93724,6 +94697,590 @@
 	}(_GraphicNode3.default);
 
 	exports.default = RotationNode;
+
+/***/ }),
+/* 75 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+	var _GraphicNode2 = __webpack_require__(13);
+
+	var _GraphicNode3 = _interopRequireDefault(_GraphicNode2);
+
+	var _RangeSlider = __webpack_require__(49);
+
+	var _RangeSlider2 = _interopRequireDefault(_RangeSlider);
+
+	var _three = __webpack_require__(43);
+
+	var _HorizontalRangeSlider = __webpack_require__(76);
+
+	var _HorizontalRangeSlider2 = _interopRequireDefault(_HorizontalRangeSlider);
+
+	var _Easing = __webpack_require__(77);
+
+	var _Easing2 = _interopRequireDefault(_Easing);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var ParamDriverNode = function (_GraphicNode) {
+		_inherits(ParamDriverNode, _GraphicNode);
+
+		function ParamDriverNode() {
+			_classCallCheck(this, ParamDriverNode);
+
+			var _this = _possibleConstructorReturn(this, (ParamDriverNode.__proto__ || Object.getPrototypeOf(ParamDriverNode)).call(this));
+
+			_this.el.classList.add('no-height');
+			_this.el.classList.add('left-padding');
+			_this.el.classList.add('param-driver-node');
+
+			_this.isParam = true;
+
+			_this.animateValues = {
+				isRunning: false,
+				timestamp: 0,
+				duration: 0,
+				reqAnimFrame: -1,
+				firstRunOffset: 0
+			};
+
+			_this.onRangeValChangeBound = _this.onRangeValChange.bind(_this);
+
+			_this.onInputChangeBound = _this.onInputChange.bind(_this);
+
+			_this.horizontalRangeSlider = new _HorizontalRangeSlider2.default(_this.topPartEl, 0, _this.onRangeValChangeBound, 2, _this.onInputChangeBound);
+
+			_this.durationEl = document.createElement('input');
+			_this.durationEl.type = 'number';
+			_this.durationEl.value = 2000;
+			_this.durationEl.step = 1;
+			_this.durationEl.min = 400;
+			_this.durationEl.max = 10000;
+			_this.durationEl.addEventListener('change', _this.onInputChangeBound);
+
+			var durationContainer = document.createElement('div');
+			durationContainer.className = 'duration-container (ms)';
+
+			var durationLabel = document.createElement('p');
+			durationLabel.innerHTML = 'Duration';
+
+			durationContainer.appendChild(durationLabel);
+			durationContainer.appendChild(_this.durationEl);
+
+			var bottomContainer = document.createElement('div');
+			bottomContainer.className = 'top-bottom-container';
+
+			bottomContainer.appendChild(durationContainer);
+
+			_this.onToggleStartClickBound = _this.onToggleStartClick.bind(_this);
+
+			_this.toggleStartBtn = document.createElement('div');
+			_this.toggleStartBtn.className = 'toggle-start';
+			_this.toggleStartBtn.addEventListener('click', _this.onToggleStartClickBound);
+
+			_this.toggleBtnText = document.createElement('p');
+			_this.toggleBtnText.innerHTML = 'Start';
+
+			_this.toggleStartBtn.appendChild(_this.toggleBtnText);
+
+			bottomContainer.appendChild(_this.toggleStartBtn);
+			_this.topPartEl.appendChild(bottomContainer);
+
+			_this.modifier = {};
+
+			_this.paramVals = {};
+
+			_this.params = {};
+
+			_this.updateBound = _this.update.bind(_this);
+
+			_this.update();
+			return _this;
+		}
+
+		_createClass(ParamDriverNode, [{
+			key: 'onInputChange',
+			value: function onInputChange(e) {
+
+				this.reset();
+			}
+		}, {
+			key: 'reset',
+			value: function reset() {
+				// this.horizontalRangeSlider.setValue(0);
+				this.animateValues.isRunning = false;
+				this.toggleBtnText.innerHTML = 'Start';
+			}
+		}, {
+			key: 'onToggleStartClick',
+			value: function onToggleStartClick() {
+				if (this.animateValues.isRunning) {
+					this.animateValues.isRunning = false;
+					this.toggleBtnText.innerHTML = 'Start';
+				} else {
+					this.toggleBtnText.innerHTML = 'Stop';
+					this.animateValues.timestamp = Date.now();
+					this.animateValues.duration = parseInt(this.durationEl.value);
+
+					this.animateValues.firstRunOffset = Math.floor(this.horizontalRangeSlider.value * this.animateValues.duration);
+					this.animateValues.isReverse = false;
+					this.animateValues.easing = _Easing2.default.linear;
+					this.animateValues.isRunning = true;
+				}
+			}
+		}, {
+			key: 'getValue',
+			value: function getValue() {
+				return this.horizontalRangeSlider.getReadyValue();
+			}
+		}, {
+			key: 'update',
+			value: function update() {
+
+				this.animateValues.reqAnimFrame = requestAnimationFrame(this.updateBound);
+
+				if (!this.animateValues.isRunning) {
+					return;
+				}
+
+				var now = Date.now();
+				var diff = now - this.animateValues.timestamp + this.animateValues.firstRunOffset;
+				var normalizedDiff = this.animateValues.easing(Math.min(diff / this.animateValues.duration, 1.0));
+				// const normalizedDiff = Math.min(diff / this.animateValues.duration, 1.0);
+
+				var normalizedVal = this.animateValues.isReverse ? 1 - normalizedDiff : normalizedDiff;
+				if (normalizedVal >= 1.0) {
+					this.animateValues.timestamp = now;
+					this.animateValues.isReverse = true;
+					this.animateValues.firstRunOffset = 0.0;
+					// this.animateValues.easing = Ease.easeInOutCubic;
+				} else if (normalizedVal <= 0.0) {
+					this.animateValues.timestamp = now;
+					this.animateValues.isReverse = false;
+				}
+
+				this.horizontalRangeSlider.setValue(normalizedVal);
+			}
+		}, {
+			key: 'onRangeValChange',
+			value: function onRangeValChange(value) {
+
+				// loop through connections
+				for (var i = 0; i < this.currentOutConnectionsLength; i++) {
+					var param = this.currentOutConnections[i].param;
+
+					this.currentOutConnections[i].in.updateParam(param, this);
+				}
+			}
+		}, {
+			key: 'enableOutput',
+			value: function enableOutput(param, connection) {
+				_get(ParamDriverNode.prototype.__proto__ || Object.getPrototypeOf(ParamDriverNode.prototype), 'enableOutput', this).call(this);
+
+				this.currentOutConnections.push(connection);
+				this.currentOutConnectionsLength = this.currentOutConnections.length;
+
+				if (this.currentOutConnectionsLength === 1) {
+					this.horizontalRangeSlider.setDefaultValues(param);
+				}
+			}
+		}, {
+			key: 'enableInput',
+			value: function enableInput(outputNode) {
+				_get(ParamDriverNode.prototype.__proto__ || Object.getPrototypeOf(ParamDriverNode.prototype), 'enableInput', this).call(this);
+			}
+		}, {
+			key: 'disableOutput',
+			value: function disableOutput(node, param) {
+				if (this.currentOutConnectionsLength <= 1) {
+					_get(ParamDriverNode.prototype.__proto__ || Object.getPrototypeOf(ParamDriverNode.prototype), 'disableOutput', this).call(this);
+
+					this.reset();
+				}
+
+				this.currentOutConnections = this.currentOutConnections.filter(function (t) {
+					return t.param.title !== param.title;
+				});
+				this.currentOutConnectionsLength = this.currentOutConnections.length;
+			}
+		}, {
+			key: 'removeFromDom',
+			value: function removeFromDom() {
+
+				this.reset();
+				window.cancelAnimationFrame(this.animateValues.reqAnimFrame);
+
+				_get(ParamDriverNode.prototype.__proto__ || Object.getPrototypeOf(ParamDriverNode.prototype), 'removeFromDom', this).call(this);
+			}
+		}]);
+
+		return ParamDriverNode;
+	}(_GraphicNode3.default);
+
+	exports.default = ParamDriverNode;
+
+/***/ }),
+/* 76 */
+/***/ (function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var HorizontalRangeSlider = function () {
+		function HorizontalRangeSlider(parentEl, value, valChangeCallback, decimals, onInputChangeCallback) {
+			var _this = this;
+
+			_classCallCheck(this, HorizontalRangeSlider);
+
+			this.parentEl = parentEl;
+
+			this.valChangeCallback = valChangeCallback;
+			this.onInputChangeCallback = onInputChangeCallback;
+
+			this.decimals = decimals;
+			// this.value = (value - settings.min) / (settings.max - settings.min);
+
+			// this.settings = settings;
+
+			this.onInputChangeBound = this.onInputChange.bind(this);
+
+			this.el = document.createElement('div');
+			this.el.className = 'horizontal-range-slider';
+
+			var inputLowContainer = document.createElement('div');
+			inputLowContainer.className = 'input-container';
+
+			var inputLowLabel = document.createElement('p');
+			inputLowLabel.innerHTML = 'Min';
+			inputLowContainer.appendChild(inputLowLabel);
+
+			this.inputLowEl = document.createElement('input');
+			this.inputLowEl.type = 'number';
+			this.inputLowEl.value = -2;
+			this.inputLowEl.step = 1;
+			this.inputLowEl.min = -10;
+			this.inputLowEl.max = 1;
+			this.inputLowEl.addEventListener('change', this.onInputChangeBound);
+
+			inputLowContainer.appendChild(this.inputLowEl);
+
+			var inputHighContainer = document.createElement('div');
+			inputHighContainer.className = 'input-container';
+
+			var inputHighLabel = document.createElement('p');
+			inputHighLabel.innerHTML = 'Max';
+			inputHighContainer.appendChild(inputHighLabel);
+
+			this.inputHighEl = document.createElement('input');
+			this.inputHighEl.type = 'number';
+			this.inputHighEl.value = 2;
+			this.inputHighEl.step = .1;
+			this.inputHighEl.min = 2;
+			this.inputHighEl.max = 10;
+			this.inputHighEl.addEventListener('change', this.onInputChangeBound);
+
+			inputHighContainer.appendChild(this.inputHighEl);
+
+			this.rangeInnerContainer = document.createElement('div');
+			this.rangeInnerContainer.className = 'range-inner-container prevent-drag';
+
+			this.rangeKnob = document.createElement('div');
+			this.rangeKnob.className = 'range-knob prevent-drag';
+
+			this.rangeInnerContainer.appendChild(this.rangeKnob);
+
+			var rangeEl = document.createElement('div');
+			rangeEl.appendChild(inputLowContainer);
+			rangeEl.appendChild(this.rangeInnerContainer);
+			rangeEl.appendChild(inputHighContainer);
+			rangeEl.className = 'range-container';
+
+			this.valueEl = document.createElement('div');
+			this.valueEl.className = 'value-display';
+			this.valueEl.innerHTML = this.inputLowEl.value;
+
+			var valueContainer = document.createElement('div');
+			valueContainer.className = 'value-container';
+
+			var valueLabel = document.createElement('p');
+			valueLabel.innerHTML = 'Value';
+
+			valueContainer.appendChild(valueLabel);
+			valueContainer.appendChild(this.valueEl);
+
+			this.el.appendChild(rangeEl);
+
+			this.el.appendChild(valueContainer);
+
+			this.parentEl.appendChild(this.el);
+
+			this.onMouseDownBound = this.onMouseDown.bind(this);
+			this.onMouseMoveBound = this.onMouseMove.bind(this);
+			this.onMouseUpBound = this.onMouseUp.bind(this);
+			this.onRangeClickBound = this.onRangeClick.bind(this);
+
+			this.value = 0;
+
+			setTimeout(function () {
+				_this.setPos(100);
+			}, 0);
+
+			this.rangeInnerContainer.addEventListener('click', this.onRangeClickBound);
+			this.rangeKnob.addEventListener('mousedown', this.onMouseDownBound);
+			// this.el.addEventListener('mousedown', this.onMouseDownBound);
+		}
+
+		_createClass(HorizontalRangeSlider, [{
+			key: 'onInputChange',
+			value: function onInputChange(e) {
+
+				this.onInputChangeCallback();
+			}
+		}, {
+			key: 'setDefaultValues',
+			value: function setDefaultValues(param) {
+				var obj = param.minMax;
+				this.inputLowEl.value = obj.min;
+				this.inputLowEl.min = obj.min - 20;
+				this.inputLowEl.max = obj.max + 20;
+
+				this.inputHighEl.value = obj.max;
+				this.inputHighEl.min = obj.max - 20;
+				this.inputHighEl.max = obj.max + 20;
+
+				var value = param.defaultVal;
+
+				this.value = (value - obj.min) / (obj.max - obj.min);
+
+				this.valueEl.innerHTML = value;
+
+				this.setPos(100);
+
+				if (this.valChangeCallback) {
+
+					this.valChangeCallback(parseFloat(this.getValue().toFixed(this.decimals)));
+				}
+			}
+		}, {
+			key: 'getMinMaxValue',
+			value: function getMinMaxValue() {
+
+				return {
+					min: parseFloat(this.inputLowEl.value),
+					max: parseFloat(this.inputHighEl.value)
+				};
+			}
+		}, {
+			key: 'remove',
+			value: function remove() {
+
+				this.el.removeEventListener('mousedown', this.onMouseDownBound);
+				this.parentEl.removeChild(this.el);
+			}
+		}, {
+			key: 'setValue',
+			value: function setValue(value) {
+				this.value = value;
+
+				this.setPos(100);
+				var val = this.getValue().toFixed(this.decimals);
+				this.valueEl.innerHTML = val;
+
+				if (this.valChangeCallback) {
+
+					this.valChangeCallback(val);
+				}
+			}
+		}, {
+			key: 'getValue',
+			value: function getValue() {
+				var minMax = this.getMinMaxValue();
+				return this.value * (minMax.max - minMax.min) + minMax.min;
+			}
+		}, {
+			key: 'getReadyValue',
+			value: function getReadyValue() {
+				return parseFloat(this.getValue().toFixed(this.decimals));
+			}
+		}, {
+			key: 'onRangeClick',
+			value: function onRangeClick(e) {
+
+				var sliderHeight = 100;
+
+				var sliderBgRect = this.rangeInnerContainer.getBoundingClientRect();
+
+				var y = Math.round((e.y - sliderBgRect.top) * 100) / 100;
+				var val = 1 - y / sliderHeight;
+
+				this.value = val > 1 ? 1 : val < 0 ? 0 : val;
+				// this.value = Math.min(val, 1.0);
+
+				this.setPos(sliderHeight);
+
+				this.valueEl.innerHTML = this.getValue().toFixed(this.decimals);
+			}
+		}, {
+			key: 'onMouseDown',
+			value: function onMouseDown(e) {
+
+				e.preventDefault();
+				e.stopPropagation();
+
+				var sliderHeight = 100;
+
+				var sliderBgRect = this.rangeInnerContainer.getBoundingClientRect();
+
+				var y = Math.round((e.y - sliderBgRect.top) * 100) / 100;
+				var val = 1 - y / sliderHeight;
+
+				this.value = val > 1 ? 1 : val < 0 ? 0 : val;
+
+				this.setPos(sliderHeight);
+				if (this.valChangeCallback) {
+
+					this.valChangeCallback(parseFloat(this.getValue().toFixed(this.decimals)));
+				}
+
+				this.valueEl.innerHTML = this.getValue().toFixed(this.decimals);
+
+				window.addEventListener('mouseup', this.onMouseUpBound);
+				window.addEventListener('mousemove', this.onMouseMoveBound);
+			}
+		}, {
+			key: 'onMouseMove',
+			value: function onMouseMove(e) {
+
+				var sliderHeight = 100;
+
+				var sliderBgRect = this.rangeInnerContainer.getBoundingClientRect();
+
+				var y = Math.round((e.y - sliderBgRect.top) * 100) / 100;
+				var val = 1 - y / sliderHeight;
+
+				this.value = val > 1 ? 1 : val < 0 ? 0 : val;
+
+				this.setPos(sliderHeight);
+				if (this.valChangeCallback) {
+
+					this.valChangeCallback(parseFloat(this.getValue().toFixed(this.decimals)));
+				}
+
+				this.valueEl.innerHTML = this.getValue().toFixed(this.decimals);
+			}
+		}, {
+			key: 'onMouseUp',
+			value: function onMouseUp(e) {
+
+				window.removeEventListener('mouseup', this.onMouseUpBound);
+				window.removeEventListener('mousemove', this.onMouseMoveBound);
+			}
+		}, {
+			key: 'setPos',
+			value: function setPos(sliderHeight) {
+
+				var pos = sliderHeight - this.value * sliderHeight;
+				var height = this.value * sliderHeight;
+
+				// this.knobEl.style.height = `${height}px`;
+
+				this.rangeKnob.style[window.NS.transform] = 'translate3d(0px, ' + pos + 'px, 0)';
+			}
+		}]);
+
+		return HorizontalRangeSlider;
+	}();
+
+	exports.default = HorizontalRangeSlider;
+
+/***/ }),
+/* 77 */
+/***/ (function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var easing = {
+	  // no easing, no acceleration
+	  linear: function linear(t) {
+	    return t;
+	  },
+	  // accelerating from zero velocity
+	  easeInQuad: function easeInQuad(t) {
+	    return t * t;
+	  },
+	  // decelerating to zero velocity
+	  easeOutQuad: function easeOutQuad(t) {
+	    return t * (2 - t);
+	  },
+	  // acceleration until halfway, then deceleration
+	  easeInOutQuad: function easeInOutQuad(t) {
+	    return t < .5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+	  },
+	  // accelerating from zero velocity 
+	  easeInCubic: function easeInCubic(t) {
+	    return t * t * t;
+	  },
+	  // decelerating to zero velocity 
+	  easeOutCubic: function easeOutCubic(t) {
+	    return --t * t * t + 1;
+	  },
+	  // acceleration until halfway, then deceleration 
+	  easeInOutCubic: function easeInOutCubic(t) {
+	    return t < .5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
+	  },
+	  // accelerating from zero velocity 
+	  easeInQuart: function easeInQuart(t) {
+	    return t * t * t * t;
+	  },
+	  // decelerating to zero velocity 
+	  easeOutQuart: function easeOutQuart(t) {
+	    return 1 - --t * t * t * t;
+	  },
+	  // acceleration until halfway, then deceleration
+	  easeInOutQuart: function easeInOutQuart(t) {
+	    return t < .5 ? 8 * t * t * t * t : 1 - 8 * --t * t * t * t;
+	  },
+	  // accelerating from zero velocity
+	  easeInQuint: function easeInQuint(t) {
+	    return t * t * t * t * t;
+	  },
+	  // decelerating to zero velocity
+	  easeOutQuint: function easeOutQuint(t) {
+	    return 1 + --t * t * t * t * t;
+	  },
+	  // acceleration until halfway, then deceleration 
+	  easeInOutQuint: function easeInOutQuint(t) {
+	    return t < .5 ? 16 * t * t * t * t * t : 1 + 16 * --t * t * t * t * t;
+	  }
+	};
+
+	exports.default = easing;
 
 /***/ })
 /******/ ]);

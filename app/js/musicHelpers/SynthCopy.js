@@ -43,12 +43,16 @@ export default class SynthCopy{
 		for (let i = 0; i < connections.length; i++) {
 			const connection = connections[i];
 
+			if (connection.out.isSequencer) {
+				continue;
+			}
+
 			if (!this.nodes[connection.in.ID]) {
 				this.nodes[connection.in.ID] = connection.in.getAudioNode();
 			}
 
 			if (!this.nodes[connection.out.ID]) {
-				const audioNode = connection.out.getAudioNode(connection.param ? connection.param.objSettings.param : undefined);
+				const audioNode = connection.out.getAudioNode(connection.param ? connection.param.param : undefined);
 				this.nodes[connection.out.ID] = audioNode;
 				if (connection.out.isEnvelope) {
 					this.triggerNodes.push(audioNode);
@@ -61,10 +65,13 @@ export default class SynthCopy{
 			const audioNodeOut = this.nodes[connection.out.ID];
 			let audioNodeIn = this.nodes[connection.in.ID];
 
+			if (connection.out.isSequencer) {
+				continue;
+			}
+
 			if (connection.out.isParam) {
 			
-				// const param = connection.in.getParamConnection();
-				const param = connection.param.objSettings.param;
+				const param = connection.param.param;
 				audioNodeOut.connect(audioNodeIn[param]);
 						
 			} else {
@@ -87,20 +94,20 @@ export default class SynthCopy{
 
 	_updateOscillatorParams(audioNode, params, node) {
 		audioNode['frequency'].value = node.getFrequency(this.step);
-		audioNode['type'] = params.type;
+		// audioNode['type'] = params.type;
 	}
 
 	_updateParams(audioNode, params, node) {
 		const nodeParamIsConnected = (node, param) => {
 
 			for (const key in node.params) {
-				if (node.params[key].objSettings.param === param) {
+				if (node.params[key].param === param) {
 					return node.params[key].isConnected;
 				}
 			}
 		};
 
-		for (const key in params) {
+		for (const key in audioNode.params) {
 			if (key === 'gain') {
 				if (nodeParamIsConnected(node, key)) {
 					continue;
@@ -108,10 +115,10 @@ export default class SynthCopy{
 			}
 			
 			if (key === 'frequency' || key === 'amplitude' || key === 'Q' || key === 'gain' || key === 'threshold' || key === 'ratio') {
-				audioNode[key].value = params[key];
+				audioNode[key].value = params[key].value;
 
 			} else {
-				audioNode[key] = params[key];
+				audioNode[key] = params[key].value;
 			}
 		}
 	}
@@ -124,13 +131,15 @@ export default class SynthCopy{
 		for (let i = 0; i < this.currentConnections.length; i++) {
 			const connection = this.currentConnections[i];
 
+			if (connection.out.isSequencer) {
+				continue;
+			}
+
 			const audioNode = this.nodes[connection.out.ID];
 
 			const params = connection.out.getParams(this.step);
 			
-
-			
-			if (connection.out.isOscillator) {
+			if (connection.out.isOscillator && connection.out.hasConnectedTrigger) {
 				this._updateOscillatorParams(audioNode, params, connection.out);
 				audioNode.start(time);
 		

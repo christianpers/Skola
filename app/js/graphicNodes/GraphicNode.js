@@ -37,6 +37,8 @@ export default class GraphicNode extends Node{
 		this.isRenderNode = false;
 		this.canConnectToMaterial = false;
 		this.isCanvasNode = false;
+
+		this.dotPos = undefined;
 	}
 
 	init(
@@ -116,7 +118,12 @@ export default class GraphicNode extends Node{
 	}
 
 	getDotPos(el) {
-		return el.getBoundingClientRect();
+		
+		if (!this.dotPos) {
+			this.dotPos = el.getBoundingClientRect();
+		}
+
+		return this.dotPos;
 	}
 
 	setParamVal(val, key) {

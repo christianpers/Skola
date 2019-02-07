@@ -14,11 +14,7 @@ export default class NodeParam{
 		const labelEl = document.createElement('p');
 		
 		labelEl.className = 'label';
-		if (param.objSettings) {
-			labelEl.innerHTML = param.objSettings.param;
-		} else {
-			labelEl.innerHTML = param.param;
-		}
+		labelEl.innerHTML = param.param;
 		
 		this.el.appendChild(labelEl);
 
@@ -27,6 +23,25 @@ export default class NodeParam{
 		this.el.addEventListener('click', () => {
 			onClickCallback(param);
 		});
+
+		this.offsetLeft = undefined;
+		this.offsetTop = undefined;
+	}
+
+	getOffsetLeft() {
+		if (!this.offsetLeft) {
+			this.offsetLeft = this.el.offsetLeft;
+		}
+
+		return this.offsetLeft;
+	}
+
+	getOffsetTop() {
+		if (!this.offsetTop) {
+			this.offsetTop = this.el.offsetTop;
+		}
+
+		return this.offsetTop;
 	}
 
 	enable() {

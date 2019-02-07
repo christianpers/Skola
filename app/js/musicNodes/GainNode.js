@@ -1,94 +1,70 @@
 import MusicNode from './MusicNode';
 import Tone from 'tone';
 import RangeSlider from '../views/Nodes/NodeComponents/RangeSlider';
+import AudioInputHelpers from '../musicHelpers/AudioInputHelpers';
 
 export default class GainNode extends MusicNode{
 	constructor() {
 		super();
 
+		this.inputHelpersType = AudioInputHelpers.multiple;
+
+		this.el.classList.add('no-height');
+
 		this.audioNode = Tone.context.createGain();
+
+		const rangeContainer = document.createElement('div');
+		rangeContainer.className = 'range-container';
+
+		this.topPartEl.appendChild(rangeContainer);
+
+		this.onRangeChangeCallbackBound = this.onRangeChangeCallback.bind(this);
+
+		const gainRangeConfig = {
+			parentEl: rangeContainer,
+			title: 'Vol',
+			initValue: 0.5,
+			settings: {min: .0, max: 1.0},
+			valChangeCallback: this.onRangeChangeCallbackBound,
+			param: 'gain',
+			decimals: 2,
+			disable: false,
+		};
+
+		this.gainRangeSlider = new RangeSlider(
+			gainRangeConfig.parentEl,
+			gainRangeConfig.title,
+			gainRangeConfig.initValue,
+			gainRangeConfig.settings,
+			gainRangeConfig.valChangeCallback,
+			gainRangeConfig.param,
+			gainRangeConfig.decimals,
+			gainRangeConfig.disable,
+		);
+
+		const gainParam = {
+			useAsInput: true,
+			value: gainRangeConfig.initValue,
+			param: 'gain',
+			slider: this.gainRangeSlider,
+			title: 'Gain',
+			helper: AudioInputHelpers.gain,
+		};
 
 		this.paramVals = {};
 
-		this.params = {
-			'Gain' : {
-				obj: RangeSlider,
-				objSettings: {
-					title: 'Gain',
-					defaultVal: .5,
-					range: {min: 0, max: 1},
-					param: 'gain',
-					decimals: 2
-				},
-				useAsInput: true,
-				isConnected: false,
-			},
-		};
-
-		for (const loopKey in this.params) {
-			const key = this.params[loopKey].objSettings.param;
-			this.paramVals[key] = this.params[loopKey].objSettings.defaultVal;
-		}
+		this.params[gainParam.param] = gainParam;
 
 	}
 
-	setup() {
-
-		
+	onRangeChangeCallback(value, param) {
+		this.params[param].value = value;
+		this.onParameterChange(this);
 	}
-
-	// getParams() {
-	// 	const params = {};
-	// 	// params.gain = {
-	// 	// 	val: this.params['Gain'].objSettings.val,
-	// 	// 	ic
-	// 	// }
-	// 	params.gain = this.params['Gain'].objSettings.val;
-
-	// 	return params;
-	// }
 
 	getAudioNode() {
 
 		return Tone.context.createGain();
 	}
 
-	getParamConnection() {
-
-		return 'gain';
-	}
-
-	enableInput(outputAudioNode) {
-		super.enableInput();
-
-		// if (outputAudioNode.isParam) {
-		// 	outputAudioNode.audioNode.connect(this.audioNode.gain);
-			
-		// } else {
-		// 	outputAudioNode.audioNode.connect(this.audioNode);
-		// }
-		
-	}
-
-	disableInput(nodeToDisconnect) {
-		super.disableInput();
-		// if (nodeToDisconnect.isParam) {
-		// 	// nodeToDisconnect.audioNode.disconnect(this.audioNode.frequency);
-			
-
-			
-		// 	this.audioNode.disconnect(nodeToDisconnect.audioNode);
-		
-			
-		// } else {
-		// 	nodeToDisconnect.audioNode.disconnect(this.audioNode);
-		// }
-		
-	}
-
-	main() {
-
-
-
-	}
 }

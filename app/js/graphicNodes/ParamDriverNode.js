@@ -104,8 +104,6 @@ export default class ParamDriverNode extends GraphicNode{
 			this.animateValues.easing = Easing.linear;
 			this.animateValues.isRunning = true;
 
-			
-
 		}
 	}
 
@@ -170,14 +168,27 @@ export default class ParamDriverNode extends GraphicNode{
 	}
 
 	disableOutput(node, param) {
-		if (this.currentOutConnectionsLength <= 1) {
-			super.disableOutput();
+		const tempOutConnections = this.currentOutConnections.map(t => t);
 
-			this.reset();
-		}
+        let paramConnections = tempOutConnections.filter(t => t.param);
+        let nodeConnections = tempOutConnections.filter(t => !t.param);
+
+        if (param) {
+            paramConnections = paramConnections.filter(t => t.param && (t.param.title !== param.title));
+        } else {
+            nodeConnections = nodeConnections.filter(t => t.in.ID !== nodeIn.ID);
+        }
+        
+        const finalConnections = paramConnections.concat(nodeConnections);
+        this.currentOutConnections = finalConnections;
+        this.currentOutConnectionsLength = this.currentOutConnections.length;
+
+        if (this.currentOutConnectionsLength <= 0) {
+            super.disableOutput();
+
+        }
 		
-		this.currentOutConnections = this.currentOutConnections.filter(t => t.param.title !== param.title);
-		this.currentOutConnectionsLength = this.currentOutConnections.length;
+		
 	}
 
 	removeFromDom() {

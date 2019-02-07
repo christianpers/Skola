@@ -1,10 +1,15 @@
 import MusicNode from './MusicNode';
 import Tone from 'tone';
 import RangeSlider from '../views/Nodes/NodeComponents/RangeSlider';
+import AudioInputHelpers from '../musicHelpers/AudioInputHelpers';
 
 export default class OscillatorNode extends MusicNode{
 	constructor() {
 		super();
+
+		this.el.classList.add('no-height');
+
+		this.hasConnectedTrigger = false;
 
 		// OscillatorNode.BASE_OCTAVE = 4;
 		OscillatorNode.BASE_FREQ = 440;
@@ -14,26 +19,95 @@ export default class OscillatorNode extends MusicNode{
 		this.isOscillator = true;
 		this.hasAudioInput = false;
 
-		this.paramVals = {};
+		const rangeContainer = document.createElement('div');
+		rangeContainer.className = 'range-container';
 
-		this.params = {
-			'Octave' : {
-				obj: RangeSlider,
-				objSettings: {
-					title: 'Octave',
-					defaultVal: 0,
-					range: {min: -3, max: 3},
-					param: 'octave',
-					decimals: 0
-				},
-				useAsInput: false,
-			}
+		this.topPartEl.appendChild(rangeContainer);
+
+		this.onRangeChangeCallbackBound = this.onRangeChangeCallback.bind(this);
+
+		const octaveRangeConfig = {
+			parentEl: rangeContainer,
+			title: 'Oktav',
+			initValue: 0,
+			settings: {min: -3, max: 3},
+			valChangeCallback: this.onRangeChangeCallbackBound,
+			param: 'octave',
+			decimals: 0,
+			disable: false,
 		};
 
-		for (const loopKey in this.params) {
-			const key = this.params[loopKey].objSettings.param;
-			this.paramVals[key] = this.params[loopKey].objSettings.defaultVal;
+		this.octaveRangeSlider = new RangeSlider(
+			octaveRangeConfig.parentEl,
+			octaveRangeConfig.title,
+			octaveRangeConfig.initValue,
+			octaveRangeConfig.settings,
+			octaveRangeConfig.valChangeCallback,
+			octaveRangeConfig.param,
+			octaveRangeConfig.decimals,
+			octaveRangeConfig.disable,
+		);
+
+		const octaveParam = {
+			useAsInput: false,
+			value: octaveRangeConfig.initValue,
+			param: 'octave',
+			slider: this.octaveRangeSlider,
+			title: 'Octave',
+		};
+
+		const triggerParam = {
+			useAsInput: true,
+			param: 'trigger',
+			title: 'Trigger',
+			helper: AudioInputHelpers.oscillatorTrigger,
+		};
+
+		this.params[octaveParam.param] = octaveParam;
+		this.params[triggerParam.param] = triggerParam;
+
+		this.paramVals = {};
+
+		// this.params = {
+		// 	'Octave' : {
+		// 		obj: RangeSlider,
+		// 		objSettings: {
+		// 			title: 'Octave',
+		// 			defaultVal: 0,
+		// 			range: {min: -3, max: 3},
+		// 			param: 'octave',
+		// 			decimals: 0
+		// 		},
+		// 		useAsInput: false,
+		// 	}
+		// };
+
+		// for (const loopKey in this.params) {
+		// 	const key = this.params[loopKey].objSettings.param;
+		// 	this.paramVals[key] = this.params[loopKey].objSettings.defaultVal;
+		// }
+	}
+
+	enableParam(param) {
+		super.enableParam(param);
+
+		if (param.param === 'trigger') {
+			this.hasConnectedTrigger = true;
 		}
+
+	}
+
+	disableParam(param) {
+		super.disableParam(param);
+
+		if (param.param === 'trigger') {
+			this.hasConnectedTrigger = false;
+		}
+	}
+
+	onRangeChangeCallback(value, param) {
+		this.params[param].value = value;
+		this.onParameterChange(this);
 	}
 
 	getParams(step) {
@@ -62,7 +136,7 @@ export default class OscillatorNode extends MusicNode{
 	getFrequency(step) {
 
 		// const octaveOffset = parseInt(this.params['Octave'].objSettings.val);
-		const octaveOffset = parseInt(this.paramVals['octave']);
+		const octaveOffset = parseInt(this.params['octave'].value);
 		// console.log(octaveOffset);
 
 		const tempOctave = octaveOffset;
@@ -73,16 +147,6 @@ export default class OscillatorNode extends MusicNode{
 		return freq;
 	}
 
-	// keyDown(step) {
-
-	// 	const freq = this.getFrequency(step);
-
-	// 	this.audioNode.frequency.value = freq;
-
-	// }
-
-	// keyUp() {
-	// }
 
 	onParameterChange(val, type) {
 
@@ -91,18 +155,4 @@ export default class OscillatorNode extends MusicNode{
 		// console.log(this.audioNode);
 	}
 
-	setup() {
-
-		// this.audioNode = new Tone.Oscillator();
-
-		// this.audioNode.type = "sawtooth";
-		// this.audioNode.frequency.value = 130.812782650299317;
-		// this.audioNode.start();
-	}
-
-	main() {
-
-
-
-	}
 }

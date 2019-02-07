@@ -3,7 +3,7 @@ import SynthCopy from '../musicHelpers/SynthCopy';
 export default class KeyboardManager{
 	constructor() {
 
-		KeyboardManager.KEY_INTS = [65,83,68,70,71,72,73,79];
+		KeyboardManager.KEY_INTS = [65,83,68,70,71,72,74,75,76,186,222,219];
 
 		this.keys = [];
 

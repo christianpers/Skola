@@ -47,12 +47,12 @@ const onBumpmapDisconnect = (inNode) => {
 
 const isValidParamColorInput = (outNode) => {
 
-	return outNode.modifier.isColor;
+	return outNode.picker;
 };
 
 const onColorParamUpdate = (inNode, outNode) => {
 
-	inNode.material.color = outNode.modifier.value;
+	inNode.material.color = outNode.currentColor;
 };
 
 const isValidParamPositionInput = (outNode, param) => {

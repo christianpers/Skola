@@ -25,6 +25,25 @@ export default class NodeInput{
 		this.onClickBound = this.onClick.bind(this);
 
 		this.el.addEventListener('click', this.onClickBound);
+
+		this.offsetLeft = undefined;
+		this.offsetTop = undefined;
+	}
+
+	getOffsetLeft() {
+		if (!this.offsetLeft) {
+			this.offsetLeft = this.el.offsetLeft;
+		}
+
+		return this.offsetLeft;
+	}
+
+	getOffsetTop() {
+		if (!this.offsetTop) {
+			this.offsetTop = this.el.offsetTop;
+		}
+
+		return this.offsetTop;
 	}
 
 	onClick(e) {

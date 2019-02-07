@@ -47,12 +47,24 @@ export default class RangeSlider{
 			this.setPos(this.sliderBg.clientHeight);
 		}, 0);
 
-		this.el.addEventListener('mousedown', this.onMouseDownBound);
+		this.sliderBg.addEventListener('mousedown', this.onMouseDownBound);
+	}
+
+	disableSlider() {
+		this.disable = true;
+
+		this.el.style.opacity = .1;
+	}
+
+	enableSlider() {
+		this.disable = false;
+
+		this.el.style.opacity = 1;
 	}
 
 	remove() {
 
-		this.el.removeEventListener('mousedown', this.onMouseDownBound);
+		this.sliderBg.removeEventListener('mousedown', this.onMouseDownBound);
 		this.parentEl.removeChild(this.el);
 	}
 

@@ -8,6 +8,9 @@ export default class Node{
 		this.hasOutput = true;
 		this.isGraphicsNode = false;
 		this.hasGraphicsInput = false;
+
+		this.outDotPos = undefined;
+		this.inDotPos = undefined;
 	}
 
 	init(parentEl, onConnectingCallback, onInputConnectionCallback, type, nodeConfig, onNodeActive, onNodeRemove) {
@@ -75,6 +78,22 @@ export default class Node{
 		this.onMouseUpBound = this.onMouseUp.bind(this);
 	}
 
+	getOutDotPos(el) {
+		if (!this.inDotPos) {
+			this.inDotPos = el.getBoundingClientRect();
+		}
+
+		return this.inDotPos;
+	}
+
+	getInDotPos(el) {
+		if (!this.outDotPos) {
+			this.outDotPos = el.getBoundingClientRect();
+		}
+
+		return this.outDotPos;
+	}
+
 	onRemoveClick() {
 		this.onNodeRemove(this);
 	}
@@ -84,7 +103,7 @@ export default class Node{
 	}
 
 	getInputEl() {
-		return this.input.el;
+		return this.input;
 	}
 
 	getConnectNode() {
@@ -161,14 +180,14 @@ export default class Node{
 
 	onMouseUp(e) {
 
-		if (this.output.el) {
-			if ((e.target.parentNode !== this.output.el) && (Math.abs(this.lastDelta.x) < 2 && Math.abs(this.lastDelta.y) < 2)) {
-				if (this.onNodeActive) {
-					this.onNodeActive(this);
-				}
+		// if (this.output && this.output.el) {
+		// 	if ((e.target.parentNode !== this.output.el) && (Math.abs(this.lastDelta.x) < 2 && Math.abs(this.lastDelta.y) < 2)) {
+		// 		// if (this.onNodeActive) {
+		// 		// 	this.onNodeActive(this);
+		// 		// }
 				
-			}
-		}
+		// 	}
+		// }
 
 		window.removeEventListener('mouseup', this.onMouseUpBound);
 		window.removeEventListener('mousemove', this.onMouseMoveBound);

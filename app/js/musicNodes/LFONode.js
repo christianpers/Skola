@@ -10,8 +10,6 @@ export default class LFONode extends MusicNode{
 
 		this.audioNode = new Tone.LFO();
 
-		// this.audioNode.start();
-
 		this.paramVals = {};
 
 		this.params = {
@@ -55,9 +53,4 @@ export default class LFONode extends MusicNode{
 		return lfo;
 	}
 
-	main() {
-
-
-
-	}
 }

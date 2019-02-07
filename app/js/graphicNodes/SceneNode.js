@@ -71,8 +71,8 @@ export default class SceneNode extends Node{
 		this.scene.add(this.mesh);
 	}
 
-	init(parentEl, onConnectingCallback, onInputConnectionCallback, type) {
-		super.init(parentEl, onConnectingCallback, onInputConnectionCallback, type);
+	init(parentEl, onConnectingCallback, onInputConnectionCallback, type, initData, onNodeActive, onRemoveCallback) {
+		super.init(parentEl, onConnectingCallback, onInputConnectionCallback, type, initData, onNodeActive, onRemoveCallback);
 
 		const w = window.innerWidth;
 		const h = window.innerHeight;
@@ -94,7 +94,9 @@ export default class SceneNode extends Node{
 		
 		setTimeout(() => {
 			this.onResize();
-		}, 100);	
+		}, 100);
+
+		this.activateDrag();
 	}
 
 	onInputClickBackground(param) {
@@ -108,7 +110,7 @@ export default class SceneNode extends Node{
 	}
 
 	getInputEl(inputType) {
-		return this.inputs[inputType].el;
+		return this.inputs[inputType];
 	}
 
 	getDotPos(el) {

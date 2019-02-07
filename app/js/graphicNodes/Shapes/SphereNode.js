@@ -1,9 +1,7 @@
 import RenderNode from '../RenderNode';
-// import * as SHADERS from '../../../shaders/SHADERS';
 import * as THREE from 'three';
-import RangeSlider from '../../views/Nodes/NodeComponents/RangeSlider';
 
-export default class CubeNode extends RenderNode{
+export default class SphereNode extends RenderNode{
 	constructor(mainRender) {
 		super(mainRender);
 
@@ -18,13 +16,13 @@ export default class CubeNode extends RenderNode{
 
 		this.camera = new THREE.PerspectiveCamera( 75, w / h, 0.1, 1000 );
 
-		this.camera.position.z = 3;
+		this.camera.position.z = 10;
 
 		// this.texture = THREE.ImageUtils.loadTexture( 'assets/test/Image1.png', null );
 		// this.texture.magFilter = THREE.LinearFilter;
 		// this.texture.minFilter = THREE.LinearFilter;
 
-		this.geometry = new THREE.BoxGeometry( 1, 1, 1, 10, 10, 10 );
+		this.geometry = new THREE.SphereGeometry(5, 32, 32);
 		this.material = new THREE.MeshPhongMaterial( {  } );
 		this.mesh = new THREE.Mesh(this.geometry, this.material);
 
@@ -36,7 +34,6 @@ export default class CubeNode extends RenderNode{
 		this.scene.add(this.mesh);
 
 		directionalLightBtm.target = this.mesh;
-
 
 		const textureParam = {
 			title: 'Texture',
@@ -145,8 +142,6 @@ export default class CubeNode extends RenderNode{
 
 		this.currentOutConnections.push(connection);
 		this.currentOutConnectionsLength = this.currentOutConnections.length;
-
-		
 	}
 
 	disableOutput(nodeIn, param) {

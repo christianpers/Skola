@@ -23,8 +23,10 @@ export default class NodeManager{
 		this._graphicNodes = [];
 		this._graphicNodeLength = 0;
 
+		this.resetConnectingBound = this.resetConnecting.bind(this);
+
 		this.nodeConnectionRenderer = new NodeRenderer(parentEl, this);
-		this.nodeConnectionLine = new NodeConnectionLine(this.nodeConnectionRenderer.el);
+		this.nodeConnectionLine = new NodeConnectionLine(this.nodeConnectionRenderer.el, this.resetConnectingBound);
 
 		this.isConnecting = false;
 
@@ -82,6 +84,10 @@ export default class NodeManager{
 
 	onNodeAddedFromLibrary(type, data) {
 		if (type === 'graphics') {
+			const hasSceneNode = this._graphicNodes.some(t => t.isCanvasNode);
+			if (hasSceneNode && data.type === 'Canvas') {
+				return;
+			}
 			this.graphicsNodeManager.createNode(data);
 		} else {
 			this.audioNodeManager.createNode(data);
@@ -90,6 +96,7 @@ export default class NodeManager{
 
 	onNodeRemove(node) {
 		const connections = this._nodeConnections.filter(t => t.out.ID === node.ID || t.in.ID === node.ID);
+		console.log('remove connections', connections);
 
 		for (let i = 0; i < connections.length; i++) {
 			this.removeConnection(connections[i]);
@@ -102,94 +109,27 @@ export default class NodeManager{
 		this.keyboardManager.onAudioNodeParamChange(node, params);
 	}
 
+	resetConnecting() {
+		this.isConnecting = false;
+		this.outputActiveNode = null;
+	}
+
 	onConnecting(node, clickPos) {
 
+		if (this.isConnecting || this.outputActiveNode) {
+			return;
+		}
+
 		const outputHasConnection = this._nodeConnections.some(t => t.out.ID === node.ID);
-		// if (outputHasConnection) {
-		// 	this.removeConnection(this._nodeConnections.find(t => t.out.ID === node.ID));
-		// 	return;
-		// }
-
-		console.log('on connecting');
-
+		
 		this.isConnecting = true;
 		this.outputActiveNode = node;
 
 		this.nodeConnectionLine.onConnectionActive(node, clickPos);
-
-		/*
-			create data node array
-			create audio node array
-
-			check if out is data or audio
-
-			if data
-				set not connected params as possible 
-
-			if audio
-				set not connected audio ins as possible
-		*/
-
-		const paramConnections = this._nodeConnections.filter(t => t.param);
-		const audioConnections = this._nodeConnections.filter(t => !t.param);
-
-		const otherNodes = this._nodes.filter((t) => t.ID !== node.ID && t.hasAudioInput);
-
-		const dataNodes = otherNodes.filter(t => t.isParam);
-
-		const getInputParams = (node) => {
-			const params = [];
-			for (const key in node.params) {
-				if (node.params[key].useAsInput) {
-					params.push(node.params[key]);
-				}
-			}
-
-			return params;
-		};
-
-		const hasAvailableInputParams = (node) => {
-			const nodeParamConnections = paramConnections.filter(t => t.in.ID === node.ID);
-
-			const inputParams = getInputParams(node);
-
-			const availableParams = [];
-			for (let i = 0; i < inputParams.length; i++) {
-				const inputParam = inputParams[i];
-				if (!nodeParamConnections.some(t => t.param.objSettings.param === inputParam.objSettings.param)) {
-					availableParams.push(inputParam);
-					inputParam.canBeConnected = true;
-				}
-			}
-
-			return availableParams.length > 0;
-
-		};
-
-		if (!this.outputActiveNode.isGraphicsNode) {
-			const audioNodesWithInputParams = otherNodes.filter((t) => {
-				return hasAvailableInputParams(t);
-			});
-
-			const notConnectedAudioInNodes = [];
-			for (let i = 0; i < otherNodes.length; i++) {
-				const node = otherNodes[i];
-				if (!audioConnections.some(t => t.in.ID === node.ID) && !node.isParam) {
-					notConnectedAudioInNodes.push(node);
-				}
-			}
-
-			const nodesToLoop = node.isParam ? audioNodesWithInputParams : notConnectedAudioInNodes;
-
-			for (let i = 0; i < nodesToLoop.length; i++) {
-				nodesToLoop[i].canBeConnected = true;
-			}
-		}
-		
 		
 	}
 
-	onInputConnection(inputNode, inputType ,param) {
+	onInputConnection(inputNode, inputType, param) {
 
 		let inputAvailable = true;
 
@@ -201,7 +141,6 @@ export default class NodeManager{
 					this.removeConnection(connection);
 				}
 			} else if (inputType) {
-
 				const connection = this._nodeConnections.find(t => t.in.ID === inputNode.ID && t.inputType === inputType);
 				if (connection) {
 					this.removeConnection(connection);
@@ -217,36 +156,26 @@ export default class NodeManager{
 		}
 
 		if (!inputNode.isGraphicsNode) {
-			if ((!this.outputActiveNode.isParam && param) || (this.outputActiveNode.isParam && !param)) {
-				inputAvailable = false;
-			}
-
-			if (this.outputActiveNode.isParam) {
-				if (!param.canBeConnected) {
-					const params = inputNode.params;
-					for (const key in params) {
-						params[key].canBeConnected = false;
-					}
-					inputAvailable = false;
+			if (param && param.helper) {
+				if (!param.helper.isValid(this.outputActiveNode, inputNode, param, this._nodeConnections)) {
+					this.resetConnecting();
+					return;
 				}
 			} else {
-				if (!inputNode.canBeConnected) {
-					for (let i = 0; i < this._nodes.length; i++) {
-						this._nodes[i].canBeConnected = false;
-					}
+				if (!inputNode.inputHelpersType.isValid(this.outputActiveNode, inputNode, param, this._nodeConnections)) {
+					this.resetConnecting();
+					return;
 				}
-			}
-
-			if (!inputAvailable) {
-				return;
 			}
 
 		} else {
 			
 			if (param && !ParamHelpers[param.paramHelpersType].isValid(this.outputActiveNode, param)) {
+				this.resetConnecting();
 				return;
 			} else {
 				if (!inputNode.inputHelpersType.isValid(this.outputActiveNode, inputNode)) {
+					this.resetConnecting();
 					return;
 				}
 			}
@@ -264,31 +193,23 @@ export default class NodeManager{
 			lineEl: this.nodeConnectionRenderer.addLine(inputNode.ID + '---' + this.outputActiveNode.ID),
 			inputType,
 		};
-		connectionData.lineEl.addEventListener('click', (e) => {
-			this.removeConnection(connectionData);
-		});
+		// connectionData.lineEl.addEventListener('click', (e) => {
+		// 	this.removeConnection(connectionData);
+		// });
+
+		this.outputActiveNode.enableOutput(param ? param : undefined, connectionData);
 
 		if (param) {
 			inputNode.enableParam(param, connectionData);
 		} else {
-			inputNode.enableInput(this.outputActiveNode.getConnectNode(), inputType);
+			inputNode.enableInput(this.outputActiveNode, inputType);
 		}
-		
-		this.outputActiveNode.enableOutput(param ? param : undefined, connectionData);
 
 		this._nodeConnections.push(connectionData);
 
 		if (this.constructorIsDone) {
-			if (connectionData.out.isRenderNode) {
-				// const renderConnections = this._nodeConnections.filter(t => t.out.isRenderNode);
-				// if (!connectionData.in.hasOutput) {
-				// 	this.graphicsNodeManager.onConnectionUpdate([connectionData]);
-				// }
-				
-			} else {
-				const audioConnections = this._nodeConnections.filter(t => !t.out.isGraphicsNode);
-				this.keyboardManager.onAudioNodeConnectionUpdate(audioConnections);
-			}	
+			const audioConnections = this._nodeConnections.filter(t => !t.out.isGraphicsNode);
+			this.keyboardManager.onAudioNodeConnectionUpdate(audioConnections);
 		}
 		
 		this.outputActiveNode = null;
@@ -305,16 +226,17 @@ export default class NodeManager{
 
 		if (connectionData.param) {
 			connectionData.in.disableParam(connectionData.param, connectionData);
-
-
 		} else {
-			connectionData.in.disableInput(connectionData.out.getConnectNode(), connectionData.inputType);
+			connectionData.in.disableInput(connectionData.out, connectionData.inputType);
 		}
 
 		connectionData.out.disableOutput(connectionData.in, connectionData.param);
 
 		let tempNodeConnections = this._nodeConnections.filter((t) => {
-			return t.out.ID !== connectionData.out.ID;
+			if (t.out.ID === connectionData.out.ID && t.in.ID === connectionData.in.ID) {
+				return false;
+			}
+			return true;
 		});
 
 		if (connectionData.param) {
@@ -322,15 +244,15 @@ export default class NodeManager{
 				const hasParam = t.param;
 				if (!hasParam) return true;
 
-				return t.param.title !== connectionData.param.title;
+				if (t.param.title === connectionData.param.title && t.in.ID === connectionData.in.ID) {
+					return false;
+				}
+				return true;
 			});
 		}
 
-		// for (let i = 0; i < tempNodeConnections.length; i++) {
-		// 	tempNodeConnections[i].in.enableInput(tempNodeConnections[i].out.getConnectNode());
-		// }
-
 		this._nodeConnections = tempNodeConnections;
+		console.log('removeConnection', tempNodeConnections);
 
 		const audioConnections = this._nodeConnections.filter(t => !t.out.isGraphicsNode);
 		this.keyboardManager.onAudioNodeConnectionUpdate(audioConnections);

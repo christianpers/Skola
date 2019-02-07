@@ -17,13 +17,13 @@ import CompressorNode from './musicNodes/CompressorNode';
 import SequencerNode from './musicNodes/SequencerNode';
 
 import LavaNoiseNode from './graphicNodes/ProceduralTextures/LavaNoise';
+import VoronoiNode from './graphicNodes/ProceduralTextures/Voronoi';
 import CircleNode from './graphicNodes/Shapes/CircleNode';
 import CubeNode from './graphicNodes/Shapes/CubeNode';
-import ColorNode from './graphicNodes/ColorNode';
-import PositionNode from './graphicNodes/PositionNode';
-import RotationNode from './graphicNodes/RotationNode';
+import SphereNode from './graphicNodes/Shapes/SphereNode';
 import ParamDriverNode from './graphicNodes/ParamDriverNode';
 import SceneNode from './graphicNodes/SceneNode';
+import ColorNode from './graphicNodes/ColorNode';
 
 import Tone from 'tone';
 
@@ -95,6 +95,10 @@ export default class Main{
 					{
 						type: 'Cube',
 						obj: CubeNode,
+					},
+					{
+						type: 'Sphere',
+						obj: SphereNode,
 					}
 				],
 				'Procedural Texture (Material)': [
@@ -103,11 +107,20 @@ export default class Main{
 						obj: CircleNode,
 					},
 					{
+						type: 'Voronoi',
+						obj: VoronoiNode,
+					},
+					{
 						type: 'LavaNoise',
 						obj: LavaNoiseNode,
 					},
+					
 				],
 				'Modifiers' : [
+					{
+						type: 'Color',
+						obj: ColorNode,
+					},
 					{
 						type: 'ParamDriver',
 						obj: ParamDriverNode,

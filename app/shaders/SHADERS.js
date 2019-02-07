@@ -109,6 +109,49 @@ export const LAVA_SHAPE_MAIN = `
     color = mix(u_user_color1, u_user_color2, color);
 `;
 
+export const VORONOI_MAIN = `
+    // vec2 st = gl_FragCoord.xy/u_resolution.xy;
+    st.x *= u_resolution.x/u_resolution.y;
+    color = vec3(.0);
+    
+    // Scale 
+    st *= 5.;
+    
+    // Tile the space
+    vec2 i_st = floor(st);
+    vec2 f_st = fract(st);
+
+    float m_dist = 10.;  // minimun distance
+    vec2 m_point;        // minimum point
+    
+    for (int j=-1; j<=1; j++ ) {
+        for (int i=-1; i<=1; i++ ) {
+            vec2 neighbor = vec2(float(i),float(j));
+            vec2 point = random2(i_st + neighbor);
+            point = 0.5 + 0.5*sin(u_time + 6.2831*point);
+            vec2 diff = neighbor + point - f_st;
+            float dist = length(diff);
+
+            if( dist < m_dist ) {
+                m_dist = dist;
+                m_point = point;
+            }
+        }
+    }
+
+    // Assign a color using the closest point position
+    color += dot(m_point,vec2(0.30,0.60));
+    
+    // Add distance field to closest point center 
+    color.g = m_dist;
+
+    // Show isolines
+    //color -= abs(sin(40.0*m_dist*(u_mouse.x/u_resolution.x)))*0.07;
+    
+    color = mix(u_user_fgColor, u_user_bgColor, m_dist);
+    //color *= vec3(.2, .6, .8);
+`;
+
 export const GRADIENT_MAIN = `
 	color *= vec3(st.x,st.y,abs(sin(u_time)));
 `;
@@ -136,6 +179,10 @@ uniform float u_user_speed2;
 uniform float u_user_blur;
 uniform vec3 u_user_color1;
 uniform vec3 u_user_color2;
+
+//VORONOI
+uniform vec3 u_user_fgColor;
+uniform vec3 u_user_bgColor;
 
 // YUV to RGB matrix
 mat3 yuv2rgb = mat3(1.0, 0.0, 1.13983,
