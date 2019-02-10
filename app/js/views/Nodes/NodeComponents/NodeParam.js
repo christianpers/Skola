@@ -20,7 +20,10 @@ export default class NodeParam{
 
 		parentEl.appendChild(this.el);
 
-		this.el.addEventListener('click', () => {
+		this.el.addEventListener('click', (e) => {
+			console.log('param click');
+			e.preventDefault();
+			e.stopPropagation();
 			onClickCallback(param);
 		});
 

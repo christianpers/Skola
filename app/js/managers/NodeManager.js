@@ -136,7 +136,7 @@ export default class NodeManager{
 		if (!this.isConnecting || !this.outputActiveNode) {
 			inputAvailable = false;
 			if (param) {
-				const connection = this._nodeConnections.find(t => t.in.ID === inputNode.ID && t.param.title === param.title);
+				const connection = this._nodeConnections.find(t => t.in.ID === inputNode.ID && t.param && t.param.title === param.title);
 				if (connection) {
 					this.removeConnection(connection);
 				}
@@ -252,7 +252,6 @@ export default class NodeManager{
 		}
 
 		this._nodeConnections = tempNodeConnections;
-		console.log('removeConnection', tempNodeConnections);
 
 		const audioConnections = this._nodeConnections.filter(t => !t.out.isGraphicsNode);
 		this.keyboardManager.onAudioNodeConnectionUpdate(audioConnections);

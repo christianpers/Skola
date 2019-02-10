@@ -1,6 +1,7 @@
 import MusicNode from './MusicNode';
 import Tone from 'tone';
 import RangeSlider from '../views/Nodes/NodeComponents/RangeSlider';
+import AudioInputHelpers from '../musicHelpers/AudioInputHelpers';
 
 export default class LowpassFilterNode extends MusicNode{
 	constructor() {
@@ -67,6 +68,8 @@ export default class LowpassFilterNode extends MusicNode{
 			param: 'frequency',
 			slider: this.freqRangeSlider,
 			title: 'Filter Frequency',
+			helper: AudioInputHelpers.frequency,
+			disableSliderOnConnection: false,
 		};
 
 		const qParam = {
@@ -82,11 +85,6 @@ export default class LowpassFilterNode extends MusicNode{
 		this.params[freqParam.param] = freqParam;
 		this.params[qParam.param] = qParam;
 
-		// for (const loopKey in this.params) {
-		// 	const key = this.params[loopKey].objSettings.param;
-		// 	this.paramVals[key] = this.params[loopKey].objSettings.defaultVal;
-		// }
-
 	}
 
 	onRangeChangeCallback(value, param) {
@@ -99,47 +97,10 @@ export default class LowpassFilterNode extends MusicNode{
 		const audioNode = new Tone.Filter();
 		
 		for (const key in this.params) {
-			const paramStr = this.params[key].param;
-			audioNode[paramStr].value = this.paramVals[paramStr].value;
+			audioNode[key].value = this.params[key].value;
 		}
 
 		return audioNode;
 	}
 
-	getParamConnection() {
-
-		return 'frequency';
-	}
-
-	setup() {
-
-		
-	}
-
-	enableInput(outputAudioNode) {
-		super.enableInput();
-		// if (outputAudioNode.isParam) {
-		// 	outputAudioNode.audioNode.connect(this.audioNode.frequency);
-		// } else {
-		// 	outputAudioNode.audioNode.connect(this.audioNode);
-		// }
-		
-	}
-
-	disableInput(nodeToDisconnect) {
-		super.disableInput();
-		// if (nodeToDisconnect.isParam) {
-		// 	// nodeToDisconnect.audioNode.disconnect(this.audioNode.frequency);
-		// 	this.audioNode.disconnect(nodeToDisconnect.audioNode);
-		// } else {
-		// 	nodeToDisconnect.audioNode.disconnect(this.audioNode);
-		// }
-		
-	}
-
-	main() {
-
-
-
-	}
 }

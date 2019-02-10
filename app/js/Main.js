@@ -13,7 +13,6 @@ import EnvelopeNode from './musicNodes/EnvelopeNode';
 import FrequencyEnvelopeNode from './musicNodes/FrequencyEnvelopeNode';
 import LFONode from './musicNodes/LFONode';
 import SignalMultiplier from './musicHelpers/mathNodes/SignalMultiplier';
-import CompressorNode from './musicNodes/CompressorNode';
 import SequencerNode from './musicNodes/SequencerNode';
 
 import LavaNoiseNode from './graphicNodes/ProceduralTextures/LavaNoise';
@@ -62,10 +61,6 @@ export default class Main{
 						type: 'Speaker',
 						obj: SpeakerNode,
 					},
-					{
-						type: 'Compressor',
-						obj: CompressorNode,
-					}
 				],
 				data: [
 					{

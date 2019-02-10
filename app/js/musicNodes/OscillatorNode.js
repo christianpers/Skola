@@ -126,7 +126,7 @@ export default class OscillatorNode extends MusicNode{
 
 		const oscAudioNode = new Tone.Oscillator();
 
-		// oscAudioNode.type = "sawtooth";
+		oscAudioNode.type = "sawtooth";
 		// oscAudioNode.frequency.value = this.getFrequency(step);
 		// oscAudioNode.start();
 

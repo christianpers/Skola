@@ -23,7 +23,6 @@ export default class SequencerNode extends MusicNode{
 			const colArr = [];
 			for (let row = 0; row < rows; row++) {
 				const obj = {active: false, el: null, parentEl: null, step: (rows - 1) - row};
-				console.log(obj);
 				colArr.push(obj);
 			}
 			this.data.push(colArr);
@@ -148,7 +147,7 @@ export default class SequencerNode extends MusicNode{
 			
 			for (let row = 0; row < SequencerNode.ROWS; row++){
 				if (column[row].active){
-					console.log(time);
+					// console.log(time);
 					//slightly randomized velocities
 					// var vel = Math.random() * 0.5 + 0.5;
 					// keys.get(noteNames[i]).start(time, 0, "32n", 0, vel);

@@ -49,6 +49,7 @@ export default class GainNode extends MusicNode{
 			slider: this.gainRangeSlider,
 			title: 'Gain',
 			helper: AudioInputHelpers.gain,
+			disableSliderOnConnection: true,
 		};
 
 		this.paramVals = {};

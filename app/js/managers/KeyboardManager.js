@@ -55,7 +55,6 @@ export default class KeyboardManager{
 	}
 
 	onAudioNodeParamChange(node, params) {
-
 		for (let i = 0; i < this.keys.length; i++) {
 			this.keys[i].synth.onParamChange(node, params);
 		}

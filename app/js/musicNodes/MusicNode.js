@@ -15,6 +15,7 @@ export default class MusicNode extends Node{
 		this.isSignalMath = false;
 		this.hasAudioInput = true;
 		this.isSequencer = false;
+		this.isLFO = false;
 
 		this.inputHelpersType = AudioInputHelpers.single;
 
@@ -67,7 +68,7 @@ export default class MusicNode extends Node{
 		param.isConnected = true;
 		paramComponent.enable();
 
-		if (param.slider) {
+		if (param.slider && param.disableSliderOnConnection) {
 			param.slider.disableSlider();
 		}
 

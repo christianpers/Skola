@@ -1,46 +1,100 @@
 import MusicNode from './MusicNode';
 import Tone from 'tone';
 import RangeSlider from '../views/Nodes/NodeComponents/RangeSlider';
+import AudioInputHelpers from '../musicHelpers/AudioInputHelpers';
 
 export default class LFONode extends MusicNode{
 	constructor() {
 		super();
 
 		this.isParam = true;
+		this.isLFO = true;
+
+		this.el.classList.add('no-height');
 
 		this.audioNode = new Tone.LFO();
 
-		this.paramVals = {};
+		const rangeContainer = document.createElement('div');
+		rangeContainer.className = 'range-container';
 
-		this.params = {
-			'Frequency' : {
-				obj: RangeSlider,
-				objSettings: {
-					title: 'Frequency',
-					defaultVal: 6.0,
-					range: {min: 0.1, max: 17.0},
-					param: 'frequency',
-					decimals: 2
-				},
-				useAsInput: false,
-			},
-			'Amplitude' : {
-				obj: RangeSlider,
-				objSettings: {
-					title: 'Amplitude',
-					defaultVal: 0.5,
-					range: {min: 0, max: 1},
-					param: 'amplitude',
-					decimals: 2
-				},
-				useAsInput: false,
-			},
+		this.topPartEl.appendChild(rangeContainer);
+
+		this.onRangeChangeCallbackBound = this.onRangeChangeCallback.bind(this);
+
+		const freqRangeConfig = {
+			parentEl: rangeContainer,
+			title: 'Frekvens',
+			initValue: 6.0,
+			settings: {min: 0.1, max: 17.0},
+			valChangeCallback: this.onRangeChangeCallbackBound,
+			param: 'frequency',
+			decimals: 2,
+			disable: false,
 		};
 
-		for (const loopKey in this.params) {
-			const key = this.params[loopKey].objSettings.param;
-			this.paramVals[key] = this.params[loopKey].objSettings.defaultVal;
-		}
+		this.freqRangeSlider = new RangeSlider(
+			freqRangeConfig.parentEl,
+			freqRangeConfig.title,
+			freqRangeConfig.initValue,
+			freqRangeConfig.settings,
+			freqRangeConfig.valChangeCallback,
+			freqRangeConfig.param,
+			freqRangeConfig.decimals,
+			freqRangeConfig.disable,
+		);
+
+		const freqParam = {
+			useAsInput: true,
+			value: freqRangeConfig.initValue,
+			param: 'frequency',
+			slider: this.freqRangeSlider,
+			title: 'LFO Frequency',
+			helper: AudioInputHelpers.frequency,
+			disableSliderOnConnection: false,
+		};
+
+
+		const amplitudeRangeConfig = {
+			parentEl: rangeContainer,
+			title: 'Amplitud',
+			initValue: .5,
+			settings: {min: 0.1, max: 1.0},
+			valChangeCallback: this.onRangeChangeCallbackBound,
+			param: 'amplitude',
+			decimals: 2,
+			disable: false,
+		};
+
+		this.amplitudeRangeSlider = new RangeSlider(
+			amplitudeRangeConfig.parentEl,
+			amplitudeRangeConfig.title,
+			amplitudeRangeConfig.initValue,
+			amplitudeRangeConfig.settings,
+			amplitudeRangeConfig.valChangeCallback,
+			amplitudeRangeConfig.param,
+			amplitudeRangeConfig.decimals,
+			amplitudeRangeConfig.disable,
+		);
+
+		const amplitudeParam = {
+			useAsInput: true,
+			value: amplitudeRangeConfig.initValue,
+			param: 'amplitude',
+			slider: this.amplitudeRangeSlider,
+			title: 'Amplitude',
+			helper: AudioInputHelpers.frequency,
+			disableSliderOnConnection: false,
+		};
+
+		this.params[freqParam.param] = freqParam;
+		this.params[amplitudeParam.param] = amplitudeParam;
+
+		this.paramVals = {};
+	}
+
+	onRangeChangeCallback(value, param) {
+		this.params[param].value = value;
+		this.onParameterChange(this);
 	}
 
 	getAudioNode() {
@@ -48,7 +102,7 @@ export default class LFONode extends MusicNode{
 		const lfo = new Tone.LFO();
 		lfo.min = -22000;
 		lfo.max = 22000;
-		lfo.start();
+		// lfo.start();
 
 		return lfo;
 	}
