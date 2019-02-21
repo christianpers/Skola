@@ -3,6 +3,7 @@ import NodeLibrary from './managers/NodeLibrary/NodeLibrary';
 import KeyboardManager from './managers/KeyboardManager';
 import NodeSettings from './views/NodeSettings';
 import WorkspaceManager from './managers/WorkspaceManager';
+import GlobalAudioSettings from './managers/GlobalAudioSettings';
 
 import OscillatorNode from './musicNodes/OscillatorNode';
 import GainNode from './musicNodes/GainNode';
@@ -14,6 +15,8 @@ import FrequencyEnvelopeNode from './musicNodes/FrequencyEnvelopeNode';
 import LFONode from './musicNodes/LFONode';
 import SignalMultiplier from './musicHelpers/mathNodes/SignalMultiplier';
 import SequencerNode from './musicNodes/SequencerNode';
+import WaveformNode from './musicNodes/WaveformNode';
+import FFTNode from './musicNodes/FFTNode';
 
 import LavaNoiseNode from './graphicNodes/ProceduralTextures/LavaNoise';
 import VoronoiNode from './graphicNodes/ProceduralTextures/Voronoi';
@@ -78,6 +81,16 @@ export default class Main{
 						obj: SequencerNode,
 					}
 				],
+				analysers: [
+					{
+						type: 'Ljudvåg',
+						obj: WaveformNode,
+					},
+					// {
+					// 	type: 'Frekvens',
+					// 	obj: FFTNode,
+					// }
+				]
 			},
 			graphics: {
 				'Canvas': [
@@ -129,6 +142,8 @@ export default class Main{
 		this.nodeSettings = new NodeSettings(document.body);
 
 		this.workspaceManager = new WorkspaceManager(document.body);
+
+		this.globalAudioSettings = new GlobalAudioSettings(this.workspaceManager.containerEl);
 
 		this.onResize();
 		

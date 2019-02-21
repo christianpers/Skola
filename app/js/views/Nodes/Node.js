@@ -8,6 +8,7 @@ export default class Node{
 		this.hasOutput = true;
 		this.isGraphicsNode = false;
 		this.hasGraphicsInput = false;
+		this.needsUpdate = false;
 
 		this.outDotPos = undefined;
 		this.inDotPos = undefined;

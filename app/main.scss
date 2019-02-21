@@ -60,6 +60,13 @@ h1,h2,h3,h4,h5,text,p {
 	font-family: Arial;
 }
 
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+    outline: none;
+}
+
 .control-ui{
 	position: fixed;
 	bottom: 20%;
@@ -121,6 +128,87 @@ h1,h2,h3,h4,h5,text,p {
 	}
 }
 
+.global-audio-settings {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	padding: 20px;
+	background: rgba(0,0,0,.8);
+	color: white;
+	display: flex;
+	border-top-right-radius: 6px;
+	z-index: 3;
+}
+
+.node-stepper {
+	> h4 {
+		text-align: center;
+	}
+	
+	.control-wrapper {
+		display: flex;
+		align-items: center;
+	}
+
+	.left-container {
+		padding: 10px;
+		padding-left: 0;
+		margin-right: 6px;
+
+		.node-stepper-control {
+			color: black;
+			width: 26px;
+			height: 26px;
+			background: white;
+			margin-bottom: 9px;
+			line-height: 8px;
+			font-size: 18px;
+			text-align: center;
+			padding-top: 8px;
+			font-weight: 900;
+			border-radius: 2px;
+			cursor: pointer;
+			user-select: none;
+			-webkit-user-select: none;
+			transform: scale(1);
+
+			&:active {
+				transform: scale(.98);
+			}
+
+			&:last-child {
+				margin-bottom: 0;
+			}
+		}
+	}
+
+	.node-stepper-input {
+		height: 40px;
+		background: rgba(255,255,255,.1);
+		color: white;
+		border: 0;
+		border-radius: 4px;
+		padding: 4px;
+	    font-size: 16px;
+	    width: 50px;
+	    text-align: center;
+	}
+
+	.input-set-button {
+		padding: 6px;
+		background: yellow;
+		border-radius: 4px;
+		margin-left: 8px;
+		cursor: pointer;
+		color: rgb(20, 20, 20);
+		transform: scale(1);
+		user-select: none;
+		-webkit-user-select: none;
+		&:active {
+			transform: scale(.98);
+		}
+	}
+}
 
 .node{
 	position: absolute;
@@ -472,6 +560,23 @@ h1,h2,h3,h4,h5,text,p {
 			padding: 5px 10px;
 			width: 70px;
 			font-family: Arial;
+		}
+	}
+}
+
+.waveform-node {
+	& .top-part {
+		position: relative;
+		padding: 0;
+		height: 100px;
+		width: 100%;
+
+		& .waveform-canvas {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
 		}
 	}
 }

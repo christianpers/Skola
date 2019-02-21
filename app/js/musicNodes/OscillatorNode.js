@@ -18,6 +18,7 @@ export default class OscillatorNode extends MusicNode{
 		this.isKeyboardListener = true;
 		this.isOscillator = true;
 		this.hasAudioInput = false;
+		this.hasEnvelopeConnection = false;
 
 		const rangeContainer = document.createElement('div');
 		rangeContainer.className = 'range-container';

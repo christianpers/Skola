@@ -5,6 +5,7 @@ import AudioNodeManager from './AudioNodeManager';
 import NodeConnectionLine from './NodeConnectionLine';
 
 import ParamHelpers from '../graphicNodes/Helpers/ParamHelpers';
+import Helpers from '../musicHelpers/Helpers';
 
 export default class NodeManager{
 	constructor(config, keyboardManager, onNodeActive, parentEl) {
@@ -37,7 +38,6 @@ export default class NodeManager{
 		this.addBound = this.add.bind(this);
 		this.removeBound = this.onNodeRemove.bind(this);
 		this.onAudioNodeParamChangeBound = this.onAudioNodeParamChange.bind(this);
-		this.onSequencerTriggerBound = this.onSequencerTrigger.bind(this);
 		
 		this.audioNodeManager = new AudioNodeManager(
 			parentEl,
@@ -47,7 +47,6 @@ export default class NodeManager{
 			this.hasConfig ? this.config.nodes : [],
 			this.onAudioNodeParamChangeBound,
 			onNodeActive,
-			this.onSequencerTriggerBound,
 			this.removeBound,
 		);
 		this.audioNodeManager.init();
@@ -72,14 +71,24 @@ export default class NodeManager{
 
 			this.outputActiveNode = null;
 
-			this.keyboardManager.onAudioNodeConnectionUpdate(this._nodeConnections);
+			const audioConnections = this._nodeConnections.filter(t => !t.out.isGraphicsNode);
+			this.keyboardManager.onAudioNodeConnectionUpdate(audioConnections);
+
+			const sequencers = audioConnections.filter(t => t.out.isSequencer);
+			let sequencerIds = [];
+			for (let i = 0; i < sequencers.length; i++) {
+				const ID = sequencers[i].out.ID;
+				if (sequencerIds.indexOf(ID) < 0) {
+					sequencers[i].out.sequencerManager.onAudioNodeConnectionUpdate(audioConnections);
+					sequencerIds.push(ID);
+				}
+				
+			}
+
+			sequencerIds = [];
 		}
 
 		this.constructorIsDone = true;
-	}
-
-	onSequencerTrigger(step, time) {
-		this.keyboardManager.play(step, time);
 	}
 
 	onNodeAddedFromLibrary(type, data) {
@@ -209,17 +218,32 @@ export default class NodeManager{
 
 		if (this.constructorIsDone) {
 			const audioConnections = this._nodeConnections.filter(t => !t.out.isGraphicsNode);
+			Helpers.updateOscillators(audioConnections);
+			
 			this.keyboardManager.onAudioNodeConnectionUpdate(audioConnections);
+			
+			const sequencers = audioConnections.filter(t => t.out.isSequencer);
+			let sequencerIds = [];
+			for (let i = 0; i < sequencers.length; i++) {
+				const ID = sequencers[i].out.ID;
+				if (sequencerIds.indexOf(ID) < 0) {
+					sequencers[i].out.sequencerManager.onAudioNodeConnectionUpdate(audioConnections);
+					sequencerIds.push(ID);
+				}
+				
+			}
+
+			sequencerIds = [];
 		}
 		
 		this.outputActiveNode = null;
 
-		for (let i = 0; i < this._nodes.length; i++) {
-			this._nodes[i].canBeConnected = false;
-			if (this._nodes[i].input) {
-				this._nodes[i].input.deactivatePossible();
-			}	
-		}
+		// for (let i = 0; i < this._nodes.length; i++) {
+		// 	this._nodes[i].canBeConnected = false;
+		// 	if (this._nodes[i].input) {
+		// 		this._nodes[i].input.deactivatePossible();
+		// 	}	
+		// }
 	}
 
 	removeConnection(connectionData) {
@@ -254,7 +278,22 @@ export default class NodeManager{
 		this._nodeConnections = tempNodeConnections;
 
 		const audioConnections = this._nodeConnections.filter(t => !t.out.isGraphicsNode);
+		Helpers.updateOscillators(audioConnections);
+
 		this.keyboardManager.onAudioNodeConnectionUpdate(audioConnections);
+
+		const sequencers = audioConnections.filter(t => t.out.isSequencer);
+		let sequencerIds = [];
+		for (let i = 0; i < sequencers.length; i++) {
+			const ID = sequencers[i].out.ID;
+			if (sequencerIds.indexOf(ID) < 0) {
+				sequencers[i].out.sequencerManager.onAudioNodeConnectionUpdate(audioConnections);
+				sequencerIds.push(ID);
+			}
+			
+		}
+
+		sequencerIds = [];
 		
 		this.nodeConnectionRenderer.removeLine(connectionData.lineEl);
 
@@ -262,14 +301,19 @@ export default class NodeManager{
 
 	add(node) {
 		this._nodes.push(node);
-		if (node.isRenderNode || node.isCanvasNode) {
+		if (node.isRenderNode || node.isCanvasNode || node.needsUpdate) {
 			this._graphicNodes.push(node);
 			this._graphicNodeLength = this._graphicNodes.length;
+		}
+
+		if (node.isSequencer) {
+			const audioConnections = this._nodeConnections.filter(t => !t.out.isGraphicsNode);
+			node.sequencerManager.init(audioConnections);
 		}
 	}
 
 	remove(node) {
-		if (node.isGraphicsNode) {
+		if (node.isGraphicsNode || node.needsUpdate) {
 			const tempNodes = this._graphicNodes.filter(t => t.ID !== node.ID);
 			this._graphicNodes = tempNodes;
 			this._graphicNodeLength = this._graphicNodes.length;
@@ -286,8 +330,6 @@ export default class NodeManager{
 		for (let i = 0; i < this._graphicNodeLength; i++) {
 			this._graphicNodes[i].update();
 		}
-
-		// this.graphicsNodeManager.update();
 	}
 
 	render() {
@@ -296,7 +338,5 @@ export default class NodeManager{
 		for (let i = 0; i < this._graphicNodeLength; i++) {
 			this._graphicNodes[i].render();
 		}
-
-		// this.graphicsNodeManager.render();
 	}
 }

@@ -57,8 +57,8 @@ export default class LFONode extends MusicNode{
 		const amplitudeRangeConfig = {
 			parentEl: rangeContainer,
 			title: 'Amplitud',
-			initValue: .5,
-			settings: {min: 0.1, max: 1.0},
+			initValue: .25,
+			settings: {min: 0.1, max: 0.5},
 			valChangeCallback: this.onRangeChangeCallbackBound,
 			param: 'amplitude',
 			decimals: 2,

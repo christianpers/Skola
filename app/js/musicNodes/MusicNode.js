@@ -16,6 +16,7 @@ export default class MusicNode extends Node{
 		this.hasAudioInput = true;
 		this.isSequencer = false;
 		this.isLFO = false;
+		this.needsManualDispose = false;
 
 		this.inputHelpersType = AudioInputHelpers.single;
 
@@ -39,13 +40,13 @@ export default class MusicNode extends Node{
 		this.inputParams = {};
 	}
 
-	init(parentEl, onConnectingCallback, onInputConnectionCallback, type, nodeConfig, onNodeActive, onParameterChange, onSequencerTrigger, onNodeRemove) {
+	init(parentEl, onConnectingCallback, onInputConnectionCallback, type, nodeConfig, onNodeActive, onParameterChange, onNodeRemove) {
 		super.init(parentEl, onConnectingCallback, onInputConnectionCallback, type, nodeConfig, onNodeActive, onNodeRemove);
 
 		this.onParameterChange = onParameterChange;
-		this.onSequencerTrigger = onSequencerTrigger;
 
 		this.connectedInputs = [];
+		this.connectedOutputs = [];
 
 		for (const key in this.params) {
 			if (this.params[key].useAsInput) {
@@ -101,15 +102,33 @@ export default class MusicNode extends Node{
 		return params;
 	}
 
+	enableOutput(param, connectionData) {
+		super.enableOutput();
+
+
+		this.connectedOutputs.push(connectionData.in.ID);
+	}
+
+	disableOutput(inNode, param) {
+		const tempConnectedOutputs = this.connectedOutputs.filter(t => t !== inNode.ID);
+		this.connectedOutputs = tempConnectedOutputs;
+
+		if (this.connectedOutputs.length === 0) {
+			super.disableOutput();
+		}
+	}
+
 	enableInput(outNode) {
 		super.enableInput();
 
-		this.connectedInputs.push(outNode.ID);
+		this.connectedInputs.push(`${outNode.ID}-${this.ID}`);
 	}
 
 	disableInput(outNode) {
 
-		const tempConnectedInputs = this.connectedInputs.filter(t => t !== outNode.ID);
+		const idToRemove = `${outNode.ID}-${this.ID}`;
+
+		const tempConnectedInputs = this.connectedInputs.filter(t => t !== idToRemove);
 		this.connectedInputs = tempConnectedInputs;
 
 		if (this.connectedInputs.length === 0) {

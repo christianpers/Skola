@@ -24,7 +24,7 @@ export default class EnvelopeNode extends MusicNode{
 		const attackRangeConfig = {
 			parentEl: rangeContainer,
 			title: 'A',
-			initValue: 0.11,
+			initValue: 0.25,
 			settings: {min: .01, max: 2.0},
 			valChangeCallback: this.onRangeChangeCallbackBound,
 			param: 'attack',
@@ -46,7 +46,7 @@ export default class EnvelopeNode extends MusicNode{
 		const decayRangeConfig = {
 			parentEl: rangeContainer,
 			title: 'D',
-			initValue: 0.11,
+			initValue: 0.77,
 			settings: {min: .01, max: 2.0},
 			valChangeCallback: this.onRangeChangeCallbackBound,
 			param: 'decay',

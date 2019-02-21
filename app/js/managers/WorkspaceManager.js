@@ -9,8 +9,6 @@ export default class WorkspaceManager{
 
 		parentEl.appendChild(this.containerEl);
 
-		
-
 		this.el = document.createElement('div');
 		this.el.className = 'workspace';
 

@@ -185,7 +185,7 @@
 
 
 	// module
-	exports.push([module.id, "html, body {\n  width: 100%;\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  position: relative;\n  background: #1b1c1e;\n  font-size: 12px; }\n\nh1, h2, h3, h4, h5, p {\n  margin: 0; }\n\np {\n  font-size: .8rem; }\n\n.editor {\n  max-width: 700px; }\n  .editor .CodeMirror-linebackground.errorBg {\n    background: rgba(240, 10, 10, 0.8); }\n\n.glslCanvas, canvas {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%; }\n\n* {\n  box-sizing: border-box; }\n\na {\n  text-decoration: none;\n  color: rgba(0, 0, 0, 0.8); }\n\nhtml {\n  -webkit-text-size-adjust: none;\n  -moz-text-size-adjust: none;\n  text-size-adjust: none; }\n\nh1, h2, h3, h4, h5, text, p {\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-webkit-font-smoothing: antialiased;\n  font-family: Arial; }\n\n.control-ui {\n  position: fixed;\n  bottom: 20%;\n  left: 5%;\n  padding: 5px;\n  background: white;\n  z-index: 2; }\n  .control-ui .control-ui-inner {\n    display: flex;\n    width: calc(3 * 4vw + 10 * 3px);\n    flex-wrap: nowrap;\n    margin: -10px; }\n  .control-ui .control-btn {\n    flex: 1;\n    margin: 10px;\n    height: 3.4vw;\n    cursor: pointer;\n    position: relative; }\n    .control-ui .control-btn > img {\n      width: 100%;\n      height: auto; }\n    .control-ui .control-btn .control-disabled {\n      position: absolute;\n      background: rgba(255, 255, 255, 0.8);\n      opacity: 0;\n      width: 100%;\n      height: 100%;\n      top: 0; }\n    .control-ui .control-btn.disabled .control-disabled {\n      opacity: 1; }\n\n.workspace-container {\n  overflow: hidden;\n  position: relative; }\n  .workspace-container .workspace {\n    position: absolute;\n    top: 0;\n    left: 0;\n    /*background: radial-gradient(#e66465, #9198e5);\n\t\tbackground: #1b1c1e;\n\t\topacity: 0;*/\n    z-index: 2; }\n\n.node {\n  position: absolute;\n  width: 200px;\n  height: 100px;\n  background: white;\n  top: 0;\n  left: 0;\n  cursor: grab;\n  display: flex;\n  flex-direction: column;\n  border-radius: 3px;\n  background-color: #2b2c2d; }\n  .node:active {\n    cursor: grabbing; }\n  .node .node-type {\n    position: absolute;\n    top: -20px;\n    color: white; }\n  .node.signal-math-node {\n    width: 60px;\n    height: 30px; }\n  .node .top-part {\n    width: 100%;\n    height: 60%;\n    border-bottom: 2px solid #222223;\n    padding: 10px;\n    padding-left: 0; }\n  .node .bottom-part {\n    width: 100%;\n    height: 40%;\n    display: flex;\n    justify-content: space-between;\n    padding: 10px;\n    padding-right: 0;\n    padding-left: 0;\n    align-items: center; }\n    .node .bottom-part.multiple-inputs {\n      display: block; }\n      .node .bottom-part.multiple-inputs .node-input {\n        margin-bottom: 10px; }\n\n.node-component {\n  display: flex;\n  flex: 1; }\n  .node-component.right-align {\n    text-align: right; }\n  .node-component .dot {\n    width: 10px;\n    height: 10px;\n    border-radius: 5px;\n    border: 2px solid red; }\n  .node-component .label {\n    margin-right: 5px;\n    margin-left: 5px;\n    color: red; }\n  .node-component.active .dot {\n    background: red; }\n\n.node-param-header {\n  color: yellow;\n  margin-bottom: 5px;\n  margin-left: 5px;\n  font-size: 8px; }\n\n.node-param {\n  margin-bottom: 5px;\n  position: relative;\n  left: -5px; }\n  .node-param .dot {\n    border: 2px solid yellow; }\n  .node-param .label {\n    color: yellow; }\n  .node-param.active .dot {\n    background: yellow; }\n\n.node-output {\n  flex-direction: row-reverse;\n  position: relative;\n  right: -5px; }\n  .node-output.param .dot {\n    border: 2px solid yellow; }\n  .node-output.param .label {\n    color: yellow; }\n  .node-output.param.active .dot {\n    background: yellow; }\n\n.node-input {\n  position: relative;\n  left: -5px; }\n\n.node-remove {\n  position: absolute;\n  top: -22px;\n  right: 0px;\n  padding: 4px;\n  background: black;\n  color: white;\n  cursor: pointer;\n  border: 1px solid black; }\n  .node-remove:hover {\n    border: 1px solid white; }\n\n.node-settings {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 260px;\n  border-right: 1px solid white;\n  height: 100%;\n  padding-left: 10px;\n  padding-right: 10px;\n  padding-top: 10px;\n  background: #66808c;\n  z-index: 3;\n  transform: translate3d(-100%, 0, 0); }\n  .node-settings.visible {\n    transform: translate3d(0, 0, 0); }\n\n.node-library {\n  position: absolute;\n  top: 0;\n  right: 0;\n  width: 260px;\n  border-left: 1px solid white;\n  height: 100%;\n  padding-left: 10px;\n  padding-right: 10px;\n  padding-top: 10px;\n  background: #66808c;\n  z-index: 2;\n  overflow: scroll; }\n  .node-library .inner-scroll {\n    height: 100%; }\n  .node-library .level-title {\n    border-bottom: 1px solid black;\n    margin-top: 10px; }\n  .node-library .level-1 {\n    margin-left: 10px; }\n  .node-library .node-container {\n    display: flex;\n    margin-top: 24px;\n    flex-wrap: wrap; }\n  .node-library .library-node {\n    width: 25%;\n    margin-right: 2%;\n    background: black;\n    padding: 5px;\n    display: flex;\n    flex-direction: column;\n    padding-bottom: 10px;\n    position: relative;\n    cursor: pointer;\n    margin-bottom: 30px; }\n    .node-library .library-node .node-type {\n      color: black;\n      position: absolute;\n      top: -15px;\n      left: 0; }\n    .node-library .library-node .node-add {\n      width: 30px;\n      align-self: center;\n      margin-top: 5px; }\n\n.line-renderer {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%; }\n\n.param-container {\n  margin: 2% auto;\n  width: 80%;\n  display: flex;\n  justify-content: space-between;\n  height: 200px;\n  flex-wrap: wrap; }\n\n.node-range {\n  width: 33%;\n  height: 100%;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: space-evenly; }\n  .node-range .node-range-slider-bg {\n    background: white;\n    position: relative;\n    width: 70%;\n    height: 60%;\n    cursor: pointer; }\n  .node-range .node-range-knob {\n    position: absolute;\n    bottom: 0;\n    left: 0;\n    width: 100%;\n    height: 0;\n    background: #db664c; }\n\n.range-slider-container {\n  width: 80%;\n  height: 90%;\n  margin: 2% auto;\n  display: flex;\n  justify-content: space-between; }\n\n.horizontal-range-slider {\n  text-align: center; }\n  .horizontal-range-slider .range-container {\n    display: flex;\n    justify-content: space-between;\n    align-items: center; }\n    .horizontal-range-slider .range-container .input-container {\n      width: 40%; }\n      .horizontal-range-slider .range-container .input-container > p {\n        color: yellow;\n        font-size: 10px;\n        margin-top: 0;\n        margin-bottom: 4px;\n        text-align: left; }\n      .horizontal-range-slider .range-container .input-container > input {\n        width: 100%;\n        height: 20px;\n        padding: 5px;\n        background: black;\n        color: yellow;\n        border: 0; }\n    .horizontal-range-slider .range-container .range-inner-container {\n      width: 10px;\n      margin-left: 5%;\n      margin-right: 5%;\n      height: 100px;\n      background: black;\n      position: relative; }\n      .horizontal-range-slider .range-container .range-inner-container .range-knob {\n        position: absolute;\n        top: 0;\n        left: 50%;\n        width: 20px;\n        height: 8px;\n        background: yellow;\n        margin-left: -10px; }\n  .horizontal-range-slider .value-container {\n    margin-top: 10px;\n    display: inline-block; }\n    .horizontal-range-slider .value-container > p {\n      color: yellow;\n      margin-bottom: 4px;\n      text-align: left; }\n    .horizontal-range-slider .value-container .value-display {\n      background: black;\n      color: yellow;\n      padding: 5px 10px;\n      width: 70px;\n      font-family: Arial; }\n\n.param-driver-node .top-bottom-container {\n  display: flex;\n  justify-content: space-between;\n  margin-top: 14px;\n  align-items: flex-end; }\n\n.param-driver-node .duration-container {\n  width: 40%; }\n  .param-driver-node .duration-container > p {\n    color: yellow;\n    font-size: 10px;\n    margin-top: 0;\n    margin-bottom: 4px;\n    text-align: left; }\n  .param-driver-node .duration-container > input {\n    width: 100%;\n    height: 20px;\n    padding: 5px;\n    background: black;\n    color: yellow;\n    border: 0; }\n\n.param-driver-node .toggle-start {\n  width: 40%;\n  padding: 5px;\n  color: black;\n  background: yellow;\n  cursor: pointer; }\n  .param-driver-node .toggle-start > p {\n    text-align: center; }\n  .param-driver-node .toggle-start:hover {\n    background: black;\n    color: yellow; }\n\n.sequencer {\n  width: 1000px;\n  height: 600px; }\n  .sequencer .top-part {\n    height: 90%;\n    padding-left: 10px; }\n  .sequencer .bottom-part {\n    height: 10%; }\n  .sequencer .sequencer-container {\n    display: flex;\n    flex-wrap: wrap;\n    height: 100%;\n    justify-content: space-between; }\n    .sequencer .sequencer-container .sequencer-col {\n      width: 6%;\n      display: flex;\n      height: 100%;\n      flex-wrap: wrap;\n      padding: 0 5px;\n      align-items: center; }\n      .sequencer .sequencer-container .sequencer-col.active {\n        background: rgba(219, 102, 76, 0.6); }\n        .sequencer .sequencer-container .sequencer-col.active .sequencer-btn.active {\n          background: white; }\n    .sequencer .sequencer-container .sequencer-btn {\n      width: 100%;\n      height: 6%;\n      background: black;\n      cursor: pointer; }\n      .sequencer .sequencer-container .sequencer-btn.active {\n        background: #db664c; }\n\n.no-height {\n  height: auto; }\n\n.left-padding .top-part {\n  padding-left: 10px; }\n\n.canvas {\n  width: 540px;\n  height: 600px; }\n  .canvas .top-part {\n    padding: 0;\n    position: relative;\n    height: 90%; }\n  .canvas .bottom-part {\n    height: 10%; }\n", "", {"version":3,"sources":["/./app/main.scss"],"names":[],"mappings":"AAGA;EACC,YAAW;EACX,aAAa;EACb,UAAS;EACT,WAAU;EAGV,mBAAmB;EACnB,oBAAoB;EACpB,gBAAgB,EAChB;;AAED;EACC,UAAU,EACV;;AAED;EACC,iBAAiB,EACjB;;AAED;EACC,iBAAiB,EAOjB;EARD;IAKG,mCAAgB,EAChB;;AAIH;EACC,mBAAmB;EACnB,OAAO;EACJ,QAAQ;EACR,YAAY;EACZ,aAAa,EAChB;;AAED;EACC,uBAAuB,EACvB;;AAED;EACC,sBAAsB;EACtB,0BAAW,EACX;;AAED;EACC,+BAA+B;EAC/B,4BAA4B;EAC5B,uBAAuB,EACvB;;AAED;EACC,oCAAoC;EACpC,4CAA4C;EAC5C,mBAAmB,EACnB;;AAED;EACC,gBAAgB;EAChB,YAAY;EACZ,SAAS;EACT,aAAa;EACb,kBAAkB;EAClB,WAAW,EAuCX;EA7CD;IAQE,cAAc;IACd,gCAAW;IACX,kBAAkB;IACZ,cAAa,EACnB;EAZF;IAiBE,QAAQ;IACF,aAAa;IACb,cAAc;IACpB,gBAAgB;IAChB,mBAAmB,EAuBnB;IA5CF;MAwBS,YAAY;MACZ,aAAa,EAEb;IA3BT;MA8BS,mBAAmB;MACnB,qCAAgB;MAChB,WAAW;MACX,YAAY;MACZ,aAAa;MACb,OAAO,EACP;IApCT;MAyCU,WAAW,EACX;;AAKV;EACC,iBAAiB;EACd,mBAAmB,EAUtB;EAZD;IAIE,mBAAmB;IACnB,OAAO;IACP,QAAQ;IACR;;eAEa;IACV,WAAW,EACd;;AAIF;EACC,mBAAmB;EACnB,aAAa;EACb,cAAc;EACd,kBAAkB;EAClB,OAAO;EACP,QAAQ;EACR,aAAa;EACb,cAAc;EACX,uBAAuB;EACvB,mBAAmB;EACnB,0BAA0B,EA0C7B;EArDD;IAcE,iBAAiB,EACjB;EAfF;IAkBE,mBAAmB;IACnB,WAAW;IACX,aAAa,EACb;EArBF;IAwBE,YAAY;IACZ,aAAa,EACb;EA1BF;IA6BE,YAAY;IACT,YAAY;IACZ,iCAAiC;IACjC,cAAc;IACd,gBAAgB,EACnB;EAlCF;IAqCE,YAAY;IACT,YAAY;IACZ,cAAc;IACd,+BAA+B;IAC/B,cAAc;IACd,iBAAiB;IACjB,gBAAgB;IACnB,oBAAoB,EAQpB;IApDF;MA+CG,eAAe,EAIf;MAnDH;QAiDI,oBAAoB,EACpB;;AAKJ;EACC,cAAc;EACd,QAAQ,EAwBR;EA1BD;IAIE,kBAAkB,EAClB;EALF;IAQE,YAAY;IACZ,aAAa;IACb,mBAAmB;IACnB,sBAAsB,EAEtB;EAbF;IAgBE,kBAAkB;IAClB,iBAAiB;IACjB,WAAW,EACX;EAnBF;IAuBG,gBAAgB,EAChB;;AAIH;EACC,cAAc;EACd,mBAAmB;EACnB,iBAAiB;EACjB,eAAe,EACf;;AAED;EACC,mBAAmB;EACnB,mBAAmB;EAChB,WAAW,EAcd;EAjBD;IAKK,yBAAyB,EACzB;EANL;IASE,cAAc,EACd;EAVF;IAcG,mBAAmB,EACnB;;AAIH;EACC,4BAA4B;EAC5B,mBAAmB;EAChB,YAAY,EAgBf;EAnBD;IAMM,yBAAyB,EACzB;EAPN;IAUG,cAAc,EACd;EAXH;IAeI,mBAAmB,EACnB;;AAKJ;EACC,mBAAmB;EAChB,WAAW,EACd;;AAED;EACC,mBAAmB;EACnB,WAAW;EACX,WAAW;EACX,aAAa;EACb,kBAAkB;EAClB,aAAa;EACb,gBAAgB;EAChB,wBAAwB,EAIxB;EAZD;IAUE,wBAAwB,EACxB;;AAGF;EACC,mBAAmB;EACnB,OAAO;EACP,QAAQ;EACR,aAAa;EACb,8BAA8B;EAC9B,aAAa;EACb,mBAAmB;EACnB,oBAAoB;EACpB,kBAAkB;EAClB,oBAAoB;EACpB,WAAW;EACX,oCAAsB,EAItB;EAhBD;IAcE,gCAAsB,EACtB;;AAGF;EACC,mBAAmB;EACnB,OAAO;EACP,SAAS;EACT,aAAa;EACb,6BAA6B;EAC7B,aAAa;EACb,mBAAmB;EACnB,oBAAoB;EACpB,kBAAkB;EAClB,oBAAoB;EACpB,WAAW;EACX,iBAAiB,EA8CjB;EA1DD;IAeE,aAAa,EACb;EAhBF;IAmBE,+BAA+B;IAC/B,iBAAiB,EACjB;EArBF;IAwBE,kBAAkB,EAClB;EAzBF;IA4BE,cAAc;IACd,iBAAiB;IACjB,gBAAgB,EAChB;EA/BF;IAkCE,WAAW;IACX,iBAAiB;IAEjB,kBAAkB;IAClB,aAAa;IACb,cAAc;IACd,uBAAuB;IACvB,qBAAqB;IACrB,mBAAmB;IACnB,gBAAgB;IAChB,oBAAoB,EAapB;IAzDF;MA8CG,aAAa;MACV,mBAAmB;MACnB,WAAW;MACX,QAAQ,EACX;IAlDH;MAqDG,YAAY;MACZ,mBAAmB;MACnB,gBAAgB,EAChB;;AAIH;EACC,mBAAmB;EACnB,OAAO;EACP,QAAQ;EACR,YAAY;EACZ,aAAa,EACb;;AAED;EACC,gBAAgB;EAChB,WAAW;EACX,cAAc;EACd,+BAA+B;EAC/B,cAAc;EACd,gBAAgB,EAChB;;AAED;EACC,WAAW;EACX,aAAa;EACb,cAAc;EACd,uBAAuB;EACvB,oBAAoB;EACpB,8BAA8B,EAqB9B;EA3BD;IAQE,kBAAkB;IAClB,mBAAmB;IACnB,WAAW;IACX,YAAY;IACZ,gBAAgB,EAChB;EAbF;IAgBE,mBAAmB;IACnB,UAAU;IACV,QAAQ;IACR,YAAY;IACZ,UAAU;IACV,oBAAoB,EACpB;;AAOF;EACC,WAAW;EACX,YAAY;EACZ,gBAAgB;EAChB,cAAc;EACd,+BAA+B,EAE/B;;AAED;EACC,mBAAmB,EAgEnB;EAjED;IAGE,cAAc;IACd,+BAA+B;IAC/B,oBAAoB,EAwCpB;IA7CF;MAQG,WAAW,EAiBX;MAzBH;QAUI,cAAc;QACd,gBAAgB;QAChB,cAAc;QACd,mBAAmB;QACnB,iBAAiB,EACjB;MAfJ;QAkBI,YAAY;QACZ,aAAa;QACb,aAAa;QACb,kBAAkB;QAClB,cAAc;QACd,UAAU,EACV;IAxBJ;MA4BG,YAAY;MACZ,gBAAgB;MAChB,iBAAiB;MACjB,cAAc;MACd,kBAAkB;MAClB,mBAAmB,EAWnB;MA5CH;QAoCI,mBAAmB;QACnB,OAAO;QACP,UAAU;QACV,YAAY;QACZ,YAAY;QACZ,mBAAmB;QACnB,mBAAmB,EACnB;EA3CJ;IAgDE,iBAAiB;IACjB,sBAAsB,EAetB;IAhEF;MAoDG,cAAc;MACd,mBAAmB;MACnB,iBAAiB,EACjB;IAvDH;MA0DG,kBAAkB;MAClB,cAAc;MACd,kBAAkB;MAClB,YAAY;MACZ,mBAAmB,EACnB;;AAIH;EAEE,cAAc;EACd,+BAA+B;EAC/B,iBAAiB;EACjB,sBAAsB,EACtB;;AANF;EAQE,WAAW,EAiBX;EAzBF;IAUG,cAAc;IACd,gBAAgB;IAChB,cAAc;IACd,mBAAmB;IACnB,iBAAiB,EACjB;EAfH;IAkBG,YAAY;IACZ,aAAa;IACb,aAAa;IACb,kBAAkB;IAClB,cAAc;IACd,UAAU,EACV;;AAxBH;EA4BE,WAAW;EACX,aAAa;EACb,aAAa;EACb,mBAAmB;EACnB,gBAAgB,EAShB;EAzCF;IAkCG,mBAAmB,EACnB;EAnCH;IAsCG,kBAAkB;IAClB,cAAc,EACd;;AAIH;EACC,cAAc;EACd,cAAc,EA2Cd;EA7CD;IAIE,YAAY;IACZ,mBAAmB,EACnB;EANF;IASE,YAAY,EACZ;EAVF;IAaE,cAAc;IACd,gBAAgB;IAChB,aAAa;IACb,+BAA+B,EA4B/B;IA5CF;MAkBG,UAAU;MACV,cAAc;MACd,aAAa;MACb,gBAAgB;MAChB,eAAe;MACf,oBAAoB,EAWpB;MAlCH;QAyBI,oCAAgB,EAOhB;QAhCJ;UA6BM,kBAAkB,EAClB;IA9BN;MAoCG,YAAY;MACZ,WAAW;MACX,kBAAkB;MAClB,gBAAgB,EAIhB;MA3CH;QAyCI,oBAAoB,EACpB;;AAKJ;EACC,aAAa,EACb;;AAED;EAEE,mBAAmB,EACnB;;AAKF;EACC,aAAa;EACb,cAAc,EAUd;EAZD;IAIE,WAAW;IACX,mBAAmB;IACnB,YAAY,EACZ;EAPF;IAUE,YAAY,EACZ","file":"main.scss","sourcesContent":["$mobile      : 'only screen and (max-width : 767px)';\n\n\nhtml, body {\n\twidth:100%;\n\theight: 100%;\n\tmargin:0;\n\tpadding:0;\n\n\t// overflow:hidden;\n\tposition: relative;\n\tbackground: #1b1c1e;\n\tfont-size: 12px;\n}\n\nh1, h2, h3, h4, h5, p{\n\tmargin: 0;\n}\n\np{\n\tfont-size: .8rem;\n}\n\n.editor{\n\tmax-width: 700px;\n\n\t& .CodeMirror-linebackground{\n\t\t&.errorBg{\n\t\t\tbackground: rgba(240, 10, 10, .8);\n\t\t}\n\t}\n}\n\n.glslCanvas, canvas{\n\tposition: absolute;\n\ttop: 0;\n    left: 0;\n    width: 100%;\n    height: 100%;\n}\n\n*{\n\tbox-sizing: border-box;\n}\n\na{\n\ttext-decoration: none;\n\tcolor: rgba(0,0,0,.8);\n}\n\nhtml {\n\t-webkit-text-size-adjust: none;\n\t-moz-text-size-adjust: none;\n\ttext-size-adjust: none;\n}\n\nh1,h2,h3,h4,h5,text,p {\n\t-webkit-font-smoothing: antialiased;\n\t-moz-osx-webkit-font-smoothing: antialiased;\n\tfont-family: Arial;\n}\n\n.control-ui{\n\tposition: fixed;\n\tbottom: 20%;\n\tleft: 5%;\n\tpadding: 5px;\n\tbackground: white;\n\tz-index: 2;\n\t.control-ui-inner{\n\t\tdisplay: flex;\n\t\twidth: calc(3 * 4vw + 10 * 3px);\n\t\tflex-wrap: nowrap;\n        margin:-10px;\n\t}\n\n\t.control-btn{\n\t\t\n\t\t// background: black;\n\t\tflex: 1;\n        margin: 10px;\n        height: 3.4vw;\n\t\tcursor: pointer;\n\t\tposition: relative;\n\n        > img{\n        \twidth: 100%;\n        \theight: auto;\n\n        }\n\n        .control-disabled{\n        \tposition: absolute;\n        \tbackground: rgba(255,255,255,.8);\n        \topacity: 0;\n        \twidth: 100%;\n        \theight: 100%;\n        \ttop: 0;\n        }\n\n        &.disabled{\n        \t.control-disabled{\n\n        \t\topacity: 1;\n        \t}\n        }\n\t}\n}\n\n.workspace-container{\n\toverflow: hidden;\n    position: relative;\n    .workspace{\n\t\tposition: absolute;\n\t\ttop: 0;\n\t\tleft: 0;\n\t\t/*background: radial-gradient(#e66465, #9198e5);\n\t\tbackground: #1b1c1e;\n\t\topacity: 0;*/\n\t    z-index: 2;\n\t}\n}\n\n\n.node{\n\tposition: absolute;\n\twidth: 200px;\n\theight: 100px;\n\tbackground: white;\n\ttop: 0;\n\tleft: 0;\n\tcursor: grab;\n\tdisplay: flex;\n    flex-direction: column;\n    border-radius: 3px;\n    background-color: #2b2c2d;\n\n\t&:active{\n\t\tcursor: grabbing;\n\t}\n\n\t& .node-type{\n\t\tposition: absolute;\n\t\ttop: -20px;\n\t\tcolor: white;\n\t}\n\n\t&.signal-math-node{\n\t\twidth: 60px;\n\t\theight: 30px;\n\t}\n\n\t& .top-part{\n\t\twidth: 100%;\n    \theight: 60%;\n    \tborder-bottom: 2px solid #222223;\n    \tpadding: 10px;\n    \tpadding-left: 0;\n\t}\n\n\t& .bottom-part{\n\t\twidth: 100%;\n    \theight: 40%;\n    \tdisplay: flex;\n    \tjustify-content: space-between;\n    \tpadding: 10px;\n    \tpadding-right: 0;\n    \tpadding-left: 0;\n\t\talign-items: center;\n\n\t\t&.multiple-inputs{\n\t\t\tdisplay: block;\n\t\t\t& .node-input {\n\t\t\t\tmargin-bottom: 10px;\n\t\t\t}\n\t\t}\n\t}\n}\n\n.node-component{\n\tdisplay: flex;\n\tflex: 1;\n\t&.right-align{\n\t\ttext-align: right;\n\t}\n\n\t& .dot{\n\t\twidth: 10px;\n\t\theight: 10px;\n\t\tborder-radius: 5px;\n\t\tborder: 2px solid red;\n\n\t}\n\n\t& .label{\n\t\tmargin-right: 5px;\n\t\tmargin-left: 5px;\n\t\tcolor: red;\n\t}\n\n\t&.active{\n\t\t& .dot{\n\t\t\tbackground: red;\n\t\t}\n\t}\n}\n\n.node-param-header {\n\tcolor: yellow;\n\tmargin-bottom: 5px;\n\tmargin-left: 5px;\n\tfont-size: 8px;\n}\n\n.node-param{\n\tmargin-bottom: 5px;\n\tposition: relative;\n    left: -5px;\n    & .dot{\n    \tborder: 2px solid yellow;\n    }\n\n    & .label{\n\t\tcolor: yellow;\n\t}\n\n\t&.active{\n\t\t& .dot{\n\t\t\tbackground: yellow;\n\t\t}\n\t}\n}\n\n.node-output{\n\tflex-direction: row-reverse;\n\tposition: relative;\n    right: -5px;\n    &.param{\n    \t& .dot{\n\t    \tborder: 2px solid yellow;\n\t    }\n\n\t    & .label{\n\t\t\tcolor: yellow;\n\t\t}\n\n\t\t&.active{\n\t\t\t& .dot{\n\t\t\t\tbackground: yellow;\n\t\t\t}\n\t\t}\n    }\n}\n\n.node-input{\n\tposition: relative;\n    left: -5px;\n}\n\n.node-remove {\n\tposition: absolute;\n\ttop: -22px;\n\tright: 0px;\n\tpadding: 4px;\n\tbackground: black;\n\tcolor: white;\n\tcursor: pointer;\n\tborder: 1px solid black;\n\t&:hover {\n\t\tborder: 1px solid white;\n\t}\n}\n\n.node-settings{\n\tposition: absolute;\n\ttop: 0;\n\tleft: 0;\n\twidth: 260px;\n\tborder-right: 1px solid white;\n\theight: 100%;\n\tpadding-left: 10px;\n\tpadding-right: 10px;\n\tpadding-top: 10px;\n\tbackground: #66808c;\n\tz-index: 3;\n\ttransform: translate3d(-100%, 0, 0);\n\t&.visible{\n\t\ttransform: translate3d(0, 0, 0);\n\t}\n}\n\n.node-library{\n\tposition: absolute;\n\ttop: 0;\n\tright: 0;\n\twidth: 260px;\n\tborder-left: 1px solid white;\n\theight: 100%;\n\tpadding-left: 10px;\n\tpadding-right: 10px;\n\tpadding-top: 10px;\n\tbackground: #66808c;\n\tz-index: 2;\n\toverflow: scroll;\n\n\t& .inner-scroll{\n\t\theight: 100%;\n\t}\n\n\t& .level-title{\n\t\tborder-bottom: 1px solid black;\n\t\tmargin-top: 10px;\n\t}\n\n\t& .level-1{\n\t\tmargin-left: 10px;\n\t}\n\n\t& .node-container{\n\t\tdisplay: flex;\n\t\tmargin-top: 24px;\n\t\tflex-wrap: wrap;\n\t}\n\n\t& .library-node{\n\t\twidth: 25%;\n\t\tmargin-right: 2%;\n\t\t// height: 60px;\n\t\tbackground: black;\n\t\tpadding: 5px;\n\t\tdisplay: flex;\n\t\tflex-direction: column;\n\t\tpadding-bottom: 10px;\n\t\tposition: relative;\n\t\tcursor: pointer;\n\t\tmargin-bottom: 30px; \n\t\t& .node-type{\n\t\t\tcolor: black;\n\t\t    position: absolute;\n\t\t    top: -15px;\n\t\t    left: 0;\n\t\t}\n\n\t\t& .node-add{\n\t\t\twidth: 30px;\n\t\t\talign-self: center;\n\t\t\tmargin-top: 5px;\n\t\t}\n\t}\n}\n\n.line-renderer{\n\tposition: absolute;\n\ttop: 0;\n\tleft: 0;\n\twidth: 100%;\n\theight: 100%;\n}\n\n.param-container{\n\tmargin: 2% auto;\n\twidth: 80%;\n\tdisplay: flex;\n\tjustify-content: space-between;\n\theight: 200px;\n\tflex-wrap: wrap;\n}\n\n.node-range{\n\twidth: 33%;\n\theight: 100%;\n\tdisplay: flex;\n\tflex-direction: column;\n\talign-items: center;\n\tjustify-content: space-evenly;\n\t& .node-range-slider-bg{\n\t\tbackground: white;\n\t\tposition: relative;\n\t\twidth: 70%;\n\t\theight: 60%;\n\t\tcursor: pointer;\n\t}\n\n\t& .node-range-knob{\n\t\tposition: absolute;\n\t\tbottom: 0;\n\t\tleft: 0;\n\t\twidth: 100%;\n\t\theight: 0;\n\t\tbackground: #db664c;\n\t}\n\n\t& .node-range-value{\n\n\t}\n}\n\n.range-slider-container{\n\twidth: 80%;\n\theight: 90%;\n\tmargin: 2% auto;\n\tdisplay: flex;\n\tjustify-content: space-between;\n\t\n}\n\n.horizontal-range-slider {\n\ttext-align: center;\n\t& .range-container {\n\t\tdisplay: flex;\n\t\tjustify-content: space-between;\n\t\talign-items: center;\n\n\t\t& .input-container{\n\t\t\twidth: 40%;\n\t\t\t& > p {\n\t\t\t\tcolor: yellow;\n\t\t\t\tfont-size: 10px;\n\t\t\t\tmargin-top: 0;\n\t\t\t\tmargin-bottom: 4px;\n\t\t\t\ttext-align: left;\n\t\t\t}\n\n\t\t\t& > input {\n\t\t\t\twidth: 100%;\n\t\t\t\theight: 20px;\n\t\t\t\tpadding: 5px;\n\t\t\t\tbackground: black;\n\t\t\t\tcolor: yellow;\n\t\t\t\tborder: 0;\n\t\t\t}\n\t\t}\n\n\t\t& .range-inner-container {\n\t\t\twidth: 10px;\n\t\t\tmargin-left: 5%;\n\t\t\tmargin-right: 5%;\n\t\t\theight: 100px;\n\t\t\tbackground: black;\n\t\t\tposition: relative;\n\n\t\t\t& .range-knob {\n\t\t\t\tposition: absolute;\n\t\t\t\ttop: 0;\n\t\t\t\tleft: 50%;\n\t\t\t\twidth: 20px;\n\t\t\t\theight: 8px;\n\t\t\t\tbackground: yellow;\n\t\t\t\tmargin-left: -10px;\n\t\t\t}\n\t\t}\n\t}\n\n\t& .value-container{\n\t\tmargin-top: 10px;\n\t\tdisplay: inline-block;\n\n\t\t& > p{\n\t\t\tcolor: yellow;\n\t\t\tmargin-bottom: 4px;\n\t\t\ttext-align: left;\n\t\t}\n\n\t\t& .value-display{\n\t\t\tbackground: black;\n\t\t\tcolor: yellow;\n\t\t\tpadding: 5px 10px;\n\t\t\twidth: 70px;\n\t\t\tfont-family: Arial;\n\t\t}\n\t}\n}\n\n.param-driver-node {\n\t& .top-bottom-container {\n\t\tdisplay: flex;\n\t\tjustify-content: space-between;\n\t\tmargin-top: 14px;\n\t\talign-items: flex-end;\n\t}\n\t& .duration-container {\n\t\twidth: 40%;\n\t\t& > p{\n\t\t\tcolor: yellow;\n\t\t\tfont-size: 10px;\n\t\t\tmargin-top: 0;\n\t\t\tmargin-bottom: 4px;\n\t\t\ttext-align: left;\n\t\t}\n\n\t\t& > input {\n\t\t\twidth: 100%;\n\t\t\theight: 20px;\n\t\t\tpadding: 5px;\n\t\t\tbackground: black;\n\t\t\tcolor: yellow;\n\t\t\tborder: 0;\n\t\t}\n\t}\n\n\t& .toggle-start{\n\t\twidth: 40%;\n\t\tpadding: 5px;\n\t\tcolor: black;\n\t\tbackground: yellow;\n\t\tcursor: pointer;\n\t\t& > p{\n\t\t\ttext-align: center;\n\t\t}\n\n\t\t&:hover {\n\t\t\tbackground: black;\n\t\t\tcolor: yellow;\n\t\t}\n\t}\n}\n\n.sequencer{\n\twidth: 1000px;\n\theight: 600px;\n\t& .top-part{\n\t\theight: 90%;\n\t\tpadding-left: 10px;\n\t}\n\n\t& .bottom-part{\n\t\theight: 10%;\n\t}\n\n\t& .sequencer-container{\n\t\tdisplay: flex;\n\t\tflex-wrap: wrap;\n\t\theight: 100%;\n\t\tjustify-content: space-between;\n\t\t& .sequencer-col{\n\t\t\twidth: 6%;\n\t\t\tdisplay: flex;\n\t\t\theight: 100%;\n\t\t\tflex-wrap: wrap;\n\t\t\tpadding: 0 5px;\n\t\t\talign-items: center;\n\t\t\t&.active{\n\t\t\t\tbackground: rgba(219, 102, 76, .6);\n\t\t\t\t& .sequencer-btn{\n\t\t\t\t\t\n\t\t\t\t\t&.active{\n\t\t\t\t\t\tbackground: white;\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\n\t\t}\n\t\t& .sequencer-btn{\n\t\t\twidth: 100%;\n\t\t\theight: 6%;\n\t\t\tbackground: black;\n\t\t\tcursor: pointer;\n\t\t\t&.active{\n\t\t\t\tbackground: #db664c;\n\t\t\t}\n\t\t}\n\t}\n}\n\n.no-height{\n\theight: auto;\n}\n\n.left-padding{\n\t& .top-part{\n\t\tpadding-left: 10px;\n\t}\n}\n\n\n\n.canvas{\n\twidth: 540px;\n\theight: 600px;\n\t& .top-part{\n\t\tpadding: 0;\n\t\tposition: relative;\n\t\theight: 90%;\n\t}\n\n\t& .bottom-part{\n\t\theight: 10%;\n\t}\n}\n\n"],"sourceRoot":"webpack://"}]);
+	exports.push([module.id, "html, body {\n  width: 100%;\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  position: relative;\n  background: #1b1c1e;\n  font-size: 12px; }\n\nh1, h2, h3, h4, h5, p {\n  margin: 0; }\n\np {\n  font-size: .8rem; }\n\n.editor {\n  max-width: 700px; }\n  .editor .CodeMirror-linebackground.errorBg {\n    background: rgba(240, 10, 10, 0.8); }\n\n.glslCanvas, canvas {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%; }\n\n* {\n  box-sizing: border-box; }\n\na {\n  text-decoration: none;\n  color: rgba(0, 0, 0, 0.8); }\n\nhtml {\n  -webkit-text-size-adjust: none;\n  -moz-text-size-adjust: none;\n  text-size-adjust: none; }\n\nh1, h2, h3, h4, h5, text, p {\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-webkit-font-smoothing: antialiased;\n  font-family: Arial; }\n\ninput:focus,\nselect:focus,\ntextarea:focus,\nbutton:focus {\n  outline: none; }\n\n.control-ui {\n  position: fixed;\n  bottom: 20%;\n  left: 5%;\n  padding: 5px;\n  background: white;\n  z-index: 2; }\n  .control-ui .control-ui-inner {\n    display: flex;\n    width: calc(3 * 4vw + 10 * 3px);\n    flex-wrap: nowrap;\n    margin: -10px; }\n  .control-ui .control-btn {\n    flex: 1;\n    margin: 10px;\n    height: 3.4vw;\n    cursor: pointer;\n    position: relative; }\n    .control-ui .control-btn > img {\n      width: 100%;\n      height: auto; }\n    .control-ui .control-btn .control-disabled {\n      position: absolute;\n      background: rgba(255, 255, 255, 0.8);\n      opacity: 0;\n      width: 100%;\n      height: 100%;\n      top: 0; }\n    .control-ui .control-btn.disabled .control-disabled {\n      opacity: 1; }\n\n.workspace-container {\n  overflow: hidden;\n  position: relative; }\n  .workspace-container .workspace {\n    position: absolute;\n    top: 0;\n    left: 0;\n    /*background: radial-gradient(#e66465, #9198e5);\n\t\tbackground: #1b1c1e;\n\t\topacity: 0;*/\n    z-index: 2; }\n\n.global-audio-settings {\n  position: absolute;\n  bottom: 0;\n  left: 0;\n  padding: 20px;\n  background: rgba(0, 0, 0, 0.8);\n  color: white;\n  display: flex;\n  border-top-right-radius: 6px;\n  z-index: 3; }\n\n.node-stepper > h4 {\n  text-align: center; }\n\n.node-stepper .control-wrapper {\n  display: flex;\n  align-items: center; }\n\n.node-stepper .left-container {\n  padding: 10px;\n  padding-left: 0;\n  margin-right: 6px; }\n  .node-stepper .left-container .node-stepper-control {\n    color: black;\n    width: 26px;\n    height: 26px;\n    background: white;\n    margin-bottom: 9px;\n    line-height: 8px;\n    font-size: 18px;\n    text-align: center;\n    padding-top: 8px;\n    font-weight: 900;\n    border-radius: 2px;\n    cursor: pointer;\n    user-select: none;\n    -webkit-user-select: none;\n    transform: scale(1); }\n    .node-stepper .left-container .node-stepper-control:active {\n      transform: scale(0.98); }\n    .node-stepper .left-container .node-stepper-control:last-child {\n      margin-bottom: 0; }\n\n.node-stepper .node-stepper-input {\n  height: 40px;\n  background: rgba(255, 255, 255, 0.1);\n  color: white;\n  border: 0;\n  border-radius: 4px;\n  padding: 4px;\n  font-size: 16px;\n  width: 50px;\n  text-align: center; }\n\n.node-stepper .input-set-button {\n  padding: 6px;\n  background: yellow;\n  border-radius: 4px;\n  margin-left: 8px;\n  cursor: pointer;\n  color: #141414;\n  transform: scale(1);\n  user-select: none;\n  -webkit-user-select: none; }\n  .node-stepper .input-set-button:active {\n    transform: scale(0.98); }\n\n.node {\n  position: absolute;\n  width: 200px;\n  height: 100px;\n  background: white;\n  top: 0;\n  left: 0;\n  cursor: grab;\n  display: flex;\n  flex-direction: column;\n  border-radius: 3px;\n  background-color: #2b2c2d; }\n  .node:active {\n    cursor: grabbing; }\n  .node .node-type {\n    position: absolute;\n    top: -20px;\n    color: white; }\n  .node.signal-math-node {\n    width: 60px;\n    height: 30px; }\n  .node .top-part {\n    width: 100%;\n    height: 60%;\n    border-bottom: 2px solid #222223;\n    padding: 10px;\n    padding-left: 0; }\n  .node .bottom-part {\n    width: 100%;\n    height: 40%;\n    display: flex;\n    justify-content: space-between;\n    padding: 10px;\n    padding-right: 0;\n    padding-left: 0;\n    align-items: center; }\n    .node .bottom-part.multiple-inputs {\n      display: block; }\n      .node .bottom-part.multiple-inputs .node-input {\n        margin-bottom: 10px; }\n\n.node-component {\n  display: flex;\n  flex: 1; }\n  .node-component.right-align {\n    text-align: right; }\n  .node-component .dot {\n    width: 10px;\n    height: 10px;\n    border-radius: 5px;\n    border: 2px solid red; }\n  .node-component .label {\n    margin-right: 5px;\n    margin-left: 5px;\n    color: red; }\n  .node-component.active .dot {\n    background: red; }\n\n.node-param-header {\n  color: yellow;\n  margin-bottom: 5px;\n  margin-left: 5px;\n  font-size: 8px; }\n\n.node-param {\n  margin-bottom: 5px;\n  position: relative;\n  left: -5px; }\n  .node-param .dot {\n    border: 2px solid yellow; }\n  .node-param .label {\n    color: yellow; }\n  .node-param.active .dot {\n    background: yellow; }\n\n.node-output {\n  flex-direction: row-reverse;\n  position: relative;\n  right: -5px; }\n  .node-output.param .dot {\n    border: 2px solid yellow; }\n  .node-output.param .label {\n    color: yellow; }\n  .node-output.param.active .dot {\n    background: yellow; }\n\n.node-input {\n  position: relative;\n  left: -5px; }\n\n.node-remove {\n  position: absolute;\n  top: -22px;\n  right: 0px;\n  padding: 4px;\n  background: black;\n  color: white;\n  cursor: pointer;\n  border: 1px solid black; }\n  .node-remove:hover {\n    border: 1px solid white; }\n\n.node-settings {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 260px;\n  border-right: 1px solid white;\n  height: 100%;\n  padding-left: 10px;\n  padding-right: 10px;\n  padding-top: 10px;\n  background: #66808c;\n  z-index: 3;\n  transform: translate3d(-100%, 0, 0); }\n  .node-settings.visible {\n    transform: translate3d(0, 0, 0); }\n\n.node-library {\n  position: absolute;\n  top: 0;\n  right: 0;\n  width: 260px;\n  border-left: 1px solid white;\n  height: 100%;\n  padding-left: 10px;\n  padding-right: 10px;\n  padding-top: 10px;\n  background: #66808c;\n  z-index: 2;\n  overflow: scroll; }\n  .node-library .inner-scroll {\n    height: 100%; }\n  .node-library .level-title {\n    border-bottom: 1px solid black;\n    margin-top: 10px; }\n  .node-library .level-1 {\n    margin-left: 10px; }\n  .node-library .node-container {\n    display: flex;\n    margin-top: 24px;\n    flex-wrap: wrap; }\n  .node-library .library-node {\n    width: 25%;\n    margin-right: 2%;\n    background: black;\n    padding: 5px;\n    display: flex;\n    flex-direction: column;\n    padding-bottom: 10px;\n    position: relative;\n    cursor: pointer;\n    margin-bottom: 30px; }\n    .node-library .library-node .node-type {\n      color: black;\n      position: absolute;\n      top: -15px;\n      left: 0; }\n    .node-library .library-node .node-add {\n      width: 30px;\n      align-self: center;\n      margin-top: 5px; }\n\n.line-renderer {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%; }\n\n.param-container {\n  margin: 2% auto;\n  width: 80%;\n  display: flex;\n  justify-content: space-between;\n  height: 200px;\n  flex-wrap: wrap; }\n\n.node-range {\n  width: 30px;\n  height: 100%;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: space-evenly;\n  margin-right: 20px; }\n  .node-range:last-child {\n    margin-right: 0; }\n  .node-range .node-range-slider-bg {\n    background: black;\n    position: relative;\n    width: 70%;\n    height: 60%;\n    cursor: pointer; }\n  .node-range .node-range-knob {\n    position: absolute;\n    bottom: 0;\n    left: 0;\n    width: 100%;\n    height: 0;\n    background: yellow; }\n\n.range-slider-container {\n  width: 80%;\n  height: 90%;\n  margin: 2% auto;\n  display: flex;\n  justify-content: space-between; }\n\n.horizontal-range-slider {\n  text-align: center; }\n  .horizontal-range-slider .range-container {\n    display: flex;\n    justify-content: space-between;\n    align-items: center; }\n    .horizontal-range-slider .range-container .input-container {\n      width: 40%; }\n      .horizontal-range-slider .range-container .input-container > p {\n        color: yellow;\n        font-size: 10px;\n        margin-top: 0;\n        margin-bottom: 4px;\n        text-align: left; }\n      .horizontal-range-slider .range-container .input-container > input {\n        width: 100%;\n        height: 20px;\n        padding: 5px;\n        background: black;\n        color: yellow;\n        border: 0; }\n    .horizontal-range-slider .range-container .range-inner-container {\n      width: 10px;\n      margin-left: 5%;\n      margin-right: 5%;\n      height: 100px;\n      background: black;\n      position: relative; }\n      .horizontal-range-slider .range-container .range-inner-container .range-knob {\n        position: absolute;\n        top: 0;\n        left: 50%;\n        width: 20px;\n        height: 8px;\n        background: yellow;\n        margin-left: -10px; }\n  .horizontal-range-slider .value-container {\n    margin-top: 10px;\n    display: inline-block; }\n    .horizontal-range-slider .value-container > p {\n      color: yellow;\n      margin-bottom: 4px;\n      text-align: left; }\n    .horizontal-range-slider .value-container .value-display {\n      background: black;\n      color: yellow;\n      padding: 5px 10px;\n      width: 70px;\n      font-family: Arial; }\n\n.waveform-node .top-part {\n  position: relative;\n  padding: 0;\n  height: 100px;\n  width: 100%; }\n  .waveform-node .top-part .waveform-canvas {\n    position: absolute;\n    top: 0;\n    left: 0;\n    width: 100%;\n    height: 100%; }\n\n.color-node .top-part {\n  display: flex;\n  justify-content: center;\n  height: 100px;\n  align-items: center;\n  padding-left: 10px; }\n  .color-node .top-part .color-picker-parent {\n    display: flex;\n    align-items: center; }\n    .color-node .top-part .color-picker-parent > h4 {\n      font-size: 12px;\n      color: white; }\n    .color-node .top-part .color-picker-parent .color-preview {\n      width: 20px;\n      height: 20px;\n      background: white;\n      margin-left: 10px;\n      border-radius: 11px; }\n\n.param-driver-node .top-bottom-container {\n  display: flex;\n  justify-content: space-between;\n  margin-top: 14px;\n  align-items: flex-end; }\n\n.param-driver-node .duration-container {\n  width: 40%; }\n  .param-driver-node .duration-container > p {\n    color: yellow;\n    font-size: 10px;\n    margin-top: 0;\n    margin-bottom: 4px;\n    text-align: left; }\n  .param-driver-node .duration-container > input {\n    width: 100%;\n    height: 20px;\n    padding: 5px;\n    background: black;\n    color: yellow;\n    border: 0; }\n\n.param-driver-node .toggle-start {\n  width: 40%;\n  padding: 5px;\n  color: black;\n  background: yellow;\n  cursor: pointer; }\n  .param-driver-node .toggle-start > p {\n    text-align: center; }\n  .param-driver-node .toggle-start:hover {\n    background: black;\n    color: yellow; }\n\n.sequencer {\n  width: 600px;\n  height: 400px; }\n  .sequencer .top-part {\n    height: 90%;\n    padding-left: 10px;\n    position: relative; }\n  .sequencer .bottom-part {\n    height: 10%; }\n  .sequencer .sequencer-controls {\n    position: absolute;\n    top: -41px;\n    height: 40px;\n    padding-top: 10px;\n    padding-left: 10px;\n    padding-right: 10px;\n    left: 50%;\n    margin-left: -60px;\n    width: 120px;\n    background: #2b2c2d;\n    border-top-left-radius: 4px;\n    border-top-right-radius: 4px;\n    border-bottom: 1px solid #1B1C1E; }\n    .sequencer .sequencer-controls .inner-controls {\n      display: flex;\n      justify-content: space-between; }\n      .sequencer .sequencer-controls .inner-controls > h5 {\n        padding: 4px 8px;\n        color: yellow;\n        cursor: pointer; }\n  .sequencer .sequencer-container {\n    display: flex;\n    flex-wrap: wrap;\n    height: 100%;\n    justify-content: space-between; }\n    .sequencer .sequencer-container .sequencer-col {\n      width: 6%;\n      display: flex;\n      height: 100%;\n      flex-wrap: wrap;\n      padding: 0 5px;\n      align-items: center; }\n      .sequencer .sequencer-container .sequencer-col.active {\n        background: rgba(219, 102, 76, 0.6); }\n        .sequencer .sequencer-container .sequencer-col.active .sequencer-btn.active {\n          background: white; }\n    .sequencer .sequencer-container .sequencer-btn {\n      width: 100%;\n      height: 6%;\n      background: black;\n      cursor: pointer; }\n      .sequencer .sequencer-container .sequencer-btn.active {\n        background: #db664c; }\n\n.no-height {\n  height: auto; }\n  .no-height .range-container {\n    padding-left: 10px;\n    height: 200px;\n    color: white;\n    display: flex;\n    justify-content: center; }\n\n.left-padding .top-part {\n  padding-left: 10px; }\n\n.canvas {\n  width: 540px;\n  height: 600px; }\n  .canvas .top-part {\n    padding: 0;\n    position: relative;\n    height: 90%; }\n  .canvas .bottom-part {\n    height: 10%; }\n", "", {"version":3,"sources":["/./app/main.scss"],"names":[],"mappings":"AAGA;EACC,YAAW;EACX,aAAa;EACb,UAAS;EACT,WAAU;EAGV,mBAAmB;EACnB,oBAAoB;EACpB,gBAAgB,EAChB;;AAED;EACC,UAAU,EACV;;AAED;EACC,iBAAiB,EACjB;;AAED;EACC,iBAAiB,EAOjB;EARD;IAKG,mCAAgB,EAChB;;AAIH;EACC,mBAAmB;EACnB,OAAO;EACJ,QAAQ;EACR,YAAY;EACZ,aAAa,EAChB;;AAED;EACC,uBAAuB,EACvB;;AAED;EACC,sBAAsB;EACtB,0BAAW,EACX;;AAED;EACC,+BAA+B;EAC/B,4BAA4B;EAC5B,uBAAuB,EACvB;;AAED;EACC,oCAAoC;EACpC,4CAA4C;EAC5C,mBAAmB,EACnB;;AAED;;;;EAII,cAAc,EACjB;;AAED;EACC,gBAAgB;EAChB,YAAY;EACZ,SAAS;EACT,aAAa;EACb,kBAAkB;EAClB,WAAW,EAuCX;EA7CD;IAQE,cAAc;IACd,gCAAW;IACX,kBAAkB;IACZ,cAAa,EACnB;EAZF;IAiBE,QAAQ;IACF,aAAa;IACb,cAAc;IACpB,gBAAgB;IAChB,mBAAmB,EAuBnB;IA5CF;MAwBS,YAAY;MACZ,aAAa,EAEb;IA3BT;MA8BS,mBAAmB;MACnB,qCAAgB;MAChB,WAAW;MACX,YAAY;MACZ,aAAa;MACb,OAAO,EACP;IApCT;MAyCU,WAAW,EACX;;AAKV;EACC,iBAAiB;EACd,mBAAmB,EAUtB;EAZD;IAIE,mBAAmB;IACnB,OAAO;IACP,QAAQ;IACR;;eAEa;IACV,WAAW,EACd;;AAGF;EACC,mBAAmB;EACnB,UAAU;EACV,QAAQ;EACR,cAAc;EACd,+BAAgB;EAChB,aAAa;EACb,cAAc;EACd,6BAA6B;EAC7B,WAAW,EACX;;AAED;EAEE,mBAAmB,EACnB;;AAHF;EAME,cAAc;EACd,oBAAoB,EACpB;;AARF;EAWE,cAAc;EACd,gBAAgB;EAChB,kBAAkB,EA2BlB;EAxCF;IAgBG,aAAa;IACb,YAAY;IACZ,aAAa;IACb,kBAAkB;IAClB,mBAAmB;IACnB,iBAAiB;IACjB,gBAAgB;IAChB,mBAAmB;IACnB,iBAAiB;IACjB,iBAAiB;IACjB,mBAAmB;IACnB,gBAAgB;IAChB,kBAAkB;IAClB,0BAA0B;IAC1B,oBAAgB,EAShB;IAvCH;MAiCI,uBAAgB,EAChB;IAlCJ;MAqCI,iBAAiB,EACjB;;AAtCJ;EA2CE,aAAa;EACb,qCAAgB;EAChB,aAAa;EACb,UAAU;EACV,mBAAmB;EACnB,aAAa;EACV,gBAAgB;EAChB,YAAY;EACZ,mBAAmB,EACtB;;AApDF;EAuDE,aAAa;EACb,mBAAmB;EACnB,mBAAmB;EACnB,iBAAiB;EACjB,gBAAgB;EAChB,eAAU;EACV,oBAAgB;EAChB,kBAAkB;EAClB,0BAA0B,EAI1B;EAnEF;IAiEG,uBAAgB,EAChB;;AAIH;EACC,mBAAmB;EACnB,aAAa;EACb,cAAc;EACd,kBAAkB;EAClB,OAAO;EACP,QAAQ;EACR,aAAa;EACb,cAAc;EACX,uBAAuB;EACvB,mBAAmB;EACnB,0BAA0B,EA0C7B;EArDD;IAcE,iBAAiB,EACjB;EAfF;IAkBE,mBAAmB;IACnB,WAAW;IACX,aAAa,EACb;EArBF;IAwBE,YAAY;IACZ,aAAa,EACb;EA1BF;IA6BE,YAAY;IACT,YAAY;IACZ,iCAAiC;IACjC,cAAc;IACd,gBAAgB,EACnB;EAlCF;IAqCE,YAAY;IACT,YAAY;IACZ,cAAc;IACd,+BAA+B;IAC/B,cAAc;IACd,iBAAiB;IACjB,gBAAgB;IACnB,oBAAoB,EAQpB;IApDF;MA+CG,eAAe,EAIf;MAnDH;QAiDI,oBAAoB,EACpB;;AAKJ;EACC,cAAc;EACd,QAAQ,EAwBR;EA1BD;IAIE,kBAAkB,EAClB;EALF;IAQE,YAAY;IACZ,aAAa;IACb,mBAAmB;IACnB,sBAAsB,EAEtB;EAbF;IAgBE,kBAAkB;IAClB,iBAAiB;IACjB,WAAW,EACX;EAnBF;IAuBG,gBAAgB,EAChB;;AAIH;EACC,cAAc;EACd,mBAAmB;EACnB,iBAAiB;EACjB,eAAe,EACf;;AAED;EACC,mBAAmB;EACnB,mBAAmB;EAChB,WAAW,EAcd;EAjBD;IAKK,yBAAyB,EACzB;EANL;IASE,cAAc,EACd;EAVF;IAcG,mBAAmB,EACnB;;AAIH;EACC,4BAA4B;EAC5B,mBAAmB;EAChB,YAAY,EAgBf;EAnBD;IAMM,yBAAyB,EACzB;EAPN;IAUG,cAAc,EACd;EAXH;IAeI,mBAAmB,EACnB;;AAKJ;EACC,mBAAmB;EAChB,WAAW,EACd;;AAED;EACC,mBAAmB;EACnB,WAAW;EACX,WAAW;EACX,aAAa;EACb,kBAAkB;EAClB,aAAa;EACb,gBAAgB;EAChB,wBAAwB,EAIxB;EAZD;IAUE,wBAAwB,EACxB;;AAGF;EACC,mBAAmB;EACnB,OAAO;EACP,QAAQ;EACR,aAAa;EACb,8BAA8B;EAC9B,aAAa;EACb,mBAAmB;EACnB,oBAAoB;EACpB,kBAAkB;EAClB,oBAAoB;EACpB,WAAW;EACX,oCAAsB,EAItB;EAhBD;IAcE,gCAAsB,EACtB;;AAGF;EACC,mBAAmB;EACnB,OAAO;EACP,SAAS;EACT,aAAa;EACb,6BAA6B;EAC7B,aAAa;EACb,mBAAmB;EACnB,oBAAoB;EACpB,kBAAkB;EAClB,oBAAoB;EACpB,WAAW;EACX,iBAAiB,EA8CjB;EA1DD;IAeE,aAAa,EACb;EAhBF;IAmBE,+BAA+B;IAC/B,iBAAiB,EACjB;EArBF;IAwBE,kBAAkB,EAClB;EAzBF;IA4BE,cAAc;IACd,iBAAiB;IACjB,gBAAgB,EAChB;EA/BF;IAkCE,WAAW;IACX,iBAAiB;IAEjB,kBAAkB;IAClB,aAAa;IACb,cAAc;IACd,uBAAuB;IACvB,qBAAqB;IACrB,mBAAmB;IACnB,gBAAgB;IAChB,oBAAoB,EAapB;IAzDF;MA8CG,aAAa;MACV,mBAAmB;MACnB,WAAW;MACX,QAAQ,EACX;IAlDH;MAqDG,YAAY;MACZ,mBAAmB;MACnB,gBAAgB,EAChB;;AAIH;EACC,mBAAmB;EACnB,OAAO;EACP,QAAQ;EACR,YAAY;EACZ,aAAa,EACb;;AAED;EACC,gBAAgB;EAChB,WAAW;EACX,cAAc;EACd,+BAA+B;EAC/B,cAAc;EACd,gBAAgB,EAChB;;AAED;EACC,YAAY;EACZ,aAAa;EACb,cAAc;EACd,uBAAuB;EACvB,oBAAoB;EACpB,8BAA8B;EAC9B,mBAAmB,EAyBnB;EAhCD;IASK,gBAAgB,EAChB;EAVL;IAaE,kBAAkB;IAClB,mBAAmB;IACnB,WAAW;IACX,YAAY;IACZ,gBAAgB,EAChB;EAlBF;IAqBE,mBAAmB;IACnB,UAAU;IACV,QAAQ;IACR,YAAY;IACZ,UAAU;IACV,mBAAmB,EACnB;;AAOF;EACC,WAAW;EACX,YAAY;EACZ,gBAAgB;EAChB,cAAc;EACd,+BAA+B,EAE/B;;AAED;EACC,mBAAmB,EAgEnB;EAjED;IAGE,cAAc;IACd,+BAA+B;IAC/B,oBAAoB,EAwCpB;IA7CF;MAQG,WAAW,EAiBX;MAzBH;QAUI,cAAc;QACd,gBAAgB;QAChB,cAAc;QACd,mBAAmB;QACnB,iBAAiB,EACjB;MAfJ;QAkBI,YAAY;QACZ,aAAa;QACb,aAAa;QACb,kBAAkB;QAClB,cAAc;QACd,UAAU,EACV;IAxBJ;MA4BG,YAAY;MACZ,gBAAgB;MAChB,iBAAiB;MACjB,cAAc;MACd,kBAAkB;MAClB,mBAAmB,EAWnB;MA5CH;QAoCI,mBAAmB;QACnB,OAAO;QACP,UAAU;QACV,YAAY;QACZ,YAAY;QACZ,mBAAmB;QACnB,mBAAmB,EACnB;EA3CJ;IAgDE,iBAAiB;IACjB,sBAAsB,EAetB;IAhEF;MAoDG,cAAc;MACd,mBAAmB;MACnB,iBAAiB,EACjB;IAvDH;MA0DG,kBAAkB;MAClB,cAAc;MACd,kBAAkB;MAClB,YAAY;MACZ,mBAAmB,EACnB;;AAIH;EAEE,mBAAmB;EACnB,WAAW;EACX,cAAc;EACd,YAAY,EASZ;EAdF;IAQG,mBAAmB;IACnB,OAAO;IACP,QAAQ;IACR,YAAY;IACZ,aAAa,EACb;;AAIH;EAEE,cAAc;EACd,wBAAwB;EACxB,cAAc;EACd,oBAAoB;EACpB,mBAAmB,EAmBnB;EAzBF;IASG,cAAc;IACd,oBAAoB,EAcpB;IAxBH;MAaI,gBAAgB;MAChB,aAAa,EACb;IAfJ;MAkBI,YAAY;MACZ,aAAa;MACb,kBAAkB;MAClB,kBAAkB;MAClB,oBAAoB,EACpB;;AAKJ;EAEE,cAAc;EACd,+BAA+B;EAC/B,iBAAiB;EACjB,sBAAsB,EACtB;;AANF;EAQE,WAAW,EAiBX;EAzBF;IAUG,cAAc;IACd,gBAAgB;IAChB,cAAc;IACd,mBAAmB;IACnB,iBAAiB,EACjB;EAfH;IAkBG,YAAY;IACZ,aAAa;IACb,aAAa;IACb,kBAAkB;IAClB,cAAc;IACd,UAAU,EACV;;AAxBH;EA4BE,WAAW;EACX,aAAa;EACb,aAAa;EACb,mBAAmB;EACnB,gBAAgB,EAShB;EAzCF;IAkCG,mBAAmB,EACnB;EAnCH;IAsCG,kBAAkB;IAClB,cAAc,EACd;;AAIH;EACC,aAAa;EACb,cAAc,EAyEd;EA3ED;IAIE,YAAY;IACZ,mBAAmB;IACnB,mBAAmB,EACnB;EAPF;IAUE,YAAY,EACZ;EAXF;IAcE,mBAAmB;IACnB,WAAW;IACX,aAAa;IACb,kBAAkB;IAClB,mBAAmB;IACnB,oBAAoB;IACpB,UAAU;IACV,mBAAmB;IACnB,aAAa;IACb,oBAAoB;IACpB,4BAA4B;IAC5B,6BAA6B;IAC7B,iCAAiC,EAcjC;IAxCF;MA6BG,cAAc;MACd,+BAA+B,EAQ/B;MAtCH;QAiCI,iBAAiB;QACjB,cAAc;QACd,gBAAgB,EAEhB;EArCJ;IA2CE,cAAc;IACd,gBAAgB;IAChB,aAAa;IACb,+BAA+B,EA4B/B;IA1EF;MAgDG,UAAU;MACV,cAAc;MACd,aAAa;MACb,gBAAgB;MAChB,eAAe;MACf,oBAAoB,EAWpB;MAhEH;QAuDI,oCAAgB,EAOhB;QA9DJ;UA2DM,kBAAkB,EAClB;IA5DN;MAkEG,YAAY;MACZ,WAAW;MACX,kBAAkB;MAClB,gBAAgB,EAIhB;MAzEH;QAuEI,oBAAoB,EACpB;;AAKJ;EACC,aAAa,EAWb;EAZD;IAIE,mBAAmB;IAChB,cAAc;IACd,aAAa;IACb,cAAc;IACd,wBAAwB,EAG3B;;AAGF;EAEE,mBAAmB,EACnB;;AAKF;EACC,aAAa;EACb,cAAc,EAUd;EAZD;IAIE,WAAW;IACX,mBAAmB;IACnB,YAAY,EACZ;EAPF;IAUE,YAAY,EACZ","file":"main.scss","sourcesContent":["$mobile      : 'only screen and (max-width : 767px)';\n\n\nhtml, body {\n\twidth:100%;\n\theight: 100%;\n\tmargin:0;\n\tpadding:0;\n\n\t// overflow:hidden;\n\tposition: relative;\n\tbackground: #1b1c1e;\n\tfont-size: 12px;\n}\n\nh1, h2, h3, h4, h5, p{\n\tmargin: 0;\n}\n\np{\n\tfont-size: .8rem;\n}\n\n.editor{\n\tmax-width: 700px;\n\n\t& .CodeMirror-linebackground{\n\t\t&.errorBg{\n\t\t\tbackground: rgba(240, 10, 10, .8);\n\t\t}\n\t}\n}\n\n.glslCanvas, canvas{\n\tposition: absolute;\n\ttop: 0;\n    left: 0;\n    width: 100%;\n    height: 100%;\n}\n\n*{\n\tbox-sizing: border-box;\n}\n\na{\n\ttext-decoration: none;\n\tcolor: rgba(0,0,0,.8);\n}\n\nhtml {\n\t-webkit-text-size-adjust: none;\n\t-moz-text-size-adjust: none;\n\ttext-size-adjust: none;\n}\n\nh1,h2,h3,h4,h5,text,p {\n\t-webkit-font-smoothing: antialiased;\n\t-moz-osx-webkit-font-smoothing: antialiased;\n\tfont-family: Arial;\n}\n\ninput:focus,\nselect:focus,\ntextarea:focus,\nbutton:focus {\n    outline: none;\n}\n\n.control-ui{\n\tposition: fixed;\n\tbottom: 20%;\n\tleft: 5%;\n\tpadding: 5px;\n\tbackground: white;\n\tz-index: 2;\n\t.control-ui-inner{\n\t\tdisplay: flex;\n\t\twidth: calc(3 * 4vw + 10 * 3px);\n\t\tflex-wrap: nowrap;\n        margin:-10px;\n\t}\n\n\t.control-btn{\n\t\t\n\t\t// background: black;\n\t\tflex: 1;\n        margin: 10px;\n        height: 3.4vw;\n\t\tcursor: pointer;\n\t\tposition: relative;\n\n        > img{\n        \twidth: 100%;\n        \theight: auto;\n\n        }\n\n        .control-disabled{\n        \tposition: absolute;\n        \tbackground: rgba(255,255,255,.8);\n        \topacity: 0;\n        \twidth: 100%;\n        \theight: 100%;\n        \ttop: 0;\n        }\n\n        &.disabled{\n        \t.control-disabled{\n\n        \t\topacity: 1;\n        \t}\n        }\n\t}\n}\n\n.workspace-container{\n\toverflow: hidden;\n    position: relative;\n    .workspace{\n\t\tposition: absolute;\n\t\ttop: 0;\n\t\tleft: 0;\n\t\t/*background: radial-gradient(#e66465, #9198e5);\n\t\tbackground: #1b1c1e;\n\t\topacity: 0;*/\n\t    z-index: 2;\n\t}\n}\n\n.global-audio-settings {\n\tposition: absolute;\n\tbottom: 0;\n\tleft: 0;\n\tpadding: 20px;\n\tbackground: rgba(0,0,0,.8);\n\tcolor: white;\n\tdisplay: flex;\n\tborder-top-right-radius: 6px;\n\tz-index: 3;\n}\n\n.node-stepper {\n\t> h4 {\n\t\ttext-align: center;\n\t}\n\t\n\t.control-wrapper {\n\t\tdisplay: flex;\n\t\talign-items: center;\n\t}\n\n\t.left-container {\n\t\tpadding: 10px;\n\t\tpadding-left: 0;\n\t\tmargin-right: 6px;\n\n\t\t.node-stepper-control {\n\t\t\tcolor: black;\n\t\t\twidth: 26px;\n\t\t\theight: 26px;\n\t\t\tbackground: white;\n\t\t\tmargin-bottom: 9px;\n\t\t\tline-height: 8px;\n\t\t\tfont-size: 18px;\n\t\t\ttext-align: center;\n\t\t\tpadding-top: 8px;\n\t\t\tfont-weight: 900;\n\t\t\tborder-radius: 2px;\n\t\t\tcursor: pointer;\n\t\t\tuser-select: none;\n\t\t\t-webkit-user-select: none;\n\t\t\ttransform: scale(1);\n\n\t\t\t&:active {\n\t\t\t\ttransform: scale(.98);\n\t\t\t}\n\n\t\t\t&:last-child {\n\t\t\t\tmargin-bottom: 0;\n\t\t\t}\n\t\t}\n\t}\n\n\t.node-stepper-input {\n\t\theight: 40px;\n\t\tbackground: rgba(255,255,255,.1);\n\t\tcolor: white;\n\t\tborder: 0;\n\t\tborder-radius: 4px;\n\t\tpadding: 4px;\n\t    font-size: 16px;\n\t    width: 50px;\n\t    text-align: center;\n\t}\n\n\t.input-set-button {\n\t\tpadding: 6px;\n\t\tbackground: yellow;\n\t\tborder-radius: 4px;\n\t\tmargin-left: 8px;\n\t\tcursor: pointer;\n\t\tcolor: rgb(20, 20, 20);\n\t\ttransform: scale(1);\n\t\tuser-select: none;\n\t\t-webkit-user-select: none;\n\t\t&:active {\n\t\t\ttransform: scale(.98);\n\t\t}\n\t}\n}\n\n.node{\n\tposition: absolute;\n\twidth: 200px;\n\theight: 100px;\n\tbackground: white;\n\ttop: 0;\n\tleft: 0;\n\tcursor: grab;\n\tdisplay: flex;\n    flex-direction: column;\n    border-radius: 3px;\n    background-color: #2b2c2d;\n\n\t&:active{\n\t\tcursor: grabbing;\n\t}\n\n\t& .node-type{\n\t\tposition: absolute;\n\t\ttop: -20px;\n\t\tcolor: white;\n\t}\n\n\t&.signal-math-node{\n\t\twidth: 60px;\n\t\theight: 30px;\n\t}\n\n\t& .top-part{\n\t\twidth: 100%;\n    \theight: 60%;\n    \tborder-bottom: 2px solid #222223;\n    \tpadding: 10px;\n    \tpadding-left: 0;\n\t}\n\n\t& .bottom-part{\n\t\twidth: 100%;\n    \theight: 40%;\n    \tdisplay: flex;\n    \tjustify-content: space-between;\n    \tpadding: 10px;\n    \tpadding-right: 0;\n    \tpadding-left: 0;\n\t\talign-items: center;\n\n\t\t&.multiple-inputs{\n\t\t\tdisplay: block;\n\t\t\t& .node-input {\n\t\t\t\tmargin-bottom: 10px;\n\t\t\t}\n\t\t}\n\t}\n}\n\n.node-component{\n\tdisplay: flex;\n\tflex: 1;\n\t&.right-align{\n\t\ttext-align: right;\n\t}\n\n\t& .dot{\n\t\twidth: 10px;\n\t\theight: 10px;\n\t\tborder-radius: 5px;\n\t\tborder: 2px solid red;\n\n\t}\n\n\t& .label{\n\t\tmargin-right: 5px;\n\t\tmargin-left: 5px;\n\t\tcolor: red;\n\t}\n\n\t&.active{\n\t\t& .dot{\n\t\t\tbackground: red;\n\t\t}\n\t}\n}\n\n.node-param-header {\n\tcolor: yellow;\n\tmargin-bottom: 5px;\n\tmargin-left: 5px;\n\tfont-size: 8px;\n}\n\n.node-param{\n\tmargin-bottom: 5px;\n\tposition: relative;\n    left: -5px;\n    & .dot{\n    \tborder: 2px solid yellow;\n    }\n\n    & .label{\n\t\tcolor: yellow;\n\t}\n\n\t&.active{\n\t\t& .dot{\n\t\t\tbackground: yellow;\n\t\t}\n\t}\n}\n\n.node-output{\n\tflex-direction: row-reverse;\n\tposition: relative;\n    right: -5px;\n    &.param{\n    \t& .dot{\n\t    \tborder: 2px solid yellow;\n\t    }\n\n\t    & .label{\n\t\t\tcolor: yellow;\n\t\t}\n\n\t\t&.active{\n\t\t\t& .dot{\n\t\t\t\tbackground: yellow;\n\t\t\t}\n\t\t}\n    }\n}\n\n.node-input{\n\tposition: relative;\n    left: -5px;\n}\n\n.node-remove {\n\tposition: absolute;\n\ttop: -22px;\n\tright: 0px;\n\tpadding: 4px;\n\tbackground: black;\n\tcolor: white;\n\tcursor: pointer;\n\tborder: 1px solid black;\n\t&:hover {\n\t\tborder: 1px solid white;\n\t}\n}\n\n.node-settings{\n\tposition: absolute;\n\ttop: 0;\n\tleft: 0;\n\twidth: 260px;\n\tborder-right: 1px solid white;\n\theight: 100%;\n\tpadding-left: 10px;\n\tpadding-right: 10px;\n\tpadding-top: 10px;\n\tbackground: #66808c;\n\tz-index: 3;\n\ttransform: translate3d(-100%, 0, 0);\n\t&.visible{\n\t\ttransform: translate3d(0, 0, 0);\n\t}\n}\n\n.node-library{\n\tposition: absolute;\n\ttop: 0;\n\tright: 0;\n\twidth: 260px;\n\tborder-left: 1px solid white;\n\theight: 100%;\n\tpadding-left: 10px;\n\tpadding-right: 10px;\n\tpadding-top: 10px;\n\tbackground: #66808c;\n\tz-index: 2;\n\toverflow: scroll;\n\n\t& .inner-scroll{\n\t\theight: 100%;\n\t}\n\n\t& .level-title{\n\t\tborder-bottom: 1px solid black;\n\t\tmargin-top: 10px;\n\t}\n\n\t& .level-1{\n\t\tmargin-left: 10px;\n\t}\n\n\t& .node-container{\n\t\tdisplay: flex;\n\t\tmargin-top: 24px;\n\t\tflex-wrap: wrap;\n\t}\n\n\t& .library-node{\n\t\twidth: 25%;\n\t\tmargin-right: 2%;\n\t\t// height: 60px;\n\t\tbackground: black;\n\t\tpadding: 5px;\n\t\tdisplay: flex;\n\t\tflex-direction: column;\n\t\tpadding-bottom: 10px;\n\t\tposition: relative;\n\t\tcursor: pointer;\n\t\tmargin-bottom: 30px; \n\t\t& .node-type{\n\t\t\tcolor: black;\n\t\t    position: absolute;\n\t\t    top: -15px;\n\t\t    left: 0;\n\t\t}\n\n\t\t& .node-add{\n\t\t\twidth: 30px;\n\t\t\talign-self: center;\n\t\t\tmargin-top: 5px;\n\t\t}\n\t}\n}\n\n.line-renderer{\n\tposition: absolute;\n\ttop: 0;\n\tleft: 0;\n\twidth: 100%;\n\theight: 100%;\n}\n\n.param-container{\n\tmargin: 2% auto;\n\twidth: 80%;\n\tdisplay: flex;\n\tjustify-content: space-between;\n\theight: 200px;\n\tflex-wrap: wrap;\n}\n\n.node-range{\n\twidth: 30px;\n\theight: 100%;\n\tdisplay: flex;\n\tflex-direction: column;\n\talign-items: center;\n\tjustify-content: space-evenly;\n\tmargin-right: 20px;\n\t&:last-child {\n    \tmargin-right: 0;\n    }\n\n\t& .node-range-slider-bg{\n\t\tbackground: black;\n\t\tposition: relative;\n\t\twidth: 70%;\n\t\theight: 60%;\n\t\tcursor: pointer;\n\t}\n\n\t& .node-range-knob{\n\t\tposition: absolute;\n\t\tbottom: 0;\n\t\tleft: 0;\n\t\twidth: 100%;\n\t\theight: 0;\n\t\tbackground: yellow;\n\t}\n\n\t& .node-range-value{\n\n\t}\n}\n\n.range-slider-container{\n\twidth: 80%;\n\theight: 90%;\n\tmargin: 2% auto;\n\tdisplay: flex;\n\tjustify-content: space-between;\n\t\n}\n\n.horizontal-range-slider {\n\ttext-align: center;\n\t& .range-container {\n\t\tdisplay: flex;\n\t\tjustify-content: space-between;\n\t\talign-items: center;\n\n\t\t& .input-container{\n\t\t\twidth: 40%;\n\t\t\t& > p {\n\t\t\t\tcolor: yellow;\n\t\t\t\tfont-size: 10px;\n\t\t\t\tmargin-top: 0;\n\t\t\t\tmargin-bottom: 4px;\n\t\t\t\ttext-align: left;\n\t\t\t}\n\n\t\t\t& > input {\n\t\t\t\twidth: 100%;\n\t\t\t\theight: 20px;\n\t\t\t\tpadding: 5px;\n\t\t\t\tbackground: black;\n\t\t\t\tcolor: yellow;\n\t\t\t\tborder: 0;\n\t\t\t}\n\t\t}\n\n\t\t& .range-inner-container {\n\t\t\twidth: 10px;\n\t\t\tmargin-left: 5%;\n\t\t\tmargin-right: 5%;\n\t\t\theight: 100px;\n\t\t\tbackground: black;\n\t\t\tposition: relative;\n\n\t\t\t& .range-knob {\n\t\t\t\tposition: absolute;\n\t\t\t\ttop: 0;\n\t\t\t\tleft: 50%;\n\t\t\t\twidth: 20px;\n\t\t\t\theight: 8px;\n\t\t\t\tbackground: yellow;\n\t\t\t\tmargin-left: -10px;\n\t\t\t}\n\t\t}\n\t}\n\n\t& .value-container{\n\t\tmargin-top: 10px;\n\t\tdisplay: inline-block;\n\n\t\t& > p{\n\t\t\tcolor: yellow;\n\t\t\tmargin-bottom: 4px;\n\t\t\ttext-align: left;\n\t\t}\n\n\t\t& .value-display{\n\t\t\tbackground: black;\n\t\t\tcolor: yellow;\n\t\t\tpadding: 5px 10px;\n\t\t\twidth: 70px;\n\t\t\tfont-family: Arial;\n\t\t}\n\t}\n}\n\n.waveform-node {\n\t& .top-part {\n\t\tposition: relative;\n\t\tpadding: 0;\n\t\theight: 100px;\n\t\twidth: 100%;\n\n\t\t& .waveform-canvas {\n\t\t\tposition: absolute;\n\t\t\ttop: 0;\n\t\t\tleft: 0;\n\t\t\twidth: 100%;\n\t\t\theight: 100%;\n\t\t}\n\t}\n}\n\n.color-node {\n\t& .top-part {\n\t\tdisplay: flex;\n\t\tjustify-content: center;\n\t\theight: 100px;\n\t\talign-items: center;\n\t\tpadding-left: 10px;\n\n\t\t& .color-picker-parent {\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\n\t\t\t& > h4 {\n\t\t\t\tfont-size: 12px;\n\t\t\t\tcolor: white;\n\t\t\t}\n\n\t\t\t& .color-preview {\n\t\t\t\twidth: 20px;\n\t\t\t\theight: 20px;\n\t\t\t\tbackground: white;\n\t\t\t\tmargin-left: 10px;\n\t\t\t\tborder-radius: 11px;\n\t\t\t}\n\t\t}\n\t}\n}\n\n.param-driver-node {\n\t& .top-bottom-container {\n\t\tdisplay: flex;\n\t\tjustify-content: space-between;\n\t\tmargin-top: 14px;\n\t\talign-items: flex-end;\n\t}\n\t& .duration-container {\n\t\twidth: 40%;\n\t\t& > p{\n\t\t\tcolor: yellow;\n\t\t\tfont-size: 10px;\n\t\t\tmargin-top: 0;\n\t\t\tmargin-bottom: 4px;\n\t\t\ttext-align: left;\n\t\t}\n\n\t\t& > input {\n\t\t\twidth: 100%;\n\t\t\theight: 20px;\n\t\t\tpadding: 5px;\n\t\t\tbackground: black;\n\t\t\tcolor: yellow;\n\t\t\tborder: 0;\n\t\t}\n\t}\n\n\t& .toggle-start{\n\t\twidth: 40%;\n\t\tpadding: 5px;\n\t\tcolor: black;\n\t\tbackground: yellow;\n\t\tcursor: pointer;\n\t\t& > p{\n\t\t\ttext-align: center;\n\t\t}\n\n\t\t&:hover {\n\t\t\tbackground: black;\n\t\t\tcolor: yellow;\n\t\t}\n\t}\n}\n\n.sequencer{\n\twidth: 600px;\n\theight: 400px;\n\t& .top-part{\n\t\theight: 90%;\n\t\tpadding-left: 10px;\n\t\tposition: relative;\n\t}\n\n\t& .bottom-part{\n\t\theight: 10%;\n\t}\n\n\t& .sequencer-controls {\n\t\tposition: absolute;\n\t\ttop: -41px;\n\t\theight: 40px;\n\t\tpadding-top: 10px;\n\t\tpadding-left: 10px;\n\t\tpadding-right: 10px;\n\t\tleft: 50%;\n\t\tmargin-left: -60px;\n\t\twidth: 120px;\n\t\tbackground: #2b2c2d;\n\t\tborder-top-left-radius: 4px;\n\t\tborder-top-right-radius: 4px;\n\t\tborder-bottom: 1px solid #1B1C1E;\n\n\t\t& .inner-controls {\n\t\t\tdisplay: flex;\n\t\t\tjustify-content: space-between;\n\n\t\t\t> h5 {\n\t\t\t\tpadding: 4px 8px;\n\t\t\t\tcolor: yellow;\n\t\t\t\tcursor: pointer;\n\n\t\t\t}\n\t\t}\n\n\t}\n\n\t& .sequencer-container{\n\t\tdisplay: flex;\n\t\tflex-wrap: wrap;\n\t\theight: 100%;\n\t\tjustify-content: space-between;\n\t\t& .sequencer-col{\n\t\t\twidth: 6%;\n\t\t\tdisplay: flex;\n\t\t\theight: 100%;\n\t\t\tflex-wrap: wrap;\n\t\t\tpadding: 0 5px;\n\t\t\talign-items: center;\n\t\t\t&.active{\n\t\t\t\tbackground: rgba(219, 102, 76, .6);\n\t\t\t\t& .sequencer-btn{\n\t\t\t\t\t\n\t\t\t\t\t&.active{\n\t\t\t\t\t\tbackground: white;\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\n\t\t}\n\t\t& .sequencer-btn{\n\t\t\twidth: 100%;\n\t\t\theight: 6%;\n\t\t\tbackground: black;\n\t\t\tcursor: pointer;\n\t\t\t&.active{\n\t\t\t\tbackground: #db664c;\n\t\t\t}\n\t\t}\n\t}\n}\n\n.no-height{\n\theight: auto;\n\n\t& .range-container {\n\t\tpadding-left: 10px;\n\t    height: 200px;\n\t    color: white;\n\t    display: flex;\n\t    justify-content: center;\n\n\n\t}\n}\n\n.left-padding{\n\t& .top-part{\n\t\tpadding-left: 10px;\n\t}\n}\n\n\n\n.canvas{\n\twidth: 540px;\n\theight: 600px;\n\t& .top-part{\n\t\tpadding: 0;\n\t\tposition: relative;\n\t\theight: 90%;\n\t}\n\n\t& .bottom-part{\n\t\theight: 10%;\n\t}\n}\n\n"],"sourceRoot":"webpack://"}]);
 
 	// exports
 
@@ -514,99 +514,95 @@
 
 	var _NodeManager2 = _interopRequireDefault(_NodeManager);
 
-	var _NodeLibrary = __webpack_require__(56);
+	var _NodeLibrary = __webpack_require__(58);
 
 	var _NodeLibrary2 = _interopRequireDefault(_NodeLibrary);
 
-	var _KeyboardManager = __webpack_require__(57);
+	var _KeyboardManager = __webpack_require__(59);
 
 	var _KeyboardManager2 = _interopRequireDefault(_KeyboardManager);
 
-	var _NodeSettings = __webpack_require__(59);
+	var _NodeSettings = __webpack_require__(61);
 
 	var _NodeSettings2 = _interopRequireDefault(_NodeSettings);
 
-	var _WorkspaceManager = __webpack_require__(60);
+	var _WorkspaceManager = __webpack_require__(62);
 
 	var _WorkspaceManager2 = _interopRequireDefault(_WorkspaceManager);
+
+	var _GlobalAudioSettings = __webpack_require__(63);
+
+	var _GlobalAudioSettings2 = _interopRequireDefault(_GlobalAudioSettings);
 
 	var _OscillatorNode = __webpack_require__(46);
 
 	var _OscillatorNode2 = _interopRequireDefault(_OscillatorNode);
 
-	var _GainNode = __webpack_require__(50);
+	var _GainNode = __webpack_require__(51);
 
 	var _GainNode2 = _interopRequireDefault(_GainNode);
 
-	var _SpeakerNode = __webpack_require__(51);
+	var _SpeakerNode = __webpack_require__(52);
 
 	var _SpeakerNode2 = _interopRequireDefault(_SpeakerNode);
 
-	var _AnalyserNode = __webpack_require__(52);
+	var _AnalyserNode = __webpack_require__(53);
 
 	var _AnalyserNode2 = _interopRequireDefault(_AnalyserNode);
 
-	var _LowpassFilterNode = __webpack_require__(53);
+	var _LowpassFilterNode = __webpack_require__(54);
 
 	var _LowpassFilterNode2 = _interopRequireDefault(_LowpassFilterNode);
 
-	var _EnvelopeNode = __webpack_require__(54);
+	var _EnvelopeNode = __webpack_require__(55);
 
 	var _EnvelopeNode2 = _interopRequireDefault(_EnvelopeNode);
 
-	var _FrequencyEnvelopeNode = __webpack_require__(61);
+	var _FrequencyEnvelopeNode = __webpack_require__(65);
 
 	var _FrequencyEnvelopeNode2 = _interopRequireDefault(_FrequencyEnvelopeNode);
 
-	var _LFONode = __webpack_require__(62);
+	var _LFONode = __webpack_require__(66);
 
 	var _LFONode2 = _interopRequireDefault(_LFONode);
 
-	var _SignalMultiplier = __webpack_require__(63);
+	var _SignalMultiplier = __webpack_require__(67);
 
 	var _SignalMultiplier2 = _interopRequireDefault(_SignalMultiplier);
 
-	var _CompressorNode = __webpack_require__(64);
-
-	var _CompressorNode2 = _interopRequireDefault(_CompressorNode);
-
-	var _SequencerNode = __webpack_require__(65);
+	var _SequencerNode = __webpack_require__(68);
 
 	var _SequencerNode2 = _interopRequireDefault(_SequencerNode);
 
-	var _LavaNoise = __webpack_require__(66);
+	var _WaveformNode = __webpack_require__(70);
+
+	var _WaveformNode2 = _interopRequireDefault(_WaveformNode);
+
+	var _FFTNode = __webpack_require__(71);
+
+	var _FFTNode2 = _interopRequireDefault(_FFTNode);
+
+	var _LavaNoise = __webpack_require__(72);
 
 	var _LavaNoise2 = _interopRequireDefault(_LavaNoise);
 
-	var _Voronoi = __webpack_require__(68);
+	var _Voronoi = __webpack_require__(74);
 
 	var _Voronoi2 = _interopRequireDefault(_Voronoi);
 
-	var _CircleNode = __webpack_require__(69);
+	var _CircleNode = __webpack_require__(75);
 
 	var _CircleNode2 = _interopRequireDefault(_CircleNode);
 
-	var _CubeNode = __webpack_require__(70);
+	var _CubeNode = __webpack_require__(76);
 
 	var _CubeNode2 = _interopRequireDefault(_CubeNode);
 
-	var _SphereNode = __webpack_require__(71);
+	var _SphereNode = __webpack_require__(77);
 
 	var _SphereNode2 = _interopRequireDefault(_SphereNode);
 
-	var _ColorNode = __webpack_require__(72);
-
-	var _ColorNode2 = _interopRequireDefault(_ColorNode);
-
-	var _PositionNode = __webpack_require__(73);
-
-	var _PositionNode2 = _interopRequireDefault(_PositionNode);
-
-	var _RotationNode = __webpack_require__(74);
-
-	var _RotationNode2 = _interopRequireDefault(_RotationNode);
-
-	var _ParamDriverNode = __webpack_require__(75);
+	var _ParamDriverNode = __webpack_require__(78);
 
 	var _ParamDriverNode2 = _interopRequireDefault(_ParamDriverNode);
 
@@ -614,7 +610,11 @@
 
 	var _SceneNode2 = _interopRequireDefault(_SceneNode);
 
-	var _tone = __webpack_require__(48);
+	var _ColorNode = __webpack_require__(81);
+
+	var _ColorNode2 = _interopRequireDefault(_ColorNode);
+
+	var _tone = __webpack_require__(49);
 
 	var _tone2 = _interopRequireDefault(_tone);
 
@@ -654,9 +654,6 @@
 					}, {
 						type: 'Speaker',
 						obj: _SpeakerNode2.default
-					}, {
-						type: 'Compressor',
-						obj: _CompressorNode2.default
 					}],
 					data: [{
 						type: 'LFO',
@@ -668,6 +665,10 @@
 					triggers: [{
 						type: 'SequencerNode',
 						obj: _SequencerNode2.default
+					}],
+					analysers: [{
+						type: 'Ljudvåg',
+						obj: _WaveformNode2.default
 					}]
 				},
 				graphics: {
@@ -686,13 +687,16 @@
 						type: 'Circle',
 						obj: _CircleNode2.default
 					}, {
-						type: 'LavaNoise',
-						obj: _LavaNoise2.default
-					}, {
 						type: 'Voronoi',
 						obj: _Voronoi2.default
+					}, {
+						type: 'LavaNoise',
+						obj: _LavaNoise2.default
 					}],
 					'Modifiers': [{
+						type: 'Color',
+						obj: _ColorNode2.default
+					}, {
 						type: 'ParamDriver',
 						obj: _ParamDriverNode2.default
 					}]
@@ -704,6 +708,8 @@
 			this.nodeSettings = new _NodeSettings2.default(document.body);
 
 			this.workspaceManager = new _WorkspaceManager2.default(document.body);
+
+			this.globalAudioSettings = new _GlobalAudioSettings2.default(this.workspaceManager.containerEl);
 
 			this.onResize();
 
@@ -845,13 +851,17 @@
 
 	var _AudioNodeManager2 = _interopRequireDefault(_AudioNodeManager);
 
-	var _NodeConnectionLine = __webpack_require__(55);
+	var _NodeConnectionLine = __webpack_require__(56);
 
 	var _NodeConnectionLine2 = _interopRequireDefault(_NodeConnectionLine);
 
 	var _ParamHelpers = __webpack_require__(37);
 
 	var _ParamHelpers2 = _interopRequireDefault(_ParamHelpers);
+
+	var _Helpers = __webpack_require__(57);
+
+	var _Helpers2 = _interopRequireDefault(_Helpers);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -891,9 +901,8 @@
 			this.addBound = this.add.bind(this);
 			this.removeBound = this.onNodeRemove.bind(this);
 			this.onAudioNodeParamChangeBound = this.onAudioNodeParamChange.bind(this);
-			this.onSequencerTriggerBound = this.onSequencerTrigger.bind(this);
 
-			this.audioNodeManager = new _AudioNodeManager2.default(parentEl, this.onConnectingBound, this.onInputConnectionBound, this.addBound, this.hasConfig ? this.config.nodes : [], this.onAudioNodeParamChangeBound, onNodeActive, this.onSequencerTriggerBound, this.removeBound);
+			this.audioNodeManager = new _AudioNodeManager2.default(parentEl, this.onConnectingBound, this.onInputConnectionBound, this.addBound, this.hasConfig ? this.config.nodes : [], this.onAudioNodeParamChangeBound, onNodeActive, this.removeBound);
 			this.audioNodeManager.init();
 
 			this.graphicsNodeManager = new _GraphicsNodeManager2.default(parentEl, this.onConnectingBound, this.onInputConnectionBound, this.addBound, onNodeActive, this.removeBound);
@@ -917,18 +926,30 @@
 
 				this.outputActiveNode = null;
 
-				this.keyboardManager.onAudioNodeConnectionUpdate(this._nodeConnections);
+				var audioConnections = this._nodeConnections.filter(function (t) {
+					return !t.out.isGraphicsNode;
+				});
+				this.keyboardManager.onAudioNodeConnectionUpdate(audioConnections);
+
+				var sequencers = audioConnections.filter(function (t) {
+					return t.out.isSequencer;
+				});
+				var sequencerIds = [];
+				for (var i = 0; i < sequencers.length; i++) {
+					var ID = sequencers[i].out.ID;
+					if (sequencerIds.indexOf(ID) < 0) {
+						sequencers[i].out.sequencerManager.onAudioNodeConnectionUpdate(audioConnections);
+						sequencerIds.push(ID);
+					}
+				}
+
+				sequencerIds = [];
 			}
 
 			this.constructorIsDone = true;
 		}
 
 		_createClass(NodeManager, [{
-			key: 'onSequencerTrigger',
-			value: function onSequencerTrigger(step, time) {
-				this.keyboardManager.play(step, time);
-			}
-		}, {
 			key: 'onNodeAddedFromLibrary',
 			value: function onNodeAddedFromLibrary(type, data) {
 				if (type === 'graphics') {
@@ -949,6 +970,7 @@
 				var connections = this._nodeConnections.filter(function (t) {
 					return t.out.ID === node.ID || t.in.ID === node.ID;
 				});
+				console.log('remove connections', connections);
 
 				for (var i = 0; i < connections.length; i++) {
 					this.removeConnection(connections[i]);
@@ -971,124 +993,30 @@
 			key: 'onConnecting',
 			value: function onConnecting(node, clickPos) {
 
+				if (this.isConnecting || this.outputActiveNode) {
+					return;
+				}
+
 				var outputHasConnection = this._nodeConnections.some(function (t) {
 					return t.out.ID === node.ID;
 				});
-				// if (outputHasConnection) {
-				// 	this.removeConnection(this._nodeConnections.find(t => t.out.ID === node.ID));
-				// 	return;
-				// }
-
-				console.log('on connecting');
 
 				this.isConnecting = true;
 				this.outputActiveNode = node;
 
 				this.nodeConnectionLine.onConnectionActive(node, clickPos);
-
-				/*
-	   	create data node array
-	   	create audio node array
-	   		check if out is data or audio
-	   		if data
-	   		set not connected params as possible 
-	   		if audio
-	   		set not connected audio ins as possible
-	   */
-
-				var paramConnections = this._nodeConnections.filter(function (t) {
-					return t.param;
-				});
-				var audioConnections = this._nodeConnections.filter(function (t) {
-					return !t.param;
-				});
-
-				var otherNodes = this._nodes.filter(function (t) {
-					return t.ID !== node.ID && t.hasAudioInput;
-				});
-
-				var dataNodes = otherNodes.filter(function (t) {
-					return t.isParam;
-				});
-
-				var getInputParams = function getInputParams(node) {
-					var params = [];
-					for (var key in node.params) {
-						if (node.params[key].useAsInput) {
-							params.push(node.params[key]);
-						}
-					}
-
-					return params;
-				};
-
-				var hasAvailableInputParams = function hasAvailableInputParams(node) {
-					var nodeParamConnections = paramConnections.filter(function (t) {
-						return t.in.ID === node.ID;
-					});
-
-					var inputParams = getInputParams(node);
-
-					var availableParams = [];
-
-					var _loop2 = function _loop2(i) {
-						var inputParam = inputParams[i];
-						if (!nodeParamConnections.some(function (t) {
-							return t.param.objSettings.param === inputParam.objSettings.param;
-						})) {
-							availableParams.push(inputParam);
-							inputParam.canBeConnected = true;
-						}
-					};
-
-					for (var i = 0; i < inputParams.length; i++) {
-						_loop2(i);
-					}
-
-					return availableParams.length > 0;
-				};
-
-				if (!this.outputActiveNode.isGraphicsNode) {
-					var audioNodesWithInputParams = otherNodes.filter(function (t) {
-						return hasAvailableInputParams(t);
-					});
-
-					var notConnectedAudioInNodes = [];
-
-					var _loop3 = function _loop3(i) {
-						var node = otherNodes[i];
-						if (!audioConnections.some(function (t) {
-							return t.in.ID === node.ID;
-						}) && !node.isParam) {
-							notConnectedAudioInNodes.push(node);
-						}
-					};
-
-					for (var i = 0; i < otherNodes.length; i++) {
-						_loop3(i);
-					}
-
-					var nodesToLoop = node.isParam ? audioNodesWithInputParams : notConnectedAudioInNodes;
-
-					for (var i = 0; i < nodesToLoop.length; i++) {
-						nodesToLoop[i].canBeConnected = true;
-					}
-				}
 			}
 		}, {
 			key: 'onInputConnection',
 			value: function onInputConnection(inputNode, inputType, param) {
-				var _this2 = this;
 
 				var inputAvailable = true;
-
-				console.log(this.isConnecting, this.outputActiveNode);
 
 				if (!this.isConnecting || !this.outputActiveNode) {
 					inputAvailable = false;
 					if (param) {
 						var connection = this._nodeConnections.find(function (t) {
-							return t.in.ID === inputNode.ID && t.param.title === param.title;
+							return t.in.ID === inputNode.ID && t.param && t.param.title === param.title;
 						});
 						if (connection) {
 							this.removeConnection(connection);
@@ -1113,28 +1041,16 @@
 				}
 
 				if (!inputNode.isGraphicsNode) {
-					if (!this.outputActiveNode.isParam && param || this.outputActiveNode.isParam && !param) {
-						inputAvailable = false;
-					}
-
-					if (this.outputActiveNode.isParam) {
-						if (!param.canBeConnected) {
-							var params = inputNode.params;
-							for (var key in params) {
-								params[key].canBeConnected = false;
-							}
-							inputAvailable = false;
+					if (param && param.helper) {
+						if (!param.helper.isValid(this.outputActiveNode, inputNode, param, this._nodeConnections)) {
+							this.resetConnecting();
+							return;
 						}
 					} else {
-						if (!inputNode.canBeConnected) {
-							for (var i = 0; i < this._nodes.length; i++) {
-								this._nodes[i].canBeConnected = false;
-							}
+						if (!inputNode.inputHelpersType.isValid(this.outputActiveNode, inputNode, param, this._nodeConnections)) {
+							this.resetConnecting();
+							return;
 						}
-					}
-
-					if (!inputAvailable) {
-						return;
 					}
 				} else {
 
@@ -1160,43 +1076,51 @@
 					lineEl: this.nodeConnectionRenderer.addLine(inputNode.ID + '---' + this.outputActiveNode.ID),
 					inputType: inputType
 				};
-				connectionData.lineEl.addEventListener('click', function (e) {
-					_this2.removeConnection(connectionData);
-				});
+				// connectionData.lineEl.addEventListener('click', (e) => {
+				// 	this.removeConnection(connectionData);
+				// });
+
+				this.outputActiveNode.enableOutput(param ? param : undefined, connectionData);
 
 				if (param) {
 					inputNode.enableParam(param, connectionData);
 				} else {
-					inputNode.enableInput(this.outputActiveNode.getConnectNode(), inputType);
+					inputNode.enableInput(this.outputActiveNode, inputType);
 				}
-
-				this.outputActiveNode.enableOutput(param ? param : undefined, connectionData);
 
 				this._nodeConnections.push(connectionData);
 
 				if (this.constructorIsDone) {
-					if (connectionData.out.isRenderNode) {
-						// const renderConnections = this._nodeConnections.filter(t => t.out.isRenderNode);
-						// if (!connectionData.in.hasOutput) {
-						// 	this.graphicsNodeManager.onConnectionUpdate([connectionData]);
-						// }
+					var audioConnections = this._nodeConnections.filter(function (t) {
+						return !t.out.isGraphicsNode;
+					});
+					_Helpers2.default.updateOscillators(audioConnections);
 
-					} else {
-						var audioConnections = this._nodeConnections.filter(function (t) {
-							return !t.out.isGraphicsNode;
-						});
-						this.keyboardManager.onAudioNodeConnectionUpdate(audioConnections);
+					this.keyboardManager.onAudioNodeConnectionUpdate(audioConnections);
+
+					var sequencers = audioConnections.filter(function (t) {
+						return t.out.isSequencer;
+					});
+					var sequencerIds = [];
+					for (var i = 0; i < sequencers.length; i++) {
+						var ID = sequencers[i].out.ID;
+						if (sequencerIds.indexOf(ID) < 0) {
+							sequencers[i].out.sequencerManager.onAudioNodeConnectionUpdate(audioConnections);
+							sequencerIds.push(ID);
+						}
 					}
+
+					sequencerIds = [];
 				}
 
 				this.outputActiveNode = null;
 
-				for (var _i = 0; _i < this._nodes.length; _i++) {
-					this._nodes[_i].canBeConnected = false;
-					if (this._nodes[_i].input) {
-						this._nodes[_i].input.deactivatePossible();
-					}
-				}
+				// for (let i = 0; i < this._nodes.length; i++) {
+				// 	this._nodes[i].canBeConnected = false;
+				// 	if (this._nodes[i].input) {
+				// 		this._nodes[i].input.deactivatePossible();
+				// 	}	
+				// }
 			}
 		}, {
 			key: 'removeConnection',
@@ -1205,13 +1129,16 @@
 				if (connectionData.param) {
 					connectionData.in.disableParam(connectionData.param, connectionData);
 				} else {
-					connectionData.in.disableInput(connectionData.out.getConnectNode(), connectionData.inputType);
+					connectionData.in.disableInput(connectionData.out, connectionData.inputType);
 				}
 
 				connectionData.out.disableOutput(connectionData.in, connectionData.param);
 
 				var tempNodeConnections = this._nodeConnections.filter(function (t) {
-					return t.out.ID !== connectionData.out.ID;
+					if (t.out.ID === connectionData.out.ID && t.in.ID === connectionData.in.ID) {
+						return false;
+					}
+					return true;
 				});
 
 				if (connectionData.param) {
@@ -1219,20 +1146,35 @@
 						var hasParam = t.param;
 						if (!hasParam) return true;
 
-						return t.param.title !== connectionData.param.title;
+						if (t.param.title === connectionData.param.title && t.in.ID === connectionData.in.ID) {
+							return false;
+						}
+						return true;
 					});
 				}
-
-				// for (let i = 0; i < tempNodeConnections.length; i++) {
-				// 	tempNodeConnections[i].in.enableInput(tempNodeConnections[i].out.getConnectNode());
-				// }
 
 				this._nodeConnections = tempNodeConnections;
 
 				var audioConnections = this._nodeConnections.filter(function (t) {
 					return !t.out.isGraphicsNode;
 				});
+				_Helpers2.default.updateOscillators(audioConnections);
+
 				this.keyboardManager.onAudioNodeConnectionUpdate(audioConnections);
+
+				var sequencers = audioConnections.filter(function (t) {
+					return t.out.isSequencer;
+				});
+				var sequencerIds = [];
+				for (var i = 0; i < sequencers.length; i++) {
+					var ID = sequencers[i].out.ID;
+					if (sequencerIds.indexOf(ID) < 0) {
+						sequencers[i].out.sequencerManager.onAudioNodeConnectionUpdate(audioConnections);
+						sequencerIds.push(ID);
+					}
+				}
+
+				sequencerIds = [];
 
 				this.nodeConnectionRenderer.removeLine(connectionData.lineEl);
 			}
@@ -1240,15 +1182,22 @@
 			key: 'add',
 			value: function add(node) {
 				this._nodes.push(node);
-				if (node.isRenderNode || node.isCanvasNode) {
+				if (node.isRenderNode || node.isCanvasNode || node.needsUpdate) {
 					this._graphicNodes.push(node);
 					this._graphicNodeLength = this._graphicNodes.length;
+				}
+
+				if (node.isSequencer) {
+					var audioConnections = this._nodeConnections.filter(function (t) {
+						return !t.out.isGraphicsNode;
+					});
+					node.sequencerManager.init(audioConnections);
 				}
 			}
 		}, {
 			key: 'remove',
 			value: function remove(node) {
-				if (node.isGraphicsNode) {
+				if (node.isGraphicsNode || node.needsUpdate) {
 					var _tempNodes = this._graphicNodes.filter(function (t) {
 						return t.ID !== node.ID;
 					});
@@ -1270,8 +1219,6 @@
 				for (var i = 0; i < this._graphicNodeLength; i++) {
 					this._graphicNodes[i].update();
 				}
-
-				// this.graphicsNodeManager.update();
 			}
 		}, {
 			key: 'render',
@@ -1281,8 +1228,6 @@
 				for (var i = 0; i < this._graphicNodeLength; i++) {
 					this._graphicNodes[i].render();
 				}
-
-				// this.graphicsNodeManager.render();
 			}
 		}]);
 
@@ -1326,6 +1271,10 @@
 			this.hasOutput = true;
 			this.isGraphicsNode = false;
 			this.hasGraphicsInput = false;
+			this.needsUpdate = false;
+
+			this.outDotPos = undefined;
+			this.inDotPos = undefined;
 		}
 
 		_createClass(Node, [{
@@ -1388,6 +1337,24 @@
 				this.onMouseUpBound = this.onMouseUp.bind(this);
 			}
 		}, {
+			key: 'getOutDotPos',
+			value: function getOutDotPos(el) {
+				if (!this.inDotPos) {
+					this.inDotPos = el.getBoundingClientRect();
+				}
+
+				return this.inDotPos;
+			}
+		}, {
+			key: 'getInDotPos',
+			value: function getInDotPos(el) {
+				if (!this.outDotPos) {
+					this.outDotPos = el.getBoundingClientRect();
+				}
+
+				return this.outDotPos;
+			}
+		}, {
 			key: 'onRemoveClick',
 			value: function onRemoveClick() {
 				this.onNodeRemove(this);
@@ -1400,7 +1367,7 @@
 		}, {
 			key: 'getInputEl',
 			value: function getInputEl() {
-				return this.input.el;
+				return this.input;
 			}
 		}, {
 			key: 'getConnectNode',
@@ -1488,13 +1455,14 @@
 			key: 'onMouseUp',
 			value: function onMouseUp(e) {
 
-				if (this.output && this.output.el) {
-					if (e.target.parentNode !== this.output.el && Math.abs(this.lastDelta.x) < 2 && Math.abs(this.lastDelta.y) < 2) {
-						if (this.onNodeActive) {
-							this.onNodeActive(this);
-						}
-					}
-				}
+				// if (this.output && this.output.el) {
+				// 	if ((e.target.parentNode !== this.output.el) && (Math.abs(this.lastDelta.x) < 2 && Math.abs(this.lastDelta.y) < 2)) {
+				// 		// if (this.onNodeActive) {
+				// 		// 	this.onNodeActive(this);
+				// 		// }
+
+				// 	}
+				// }
 
 				window.removeEventListener('mouseup', this.onMouseUpBound);
 				window.removeEventListener('mousemove', this.onMouseMoveBound);
@@ -1553,9 +1521,30 @@
 			}
 
 			this.el.addEventListener('click', this.onClickBound);
+
+			this.offsetLeft = undefined;
+			this.offsetTop = undefined;
 		}
 
 		_createClass(NodeOutput, [{
+			key: 'getOffsetLeft',
+			value: function getOffsetLeft() {
+				if (!this.offsetLeft) {
+					this.offsetLeft = this.el.offsetLeft;
+				}
+
+				return this.offsetLeft;
+			}
+		}, {
+			key: 'getOffsetTop',
+			value: function getOffsetTop() {
+				if (!this.offsetTop) {
+					this.offsetTop = this.el.offsetTop;
+				}
+
+				return this.offsetTop;
+			}
+		}, {
 			key: 'onClick',
 			value: function onClick(e) {
 
@@ -1630,9 +1619,30 @@
 			this.onClickBound = this.onClick.bind(this);
 
 			this.el.addEventListener('click', this.onClickBound);
+
+			this.offsetLeft = undefined;
+			this.offsetTop = undefined;
 		}
 
 		_createClass(NodeInput, [{
+			key: 'getOffsetLeft',
+			value: function getOffsetLeft() {
+				if (!this.offsetLeft) {
+					this.offsetLeft = this.el.offsetLeft;
+				}
+
+				return this.offsetLeft;
+			}
+		}, {
+			key: 'getOffsetTop',
+			value: function getOffsetTop() {
+				if (!this.offsetTop) {
+					this.offsetTop = this.el.offsetTop;
+				}
+
+				return this.offsetTop;
+			}
+		}, {
 			key: 'onClick',
 			value: function onClick(e) {
 
@@ -1756,6 +1766,12 @@
 
 			this.nodeManager = nodeManager;
 
+			this.onMouseEnterRemoveCircleBound = this.onMouseEnterRemoveCircle.bind(this);
+			this.onMouseLeaveRemoveCircleBound = this.onMouseLeaveRemoveCircle.bind(this);
+			this.onRemoveClickBound = this.onRemoveClick.bind(this);
+
+			this.currentMouseOverObj = undefined;
+
 			// this.lines = [];
 		}
 
@@ -1763,8 +1779,14 @@
 			key: 'addLine',
 			value: function addLine(ID) {
 
+				var g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
 				var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-				line.setAttribute('id', ID);
+				var removeCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+				var removeText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+				g.appendChild(line);
+				g.appendChild(removeCircle);
+				g.appendChild(removeText);
+				g.setAttribute('id', ID);
 				line.setAttribute('x1', '0');
 				line.setAttribute('y1', '0');
 				line.setAttribute('x2', '0');
@@ -1773,14 +1795,60 @@
 				line.setAttribute("stroke", "white");
 				line.setAttribute('stroke-linecap', 'round');
 
-				this.el.appendChild(line);
+				removeCircle.setAttribute('cx', '0');
+				removeCircle.setAttribute('cy', '0');
+				removeCircle.setAttribute('fill', 'black');
+				removeCircle.setAttribute('stroke', 'red');
+				removeCircle.setAttribute('stroke-width', '2');
+				removeCircle.setAttribute('r', '10');
+				removeCircle.addEventListener('mouseenter', this.onMouseEnterRemoveCircleBound);
+				removeCircle.addEventListener('mouseleave', this.onMouseLeaveRemoveCircleBound);
+				removeCircle.addEventListener('click', this.onRemoveClickBound);
 
-				return line;
+				removeText.setAttribute('fill', 'white');
+
+				this.el.appendChild(g);
+
+				return { g: g, line: line, removeCircle: removeCircle, removeText: removeText };
 			}
 		}, {
 			key: 'removeLine',
-			value: function removeLine(line) {
-				this.el.removeChild(line);
+			value: function removeLine(obj) {
+				var circle = obj.removeCircle;
+				circle.removeEventListener('mouseenter', this.onMouseEnterRemoveCircleBound);
+				circle.removeEventListener('mouseleave', this.onMouseLeaveRemoveCircleBound);
+				circle.removeEventListener('click', this.onRemoveClickBound);
+				this.el.removeChild(obj.g);
+			}
+		}, {
+			key: 'onRemoveClick',
+			value: function onRemoveClick(e) {
+				var gNode = e.target.parentNode;
+				var lineID = gNode.getAttribute('id');
+
+				var connectionData = this.nodeManager._nodeConnections.find(function (t) {
+					return t.lineEl.g.getAttribute('id') === lineID;
+				});
+				if (connectionData) {
+					this.nodeManager.removeConnection(connectionData);
+				}
+			}
+		}, {
+			key: 'onMouseEnterRemoveCircle',
+			value: function onMouseEnterRemoveCircle(e) {
+				var gNode = e.target.parentNode;
+				var text = gNode.querySelector('text');
+				text.textContent = 'Ta bort koppling';
+				this.currentMouseOverObj = text;
+			}
+		}, {
+			key: 'onMouseLeaveRemoveCircle',
+			value: function onMouseLeaveRemoveCircle(e) {
+				if (this.currentMouseOverObj && this.currentMouseOverObj.textContent) {
+					this.currentMouseOverObj.textContent = '';
+				}
+
+				this.currentMouseOverObj = undefined;
 			}
 		}, {
 			key: 'update',
@@ -1813,41 +1881,44 @@
 
 					var isParam = !!param;
 
-					var inEl = void 0;
+					var inObj = void 0;
 					if (isParam) {
-						if (param.objSettings) {
-							inEl = nodeIn.inputParams[param.objSettings.param].el;
-						} else {
-							inEl = nodeIn.inputParams[param.title].el;
-						}
+						inObj = nodeIn.inputParams[param.title];
 					} else {
-						inEl = nodeIn.getInputEl(inputType);
+						inObj = nodeIn.getInputEl(inputType);
 					}
-					// const inEl = isParam ? nodeIn.inputParams[param.objSettings.param].el : nodeIn.input.el;
-					var outDotPos = nodeOut.getDotPos(nodeOut.output.el);
-					var inDotPos = nodeIn.getDotPos(inEl);
+					var outDotPos = nodeOut.getOutDotPos(nodeOut.output.el);
 
-					// console.log('isparam', isParam, '   ', this.)
-
-					var offsetXOut = nodeOut.output.el.offsetLeft;
-					var offsetYOut = nodeOut.output.el.offsetTop;
+					var offsetXOut = nodeOut.output.getOffsetLeft();
+					var offsetYOut = nodeOut.output.getOffsetTop();
 
 					var startX = nodeOut.moveCoords.offset.x + offsetXOut + outDotPos.width - 3;
 					var startY = nodeOut.moveCoords.offset.y + offsetYOut + 7;
 
-					var offsetXIn = inEl.offsetLeft;
-					var offsetYIn = inEl.offsetTop;
+					var offsetXIn = inObj.getOffsetLeft();
+					var offsetYIn = inObj.getOffsetTop();
 
 					var endX = nodeIn.moveCoords.offset.x + offsetXIn + 4;
 					var endY = nodeIn.moveCoords.offset.y + offsetYIn + 7;
 
-					var line = this.nodeManager._nodeConnections[i].lineEl;
+					var line = this.nodeManager._nodeConnections[i].lineEl.line;
 					line.setAttribute('x1', startX);
 					line.setAttribute('y1', startY);
 					line.setAttribute('x2', endX);
 					line.setAttribute('y2', endY);
 					var color = this.nodeManager._nodeConnections[i].param ? 'yellow' : 'red';
 					line.setAttribute('stroke', color);
+
+					var circle = this.nodeManager._nodeConnections[i].lineEl.removeCircle;
+					var centerX = (startX + endX) / 2;
+					var centerY = (startY + endY) / 2;
+					circle.setAttribute('cx', centerX);
+					circle.setAttribute('cy', centerY);
+					circle.setAttribute('stroke', color);
+
+					var text = this.nodeManager._nodeConnections[i].lineEl.removeText;
+					text.setAttribute('x', centerX - 35);
+					text.setAttribute('y', centerY - 20);
 				}
 			}
 		}]);
@@ -2022,6 +2093,8 @@
 			_this.isRenderNode = false;
 			_this.canConnectToMaterial = false;
 			_this.isCanvasNode = false;
+
+			_this.dotPos = undefined;
 			return _this;
 		}
 
@@ -2099,7 +2172,12 @@
 		}, {
 			key: 'getDotPos',
 			value: function getDotPos(el) {
-				return el.getBoundingClientRect();
+
+				if (!this.dotPos) {
+					this.dotPos = el.getBoundingClientRect();
+				}
+
+				return this.dotPos;
 			}
 		}, {
 			key: 'setParamVal',
@@ -15567,22 +15645,42 @@
 			var labelEl = document.createElement('p');
 
 			labelEl.className = 'label';
-			if (param.objSettings) {
-				labelEl.innerHTML = param.objSettings.param;
-			} else {
-				labelEl.innerHTML = param.param;
-			}
+			labelEl.innerHTML = param.param;
 
 			this.el.appendChild(labelEl);
 
 			parentEl.appendChild(this.el);
 
-			this.el.addEventListener('click', function () {
+			this.el.addEventListener('click', function (e) {
+				console.log('param click');
+				e.preventDefault();
+				e.stopPropagation();
 				onClickCallback(param);
 			});
+
+			this.offsetLeft = undefined;
+			this.offsetTop = undefined;
 		}
 
 		_createClass(NodeParam, [{
+			key: 'getOffsetLeft',
+			value: function getOffsetLeft() {
+				if (!this.offsetLeft) {
+					this.offsetLeft = this.el.offsetLeft;
+				}
+
+				return this.offsetLeft;
+			}
+		}, {
+			key: 'getOffsetTop',
+			value: function getOffsetTop() {
+				if (!this.offsetTop) {
+					this.offsetTop = this.el.offsetTop;
+				}
+
+				return this.offsetTop;
+			}
+		}, {
 			key: 'enable',
 			value: function enable() {
 				this.el.classList.add('active');
@@ -15688,12 +15786,12 @@
 
 	var isValidParamColorInput = function isValidParamColorInput(outNode) {
 
-		return outNode.modifier.isColor;
+		return outNode.picker;
 	};
 
 	var onColorParamUpdate = function onColorParamUpdate(inNode, outNode) {
 
-		inNode.material.color = outNode.modifier.value;
+		inNode.material.color = outNode.currentColor;
 	};
 
 	var isValidParamPositionInput = function isValidParamPositionInput(outNode, param) {
@@ -18063,13 +18161,13 @@
 
 	var LAVA_SHAPE_MAIN = exports.LAVA_SHAPE_MAIN = "\n    \n    // float u_user_speed3 = 0.500;\n    // float u_user_pattern_scale = -0.294;\n    // float u_user_scale = 6.632;\n    // float u_user_rotation = 0.804;\n    // float u_user_speed2 = 0.028;\n    // float u_user_blur = 0.7;\n    // vec3 u_user_color1 = vec3(0.256,0.351,0.620);\n    // vec3 u_user_color2 = vec3(1.000,0.420,0.420);\n    \n    \n    // vec2 st = gl_FragCoord.xy/u_resolution.xy;\n    st.x *= u_resolution.x/u_resolution.y;\n    color = vec3(0.0);\n    vec2 pos = vec2(st*u_user_scale);\n\n    float DF = 0.0;\n\n    \n    // Add a random position\n    float a = 0.0;\n    vec2 vel = vec2(u_time*u_user_speed3);\n    DF += snoise(pos+vel)*u_user_pattern_scale+.25;\n\n    // Add a random position\n    a = snoise(pos*vec2(cos(u_time*.15),sin(u_time*u_user_rotation))*u_user_speed2)*3.405;\n    vel = vec2(cos(a),sin(a));\n    DF += snoise(pos+vel)*.25+.25;\n\n    color = vec3( smoothstep(u_user_blur,.75,fract(DF)) );\n    \n    color = mix(u_user_color1, u_user_color2, color);\n";
 
-	var VORONOI_MAIN = exports.VORONOI_MAIN = "\n    // vec2 st = gl_FragCoord.xy/u_resolution.xy;\n    st.x *= u_resolution.x/u_resolution.y;\n    color = vec3(.0);\n    \n    // Scale \n    st *= 5.;\n    \n    // Tile the space\n    vec2 i_st = floor(st);\n    vec2 f_st = fract(st);\n\n    float m_dist = 10.;  // minimun distance\n    vec2 m_point;        // minimum point\n    \n    for (int j=-1; j<=1; j++ ) {\n        for (int i=-1; i<=1; i++ ) {\n            vec2 neighbor = vec2(float(i),float(j));\n            vec2 point = random2(i_st + neighbor);\n            point = 0.5 + 0.5*sin(u_time + 6.2831*point);\n            vec2 diff = neighbor + point - f_st;\n            float dist = length(diff);\n\n            if( dist < m_dist ) {\n                m_dist = dist;\n                m_point = point;\n            }\n        }\n    }\n\n    // Assign a color using the closest point position\n    color += dot(m_point,vec2(0.30,0.60));\n    \n    // Add distance field to closest point center \n    color.g = m_dist;\n\n    // Show isolines\n    //color -= abs(sin(40.0*m_dist*(u_mouse.x/u_resolution.x)))*0.07;\n    \n    color = mix(vec3(1.0, 1.0, 1.0), vec3(0.0, 0.0, .0), m_dist);\n    color *= vec3(.2, .6, .8);\n";
+	var VORONOI_MAIN = exports.VORONOI_MAIN = "\n    // vec2 st = gl_FragCoord.xy/u_resolution.xy;\n    st.x *= u_resolution.x/u_resolution.y;\n    color = vec3(.0);\n    \n    // Scale \n    st *= 5.;\n    \n    // Tile the space\n    vec2 i_st = floor(st);\n    vec2 f_st = fract(st);\n\n    float m_dist = 10.;  // minimun distance\n    vec2 m_point;        // minimum point\n    \n    for (int j=-1; j<=1; j++ ) {\n        for (int i=-1; i<=1; i++ ) {\n            vec2 neighbor = vec2(float(i),float(j));\n            vec2 point = random2(i_st + neighbor);\n            point = 0.5 + 0.5*sin(u_time + 6.2831*point);\n            vec2 diff = neighbor + point - f_st;\n            float dist = length(diff);\n\n            if( dist < m_dist ) {\n                m_dist = dist;\n                m_point = point;\n            }\n        }\n    }\n\n    // Assign a color using the closest point position\n    color += dot(m_point,vec2(0.30,0.60));\n    \n    // Add distance field to closest point center \n    color.g = m_dist;\n\n    // Show isolines\n    //color -= abs(sin(40.0*m_dist*(u_mouse.x/u_resolution.x)))*0.07;\n    \n    color = mix(u_user_fgColor, u_user_bgColor, m_dist);\n    //color *= vec3(.2, .6, .8);\n";
 
 	var GRADIENT_MAIN = exports.GRADIENT_MAIN = "\n\tcolor *= vec3(st.x,st.y,abs(sin(u_time)));\n";
 
 	// ------ BASE SHADER -----
 
-	var BASE_SHADER = exports.BASE_SHADER = "\n#ifdef GL_ES\nprecision mediump float;\n#endif\n\nuniform vec2 u_resolution;\nuniform vec2 u_mouse;\nuniform float u_time;\n\n//CIRCLE\nuniform float u_noise_amount;\n\n//LAVA\nuniform float u_user_speed3;\nuniform float u_user_pattern_scale;\nuniform float u_user_scale;\nuniform float u_user_rotation;\nuniform float u_user_speed2;\nuniform float u_user_blur;\nuniform vec3 u_user_color1;\nuniform vec3 u_user_color2;\n\n// YUV to RGB matrix\nmat3 yuv2rgb = mat3(1.0, 0.0, 1.13983,\n                    1.0, -0.39465, -0.58060,\n                    1.0, 2.03211, 0.0);\n\nvec2 random2(vec2 st){\n    st = vec2( dot(st,vec2(127.1,311.7)),\n              dot(st,vec2(269.5,183.3)) );\n    return -1.0 + 2.0*fract(sin(st)*43758.5453123);\n}\n\n// Value Noise by Inigo Quilez - iq/2013\n// https://www.shadertoy.com/view/lsf3WH\nfloat noise(vec2 st) {\n    vec2 i = floor(st);\n    vec2 f = fract(st);\n\n    vec2 u = f*f*(3.0-2.0*f);\n\n    return mix( mix( dot( random2(i + vec2(0.0,0.0) ), f - vec2(0.0,0.0) ),\n                     dot( random2(i + vec2(1.0,0.0) ), f - vec2(1.0,0.0) ), u.x),\n                mix( dot( random2(i + vec2(0.0,1.0) ), f - vec2(0.0,1.0) ),\n                     dot( random2(i + vec2(1.0,1.0) ), f - vec2(1.0,1.0) ), u.x), u.y);\n}\n\nmat2 rotate2d(float _angle){\n    return mat2(cos(_angle),-sin(_angle),\n                sin(_angle),cos(_angle));\n}\n\nfloat shapeCircle(vec2 st, float radius) {\n\t//st = vec2(0.5)-st;\n    float r = length(st)*2.0;\n    float a = atan(st.y,st.x);\n    float m = abs(mod(a+u_time*2.080,3.14*2.0)-3.14)/3.688;\n    float f = radius;\n    float mod1 = radius;\n    m += noise(st+u_time*0.1)*.5;\n    mod1 = sin(a*50.000)*noise(st+u_time*0.536)*0.156;\n    mod1 += (sin(a*20.000)*0.116*pow(m,1.576));\n    f += mod1 * u_noise_amount;\n    return 1.-smoothstep(f,f+0.007,r);\n}\n\nfloat shapeBorderCircle(vec2 st, float radius, float width) {\n    return shapeCircle(st,radius) - shapeCircle(st,radius-width);\n}\n\nvec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }\nvec2 mod289(vec2 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }\nvec3 permute(vec3 x) { return mod289(((x*34.0)+1.0)*x); }\n\nfloat snoise(vec2 v) {\n    const vec4 C = vec4(0.211324865405187,  // (3.0-sqrt(3.0))/6.0\n                        0.366025403784439,  // 0.5*(sqrt(3.0)-1.0)\n                        -0.577350269189626,  // -1.0 + 2.0 * C.x\n                        0.024390243902439); // 1.0 / 41.0\n    vec2 i  = floor(v + dot(v, C.yy) );\n    vec2 x0 = v -   i + dot(i, C.xx);\n    vec2 i1;\n    i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);\n    vec4 x12 = x0.xyxy + C.xxzz;\n    x12.xy -= i1;\n    i = mod289(i); // Avoid truncation effects in permutation\n    vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 ))\n        + i.x + vec3(0.0, i1.x, 1.0 ));\n\n    vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0);\n    m = m*m ;\n    m = m*m ;\n    vec3 x = 2.0 * fract(p * C.www) - 1.0;\n    vec3 h = abs(x) - 0.5;\n    vec3 ox = floor(x + 0.5);\n    vec3 a0 = x - ox;\n    m *= 1.79284291400159 - 0.85373472095314 * ( a0*a0 + h*h );\n    vec3 g;\n    g.x  = a0.x  * x0.x  + h.x  * x0.y;\n    g.yz = a0.yz * x12.xz + h.yz * x12.yw;\n    return 130.0 * dot(m, g);\n}\n";
+	var BASE_SHADER = exports.BASE_SHADER = "\n#ifdef GL_ES\nprecision mediump float;\n#endif\n\nuniform vec2 u_resolution;\nuniform vec2 u_mouse;\nuniform float u_time;\n\n//CIRCLE\nuniform float u_noise_amount;\n\n//LAVA\nuniform float u_user_speed3;\nuniform float u_user_pattern_scale;\nuniform float u_user_scale;\nuniform float u_user_rotation;\nuniform float u_user_speed2;\nuniform float u_user_blur;\nuniform vec3 u_user_color1;\nuniform vec3 u_user_color2;\n\n//VORONOI\nuniform vec3 u_user_fgColor;\nuniform vec3 u_user_bgColor;\n\n// YUV to RGB matrix\nmat3 yuv2rgb = mat3(1.0, 0.0, 1.13983,\n                    1.0, -0.39465, -0.58060,\n                    1.0, 2.03211, 0.0);\n\nvec2 random2(vec2 st){\n    st = vec2( dot(st,vec2(127.1,311.7)),\n              dot(st,vec2(269.5,183.3)) );\n    return -1.0 + 2.0*fract(sin(st)*43758.5453123);\n}\n\n// Value Noise by Inigo Quilez - iq/2013\n// https://www.shadertoy.com/view/lsf3WH\nfloat noise(vec2 st) {\n    vec2 i = floor(st);\n    vec2 f = fract(st);\n\n    vec2 u = f*f*(3.0-2.0*f);\n\n    return mix( mix( dot( random2(i + vec2(0.0,0.0) ), f - vec2(0.0,0.0) ),\n                     dot( random2(i + vec2(1.0,0.0) ), f - vec2(1.0,0.0) ), u.x),\n                mix( dot( random2(i + vec2(0.0,1.0) ), f - vec2(0.0,1.0) ),\n                     dot( random2(i + vec2(1.0,1.0) ), f - vec2(1.0,1.0) ), u.x), u.y);\n}\n\nmat2 rotate2d(float _angle){\n    return mat2(cos(_angle),-sin(_angle),\n                sin(_angle),cos(_angle));\n}\n\nfloat shapeCircle(vec2 st, float radius) {\n\t//st = vec2(0.5)-st;\n    float r = length(st)*2.0;\n    float a = atan(st.y,st.x);\n    float m = abs(mod(a+u_time*2.080,3.14*2.0)-3.14)/3.688;\n    float f = radius;\n    float mod1 = radius;\n    m += noise(st+u_time*0.1)*.5;\n    mod1 = sin(a*50.000)*noise(st+u_time*0.536)*0.156;\n    mod1 += (sin(a*20.000)*0.116*pow(m,1.576));\n    f += mod1 * u_noise_amount;\n    return 1.-smoothstep(f,f+0.007,r);\n}\n\nfloat shapeBorderCircle(vec2 st, float radius, float width) {\n    return shapeCircle(st,radius) - shapeCircle(st,radius-width);\n}\n\nvec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }\nvec2 mod289(vec2 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }\nvec3 permute(vec3 x) { return mod289(((x*34.0)+1.0)*x); }\n\nfloat snoise(vec2 v) {\n    const vec4 C = vec4(0.211324865405187,  // (3.0-sqrt(3.0))/6.0\n                        0.366025403784439,  // 0.5*(sqrt(3.0)-1.0)\n                        -0.577350269189626,  // -1.0 + 2.0 * C.x\n                        0.024390243902439); // 1.0 / 41.0\n    vec2 i  = floor(v + dot(v, C.yy) );\n    vec2 x0 = v -   i + dot(i, C.xx);\n    vec2 i1;\n    i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);\n    vec4 x12 = x0.xyxy + C.xxzz;\n    x12.xy -= i1;\n    i = mod289(i); // Avoid truncation effects in permutation\n    vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 ))\n        + i.x + vec3(0.0, i1.x, 1.0 ));\n\n    vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0);\n    m = m*m ;\n    m = m*m ;\n    vec3 x = 2.0 * fract(p * C.www) - 1.0;\n    vec3 h = abs(x) - 0.5;\n    vec3 ox = floor(x + 0.5);\n    vec3 a0 = x - ox;\n    m *= 1.79284291400159 - 0.85373472095314 * ( a0*a0 + h*h );\n    vec3 g;\n    g.x  = a0.x  * x0.x  + h.x  * x0.y;\n    g.yz = a0.yz * x12.xz + h.yz * x12.yw;\n    return 130.0 * dot(m, g);\n}\n";
 
 	exports.default = BASE_SHADER;
 
@@ -18233,7 +18331,7 @@
 		}, {
 			key: 'getInputEl',
 			value: function getInputEl(inputType) {
-				return this.inputs[inputType].el;
+				return this.inputs[inputType];
 			}
 		}, {
 			key: 'getDotPos',
@@ -66117,23 +66215,23 @@
 
 	var _OscillatorNode2 = _interopRequireDefault(_OscillatorNode);
 
-	var _GainNode = __webpack_require__(50);
+	var _GainNode = __webpack_require__(51);
 
 	var _GainNode2 = _interopRequireDefault(_GainNode);
 
-	var _SpeakerNode = __webpack_require__(51);
+	var _SpeakerNode = __webpack_require__(52);
 
 	var _SpeakerNode2 = _interopRequireDefault(_SpeakerNode);
 
-	var _AnalyserNode = __webpack_require__(52);
+	var _AnalyserNode = __webpack_require__(53);
 
 	var _AnalyserNode2 = _interopRequireDefault(_AnalyserNode);
 
-	var _LowpassFilterNode = __webpack_require__(53);
+	var _LowpassFilterNode = __webpack_require__(54);
 
 	var _LowpassFilterNode2 = _interopRequireDefault(_LowpassFilterNode);
 
-	var _EnvelopeNode = __webpack_require__(54);
+	var _EnvelopeNode = __webpack_require__(55);
 
 	var _EnvelopeNode2 = _interopRequireDefault(_EnvelopeNode);
 
@@ -66142,7 +66240,7 @@
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var AudioNodeManager = function () {
-		function AudioNodeManager(parentEl, onConnectingCallback, onInputConnectionCallback, addCallback, initData, onParameterChange, onNodeActive, onSequencerTrigger, onNodeRemove) {
+		function AudioNodeManager(parentEl, onConnectingCallback, onInputConnectionCallback, addCallback, initData, onParameterChange, onNodeActive, onNodeRemove) {
 			_classCallCheck(this, AudioNodeManager);
 
 			this.parentEl = parentEl;
@@ -66152,7 +66250,6 @@
 			this.initData = initData;
 			this.onParameterChange = onParameterChange;
 			this.onNodeActive = onNodeActive;
-			this.onSequencerTrigger = onSequencerTrigger;
 			this.onNodeRemove = onNodeRemove;
 		}
 
@@ -66161,7 +66258,7 @@
 			value: function init() {
 				if (this.initData) {
 					for (var i = 0; i < this.initData.length; i++) {
-						this.initData[i].node.init(this.parentEl, this.onConnectingCallback, this.onInputConnectionCallback, this.initData[i].type, this.initData[i], this.onNodeActive, this.onParameterChange, this.onSequencerTrigger, this.onNodeRemove);
+						this.initData[i].node.init(this.parentEl, this.onConnectingCallback, this.onInputConnectionCallback, this.initData[i].type, this.initData[i], this.onNodeActive, this.onParameterChange, this.onNodeRemove);
 						this.addCallback(this.initData[i].node);
 					}
 				}
@@ -66170,7 +66267,7 @@
 			key: 'createNode',
 			value: function createNode(data) {
 				var node = new data.obj();
-				node.init(this.parentEl, this.onConnectingCallback, this.onInputConnectionCallback, data.type, undefined, this.onNodeActive, this.onParameterChange, this.onSequencerTrigger, this.onNodeRemove);
+				node.init(this.parentEl, this.onConnectingCallback, this.onInputConnectionCallback, data.type, undefined, this.onNodeActive, this.onParameterChange, this.onNodeRemove);
 				this.addCallback(node);
 			}
 		}]);
@@ -66192,17 +66289,23 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
 	var _MusicNode2 = __webpack_require__(47);
 
 	var _MusicNode3 = _interopRequireDefault(_MusicNode2);
 
-	var _tone = __webpack_require__(48);
+	var _tone = __webpack_require__(49);
 
 	var _tone2 = _interopRequireDefault(_tone);
 
-	var _RangeSlider = __webpack_require__(49);
+	var _RangeSlider = __webpack_require__(50);
 
 	var _RangeSlider2 = _interopRequireDefault(_RangeSlider);
+
+	var _AudioInputHelpers = __webpack_require__(48);
+
+	var _AudioInputHelpers2 = _interopRequireDefault(_AudioInputHelpers);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -66218,40 +66321,107 @@
 		function OscillatorNode() {
 			_classCallCheck(this, OscillatorNode);
 
-			// OscillatorNode.BASE_OCTAVE = 4;
 			var _this = _possibleConstructorReturn(this, (OscillatorNode.__proto__ || Object.getPrototypeOf(OscillatorNode)).call(this));
 
+			_this.el.classList.add('no-height');
+
+			_this.hasConnectedTrigger = false;
+
+			// OscillatorNode.BASE_OCTAVE = 4;
 			OscillatorNode.BASE_FREQ = 440;
 			OscillatorNode.ROOT = Math.pow(2, 1 / 12);
 
 			_this.isKeyboardListener = true;
 			_this.isOscillator = true;
 			_this.hasAudioInput = false;
+			_this.hasEnvelopeConnection = false;
+
+			var rangeContainer = document.createElement('div');
+			rangeContainer.className = 'range-container';
+
+			_this.topPartEl.appendChild(rangeContainer);
+
+			_this.onRangeChangeCallbackBound = _this.onRangeChangeCallback.bind(_this);
+
+			var octaveRangeConfig = {
+				parentEl: rangeContainer,
+				title: 'Oktav',
+				initValue: 0,
+				settings: { min: -3, max: 3 },
+				valChangeCallback: _this.onRangeChangeCallbackBound,
+				param: 'octave',
+				decimals: 0,
+				disable: false
+			};
+
+			_this.octaveRangeSlider = new _RangeSlider2.default(octaveRangeConfig.parentEl, octaveRangeConfig.title, octaveRangeConfig.initValue, octaveRangeConfig.settings, octaveRangeConfig.valChangeCallback, octaveRangeConfig.param, octaveRangeConfig.decimals, octaveRangeConfig.disable);
+
+			var octaveParam = {
+				useAsInput: false,
+				value: octaveRangeConfig.initValue,
+				param: 'octave',
+				slider: _this.octaveRangeSlider,
+				title: 'Octave'
+			};
+
+			var triggerParam = {
+				useAsInput: true,
+				param: 'trigger',
+				title: 'Trigger',
+				helper: _AudioInputHelpers2.default.oscillatorTrigger
+			};
+
+			_this.params[octaveParam.param] = octaveParam;
+			_this.params[triggerParam.param] = triggerParam;
 
 			_this.paramVals = {};
 
-			_this.params = {
-				'Octave': {
-					obj: _RangeSlider2.default,
-					objSettings: {
-						title: 'Octave',
-						defaultVal: 0,
-						range: { min: -3, max: 3 },
-						param: 'octave',
-						decimals: 0
-					},
-					useAsInput: false
-				}
-			};
+			// this.params = {
+			// 	'Octave' : {
+			// 		obj: RangeSlider,
+			// 		objSettings: {
+			// 			title: 'Octave',
+			// 			defaultVal: 0,
+			// 			range: {min: -3, max: 3},
+			// 			param: 'octave',
+			// 			decimals: 0
+			// 		},
+			// 		useAsInput: false,
+			// 	}
+			// };
 
-			for (var loopKey in _this.params) {
-				var key = _this.params[loopKey].objSettings.param;
-				_this.paramVals[key] = _this.params[loopKey].objSettings.defaultVal;
-			}
+			// for (const loopKey in this.params) {
+			// 	const key = this.params[loopKey].objSettings.param;
+			// 	this.paramVals[key] = this.params[loopKey].objSettings.defaultVal;
+			// }
 			return _this;
 		}
 
 		_createClass(OscillatorNode, [{
+			key: 'enableParam',
+			value: function enableParam(param) {
+				_get(OscillatorNode.prototype.__proto__ || Object.getPrototypeOf(OscillatorNode.prototype), 'enableParam', this).call(this, param);
+
+				if (param.param === 'trigger') {
+					this.hasConnectedTrigger = true;
+				}
+			}
+		}, {
+			key: 'disableParam',
+			value: function disableParam(param) {
+				_get(OscillatorNode.prototype.__proto__ || Object.getPrototypeOf(OscillatorNode.prototype), 'disableParam', this).call(this, param);
+
+				if (param.param === 'trigger') {
+					this.hasConnectedTrigger = false;
+				}
+			}
+		}, {
+			key: 'onRangeChangeCallback',
+			value: function onRangeChangeCallback(value, param) {
+				this.params[param].value = value;
+				this.onParameterChange(this);
+			}
+		}, {
 			key: 'getParams',
 			value: function getParams(step) {
 				if (!step) {
@@ -66270,7 +66440,7 @@
 
 				var oscAudioNode = new _tone2.default.Oscillator();
 
-				// oscAudioNode.type = "sawtooth";
+				oscAudioNode.type = "sawtooth";
 				// oscAudioNode.frequency.value = this.getFrequency(step);
 				// oscAudioNode.start();
 
@@ -66281,7 +66451,7 @@
 			value: function getFrequency(step) {
 
 				// const octaveOffset = parseInt(this.params['Octave'].objSettings.val);
-				var octaveOffset = parseInt(this.paramVals['octave']);
+				var octaveOffset = parseInt(this.params['octave'].value);
 				// console.log(octaveOffset);
 
 				var tempOctave = octaveOffset;
@@ -66291,18 +66461,6 @@
 
 				return freq;
 			}
-
-			// keyDown(step) {
-
-			// 	const freq = this.getFrequency(step);
-
-			// 	this.audioNode.frequency.value = freq;
-
-			// }
-
-			// keyUp() {
-			// }
-
 		}, {
 			key: 'onParameterChange',
 			value: function onParameterChange(val, type) {
@@ -66311,19 +66469,6 @@
 
 				// console.log(this.audioNode);
 			}
-		}, {
-			key: 'setup',
-			value: function setup() {
-
-				// this.audioNode = new Tone.Oscillator();
-
-				// this.audioNode.type = "sawtooth";
-				// this.audioNode.frequency.value = 130.812782650299317;
-				// this.audioNode.start();
-			}
-		}, {
-			key: 'main',
-			value: function main() {}
 		}]);
 
 		return OscillatorNode;
@@ -66353,6 +66498,10 @@
 
 	var _NodeParam2 = _interopRequireDefault(_NodeParam);
 
+	var _AudioInputHelpers = __webpack_require__(48);
+
+	var _AudioInputHelpers2 = _interopRequireDefault(_AudioInputHelpers);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -66378,6 +66527,10 @@
 			_this.isSignalMath = false;
 			_this.hasAudioInput = true;
 			_this.isSequencer = false;
+			_this.isLFO = false;
+			_this.needsManualDispose = false;
+
+			_this.inputHelpersType = _AudioInputHelpers2.default.single;
 
 			_this.params = {};
 
@@ -66402,16 +66555,18 @@
 
 		_createClass(MusicNode, [{
 			key: 'init',
-			value: function init(parentEl, onConnectingCallback, onInputConnectionCallback, type, nodeConfig, onNodeActive, onParameterChange, onSequencerTrigger, onNodeRemove) {
+			value: function init(parentEl, onConnectingCallback, onInputConnectionCallback, type, nodeConfig, onNodeActive, onParameterChange, onNodeRemove) {
 				_get(MusicNode.prototype.__proto__ || Object.getPrototypeOf(MusicNode.prototype), 'init', this).call(this, parentEl, onConnectingCallback, onInputConnectionCallback, type, nodeConfig, onNodeActive, onNodeRemove);
 
 				this.onParameterChange = onParameterChange;
-				this.onSequencerTrigger = onSequencerTrigger;
+
+				this.connectedInputs = [];
+				this.connectedOutputs = [];
 
 				for (var key in this.params) {
 					if (this.params[key].useAsInput) {
 						var param = new _NodeParam2.default(this.topPartEl, this.params[key], this.onInputClickBound);
-						this.inputParams[this.params[key].objSettings.param] = param;
+						this.inputParams[this.params[key].title] = param;
 					}
 				}
 
@@ -66424,26 +66579,26 @@
 				this.activateDrag();
 			}
 		}, {
-			key: 'getDotPos',
-			value: function getDotPos(el) {
-
-				return el.getBoundingClientRect();
-			}
-		}, {
 			key: 'enableParam',
 			value: function enableParam(param) {
-				console.log('enable param', param);
-
-				var paramComponent = this.inputParams[param.objSettings.param];
+				var paramComponent = this.inputParams[param.title];
 				param.isConnected = true;
 				paramComponent.enable();
+
+				if (param.slider && param.disableSliderOnConnection) {
+					param.slider.disableSlider();
+				}
 			}
 		}, {
 			key: 'disableParam',
 			value: function disableParam(param) {
-				var paramComponent = this.inputParams[param.objSettings.param];
+				var paramComponent = this.inputParams[param.title];
 				param.isConnected = false;
 				paramComponent.disable();
+
+				if (param.slider) {
+					param.slider.enableSlider();
+				}
 			}
 		}, {
 			key: 'onParameterUpdate',
@@ -66459,21 +66614,52 @@
 				var params = {};
 				for (var key in this.params) {
 					var obj = this.params[key];
-					params[obj.objSettings.param] = this.paramVals[obj.objSettings.param];
+					params[obj.param] = this.params[obj.param].value;
 				}
-
-				// console.log(params);
 
 				return params;
 			}
 		}, {
-			key: 'setParamVal',
-			value: function setParamVal(val, key) {
-				this.paramVals[key] = val;
+			key: 'enableOutput',
+			value: function enableOutput(param, connectionData) {
+				_get(MusicNode.prototype.__proto__ || Object.getPrototypeOf(MusicNode.prototype), 'enableOutput', this).call(this);
+
+				this.connectedOutputs.push(connectionData.in.ID);
 			}
 		}, {
-			key: 'main',
-			value: function main() {}
+			key: 'disableOutput',
+			value: function disableOutput(inNode, param) {
+				var tempConnectedOutputs = this.connectedOutputs.filter(function (t) {
+					return t !== inNode.ID;
+				});
+				this.connectedOutputs = tempConnectedOutputs;
+
+				if (this.connectedOutputs.length === 0) {
+					_get(MusicNode.prototype.__proto__ || Object.getPrototypeOf(MusicNode.prototype), 'disableOutput', this).call(this);
+				}
+			}
+		}, {
+			key: 'enableInput',
+			value: function enableInput(outNode) {
+				_get(MusicNode.prototype.__proto__ || Object.getPrototypeOf(MusicNode.prototype), 'enableInput', this).call(this);
+
+				this.connectedInputs.push(outNode.ID + '-' + this.ID);
+			}
+		}, {
+			key: 'disableInput',
+			value: function disableInput(outNode) {
+
+				var idToRemove = outNode.ID + '-' + this.ID;
+
+				var tempConnectedInputs = this.connectedInputs.filter(function (t) {
+					return t !== idToRemove;
+				});
+				this.connectedInputs = tempConnectedInputs;
+
+				if (this.connectedInputs.length === 0) {
+					_get(MusicNode.prototype.__proto__ || Object.getPrototypeOf(MusicNode.prototype), 'disableInput', this).call(this);
+				}
+			}
 		}]);
 
 		return MusicNode;
@@ -66483,6 +66669,115 @@
 
 /***/ }),
 /* 48 */
+/***/ (function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	var isValidSingleInput = function isValidSingleInput(outNode, inNode, paramConnection, connections) {
+		var ret = true;
+
+		if (outNode.isParam && !paramConnection || !outNode.isParam && paramConnection) {
+			ret = false;
+		}
+
+		var hasConnection = connections.some(function (t) {
+			return t.in.ID === inNode.ID && !t.param;
+		});
+		if (hasConnection) {
+			ret = false;
+		}
+
+		return ret;
+	};
+
+	var isValidMultipleInput = function isValidMultipleInput(outNode, inNode, paramConnection, connections) {
+		var ret = true;
+
+		if (outNode.isParam && !paramConnection || !outNode.isParam && paramConnection) {
+			ret = false;
+		}
+
+		return ret;
+	};
+
+	var isValidOscillatorTriggerInput = function isValidOscillatorTriggerInput(outNode, inNode, paramConnection, connections) {
+		var ret = true;
+
+		var hasConnection = connections.some(function (t) {
+			return t.out.ID === outNode.ID && t.in.ID === inNode.ID;
+		});
+		if (hasConnection) {
+			ret = false;
+		}
+
+		if (!outNode.isSequencer) {
+			ret = false;
+		}
+
+		return ret;
+	};
+
+	var isValidGainInput = function isValidGainInput(outNode, inNode, paramConnection, connections) {
+
+		var ret = true;
+
+		var hasConnection = connections.some(function (t) {
+			return t.in.ID === inNode.ID && t.out.ID === outNode.ID;
+		});
+		if (hasConnection) {
+			ret = false;
+		}
+
+		if (!outNode.isEnvelope) {
+			ret = false;
+		}
+
+		return ret;
+	};
+
+	var isValidFrequencyInput = function isValidFrequencyInput(outNode, inNode, paramConnection, connections) {
+
+		var ret = true;
+
+		var hasConnection = connections.some(function (t) {
+			return t.in.ID === inNode.ID && t.out.ID === outNode.ID;
+		});
+		if (hasConnection) {
+			ret = false;
+		}
+
+		if (!outNode.isEnvelope && !outNode.isLFO) {
+			ret = false;
+		}
+
+		return ret;
+	};
+
+	var AudioInputHelpers = {
+		single: {
+			isValid: isValidSingleInput
+		},
+		multiple: {
+			isValid: isValidMultipleInput
+		},
+		oscillatorTrigger: {
+			isValid: isValidOscillatorTriggerInput
+		},
+		gain: {
+			isValid: isValidGainInput
+		},
+		frequency: {
+			isValid: isValidFrequencyInput
+		}
+	};
+
+	exports.default = AudioInputHelpers;
+
+/***/ }),
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;(function(root, factory){
@@ -90869,7 +91164,7 @@
 	}));
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -90934,14 +91229,28 @@
 				_this.setPos(_this.sliderBg.clientHeight);
 			}, 0);
 
-			this.el.addEventListener('mousedown', this.onMouseDownBound);
+			this.sliderBg.addEventListener('mousedown', this.onMouseDownBound);
 		}
 
 		_createClass(RangeSlider, [{
+			key: 'disableSlider',
+			value: function disableSlider() {
+				this.disable = true;
+
+				this.el.style.opacity = .1;
+			}
+		}, {
+			key: 'enableSlider',
+			value: function enableSlider() {
+				this.disable = false;
+
+				this.el.style.opacity = 1;
+			}
+		}, {
 			key: 'remove',
 			value: function remove() {
 
-				this.el.removeEventListener('mousedown', this.onMouseDownBound);
+				this.sliderBg.removeEventListener('mousedown', this.onMouseDownBound);
 				this.parentEl.removeChild(this.el);
 			}
 		}, {
@@ -91033,7 +91342,7 @@
 	exports.default = RangeSlider;
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -91044,19 +91353,21 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-
 	var _MusicNode2 = __webpack_require__(47);
 
 	var _MusicNode3 = _interopRequireDefault(_MusicNode2);
 
-	var _tone = __webpack_require__(48);
+	var _tone = __webpack_require__(49);
 
 	var _tone2 = _interopRequireDefault(_tone);
 
-	var _RangeSlider = __webpack_require__(49);
+	var _RangeSlider = __webpack_require__(50);
 
 	var _RangeSlider2 = _interopRequireDefault(_RangeSlider);
+
+	var _AudioInputHelpers = __webpack_require__(48);
+
+	var _AudioInputHelpers2 = _interopRequireDefault(_AudioInputHelpers);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -91074,90 +91385,61 @@
 
 			var _this = _possibleConstructorReturn(this, (GainNode.__proto__ || Object.getPrototypeOf(GainNode)).call(this));
 
+			_this.inputHelpersType = _AudioInputHelpers2.default.multiple;
+
+			_this.el.classList.add('no-height');
+
 			_this.audioNode = _tone2.default.context.createGain();
+
+			var rangeContainer = document.createElement('div');
+			rangeContainer.className = 'range-container';
+
+			_this.topPartEl.appendChild(rangeContainer);
+
+			_this.onRangeChangeCallbackBound = _this.onRangeChangeCallback.bind(_this);
+
+			var gainRangeConfig = {
+				parentEl: rangeContainer,
+				title: 'Vol',
+				initValue: 0.5,
+				settings: { min: .0, max: 1.0 },
+				valChangeCallback: _this.onRangeChangeCallbackBound,
+				param: 'gain',
+				decimals: 2,
+				disable: false
+			};
+
+			_this.gainRangeSlider = new _RangeSlider2.default(gainRangeConfig.parentEl, gainRangeConfig.title, gainRangeConfig.initValue, gainRangeConfig.settings, gainRangeConfig.valChangeCallback, gainRangeConfig.param, gainRangeConfig.decimals, gainRangeConfig.disable);
+
+			var gainParam = {
+				useAsInput: true,
+				value: gainRangeConfig.initValue,
+				param: 'gain',
+				slider: _this.gainRangeSlider,
+				title: 'Gain',
+				helper: _AudioInputHelpers2.default.gain,
+				disableSliderOnConnection: true
+			};
 
 			_this.paramVals = {};
 
-			_this.params = {
-				'Gain': {
-					obj: _RangeSlider2.default,
-					objSettings: {
-						title: 'Gain',
-						defaultVal: .5,
-						range: { min: 0, max: 1 },
-						param: 'gain',
-						decimals: 2
-					},
-					useAsInput: true,
-					isConnected: false
-				}
-			};
-
-			for (var loopKey in _this.params) {
-				var key = _this.params[loopKey].objSettings.param;
-				_this.paramVals[key] = _this.params[loopKey].objSettings.defaultVal;
-			}
+			_this.params[gainParam.param] = gainParam;
 
 			return _this;
 		}
 
 		_createClass(GainNode, [{
-			key: 'setup',
-			value: function setup() {}
-
-			// getParams() {
-			// 	const params = {};
-			// 	// params.gain = {
-			// 	// 	val: this.params['Gain'].objSettings.val,
-			// 	// 	ic
-			// 	// }
-			// 	params.gain = this.params['Gain'].objSettings.val;
-
-			// 	return params;
-			// }
-
+			key: 'onRangeChangeCallback',
+			value: function onRangeChangeCallback(value, param) {
+				this.params[param].value = value;
+				this.onParameterChange(this);
+			}
 		}, {
 			key: 'getAudioNode',
 			value: function getAudioNode() {
 
 				return _tone2.default.context.createGain();
 			}
-		}, {
-			key: 'getParamConnection',
-			value: function getParamConnection() {
-
-				return 'gain';
-			}
-		}, {
-			key: 'enableInput',
-			value: function enableInput(outputAudioNode) {
-				_get(GainNode.prototype.__proto__ || Object.getPrototypeOf(GainNode.prototype), 'enableInput', this).call(this);
-
-				// if (outputAudioNode.isParam) {
-				// 	outputAudioNode.audioNode.connect(this.audioNode.gain);
-
-				// } else {
-				// 	outputAudioNode.audioNode.connect(this.audioNode);
-				// }
-			}
-		}, {
-			key: 'disableInput',
-			value: function disableInput(nodeToDisconnect) {
-				_get(GainNode.prototype.__proto__ || Object.getPrototypeOf(GainNode.prototype), 'disableInput', this).call(this);
-				// if (nodeToDisconnect.isParam) {
-				// 	// nodeToDisconnect.audioNode.disconnect(this.audioNode.frequency);
-
-
-				// 	this.audioNode.disconnect(nodeToDisconnect.audioNode);
-
-
-				// } else {
-				// 	nodeToDisconnect.audioNode.disconnect(this.audioNode);
-				// }
-			}
-		}, {
-			key: 'main',
-			value: function main() {}
 		}]);
 
 		return GainNode;
@@ -91166,7 +91448,7 @@
 	exports.default = GainNode;
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -91181,9 +91463,13 @@
 
 	var _MusicNode3 = _interopRequireDefault(_MusicNode2);
 
-	var _tone = __webpack_require__(48);
+	var _tone = __webpack_require__(49);
 
 	var _tone2 = _interopRequireDefault(_tone);
+
+	var _AudioInputHelpers = __webpack_require__(48);
+
+	var _AudioInputHelpers2 = _interopRequireDefault(_AudioInputHelpers);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -91201,6 +91487,8 @@
 
 			var _this = _possibleConstructorReturn(this, (SpeakerNode.__proto__ || Object.getPrototypeOf(SpeakerNode)).call(this));
 
+			_this.inputHelpersType = _AudioInputHelpers2.default.multiple;
+
 			_this.audioNode = _tone2.default.context.destination;
 			_this.isSpeaker = true;
 
@@ -91211,7 +91499,18 @@
 			key: 'getAudioNode',
 			value: function getAudioNode() {
 
-				return _tone2.default.context.destination;
+				var limiter = new _tone2.default.Limiter();
+				limiter.connect(_tone2.default.context.destination);
+
+				// const compressor = Tone.context.createDynamicsCompressor();
+				// compressor.threshold.value = -50;
+				// compressor.knee.value = 40;
+				// compressor.ratio.value = 12;
+				// compressor.attack.value = 0;
+				// compressor.release.value = 0.25;
+				// compressor.connect(Tone.context.destination);
+
+				return limiter;
 			}
 		}]);
 
@@ -91221,7 +91520,7 @@
 	exports.default = SpeakerNode;
 
 /***/ }),
-/* 52 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -91480,7 +91779,7 @@
 	exports.default = AnalyserNode;
 
 /***/ }),
-/* 53 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -91491,19 +91790,21 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-
 	var _MusicNode2 = __webpack_require__(47);
 
 	var _MusicNode3 = _interopRequireDefault(_MusicNode2);
 
-	var _tone = __webpack_require__(48);
+	var _tone = __webpack_require__(49);
 
 	var _tone2 = _interopRequireDefault(_tone);
 
-	var _RangeSlider = __webpack_require__(49);
+	var _RangeSlider = __webpack_require__(50);
 
 	var _RangeSlider2 = _interopRequireDefault(_RangeSlider);
+
+	var _AudioInputHelpers = __webpack_require__(48);
+
+	var _AudioInputHelpers2 = _interopRequireDefault(_AudioInputHelpers);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -91523,89 +91824,85 @@
 
 			_this.audioNode = new _tone2.default.Filter();
 
-			_this.paramVals = {};
+			_this.el.classList.add('no-height');
 
-			_this.params = {
-				'Frequency': {
-					obj: _RangeSlider2.default,
-					objSettings: {
-						title: 'Frequency',
-						defaultVal: 350,
-						range: { min: 0, max: 22000 },
-						param: 'frequency',
-						decimals: 0
-					},
-					useAsInput: true
-				},
-				'Q': {
-					obj: _RangeSlider2.default,
-					objSettings: {
-						title: 'Q',
-						defaultVal: 1,
-						range: { min: 0, max: 10 },
-						param: 'Q',
-						decimals: 2
-					},
-					useAsInput: true
-				}
+			var rangeContainer = document.createElement('div');
+			rangeContainer.className = 'range-container';
+
+			_this.topPartEl.appendChild(rangeContainer);
+
+			_this.onRangeChangeCallbackBound = _this.onRangeChangeCallback.bind(_this);
+
+			var freqRangeConfig = {
+				parentEl: rangeContainer,
+				title: 'Frekvens',
+				initValue: 350,
+				settings: { min: 0, max: 22000 },
+				valChangeCallback: _this.onRangeChangeCallbackBound,
+				param: 'frequency',
+				decimals: 0,
+				disable: false
 			};
 
-			for (var loopKey in _this.params) {
-				var key = _this.params[loopKey].objSettings.param;
-				_this.paramVals[key] = _this.params[loopKey].objSettings.defaultVal;
-			}
+			_this.freqRangeSlider = new _RangeSlider2.default(freqRangeConfig.parentEl, freqRangeConfig.title, freqRangeConfig.initValue, freqRangeConfig.settings, freqRangeConfig.valChangeCallback, freqRangeConfig.param, freqRangeConfig.decimals, freqRangeConfig.disable);
+
+			var qRangeConfig = {
+				parentEl: rangeContainer,
+				title: 'Q',
+				initValue: 1,
+				settings: { min: 0, max: 10 },
+				valChangeCallback: _this.onRangeChangeCallbackBound,
+				param: 'Q',
+				decimals: 0,
+				disable: false
+			};
+
+			_this.qRangeSlider = new _RangeSlider2.default(qRangeConfig.parentEl, qRangeConfig.title, qRangeConfig.initValue, qRangeConfig.settings, qRangeConfig.valChangeCallback, qRangeConfig.param, qRangeConfig.decimals, qRangeConfig.disable);
+
+			var freqParam = {
+				useAsInput: true,
+				value: freqRangeConfig.initValue,
+				param: 'frequency',
+				slider: _this.freqRangeSlider,
+				title: 'Filter Frequency',
+				helper: _AudioInputHelpers2.default.frequency,
+				disableSliderOnConnection: false
+			};
+
+			var qParam = {
+				useAsInput: false,
+				value: qRangeConfig.initValue,
+				param: 'Q',
+				slider: _this.qRangeSlider,
+				title: 'Q'
+			};
+
+			_this.paramVals = {};
+
+			_this.params[freqParam.param] = freqParam;
+			_this.params[qParam.param] = qParam;
 
 			return _this;
 		}
 
 		_createClass(LowpassFilterNode, [{
+			key: 'onRangeChangeCallback',
+			value: function onRangeChangeCallback(value, param) {
+				this.params[param].value = value;
+				this.onParameterChange(this);
+			}
+		}, {
 			key: 'getAudioNode',
 			value: function getAudioNode() {
 
 				var audioNode = new _tone2.default.Filter();
-				// audioNode.frequency.value = this.params['Frequency'].objSettings.val;
-				// audioNode.Q.value = this.params['Q'].objSettings.val;
 
 				for (var key in this.params) {
-					var paramStr = this.params[key].objSettings.param;
-					audioNode[paramStr].value = this.paramVals[paramStr];
+					audioNode[key].value = this.params[key].value;
 				}
 
 				return audioNode;
 			}
-		}, {
-			key: 'getParamConnection',
-			value: function getParamConnection() {
-
-				return 'frequency';
-			}
-		}, {
-			key: 'setup',
-			value: function setup() {}
-		}, {
-			key: 'enableInput',
-			value: function enableInput(outputAudioNode) {
-				_get(LowpassFilterNode.prototype.__proto__ || Object.getPrototypeOf(LowpassFilterNode.prototype), 'enableInput', this).call(this);
-				// if (outputAudioNode.isParam) {
-				// 	outputAudioNode.audioNode.connect(this.audioNode.frequency);
-				// } else {
-				// 	outputAudioNode.audioNode.connect(this.audioNode);
-				// }
-			}
-		}, {
-			key: 'disableInput',
-			value: function disableInput(nodeToDisconnect) {
-				_get(LowpassFilterNode.prototype.__proto__ || Object.getPrototypeOf(LowpassFilterNode.prototype), 'disableInput', this).call(this);
-				// if (nodeToDisconnect.isParam) {
-				// 	// nodeToDisconnect.audioNode.disconnect(this.audioNode.frequency);
-				// 	this.audioNode.disconnect(nodeToDisconnect.audioNode);
-				// } else {
-				// 	nodeToDisconnect.audioNode.disconnect(this.audioNode);
-				// }
-			}
-		}, {
-			key: 'main',
-			value: function main() {}
 		}]);
 
 		return LowpassFilterNode;
@@ -91614,7 +91911,7 @@
 	exports.default = LowpassFilterNode;
 
 /***/ }),
-/* 54 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -91629,11 +91926,11 @@
 
 	var _MusicNode3 = _interopRequireDefault(_MusicNode2);
 
-	var _tone = __webpack_require__(48);
+	var _tone = __webpack_require__(49);
 
 	var _tone2 = _interopRequireDefault(_tone);
 
-	var _RangeSlider = __webpack_require__(49);
+	var _RangeSlider = __webpack_require__(50);
 
 	var _RangeSlider2 = _interopRequireDefault(_RangeSlider);
 
@@ -91653,145 +91950,202 @@
 
 			var _this = _possibleConstructorReturn(this, (EnvelopeNode.__proto__ || Object.getPrototypeOf(EnvelopeNode)).call(this));
 
+			_this.el.classList.add('no-height');
+
 			_this.isParam = true;
 			_this.isKeyboardListener = true;
 			_this.isEnvelope = true;
 
 			_this.audioNode = new _tone2.default.Envelope();
 
+			var rangeContainer = document.createElement('div');
+			rangeContainer.className = 'range-container';
+
+			_this.topPartEl.appendChild(rangeContainer);
+
+			_this.onRangeChangeCallbackBound = _this.onRangeChangeCallback.bind(_this);
+
+			var attackRangeConfig = {
+				parentEl: rangeContainer,
+				title: 'A',
+				initValue: 0.25,
+				settings: { min: .01, max: 2.0 },
+				valChangeCallback: _this.onRangeChangeCallbackBound,
+				param: 'attack',
+				decimals: 2,
+				disable: false
+			};
+
+			_this.attackRangeSlider = new _RangeSlider2.default(attackRangeConfig.parentEl, attackRangeConfig.title, attackRangeConfig.initValue, attackRangeConfig.settings, attackRangeConfig.valChangeCallback, attackRangeConfig.param, attackRangeConfig.decimals, attackRangeConfig.disable);
+
+			var decayRangeConfig = {
+				parentEl: rangeContainer,
+				title: 'D',
+				initValue: 0.77,
+				settings: { min: .01, max: 2.0 },
+				valChangeCallback: _this.onRangeChangeCallbackBound,
+				param: 'decay',
+				decimals: 2,
+				disable: false
+			};
+
+			_this.decayRangeSlider = new _RangeSlider2.default(decayRangeConfig.parentEl, decayRangeConfig.title, decayRangeConfig.initValue, decayRangeConfig.settings, decayRangeConfig.valChangeCallback, decayRangeConfig.param, decayRangeConfig.decimals, decayRangeConfig.disable);
+
+			var sustainRangeConfig = {
+				parentEl: rangeContainer,
+				title: 'S',
+				initValue: 0.11,
+				settings: { min: .01, max: 1.0 },
+				valChangeCallback: _this.onRangeChangeCallbackBound,
+				param: 'sustain',
+				decimals: 2,
+				disable: false
+			};
+
+			_this.sustainRangeSlider = new _RangeSlider2.default(sustainRangeConfig.parentEl, sustainRangeConfig.title, sustainRangeConfig.initValue, sustainRangeConfig.settings, sustainRangeConfig.valChangeCallback, sustainRangeConfig.param, sustainRangeConfig.decimals, sustainRangeConfig.disable);
+
+			var releaseRangeConfig = {
+				parentEl: rangeContainer,
+				title: 'R',
+				initValue: 0.11,
+				settings: { min: .01, max: 2.0 },
+				valChangeCallback: _this.onRangeChangeCallbackBound,
+				param: 'release',
+				decimals: 2,
+				disable: false
+			};
+
+			_this.releaseRangeSlider = new _RangeSlider2.default(releaseRangeConfig.parentEl, releaseRangeConfig.title, releaseRangeConfig.initValue, releaseRangeConfig.settings, releaseRangeConfig.valChangeCallback, releaseRangeConfig.param, releaseRangeConfig.decimals, releaseRangeConfig.disable);
+
+			var attackParam = {
+				useAsInput: false,
+				value: attackRangeConfig.initValue,
+				param: 'attack',
+				slider: _this.attackRangeSlider,
+				title: 'Attack'
+			};
+
+			var decayParam = {
+				useAsInput: false,
+				value: decayRangeConfig.initValue,
+				param: 'decay',
+				slider: _this.decayRangeSlider,
+				title: 'Decay'
+			};
+
+			var sustainParam = {
+				useAsInput: false,
+				value: sustainRangeConfig.initValue,
+				param: 'sustain',
+				slider: _this.sustainRangeSlider,
+				title: 'Sustain'
+			};
+
+			var releaseParam = {
+				useAsInput: false,
+				value: releaseRangeConfig.initValue,
+				param: 'release',
+				slider: _this.releaseRangeSlider,
+				title: 'Release'
+			};
+
+			var ADSRParams = {};
+
+			ADSRParams[attackParam.param] = attackParam;
+			ADSRParams[decayParam.param] = decayParam;
+			ADSRParams[sustainParam.param] = sustainParam;
+			ADSRParams[releaseParam.param] = releaseParam;
+
 			/*
-	  	create different params for different envelopes
+	  create different params for different envelopes
 	  and set this.params to active envelope params
-	  		*/
+	  	*/
 
-			var ADSRParams = {
-				'Attack': {
-					obj: _RangeSlider2.default,
-					objSettings: {
-						title: 'A',
-						defaultVal: 0.01,
-						range: { min: 0, max: 2 },
-						param: 'attack',
-						decimals: 2
-					},
-					useAsInput: false
-				},
-				'Decay': {
-					obj: _RangeSlider2.default,
-					objSettings: {
-						title: 'D',
-						defaultVal: 0.1,
-						range: { min: 0, max: 2 },
-						param: 'decay',
-						decimals: 2
-					},
-					useAsInput: false
-				},
-				'Sustain': {
-					obj: _RangeSlider2.default,
-					objSettings: {
-						title: 'S',
-						defaultVal: 0.5,
-						range: { min: 0, max: 1 },
-						param: 'sustain',
-						decimals: 2
-					},
-					useAsInput: false
-				},
-				'Release': {
-					obj: _RangeSlider2.default,
-					objSettings: {
-						title: 'R',
-						defaultVal: 1,
-						range: { min: 0, max: 2 },
-						param: 'release',
-						decimals: 2
-					},
-					useAsInput: false
-				}
-			};
+			// const frequencyEnvelopeParams = {
+			// 	'BaseFrequency' : {
+			// 		obj: RangeSlider,
+			// 		objSettings: {
+			// 			title: 'BF',
+			// 			defaultVal: 200,
+			// 			range: {min: 1, max: 22000},
+			// 			param: 'baseFrequency',
+			// 			decimals: 0
+			// 		},
+			// 		useAsInput: false,
+			// 	}
+			// };
 
-			var frequencyEnvelopeParams = {
-				'BaseFrequency': {
-					obj: _RangeSlider2.default,
-					objSettings: {
-						title: 'BF',
-						defaultVal: 200,
-						range: { min: 1, max: 22000 },
-						param: 'baseFrequency',
-						decimals: 0
-					},
-					useAsInput: false
-				}
-			};
-
-			var scaledEnvelopeParams = {
-				'Min': {
-					obj: _RangeSlider2.default,
-					objSettings: {
-						title: 'Min',
-						defaultVal: 200,
-						range: { min: 1, max: 22000 },
-						param: 'min',
-						decimals: 0
-					},
-					useAsInput: false
-				},
-				'Max': {
-					obj: _RangeSlider2.default,
-					objSettings: {
-						title: 'Max',
-						defaultVal: 2000,
-						range: { min: 1, max: 22000 },
-						param: 'max',
-						decimals: 0
-					},
-					useAsInput: false
-				}
-			};
+			// const scaledEnvelopeParams = {
+			// 	'Min' : {
+			// 		obj: RangeSlider,
+			// 		objSettings: {
+			// 			title: 'Min',
+			// 			defaultVal: 200,
+			// 			range: {min: 1, max: 22000},
+			// 			param: 'min',
+			// 			decimals: 0
+			// 		},
+			// 		useAsInput: false,
+			// 	},
+			// 	'Max' : {
+			// 		obj: RangeSlider,
+			// 		objSettings: {
+			// 			title: 'Max',
+			// 			defaultVal: 2000,
+			// 			range: {min: 1, max: 22000},
+			// 			param: 'max',
+			// 			decimals: 0
+			// 		},
+			// 		useAsInput: false,
+			// 	}
+			// };
 
 			_this.paramDefaults = {
-				ADSR: ADSRParams,
-				Frequency: frequencyEnvelopeParams,
-				Scaled: scaledEnvelopeParams
+				ADSR: ADSRParams
+				// Frequency: frequencyEnvelopeParams,
+				// Scaled: scaledEnvelopeParams,
 			};
 
-			_this.paramVals = {};
+			_this.params = Object.assign({}, _this.paramDefaults.ADSR);
 
-			_this.params = {};
+			// this.paramVals = {};
 
-			var allParams = Object.assign({}, ADSRParams, frequencyEnvelopeParams, scaledEnvelopeParams);
-			for (var loopKey in allParams) {
-				var key = allParams[loopKey].objSettings.param;
-				_this.paramVals[key] = allParams[loopKey].objSettings.defaultVal;
-			}
+			// this.params = {};
+
+			// const allParams = Object.assign({}, ADSRParams, frequencyEnvelopeParams, scaledEnvelopeParams);
+			// for (const loopKey in allParams) {
+			// 	const key = allParams[loopKey].objSettings.param;
+			// 	this.paramVals[key] = allParams[loopKey].objSettings.defaultVal;
+			// }
 			return _this;
 		}
 
 		_createClass(EnvelopeNode, [{
+			key: 'onRangeChangeCallback',
+			value: function onRangeChangeCallback(value, param) {
+
+				this.params[param].value = value;
+				this.onParameterChange(this);
+			}
+		}, {
 			key: 'getAudioNode',
 			value: function getAudioNode(param) {
 
 				var envObj = _tone2.default.Envelope;
 
-				if (param !== 'gain') {
-					this.params = Object.assign({}, this.paramDefaults.ADSR, this.paramDefaults.Scaled);
-					envObj = _tone2.default.ScaledEnvelope;
-				} else {
-					this.params = this.paramDefaults.ADSR;
-				}
+				// if (param !== 'gain') {
+				// 	this.params = Object.assign({}, this.paramDefaults.ADSR, this.paramDefaults.Scaled);
+				// 	envObj = Tone.ScaledEnvelope;
+				// } else {
+				// 	this.params = this.paramDefaults.ADSR;
+				// }
 
 				var env = new envObj();
 
 				for (var key in this.params) {
-					var paramStr = this.params[key].objSettings.param;
-					env[paramStr] = this.paramVals[paramStr];
+					// const paramStr = this.params[key].param;
+					env[key] = this.params[key].value;
 				}
-
-				// env.attack = this.params['Attack'].objSettings.val;
-				// env.decay = this.params['Decay'].objSettings.val;
-				// env.sustain = this.params['Sustain'].objSettings.val;
-				// env.release = this.params['Release'].objSettings.val;
 
 				return env;
 			}
@@ -91803,7 +92157,7 @@
 	exports.default = EnvelopeNode;
 
 /***/ }),
-/* 55 */
+/* 56 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -91849,7 +92203,7 @@
 
 				var nodeH = 100;
 
-				var dotPos = nodeOut.getDotPos(nodeOut.output.el);
+				var dotPos = nodeOut.getOutDotPos(nodeOut.output.el);
 				var offsetX = nodeOut.output.el.offsetLeft;
 				var offsetY = nodeOut.output.el.offsetTop;
 
@@ -91947,7 +92301,77 @@
 	exports.default = NodeConnectionLine;
 
 /***/ }),
-/* 56 */
+/* 57 */
+/***/ (function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+	var doesOscillatorHaveEnvelope = function doesOscillatorHaveEnvelope(connections, gainsWithEnvelopeConnections, oscillatorNode) {
+		var _loop = function _loop(i) {
+			var gainNode = gainsWithEnvelopeConnections[i].in;
+
+			var getOscillator = function getOscillator(inNode) {
+				var tempConnections = connections.filter(function (t) {
+					return t.in.ID === inNode.ID && !t.param;
+				});
+
+				var oscillator = tempConnections.find(function (t) {
+					return t.out.isOscillator && t.out.ID === oscillatorNode.ID;
+				});
+				if (oscillator) {
+					return true;
+				} else if (tempConnections.length > 0) {
+					return getOscillator(tempConnections[0].out);
+				} else {
+					return false;
+				}
+			};
+
+			var hasOscillator = getOscillator(gainNode);
+			if (hasOscillator) {
+				return {
+					v: true
+				};
+			}
+		};
+
+		for (var i = 0; i < gainsWithEnvelopeConnections.length; i++) {
+			var _ret = _loop(i);
+
+			if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
+		}
+
+		return false;
+	};
+
+	var updateOscillators = function updateOscillators(connections) {
+
+		var gainsWithEnvelopeConnections = connections.filter(function (t) {
+			return t.param && t.param.param === 'gain' && t.out.isEnvelope;
+		});
+		var oscillators = connections.filter(function (t) {
+			return t.out.isOscillator && !t.param;
+		});
+		for (var i = 0; i < oscillators.length; i++) {
+			var oscillatorHasEnvelope = doesOscillatorHaveEnvelope(connections, gainsWithEnvelopeConnections, oscillators[i].out);
+			oscillators[i].out.hasEnvelopeConnection = oscillatorHasEnvelope;
+		}
+	};
+
+	var Helpers = {
+		updateOscillators: updateOscillators
+	};
+
+	exports.default = Helpers;
+
+/***/ }),
+/* 58 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -92064,7 +92488,7 @@
 	exports.default = NodeLibrary;
 
 /***/ }),
-/* 57 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -92075,7 +92499,7 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _SynthCopy = __webpack_require__(58);
+	var _SynthCopy = __webpack_require__(60);
 
 	var _SynthCopy2 = _interopRequireDefault(_SynthCopy);
 
@@ -92089,7 +92513,7 @@
 
 			_classCallCheck(this, KeyboardManager);
 
-			KeyboardManager.KEY_INTS = [65, 83, 68, 70, 71, 72, 73, 79];
+			KeyboardManager.KEY_INTS = [65, 83, 68, 70, 71, 72, 74, 75, 76, 186, 222, 219];
 
 			this.keys = [];
 
@@ -92145,7 +92569,6 @@
 		}, {
 			key: 'onAudioNodeParamChange',
 			value: function onAudioNodeParamChange(node, params) {
-
 				for (var i = 0; i < this.keys.length; i++) {
 					this.keys[i].synth.onParamChange(node, params);
 				}
@@ -92172,8 +92595,8 @@
 	exports.default = KeyboardManager;
 
 /***/ }),
-/* 58 */
-/***/ (function(module, exports) {
+/* 60 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -92182,6 +92605,12 @@
 	});
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _tone = __webpack_require__(49);
+
+	var _tone2 = _interopRequireDefault(_tone);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -92192,21 +92621,19 @@
 			this.nodes = {};
 			this.step = step;
 			this.currentConnections = [];
+			this.oscillatorNodes = [];
 
 			this.triggerNodes = [];
 		}
 
 		_createClass(SynthCopy, [{
-			key: 'updateConnections',
-			value: function updateConnections(connections) {
-
-				// debugger;
-
-				// DISCONNECT
-				for (var i = 0; i < connections.length; i++) {
-					var connection = connections[i];
-					var audioNodeOut = this.nodes[connection.out.ID];
-					var audioNodeIn = this.nodes[connection.in.ID];
+			key: 'reset',
+			value: function reset(connections) {
+				for (var i = 0; i < this.currentConnections.length; i++) {
+					var connection = this.currentConnections[i];
+					var audioNodeOut = this.nodes[connection.out.ID] ? this.nodes[connection.out.ID].audioNode : undefined;
+					var audioNodeIn = this.nodes[connection.in.ID] ? this.nodes[connection.in.ID].audioNode : undefined;
+					var musicNodeIn = this.nodes[connection.in.ID] ? this.nodes[connection.in.ID].musicNode : undefined;
 
 					if (!audioNodeOut || !audioNodeIn) {
 						continue;
@@ -92220,79 +92647,115 @@
 
 					} else {
 						// audioNodeOut.disconnect(audioNodeIn);
-						audioNodeIn.disconnect();
-					}
-				}
-
-				// debugger;
-
-				this.nodes = {};
-				this.currentConnections = connections;
-				this.triggerNodes = [];
-
-				for (var _i = 0; _i < connections.length; _i++) {
-					var _connection = connections[_i];
-
-					if (!this.nodes[_connection.in.ID]) {
-						this.nodes[_connection.in.ID] = _connection.in.getAudioNode();
-					}
-
-					if (!this.nodes[_connection.out.ID]) {
-						var audioNode = _connection.out.getAudioNode(_connection.param ? _connection.param.objSettings.param : undefined);
-						this.nodes[_connection.out.ID] = audioNode;
-						if (_connection.out.isEnvelope) {
-							this.triggerNodes.push(audioNode);
+						if (musicNodeIn && musicNodeIn.needsManualDispose) {
+							musicNodeIn.dispose();
+						} else {
+							if (audioNodeIn.dispose) {
+								audioNodeIn.dispose();
+							} else {
+								audioNodeIn.disconnect();
+							}
 						}
 					}
 				}
 
-				for (var _i2 = 0; _i2 < connections.length; _i2++) {
-					var _connection2 = connections[_i2];
-					var _audioNodeOut = this.nodes[_connection2.out.ID];
-					var _audioNodeIn = this.nodes[_connection2.in.ID];
+				this.nodes = {};
+				this.oscillatorNodes = [];
+				this.currentConnections = connections;
+				this.triggerNodes = [];
+			}
+		}, {
+			key: 'updateConnections',
+			value: function updateConnections(connections) {
 
-					if (_connection2.out.isParam) {
+				// debugger;
 
-						// const param = connection.in.getParamConnection();
-						var param = _connection2.param.objSettings.param;
-						_audioNodeOut.connect(_audioNodeIn[param]);
+				// DISCONNECT
+				this.reset(connections);
+
+				for (var i = 0; i < connections.length; i++) {
+					var connection = connections[i];
+
+					if (connection.out.isSequencer) {
+						continue;
+					}
+
+					if (!this.nodes[connection.in.ID]) {
+						var obj = {
+							audioNode: connection.in.getAudioNode(),
+							musicNode: connection.in
+						};
+						this.nodes[connection.in.ID] = obj;
+					}
+
+					if (!this.nodes[connection.out.ID]) {
+						var audioNode = connection.out.getAudioNode(connection.param ? connection.param.param : undefined);
+						var _obj = {
+							audioNode: audioNode,
+							musicNode: connection.out
+						};
+						this.nodes[connection.out.ID] = _obj;
+						if (connection.out.isEnvelope) {
+							this.triggerNodes.push(audioNode);
+						}
+
+						if (connection.out.isOscillator || connection.out.isLFO) {
+							this.oscillatorNodes.push(_obj);
+						}
+					}
+				}
+
+				for (var _i = 0; _i < connections.length; _i++) {
+					var _connection = connections[_i];
+					var audioNodeOut = this.nodes[_connection.out.ID] ? this.nodes[_connection.out.ID].audioNode : undefined;
+					var audioNodeIn = this.nodes[_connection.in.ID] ? this.nodes[_connection.in.ID].audioNode : undefined;
+					var musicNodeOut = this.nodes[_connection.out.ID] ? this.nodes[_connection.out.ID].musicNode : undefined;
+					// const musicNodeIn = this.nodes[connection.in.ID] ? this.nodes[connection.in.ID].musicNode : undefined;
+
+					if (_connection.out.isSequencer && !audioNodeOut) {
+						continue;
+					}
+
+					if (_connection.out.isParam) {
+
+						var param = _connection.param.param;
+						audioNodeOut.connect(audioNodeIn[param]);
 					} else {
-						_audioNodeOut.connect(_audioNodeIn);
+
+						audioNodeOut.connect(audioNodeIn);
 					}
 				}
 			}
 		}, {
 			key: 'onParamChange',
-			value: function onParamChange(node, params) {
-
+			value: function onParamChange(node) {
 				if (this.nodes[node.ID]) {
 					if (node.isOscillator) {
-						this._updateOscillatorParams(this.nodes[node.ID], params, node);
+						this._updateOscillatorParams(this.nodes[node.ID].audioNode, node);
 					} else {
-						var nodeParam = node.params;
-						this._updateParams(this.nodes[node.ID], params, node);
+						this._updateParams(this.nodes[node.ID].audioNode, node);
 					}
 				}
 			}
 		}, {
 			key: '_updateOscillatorParams',
-			value: function _updateOscillatorParams(audioNode, params, node) {
+			value: function _updateOscillatorParams(audioNode, node) {
 				audioNode['frequency'].value = node.getFrequency(this.step);
-				audioNode['type'] = params.type;
+				// audioNode['type'] = params.type;
 			}
 		}, {
 			key: '_updateParams',
-			value: function _updateParams(audioNode, params, node) {
+			value: function _updateParams(audioNode, node) {
 				var nodeParamIsConnected = function nodeParamIsConnected(node, param) {
 
 					for (var key in node.params) {
-						if (node.params[key].objSettings.param === param) {
+						if (node.params[key].param === param) {
 							return node.params[key].isConnected;
 						}
 					}
 				};
 
-				for (var key in params) {
+				for (var key in node.params) {
 					if (key === 'gain') {
 						if (nodeParamIsConnected(node, key)) {
 							continue;
@@ -92300,70 +92763,82 @@
 					}
 
 					if (key === 'frequency' || key === 'amplitude' || key === 'Q' || key === 'gain' || key === 'threshold' || key === 'ratio') {
-						audioNode[key].value = params[key];
+						audioNode[key].value = node.params[key].value;
 					} else {
-						audioNode[key] = params[key];
+						audioNode[key] = node.params[key].value;
 					}
 				}
 			}
+
+			// FROM SEQUENCER
+
 		}, {
 			key: 'play',
 			value: function play(time) {
 
 				var triggerNodesLength = this.triggerNodes.length;
+				var oscNodesLength = this.oscillatorNodes.length;
 
-				// !!TODO LOOP NODES INSTEAD OF CONNECTIONS!!
-				for (var i = 0; i < this.currentConnections.length; i++) {
-					var connection = this.currentConnections[i];
-
-					var audioNode = this.nodes[connection.out.ID];
-
-					var params = connection.out.getParams(this.step);
-
-					if (connection.out.isOscillator) {
-						this._updateOscillatorParams(audioNode, params, connection.out);
-						audioNode.start(time);
+				for (var key in this.nodes) {
+					var obj = this.nodes[key];
+					if (obj.musicNode.isOscillator) {
+						this._updateOscillatorParams(obj.audioNode, obj.musicNode);
 					} else {
-						this._updateParams(audioNode, params, connection.out);
+						this._updateParams(obj.audioNode, obj.musicNode);
 					}
 				}
 
-				for (var _i3 = 0; _i3 < this.triggerNodes.length; _i3++) {
-					this.triggerNodes[_i3].triggerAttackRelease("16n", time);
+				for (var i = 0; i < triggerNodesLength; i++) {
+					this.triggerNodes[i].triggerAttackRelease(_tone2.default.Time("8n"), time);
 				}
 
-				for (var _i4 = 0; _i4 < this.currentConnections.length; _i4++) {
-					var _connection3 = this.currentConnections[_i4];
-
-					var _audioNode = this.nodes[_connection3.out.ID];
-					if (_connection3.out.isOscillator && triggerNodesLength === 0) {
-						_audioNode.stop("32n");
+				for (var _i2 = 0; _i2 < oscNodesLength; _i2++) {
+					var _obj2 = this.oscillatorNodes[_i2];
+					if (_obj2.musicNode.isOscillator && _obj2.musicNode.hasConnectedTrigger) {
+						if (_obj2.musicNode.hasEnvelopeConnection) {
+							_obj2.audioNode.start(time).stop(time + _tone2.default.Time(2));
+						} else {
+							_obj2.audioNode.start(time).stop(time + _tone2.default.Time("8n"));
+						}
+					} else if (_obj2.musicNode.isLFO) {
+						_obj2.audioNode.phase = 0;
+						_obj2.audioNode.start(time);
+						// if (triggerNodesLength > 0) {
+						// 	obj.audioNode.start(time);
+						// } else {
+						// 	obj.audioNode.start(time).stop(time + Tone.Time("8n"));
+						// }
 					}
-					// const params = connection.out.getParams(this.step);
-					// this._updateParams(audioNode, params, connection.out);
 				}
 			}
 		}, {
 			key: 'keyDown',
 			value: function keyDown() {
 
-				// !!TODO LOOP NODES INSTEAD OF CONNECTIONS!!
-				for (var i = 0; i < this.currentConnections.length; i++) {
-					var connection = this.currentConnections[i];
+				var triggerNodesLength = this.triggerNodes.length;
+				var oscNodesLength = this.oscillatorNodes.length;
 
-					var audioNode = this.nodes[connection.out.ID];
-					var params = connection.out.getParams(this.step);
-
-					if (connection.out.isOscillator) {
-						this._updateOscillatorParams(audioNode, params, connection.out);
-						audioNode.start();
+				for (var key in this.nodes) {
+					var obj = this.nodes[key];
+					if (obj.musicNode.isOscillator) {
+						this._updateOscillatorParams(obj.audioNode, obj.musicNode);
 					} else {
-						this._updateParams(audioNode, params, connection.out);
+						this._updateParams(obj.audioNode, obj.musicNode);
 					}
 				}
 
-				for (var _i5 = 0; _i5 < this.triggerNodes.length; _i5++) {
-					this.triggerNodes[_i5].triggerAttack();
+				for (var i = 0; i < oscNodesLength; i++) {
+					var _obj3 = this.oscillatorNodes[i];
+					if (_obj3.musicNode.isOscillator) {
+						_obj3.audioNode.start();
+					} else if (_obj3.musicNode.isLFO) {
+						_obj3.audioNode.phase = 0;
+						_obj3.audioNode.start();
+					}
+				}
+
+				for (var _i3 = 0; _i3 < triggerNodesLength; _i3++) {
+					this.triggerNodes[_i3].triggerAttack();
 				}
 			}
 		}, {
@@ -92371,20 +92846,23 @@
 			value: function keyUp() {
 
 				var triggerNodesLength = this.triggerNodes.length;
+				var oscNodesLength = this.oscillatorNodes.length;
 
-				for (var i = 0; i < this.currentConnections.length; i++) {
-					var connection = this.currentConnections[i];
-
-					var audioNode = this.nodes[connection.out.ID];
-					if (connection.out.isOscillator && triggerNodesLength === 0) {
-						audioNode.stop();
+				for (var i = 0; i < oscNodesLength; i++) {
+					var obj = this.oscillatorNodes[i];
+					if (obj.musicNode.isOscillator) {
+						if (!obj.musicNode.hasEnvelopeConnection) {
+							obj.audioNode.stop();
+						}
+					} else if (obj.musicNode.isLFO) {
+						// if (triggerNodesLength === 0) {
+						// obj.audioNode.stop();
+						// }
 					}
-					// const params = connection.out.getParams(this.step);
-					// this._updateParams(audioNode, params, connection.out);
 				}
 
-				for (var _i6 = 0; _i6 < triggerNodesLength; _i6++) {
-					this.triggerNodes[_i6].triggerRelease();
+				for (var _i4 = 0; _i4 < triggerNodesLength; _i4++) {
+					this.triggerNodes[_i4].triggerRelease();
 				}
 			}
 		}]);
@@ -92395,7 +92873,7 @@
 	exports.default = SynthCopy;
 
 /***/ }),
-/* 59 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -92406,7 +92884,7 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _RangeSlider = __webpack_require__(49);
+	var _RangeSlider = __webpack_require__(50);
 
 	var _RangeSlider2 = _interopRequireDefault(_RangeSlider);
 
@@ -92503,7 +92981,7 @@
 	exports.default = NodeSettings;
 
 /***/ }),
-/* 60 */
+/* 62 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -92564,8 +93042,6 @@
 					return;
 				}
 
-				console.log('mouse down');
-
 				e.preventDefault();
 
 				this.moveCoords.start.x = e.x - this.moveCoords.offset.x;
@@ -92609,7 +93085,179 @@
 	exports.default = WorkspaceManager;
 
 /***/ }),
-/* 61 */
+/* 63 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _tone = __webpack_require__(49);
+
+	var _tone2 = _interopRequireDefault(_tone);
+
+	var _NodeStepper = __webpack_require__(64);
+
+	var _NodeStepper2 = _interopRequireDefault(_NodeStepper);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var GlobalAudioSettings = function () {
+		function GlobalAudioSettings(parentEl) {
+			_classCallCheck(this, GlobalAudioSettings);
+
+			this.el = document.createElement('div');
+			this.el.className = 'global-audio-settings';
+
+			this.onBPMChangeBound = this.onBPMChange.bind(this);
+
+			this.bpmNodeStepper = new _NodeStepper2.default(this.el, { min: 40, max: 200, label: 'BPM' }, _tone2.default.Transport.bpm.value, this.onBPMChangeBound);
+
+			parentEl.appendChild(this.el);
+		}
+
+		_createClass(GlobalAudioSettings, [{
+			key: 'onBPMChange',
+			value: function onBPMChange(val) {
+
+				_tone2.default.Transport.bpm.value = val;
+			}
+		}]);
+
+		return GlobalAudioSettings;
+	}();
+
+	exports.default = GlobalAudioSettings;
+
+/***/ }),
+/* 64 */
+/***/ (function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var NodeStepper = function () {
+		function NodeStepper(parentEl, settings, initValue, onChangeCallback) {
+			var _this = this;
+
+			_classCallCheck(this, NodeStepper);
+
+			this.settings = settings;
+			this.onChangeCallback = onChangeCallback;
+
+			this.regExp = /^[0-9]*$/;
+
+			this.value = initValue;
+
+			this.onInputChangeBound = this.onInputChange.bind(this);
+
+			this.plusEl = document.createElement('div');
+			this.plusEl.className = 'node-stepper-control plus';
+			this.plusEl.innerHTML = '+';
+			this.plusEl.addEventListener('click', function () {
+				_this.onStepperChange(true);
+			});
+
+			this.minusEl = document.createElement('div');
+			this.minusEl.className = 'node-stepper-control minus';
+			this.minusEl.innerHTML = '-';
+			this.minusEl.addEventListener('click', function () {
+				_this.onStepperChange(false);
+			});
+
+			this.inputEl = document.createElement('input');
+			this.inputEl.className = 'node-stepper-input';
+			this.inputEl.value = initValue;
+
+			this.inputSetButton = document.createElement('h4');
+			this.inputSetButton.className = "input-set-button";
+			this.inputSetButton.innerHTML = 'OK';
+			this.inputSetButton.addEventListener('click', this.onInputChangeBound);
+
+			this.el = document.createElement('div');
+			this.el.className = 'node-stepper';
+
+			var leftContainer = document.createElement('div');
+			leftContainer.className = 'left-container';
+
+			leftContainer.appendChild(this.plusEl);
+			leftContainer.appendChild(this.minusEl);
+
+			var label = document.createElement('h4');
+			label.className = 'label';
+			label.innerHTML = settings.label;
+
+			var controlWrapper = document.createElement('div');
+			controlWrapper.className = 'control-wrapper';
+
+			controlWrapper.appendChild(leftContainer);
+			controlWrapper.appendChild(this.inputEl);
+			controlWrapper.appendChild(this.inputSetButton);
+
+			this.el.appendChild(label);
+
+			this.el.appendChild(controlWrapper);
+
+			parentEl.appendChild(this.el);
+		}
+
+		_createClass(NodeStepper, [{
+			key: 'isValidInput',
+			value: function isValidInput(value) {
+				if (!this.regExp.test(value)) {
+					return false;
+				} else if (value < this.settings.min || value > this.settings.max) {
+					return false;
+				}
+
+				return true;
+			}
+		}, {
+			key: 'onInputChange',
+			value: function onInputChange(e) {
+
+				var value = Number(this.inputEl.value);
+
+				if (this.isValidInput(value)) {
+					this.onChangeCallback(value);
+					this.value = value;
+				}
+
+				this.inputEl.value = this.value;
+			}
+		}, {
+			key: 'onStepperChange',
+			value: function onStepperChange(isAdd) {
+
+				var newVal = isAdd ? this.value + 1 : this.value - 1;
+				if (this.isValidInput(newVal)) {
+					this.onChangeCallback(newVal);
+					this.value = newVal;
+					this.inputEl.value = this.value;
+				}
+			}
+		}]);
+
+		return NodeStepper;
+	}();
+
+	exports.default = NodeStepper;
+
+/***/ }),
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -92624,11 +93272,11 @@
 
 	var _MusicNode3 = _interopRequireDefault(_MusicNode2);
 
-	var _tone = __webpack_require__(48);
+	var _tone = __webpack_require__(49);
 
 	var _tone2 = _interopRequireDefault(_tone);
 
-	var _RangeSlider = __webpack_require__(49);
+	var _RangeSlider = __webpack_require__(50);
 
 	var _RangeSlider2 = _interopRequireDefault(_RangeSlider);
 
@@ -92735,7 +93383,7 @@
 	exports.default = FrequencyEnvelopeNode;
 
 /***/ }),
-/* 62 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -92750,13 +93398,17 @@
 
 	var _MusicNode3 = _interopRequireDefault(_MusicNode2);
 
-	var _tone = __webpack_require__(48);
+	var _tone = __webpack_require__(49);
 
 	var _tone2 = _interopRequireDefault(_tone);
 
-	var _RangeSlider = __webpack_require__(49);
+	var _RangeSlider = __webpack_require__(50);
 
 	var _RangeSlider2 = _interopRequireDefault(_RangeSlider);
+
+	var _AudioInputHelpers = __webpack_require__(48);
+
+	var _AudioInputHelpers2 = _interopRequireDefault(_AudioInputHelpers);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -92775,59 +93427,89 @@
 			var _this = _possibleConstructorReturn(this, (LFONode.__proto__ || Object.getPrototypeOf(LFONode)).call(this));
 
 			_this.isParam = true;
+			_this.isLFO = true;
+
+			_this.el.classList.add('no-height');
 
 			_this.audioNode = new _tone2.default.LFO();
 
-			// this.audioNode.start();
+			var rangeContainer = document.createElement('div');
+			rangeContainer.className = 'range-container';
 
-			_this.paramVals = {};
+			_this.topPartEl.appendChild(rangeContainer);
 
-			_this.params = {
-				'Frequency': {
-					obj: _RangeSlider2.default,
-					objSettings: {
-						title: 'Frequency',
-						defaultVal: 6.0,
-						range: { min: 0.1, max: 17.0 },
-						param: 'frequency',
-						decimals: 2
-					},
-					useAsInput: false
-				},
-				'Amplitude': {
-					obj: _RangeSlider2.default,
-					objSettings: {
-						title: 'Amplitude',
-						defaultVal: 0.5,
-						range: { min: 0, max: 1 },
-						param: 'amplitude',
-						decimals: 2
-					},
-					useAsInput: false
-				}
+			_this.onRangeChangeCallbackBound = _this.onRangeChangeCallback.bind(_this);
+
+			var freqRangeConfig = {
+				parentEl: rangeContainer,
+				title: 'Frekvens',
+				initValue: 6.0,
+				settings: { min: 0.1, max: 17.0 },
+				valChangeCallback: _this.onRangeChangeCallbackBound,
+				param: 'frequency',
+				decimals: 2,
+				disable: false
 			};
 
-			for (var loopKey in _this.params) {
-				var key = _this.params[loopKey].objSettings.param;
-				_this.paramVals[key] = _this.params[loopKey].objSettings.defaultVal;
-			}
+			_this.freqRangeSlider = new _RangeSlider2.default(freqRangeConfig.parentEl, freqRangeConfig.title, freqRangeConfig.initValue, freqRangeConfig.settings, freqRangeConfig.valChangeCallback, freqRangeConfig.param, freqRangeConfig.decimals, freqRangeConfig.disable);
+
+			var freqParam = {
+				useAsInput: true,
+				value: freqRangeConfig.initValue,
+				param: 'frequency',
+				slider: _this.freqRangeSlider,
+				title: 'LFO Frequency',
+				helper: _AudioInputHelpers2.default.frequency,
+				disableSliderOnConnection: false
+			};
+
+			var amplitudeRangeConfig = {
+				parentEl: rangeContainer,
+				title: 'Amplitud',
+				initValue: .25,
+				settings: { min: 0.1, max: 0.5 },
+				valChangeCallback: _this.onRangeChangeCallbackBound,
+				param: 'amplitude',
+				decimals: 2,
+				disable: false
+			};
+
+			_this.amplitudeRangeSlider = new _RangeSlider2.default(amplitudeRangeConfig.parentEl, amplitudeRangeConfig.title, amplitudeRangeConfig.initValue, amplitudeRangeConfig.settings, amplitudeRangeConfig.valChangeCallback, amplitudeRangeConfig.param, amplitudeRangeConfig.decimals, amplitudeRangeConfig.disable);
+
+			var amplitudeParam = {
+				useAsInput: true,
+				value: amplitudeRangeConfig.initValue,
+				param: 'amplitude',
+				slider: _this.amplitudeRangeSlider,
+				title: 'Amplitude',
+				helper: _AudioInputHelpers2.default.frequency,
+				disableSliderOnConnection: false
+			};
+
+			_this.params[freqParam.param] = freqParam;
+			_this.params[amplitudeParam.param] = amplitudeParam;
+
+			_this.paramVals = {};
 			return _this;
 		}
 
 		_createClass(LFONode, [{
+			key: 'onRangeChangeCallback',
+			value: function onRangeChangeCallback(value, param) {
+				this.params[param].value = value;
+				this.onParameterChange(this);
+			}
+		}, {
 			key: 'getAudioNode',
 			value: function getAudioNode() {
 
 				var lfo = new _tone2.default.LFO();
 				lfo.min = -22000;
 				lfo.max = 22000;
-				lfo.start();
+				// lfo.start();
 
 				return lfo;
 			}
-		}, {
-			key: 'main',
-			value: function main() {}
 		}]);
 
 		return LFONode;
@@ -92836,7 +93518,7 @@
 	exports.default = LFONode;
 
 /***/ }),
-/* 63 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -92853,7 +93535,7 @@
 
 	var _MusicNode3 = _interopRequireDefault(_MusicNode2);
 
-	var _tone = __webpack_require__(48);
+	var _tone = __webpack_require__(49);
 
 	var _tone2 = _interopRequireDefault(_tone);
 
@@ -92935,7 +93617,7 @@
 	exports.default = SignalMultiplier;
 
 /***/ }),
-/* 64 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -92946,108 +93628,19 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _MusicNode2 = __webpack_require__(47);
-
-	var _MusicNode3 = _interopRequireDefault(_MusicNode2);
-
-	var _tone = __webpack_require__(48);
-
-	var _tone2 = _interopRequireDefault(_tone);
-
-	var _RangeSlider = __webpack_require__(49);
-
-	var _RangeSlider2 = _interopRequireDefault(_RangeSlider);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var CompressorNode = function (_MusicNode) {
-		_inherits(CompressorNode, _MusicNode);
-
-		function CompressorNode() {
-			_classCallCheck(this, CompressorNode);
-
-			var _this = _possibleConstructorReturn(this, (CompressorNode.__proto__ || Object.getPrototypeOf(CompressorNode)).call(this));
-
-			_this.audioNode = new _tone2.default.Compressor();
-
-			// this.audioNode.start();
-
-			_this.paramVals = {};
-
-			_this.params = {
-				'Threshold': {
-					obj: _RangeSlider2.default,
-					objSettings: {
-						title: 'Threshold',
-						defaultVal: -24,
-						range: { min: -48, max: 48 },
-						param: 'threshold',
-						decimals: 0
-					},
-					useAsInput: false
-				},
-				'Ratio': {
-					obj: _RangeSlider2.default,
-					objSettings: {
-						title: 'Ratio',
-						defaultVal: 12,
-						range: { min: 0, max: 40 },
-						param: 'range',
-						decimals: 0
-					},
-					useAsInput: false
-				}
-			};
-
-			for (var loopKey in _this.params) {
-				var key = _this.params[loopKey].objSettings.param;
-				_this.paramVals[key] = _this.params[loopKey].objSettings.defaultVal;
-			}
-			return _this;
-		}
-
-		_createClass(CompressorNode, [{
-			key: 'getAudioNode',
-			value: function getAudioNode() {
-
-				var audioNode = new _tone2.default.Compressor();
-				return audioNode;
-			}
-		}, {
-			key: 'main',
-			value: function main() {}
-		}]);
-
-		return CompressorNode;
-	}(_MusicNode3.default);
-
-	exports.default = CompressorNode;
-
-/***/ }),
-/* 65 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
 	var _MusicNode2 = __webpack_require__(47);
 
 	var _MusicNode3 = _interopRequireDefault(_MusicNode2);
 
-	var _tone = __webpack_require__(48);
+	var _tone = __webpack_require__(49);
 
 	var _tone2 = _interopRequireDefault(_tone);
+
+	var _SequencerManager = __webpack_require__(69);
+
+	var _SequencerManager2 = _interopRequireDefault(_SequencerManager);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -93068,9 +93661,12 @@
 			SequencerNode.ROWS = 12;
 			SequencerNode.COLS = 16;
 
+			_this.sequencerManager = new _SequencerManager2.default(SequencerNode.COLS, SequencerNode.ROWS);
+
 			_this.isSequencer = true;
 			_this.loop = null;
 			_this.hasAudioInput = false;
+			_this.isParam = true;
 
 			_this.data = [];
 
@@ -93081,20 +93677,39 @@
 
 				var colArr = [];
 				for (var row = 0; row < rows; row++) {
-					var obj = { active: false, el: null, parentEl: null, step: row };
+					var obj = { active: false, el: null, parentEl: null, step: rows - 1 - row };
 					colArr.push(obj);
 				}
 				_this.data.push(colArr);
 			}
+
+			_this.outConnections = [];
+			_this.outConnectionsLength = 0;
+
+			_this.isPlaying = false;
 
 			_this.onBtnClickBound = _this.onBtnClick.bind(_this);
 			return _this;
 		}
 
 		_createClass(SequencerNode, [{
+			key: 'removeFromDom',
+			value: function removeFromDom() {
+				this.sequencerManager.removeAllSynths();
+				_get(SequencerNode.prototype.__proto__ || Object.getPrototypeOf(SequencerNode.prototype), 'removeFromDom', this).call(this);
+			}
+		}, {
 			key: 'getKey',
 			value: function getKey(col, row) {
 				return 'col' + col + '-row' + row;
+			}
+		}, {
+			key: 'onRemoveClick',
+			value: function onRemoveClick() {
+				this.loop.stop();
+				this.playEl.removeEventListener('click', this.onPlayClickBound);
+				this.pauseEl.removeEventListener('click', this.onPauseClickBound);
+				_get(SequencerNode.prototype.__proto__ || Object.getPrototypeOf(SequencerNode.prototype), 'onRemoveClick', this).call(this);
 			}
 		}, {
 			key: 'createUI',
@@ -93125,6 +93740,65 @@
 				}
 
 				this.topPartEl.appendChild(container);
+
+				var controlsContainer = document.createElement('div');
+				controlsContainer.className = 'sequencer-controls';
+
+				var innerControls = document.createElement('div');
+				innerControls.className = 'inner-controls';
+
+				this.playEl = document.createElement('h5');
+				this.playEl.innerHTML = 'Spela';
+
+				this.pauseEl = document.createElement('h5');
+				this.pauseEl.innerHTML = 'Nollställ';
+
+				this.onPlayClickBound = this.onPlayClick.bind(this);
+				this.onPauseClickBound = this.onPauseClick.bind(this);
+
+				this.playEl.addEventListener('click', this.onPlayClickBound);
+				this.pauseEl.addEventListener('click', this.onPauseClickBound);
+
+				innerControls.appendChild(this.playEl);
+				innerControls.appendChild(this.pauseEl);
+				controlsContainer.appendChild(innerControls);
+
+				this.topPartEl.appendChild(controlsContainer);
+			}
+		}, {
+			key: 'onPlayClick',
+			value: function onPlayClick() {
+				if (this.isPlaying) {
+					return;
+				}
+				this.isPlaying = true;
+				this.loop.start();
+			}
+		}, {
+			key: 'onPauseClick',
+			value: function onPauseClick() {
+				this.isPlaying = false;
+				this.loop.stop();
+
+				this.reset();
+			}
+		}, {
+			key: 'reset',
+			value: function reset() {
+				var rows = SequencerNode.ROWS;
+				var cols = SequencerNode.COLS;
+
+				for (var col = 0; col < cols; col++) {
+					var el = this.data[col][0].parentEl;
+					el.classList.remove('active');
+
+					for (var row = 0; row < rows; row++) {
+
+						this.data[col][row].active = false;
+					}
+				}
+
+				this.update();
 			}
 		}, {
 			key: 'setup',
@@ -93145,17 +93819,20 @@
 
 					for (var row = 0; row < SequencerNode.ROWS; row++) {
 						if (column[row].active) {
-							console.log(time);
+							// console.log(time);
 							//slightly randomized velocities
 							// var vel = Math.random() * 0.5 + 0.5;
 							// keys.get(noteNames[i]).start(time, 0, "32n", 0, vel);
 							// console.log('play: ', ' col: ', col, ' row: ', row);
-							_this2.onSequencerTrigger(column[row].step, time);
+							if (_this2.outConnectionsLength > 0) {
+								// this.onSequencerTrigger(column[row].step, time);
+								_this2.sequencerManager.play(col, column[row].step, time);
+							}
 						}
 					}
-				}, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], "16n");
+				}, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], "8n");
 
-				this.loop.start();
+				// this.loop.start();
 			}
 		}, {
 			key: 'onBtnClick',
@@ -93173,6 +93850,30 @@
 				this.update();
 			}
 		}, {
+			key: 'enableOutput',
+			value: function enableOutput(param, connectionData) {
+				// super.enableOutput();
+				this.output.enable();
+
+				this.outConnections.push(connectionData.in);
+				this.outConnectionsLength = this.outConnections.length;
+			}
+		}, {
+			key: 'disableOutput',
+			value: function disableOutput(inNode, param) {
+				this.outConnections = this.outConnections.filter(function (t) {
+					return t.ID !== inNode.ID;
+				});
+				this.outConnectionsLength = this.outConnections.length;
+
+				if (this.outConnections.length === 0) {
+					// super.disableOutput();
+					this.output.disable();
+					this.sequencerManager.removeAllSynths();
+					this.onPauseClick();
+				}
+			}
+		}, {
 			key: 'update',
 			value: function update() {
 
@@ -93184,8 +93885,10 @@
 						var data = this.data[col][row];
 						if (data.active) {
 							data.el.classList.add('active');
+							this.sequencerManager.addSynth(col, data.step);
 						} else {
 							data.el.classList.remove('active');
+							this.sequencerManager.removeSynth(col, data.step);
 						}
 					}
 				}
@@ -93198,7 +93901,132 @@
 	exports.default = SequencerNode;
 
 /***/ }),
-/* 66 */
+/* 69 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _SynthCopy = __webpack_require__(60);
+
+	var _SynthCopy2 = _interopRequireDefault(_SynthCopy);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var SequencerManager = function () {
+		function SequencerManager(cols, rows) {
+			_classCallCheck(this, SequencerManager);
+
+			this.cols = cols;
+			this.rows = rows;
+			this.synths = [];
+			this.masterSynth = new _SynthCopy2.default(0);
+
+			for (var col = 0; col < cols; col++) {
+
+				var colArr = [];
+				for (var row = 0; row < rows; row++) {
+					colArr.push({ synth: null, isActive: false });
+				}
+				this.synths.push(colArr);
+			}
+		}
+
+		_createClass(SequencerManager, [{
+			key: 'init',
+			value: function init(connections) {
+				this.masterSynth.updateConnections(connections);
+			}
+		}, {
+			key: 'removeAllSynths',
+			value: function removeAllSynths() {
+				var cols = this.cols;
+				var rows = this.rows;
+				for (var col = 0; col < cols; col++) {
+					for (var row = 0; row < rows; row++) {
+						if (!this.synths[col][row].isActive) {
+							continue;
+						}
+
+						this.synths[col][row].synth.reset();
+						this.synths[col][row].isActive = false;
+					}
+				}
+			}
+		}, {
+			key: 'addSynth',
+			value: function addSynth(col, row) {
+				var synth = new _SynthCopy2.default(row);
+				synth.updateConnections(this.masterSynth.currentConnections);
+				this.synths[col][row].synth = synth;
+				this.synths[col][row].isActive = true;
+			}
+		}, {
+			key: 'removeSynth',
+			value: function removeSynth(col, row) {
+				if (!this.synths[col][row].isActive) {
+					return;
+				}
+
+				this.synths[col][row].synth.reset();
+				this.synths[col][row].isActive = false;
+			}
+		}, {
+			key: 'play',
+			value: function play(col, step, time) {
+				this.synths[col][step].synth.play(time);
+			}
+		}, {
+			key: 'onAudioNodeConnectionUpdate',
+			value: function onAudioNodeConnectionUpdate(connections) {
+				var cols = this.cols;
+				var rows = this.rows;
+				for (var col = 0; col < cols; col++) {
+					for (var row = 0; row < rows; row++) {
+						if (!this.synths[col][row].isActive) {
+							continue;
+						}
+
+						this.synths[col][row].synth.updateConnections(connections);
+					}
+				}
+
+				this.masterSynth.updateConnections(connections);
+			}
+		}, {
+			key: 'onAudioNodeParamChange',
+			value: function onAudioNodeParamChange(node, params) {
+
+				var cols = this.cols;
+				var rows = this.rows;
+				for (var col = 0; col < cols; col++) {
+					for (var row = 0; row < rows; row++) {
+						if (!this.synths[col][row].isActive) {
+							continue;
+						}
+
+						this.synths[col][row].synth.onParamChange(node, params);
+					}
+				}
+
+				this.masterSynth.onParamChange(node, params);
+			}
+		}]);
+
+		return SequencerManager;
+	}();
+
+	exports.default = SequencerManager;
+
+/***/ }),
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -93211,7 +94039,312 @@
 
 	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-	var _RenderNode2 = __webpack_require__(67);
+	var _MusicNode2 = __webpack_require__(47);
+
+	var _MusicNode3 = _interopRequireDefault(_MusicNode2);
+
+	var _tone = __webpack_require__(49);
+
+	var _tone2 = _interopRequireDefault(_tone);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Waveform = function (_MusicNode) {
+		_inherits(Waveform, _MusicNode);
+
+		function Waveform() {
+			_classCallCheck(this, Waveform);
+
+			var _this = _possibleConstructorReturn(this, (Waveform.__proto__ || Object.getPrototypeOf(Waveform)).call(this));
+
+			_this.el.classList.add('no-height');
+			_this.el.classList.add('waveform-node');
+			_this.needsUpdate = true;
+			_this.needsManualDispose = true;
+			_this.isDisposed = false;
+
+			_this.arrSize = 256;
+
+			_this.isConnected = false;
+
+			_this.audioConnections = [];
+
+			_this.audioNode = _tone2.default.context.createAnalyser();
+			_this.audioNode.fftSize = _this.arrSize;
+
+			_this.canvas = document.createElement('canvas');
+			_this.canvas.className = 'waveform-canvas';
+			_this.canvas.width = '200';
+			_this.canvas.height = '100';
+			_this.ctx = _this.canvas.getContext('2d');
+
+			_this.value = new Uint8Array(_this.arrSize);
+
+			_this.topPartEl.appendChild(_this.canvas);
+
+			_this.params = {};
+			return _this;
+		}
+
+		_createClass(Waveform, [{
+			key: 'dispose',
+			value: function dispose() {
+				this.audioNode.disconnect();
+				this.isDisposed = true;
+			}
+		}, {
+			key: 'enableInput',
+			value: function enableInput(outNode) {
+				_get(Waveform.prototype.__proto__ || Object.getPrototypeOf(Waveform.prototype), 'enableInput', this).call(this, outNode);
+
+				this.isConnected = true;
+			}
+		}, {
+			key: 'disableInput',
+			value: function disableInput(outNode) {
+				_get(Waveform.prototype.__proto__ || Object.getPrototypeOf(Waveform.prototype), 'disableInput', this).call(this, outNode);
+
+				this.isConnected = false;
+			}
+		}, {
+			key: 'getAudioNode',
+			value: function getAudioNode() {
+
+				if (this.isDisposed) {
+					this.audioNode = _tone2.default.context.createAnalyser();
+					this.audioNode.fftSize = this.arrSize;
+					this.isDisposed = false;
+				}
+
+				return this.audioNode;
+			}
+		}, {
+			key: 'update',
+			value: function update() {
+
+				if (!this.isConnected) {
+					return;
+				}
+
+				// this.value = this.audioNode.getValue();
+				this.audioNode.getByteTimeDomainData(this.value);
+			}
+		}, {
+			key: 'render',
+			value: function render() {
+				var w = this.canvas.width;
+				var h = this.canvas.height;
+				this.ctx.clearRect(0, 0, w, h);
+
+				this.ctx.fillStyle = 'black';
+				this.ctx.strokeStyle = 'red';
+
+				this.ctx.beginPath();
+				for (var i = 0; i < this.arrSize; i++) {
+					var x = i / this.arrSize * w;
+					// const y = (((1 + this.value[i]) / 2) * h);
+					var y = this.value[i] / 256 * h;
+
+					this.ctx.lineTo(x, y);
+					// this.ctx.arc(x, y, 2, 0, 2 * Math.PI);
+					// this.ctx.closePath();
+					// this.ctx.fill();
+				}
+
+				this.ctx.stroke();
+			}
+		}]);
+
+		return Waveform;
+	}(_MusicNode3.default);
+
+	exports.default = Waveform;
+
+/***/ }),
+/* 71 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+	var _MusicNode2 = __webpack_require__(47);
+
+	var _MusicNode3 = _interopRequireDefault(_MusicNode2);
+
+	var _tone = __webpack_require__(49);
+
+	var _tone2 = _interopRequireDefault(_tone);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var FFTNode = function (_MusicNode) {
+		_inherits(FFTNode, _MusicNode);
+
+		function FFTNode() {
+			_classCallCheck(this, FFTNode);
+
+			var _this = _possibleConstructorReturn(this, (FFTNode.__proto__ || Object.getPrototypeOf(FFTNode)).call(this));
+
+			_this.el.classList.add('no-height');
+			_this.el.classList.add('waveform-node');
+			_this.needsUpdate = true;
+			_this.needsManualDispose = true;
+			_this.isDisposed = false;
+
+			_this.arrSize = 256;
+
+			_this.isConnected = false;
+
+			_this.audioConnections = [];
+
+			_this.audioNode = _tone2.default.context.createAnalyser();
+			_this.audioNode.fftSize = _this.arrSize;
+
+			_this.canvas = document.createElement('canvas');
+			_this.canvas.className = 'waveform-canvas';
+			_this.canvas.width = '200';
+			_this.canvas.height = '100';
+			_this.ctx = _this.canvas.getContext('2d');
+
+			_this.value = new Uint8Array(_this.audioNode.frequencyBinCount);
+
+			_this.topPartEl.appendChild(_this.canvas);
+
+			_this.params = {};
+			return _this;
+		}
+
+		_createClass(FFTNode, [{
+			key: 'dispose',
+			value: function dispose() {
+
+				if (!this.isDisposed) {
+					this.audioNode.disconnect();
+					this.isDisposed = true;
+				}
+			}
+		}, {
+			key: 'enableOutput',
+			value: function enableOutput(param, connectionData) {
+				_get(FFTNode.prototype.__proto__ || Object.getPrototypeOf(FFTNode.prototype), 'enableOutput', this).call(this, param, connectionData);
+			}
+		}, {
+			key: 'disableOutput',
+			value: function disableOutput(inNode, param) {
+				_get(FFTNode.prototype.__proto__ || Object.getPrototypeOf(FFTNode.prototype), 'disableOutput', this).call(this, inNode, param);
+			}
+		}, {
+			key: 'enableInput',
+			value: function enableInput(outNode) {
+				_get(FFTNode.prototype.__proto__ || Object.getPrototypeOf(FFTNode.prototype), 'enableInput', this).call(this, outNode);
+
+				this.isConnected = true;
+			}
+		}, {
+			key: 'disableInput',
+			value: function disableInput(outNode) {
+				_get(FFTNode.prototype.__proto__ || Object.getPrototypeOf(FFTNode.prototype), 'disableInput', this).call(this, outNode);
+
+				this.isConnected = false;
+			}
+		}, {
+			key: 'getAudioNode',
+			value: function getAudioNode() {
+
+				if (this.isDisposed) {
+					this.audioNode = _tone2.default.context.createAnalyser();
+					this.audioNode.fftSize = this.arrSize;
+					this.isDisposed = false;
+				}
+
+				return this.audioNode;
+
+				// const audioNode = Tone.context.createAnalyser();
+				// audioNode.fftSize = this.arrSize;
+
+				// // this.audioNode = audioNode;
+				// return audioNode;
+			}
+		}, {
+			key: 'update',
+			value: function update() {
+
+				if (!this.isConnected) {
+					return;
+				}
+
+				this.audioNode.getByteFrequencyData(this.value);
+				// this.value = this.audioNode.getValue(); 
+			}
+		}, {
+			key: 'render',
+			value: function render() {
+
+				var w = this.canvas.width;
+				var h = this.canvas.height;
+				this.ctx.clearRect(0, 0, w, h);
+
+				// if (!this.isConnected) {
+				// 	return;
+				// }
+
+				// this.ctx.fillStyle = 'black';
+				// this.ctx.strokeStyle = 'red';
+
+				// this.ctx.beginPath();
+				// for (let i = 0; i < this.arrSize; i++) {
+				// 	const x = (i / this.arrSize) * w;
+				// 	const y = (1 - ((this.value[i] + 125) / 125)) * h;
+
+				// 	this.ctx.lineTo(x, y);
+				// 	// this.ctx.arc(x, y, 2, 0, 2 * Math.PI);
+				// 	// this.ctx.closePath();
+				// 	// this.ctx.fill();
+				// }
+
+				// this.ctx.stroke();
+			}
+		}]);
+
+		return FFTNode;
+	}(_MusicNode3.default);
+
+	exports.default = FFTNode;
+
+/***/ }),
+/* 72 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+	var _RenderNode2 = __webpack_require__(73);
 
 	var _RenderNode3 = _interopRequireDefault(_RenderNode2);
 
@@ -93429,7 +94562,7 @@
 	exports.default = LavaNoiseNode;
 
 /***/ }),
-/* 67 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -93510,7 +94643,7 @@
 	exports.default = RenderNode;
 
 /***/ }),
-/* 68 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -93523,7 +94656,7 @@
 
 	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-	var _RenderNode2 = __webpack_require__(67);
+	var _RenderNode2 = __webpack_require__(73);
 
 	var _RenderNode3 = _interopRequireDefault(_RenderNode2);
 
@@ -93573,14 +94706,8 @@
 	        resUniforms.u_time = { value: 0 };
 
 	        var settingUniforms = {};
-	        // settingUniforms.u_user_speed3 = {value: .5};
-	        // settingUniforms.u_user_pattern_scale = {value:-0.358};
-	        // settingUniforms.u_user_scale = {value:7.032};
-	        // settingUniforms.u_user_rotation = {value:0.804};
-	        // settingUniforms.u_user_speed2 = {value:0.028};
-	        // settingUniforms.u_user_blur = {value:0.7};
-	        // settingUniforms.u_user_color1 = {value: new THREE.Color(0.256,0.351,0.620)};
-	        // settingUniforms.u_user_color2 = {value: new THREE.Color(1.000,0.420,0.420)};
+	        settingUniforms.u_user_fgColor = { value: new THREE.Color(1.0, 1.0, 1.0) };
+	        settingUniforms.u_user_bgColor = { value: new THREE.Color(0.0, 0.0, 0.0) };
 
 	        var uniformsObj = Object.assign({}, resUniforms, settingUniforms);
 	        _this.material = new THREE.ShaderMaterial({
@@ -93595,73 +94722,28 @@
 
 	        _this.paramVals = {};
 
-	        var speed3Param = {
-	            title: 'Speed3',
-	            param: 'u_user_speed3',
+	        var fgColorParam = {
+	            title: 'FG Color',
+	            param: 'u_user_fgColor',
 	            useAsInput: true,
 	            paramHelpersType: 'shaderParam',
 	            needsFrameUpdate: false,
-	            minMax: { min: 0, max: 2 },
-	            value: .5,
-	            decimals: 2
+	            defaultVal: _this.material.uniforms.u_user_fgColor.value
 	        };
 
-	        var patternScaleParam = {
-	            title: 'Pattern Scale',
-	            param: 'u_user_pattern_scale',
+	        var bgColorParam = {
+	            title: 'BG Color',
+	            param: 'u_user_bgColor',
 	            useAsInput: true,
 	            paramHelpersType: 'shaderParam',
 	            needsFrameUpdate: false,
-	            minMax: { min: -2, max: 2 },
-	            defaultVal: 0.0,
-	            decimals: 2
+	            defaultVal: _this.material.uniforms.u_user_bgColor.value
 	        };
 
-	        var scaleParam = {
-	            title: 'Scale',
-	            param: 'u_user_scale',
-	            useAsInput: true,
-	            paramHelpersType: 'shaderParam',
-	            needsFrameUpdate: false,
-	            minMax: { min: 1, max: 20 },
-	            defaultVal: 7.0,
-	            decimals: 2
+	        _this.params = {
+	            fgColorParam: fgColorParam,
+	            bgColorParam: bgColorParam
 	        };
-
-	        var rotationParam = {
-	            title: 'Rotation',
-	            param: 'u_user_rotation',
-	            useAsInput: true,
-	            paramHelpersType: 'shaderParam',
-	            needsFrameUpdate: false,
-	            minMax: { min: .01, max: 2.0 },
-	            defaultVal: .8,
-	            decimals: 2
-	        };
-
-	        var distortionParam = {
-	            title: 'Distortion',
-	            param: 'u_user_speed2',
-	            useAsInput: true,
-	            paramHelpersType: 'shaderParam',
-	            needsFrameUpdate: false,
-	            minMax: { min: .001, max: 10.0 },
-	            defaultVal: .02,
-	            decimals: 2
-	        };
-
-	        var blurParam = {
-	            title: 'Blur',
-	            param: 'u_user_blur',
-	            useAsInput: true,
-	            paramHelpersType: 'shaderParam',
-	            needsFrameUpdate: false,
-	            minMax: { min: .01, max: 10.0 },
-	            defaultVal: .7,
-	            decimals: 2
-	        };
-
-	        _this.params = {};
 
 	        return _this;
 	    }
@@ -93734,7 +94816,7 @@
 	exports.default = VoronoiNode;
 
 /***/ }),
-/* 69 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -93747,7 +94829,7 @@
 
 	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-	var _RenderNode2 = __webpack_require__(67);
+	var _RenderNode2 = __webpack_require__(73);
 
 	var _RenderNode3 = _interopRequireDefault(_RenderNode2);
 
@@ -93755,7 +94837,7 @@
 
 	var SHADERS = _interopRequireWildcard(_SHADERS);
 
-	var _RangeSlider = __webpack_require__(49);
+	var _RangeSlider = __webpack_require__(50);
 
 	var _RangeSlider2 = _interopRequireDefault(_RangeSlider);
 
@@ -93899,7 +94981,7 @@
 	exports.default = CircleNode;
 
 /***/ }),
-/* 70 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -93912,7 +94994,7 @@
 
 	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-	var _RenderNode2 = __webpack_require__(67);
+	var _RenderNode2 = __webpack_require__(73);
 
 	var _RenderNode3 = _interopRequireDefault(_RenderNode2);
 
@@ -93920,7 +95002,7 @@
 
 	var THREE = _interopRequireWildcard(_three);
 
-	var _RangeSlider = __webpack_require__(49);
+	var _RangeSlider = __webpack_require__(50);
 
 	var _RangeSlider2 = _interopRequireDefault(_RangeSlider);
 
@@ -94131,7 +95213,7 @@
 	exports.default = CubeNode;
 
 /***/ }),
-/* 71 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -94144,7 +95226,7 @@
 
 	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-	var _RenderNode2 = __webpack_require__(67);
+	var _RenderNode2 = __webpack_require__(73);
 
 	var _RenderNode3 = _interopRequireDefault(_RenderNode2);
 
@@ -94357,7 +95439,7 @@
 	exports.default = SphereNode;
 
 /***/ }),
-/* 72 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -94374,359 +95456,17 @@
 
 	var _GraphicNode3 = _interopRequireDefault(_GraphicNode2);
 
-	var _RangeSlider = __webpack_require__(49);
+	var _RangeSlider = __webpack_require__(50);
 
 	var _RangeSlider2 = _interopRequireDefault(_RangeSlider);
 
 	var _three = __webpack_require__(43);
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var ColorNode = function (_GraphicNode) {
-		_inherits(ColorNode, _GraphicNode);
-
-		function ColorNode() {
-			_classCallCheck(this, ColorNode);
-
-			var _this = _possibleConstructorReturn(this, (ColorNode.__proto__ || Object.getPrototypeOf(ColorNode)).call(this));
-
-			_this.canConnectToMaterial = true;
-
-			_this.modifier = {
-				param: 'color',
-				value: new _three.Color(1, 0, 0),
-				default: new _three.Color(1, 1, 1)
-			};
-
-			_this.paramVals = {};
-
-			_this.params = {
-				'R': {
-					obj: _RangeSlider2.default,
-					objSettings: {
-						title: 'R',
-						defaultVal: 0.5,
-						range: { min: 0, max: 1 },
-						param: 'r',
-						decimals: 2
-					},
-					useAsInput: true
-				},
-				'G': {
-					obj: _RangeSlider2.default,
-					objSettings: {
-						title: 'G',
-						defaultVal: 0,
-						range: { min: 0, max: 1 },
-						param: 'g',
-						decimals: 2
-					},
-					useAsInput: true
-				},
-				'B': {
-					obj: _RangeSlider2.default,
-					objSettings: {
-						title: 'B',
-						defaultVal: 0,
-						range: { min: 0, max: 1 },
-						param: 'b',
-						decimals: 2
-					},
-					useAsInput: true
-				}
-			};
-
-			for (var loopKey in _this.params) {
-				var key = _this.params[loopKey].objSettings.param;
-				_this.paramVals[key] = _this.params[loopKey].objSettings.defaultVal;
-			}
-			return _this;
-		}
-
-		_createClass(ColorNode, [{
-			key: 'onParameterUpdate',
-			value: function onParameterUpdate() {
-				var params = this.getParams();
-
-				this.modifier.value = new _three.Color(params.r, params.g, params.b);
-
-				this.onGraphicsParamChange(this);
-			}
-		}, {
-			key: 'enableInput',
-			value: function enableInput(outputNode) {
-				_get(ColorNode.prototype.__proto__ || Object.getPrototypeOf(ColorNode.prototype), 'enableInput', this).call(this);
-			}
-		}, {
-			key: 'disableInput',
-			value: function disableInput(nodeToDisconnect) {
-				_get(ColorNode.prototype.__proto__ || Object.getPrototypeOf(ColorNode.prototype), 'disableInput', this).call(this);
-			}
-		}]);
-
-		return ColorNode;
-	}(_GraphicNode3.default);
-
-	exports.default = ColorNode;
-
-/***/ }),
-/* 73 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-
-	var _GraphicNode2 = __webpack_require__(13);
-
-	var _GraphicNode3 = _interopRequireDefault(_GraphicNode2);
-
-	var _RangeSlider = __webpack_require__(49);
-
-	var _RangeSlider2 = _interopRequireDefault(_RangeSlider);
-
-	var _three = __webpack_require__(43);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var PositionNode = function (_GraphicNode) {
-		_inherits(PositionNode, _GraphicNode);
-
-		function PositionNode() {
-			_classCallCheck(this, PositionNode);
-
-			var _this = _possibleConstructorReturn(this, (PositionNode.__proto__ || Object.getPrototypeOf(PositionNode)).call(this));
-
-			_this.modifier = {
-				param: 'position',
-				value: new _three.Vector3(0, 0, 0),
-				default: new _three.Vector3(0, 0, 0)
-			};
-
-			_this.paramVals = {};
-
-			_this.params = {
-				'X': {
-					obj: _RangeSlider2.default,
-					objSettings: {
-						title: 'X',
-						defaultVal: 0.0,
-						range: { min: -10, max: 10 },
-						param: 'x',
-						decimals: 2
-					},
-					useAsInput: true
-				},
-				'Y': {
-					obj: _RangeSlider2.default,
-					objSettings: {
-						title: 'Y',
-						defaultVal: 0.0,
-						range: { min: -10, max: 10 },
-						param: 'y',
-						decimals: 2
-					},
-					useAsInput: true
-				},
-				'Z': {
-					obj: _RangeSlider2.default,
-					objSettings: {
-						title: 'Z',
-						defaultVal: 0,
-						range: { min: -10, max: 10 },
-						param: 'z',
-						decimals: 2
-					},
-					useAsInput: true
-				}
-			};
-
-			for (var loopKey in _this.params) {
-				var key = _this.params[loopKey].objSettings.param;
-				_this.paramVals[key] = _this.params[loopKey].objSettings.defaultVal;
-			}
-			return _this;
-		}
-
-		_createClass(PositionNode, [{
-			key: 'onParameterUpdate',
-			value: function onParameterUpdate() {
-				var params = this.getParams();
-
-				this.modifier.value = new _three.Vector3(params.x, params.y, params.z);
-
-				this.onGraphicsParamChange(this);
-			}
-		}, {
-			key: 'enableInput',
-			value: function enableInput(outputNode) {
-				_get(PositionNode.prototype.__proto__ || Object.getPrototypeOf(PositionNode.prototype), 'enableInput', this).call(this);
-			}
-		}, {
-			key: 'disableInput',
-			value: function disableInput(nodeToDisconnect) {
-				_get(PositionNode.prototype.__proto__ || Object.getPrototypeOf(PositionNode.prototype), 'disableInput', this).call(this);
-			}
-		}]);
-
-		return PositionNode;
-	}(_GraphicNode3.default);
-
-	exports.default = PositionNode;
-
-/***/ }),
-/* 74 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-
-	var _GraphicNode2 = __webpack_require__(13);
-
-	var _GraphicNode3 = _interopRequireDefault(_GraphicNode2);
-
-	var _RangeSlider = __webpack_require__(49);
-
-	var _RangeSlider2 = _interopRequireDefault(_RangeSlider);
-
-	var _three = __webpack_require__(43);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var RotationNode = function (_GraphicNode) {
-		_inherits(RotationNode, _GraphicNode);
-
-		function RotationNode() {
-			_classCallCheck(this, RotationNode);
-
-			var _this = _possibleConstructorReturn(this, (RotationNode.__proto__ || Object.getPrototypeOf(RotationNode)).call(this));
-
-			_this.modifier = {
-				param: 'rotation',
-				value: new _three.Vector2(0, 0),
-				default: new _three.Vector2(0, 0)
-			};
-
-			_this.paramVals = {};
-
-			_this.params = {
-				'X': {
-					obj: _RangeSlider2.default,
-					objSettings: {
-						title: 'X',
-						defaultVal: 0.0,
-						range: { min: -1, max: 1 },
-						param: 'x',
-						decimals: 2
-					},
-					useAsInput: true
-				},
-				'Y': {
-					obj: _RangeSlider2.default,
-					objSettings: {
-						title: 'Y',
-						defaultVal: 0.0,
-						range: { min: -1, max: 1 },
-						param: 'y',
-						decimals: 2
-					},
-					useAsInput: true
-				}
-			};
-
-			for (var loopKey in _this.params) {
-				var key = _this.params[loopKey].objSettings.param;
-				_this.paramVals[key] = _this.params[loopKey].objSettings.defaultVal;
-			}
-			return _this;
-		}
-
-		_createClass(RotationNode, [{
-			key: 'onParameterUpdate',
-			value: function onParameterUpdate() {
-				var params = this.getParams();
-
-				this.modifier.value = new _three.Vector2(params.x, params.y);
-
-				this.onGraphicsParamChange(this);
-			}
-		}, {
-			key: 'enableInput',
-			value: function enableInput(outputNode) {
-				_get(RotationNode.prototype.__proto__ || Object.getPrototypeOf(RotationNode.prototype), 'enableInput', this).call(this);
-			}
-		}, {
-			key: 'disableInput',
-			value: function disableInput(nodeToDisconnect) {
-				_get(RotationNode.prototype.__proto__ || Object.getPrototypeOf(RotationNode.prototype), 'disableInput', this).call(this);
-			}
-		}]);
-
-		return RotationNode;
-	}(_GraphicNode3.default);
-
-	exports.default = RotationNode;
-
-/***/ }),
-/* 75 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-
-	var _GraphicNode2 = __webpack_require__(13);
-
-	var _GraphicNode3 = _interopRequireDefault(_GraphicNode2);
-
-	var _RangeSlider = __webpack_require__(49);
-
-	var _RangeSlider2 = _interopRequireDefault(_RangeSlider);
-
-	var _three = __webpack_require__(43);
-
-	var _HorizontalRangeSlider = __webpack_require__(76);
+	var _HorizontalRangeSlider = __webpack_require__(79);
 
 	var _HorizontalRangeSlider2 = _interopRequireDefault(_HorizontalRangeSlider);
 
-	var _Easing = __webpack_require__(77);
+	var _Easing = __webpack_require__(80);
 
 	var _Easing2 = _interopRequireDefault(_Easing);
 
@@ -94908,16 +95648,34 @@
 		}, {
 			key: 'disableOutput',
 			value: function disableOutput(node, param) {
-				if (this.currentOutConnectionsLength <= 1) {
-					_get(ParamDriverNode.prototype.__proto__ || Object.getPrototypeOf(ParamDriverNode.prototype), 'disableOutput', this).call(this);
+				var tempOutConnections = this.currentOutConnections.map(function (t) {
+					return t;
+				});
 
-					this.reset();
+				var paramConnections = tempOutConnections.filter(function (t) {
+					return t.param;
+				});
+				var nodeConnections = tempOutConnections.filter(function (t) {
+					return !t.param;
+				});
+
+				if (param) {
+					paramConnections = paramConnections.filter(function (t) {
+						return t.param && t.param.title !== param.title;
+					});
+				} else {
+					nodeConnections = nodeConnections.filter(function (t) {
+						return t.in.ID !== nodeIn.ID;
+					});
 				}
 
-				this.currentOutConnections = this.currentOutConnections.filter(function (t) {
-					return t.param.title !== param.title;
-				});
+				var finalConnections = paramConnections.concat(nodeConnections);
+				this.currentOutConnections = finalConnections;
 				this.currentOutConnectionsLength = this.currentOutConnections.length;
+
+				if (this.currentOutConnectionsLength <= 0) {
+					_get(ParamDriverNode.prototype.__proto__ || Object.getPrototypeOf(ParamDriverNode.prototype), 'disableOutput', this).call(this);
+				}
 			}
 		}, {
 			key: 'removeFromDom',
@@ -94936,7 +95694,7 @@
 	exports.default = ParamDriverNode;
 
 /***/ }),
-/* 76 */
+/* 79 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -95217,7 +95975,7 @@
 	exports.default = HorizontalRangeSlider;
 
 /***/ }),
-/* 77 */
+/* 80 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -95281,6 +96039,1303 @@
 	};
 
 	exports.default = easing;
+
+/***/ }),
+/* 81 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+	var _GraphicNode2 = __webpack_require__(13);
+
+	var _GraphicNode3 = _interopRequireDefault(_GraphicNode2);
+
+	var _vanillaPicker = __webpack_require__(82);
+
+	var _vanillaPicker2 = _interopRequireDefault(_vanillaPicker);
+
+	var _three = __webpack_require__(43);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var ColorNode = function (_GraphicNode) {
+		_inherits(ColorNode, _GraphicNode);
+
+		function ColorNode() {
+			_classCallCheck(this, ColorNode);
+
+			var _this = _possibleConstructorReturn(this, (ColorNode.__proto__ || Object.getPrototypeOf(ColorNode)).call(this));
+
+			_this.el.classList.add('no-height');
+			_this.el.classList.add('color-node');
+
+			_this.isParam = true;
+
+			_this.paramVals = {};
+
+			_this.params = {};
+
+			var colorPickerParent = document.createElement('div');
+			colorPickerParent.className = 'color-picker-parent prevent-drag';
+
+			var label = document.createElement('h4');
+			label.innerHTML = 'Välj färg';
+
+			_this.colorPreview = document.createElement('div');
+			_this.colorPreview.className = 'color-preview';
+
+			colorPickerParent.appendChild(label);
+			colorPickerParent.appendChild(_this.colorPreview);
+
+			_this.topPartEl.appendChild(colorPickerParent);
+
+			var colorConfig = {
+				parent: colorPickerParent,
+				color: '#FFFFFF',
+				alpha: false
+			};
+
+			_this.currentColor = undefined;
+
+			_this.picker = new _vanillaPicker2.default(colorConfig);
+			_this.onPickerChangeBound = _this.onPickerChange.bind(_this);
+
+			_this.picker.onChange = _this.onPickerChangeBound;
+			return _this;
+		}
+
+		_createClass(ColorNode, [{
+			key: 'onPickerChange',
+			value: function onPickerChange(color) {
+
+				var cssColor = 'rgb(' + color._rgba[0] + ',' + color._rgba[1] + ',' + color._rgba[2] + ')';
+
+				this.setColor(cssColor);
+				this.currentColor = new _three.Color(color.rgbString);
+
+				for (var i = 0; i < this.currentOutConnectionsLength; i++) {
+					var param = this.currentOutConnections[i].param;
+
+					this.currentOutConnections[i].in.updateParam(param, this);
+				}
+			}
+		}, {
+			key: 'getValue',
+			value: function getValue() {
+				return this.currentColor;
+			}
+		}, {
+			key: 'setColor',
+			value: function setColor(color) {
+				this.colorPreview.style.background = color;
+			}
+		}, {
+			key: 'enableOutput',
+			value: function enableOutput(param, connection) {
+				_get(ColorNode.prototype.__proto__ || Object.getPrototypeOf(ColorNode.prototype), 'enableOutput', this).call(this);
+
+				this.currentOutConnections.push(connection);
+				this.currentOutConnectionsLength = this.currentOutConnections.length;
+
+				if (this.currentOutConnectionsLength === 1) {
+					var hex = '#' + param.defaultVal.getHexString();
+					this.picker.color = hex;
+					this.currentColor = param.defaultVal;
+					this.setColor(hex);
+				}
+			}
+		}, {
+			key: 'disableOutput',
+			value: function disableOutput(node, param) {
+				var tempOutConnections = this.currentOutConnections.map(function (t) {
+					return t;
+				});
+
+				var paramConnections = tempOutConnections.filter(function (t) {
+					return t.param;
+				});
+				var nodeConnections = tempOutConnections.filter(function (t) {
+					return !t.param;
+				});
+
+				if (param) {
+					paramConnections = paramConnections.filter(function (t) {
+						return t.param && t.param.title !== param.title;
+					});
+				} else {
+					nodeConnections = nodeConnections.filter(function (t) {
+						return t.in.ID !== nodeIn.ID;
+					});
+				}
+
+				var finalConnections = paramConnections.concat(nodeConnections);
+				this.currentOutConnections = finalConnections;
+				this.currentOutConnectionsLength = this.currentOutConnections.length;
+
+				if (this.currentOutConnectionsLength <= 0) {
+					_get(ColorNode.prototype.__proto__ || Object.getPrototypeOf(ColorNode.prototype), 'disableOutput', this).call(this);
+				}
+			}
+		}]);
+
+		return ColorNode;
+	}(_GraphicNode3.default);
+
+	exports.default = ColorNode;
+
+/***/ }),
+/* 82 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	/*!
+	 * vanilla-picker v2.7.2
+	 * https://vanilla-picker.js.org
+	 *
+	 * Copyright 2017-2019 Andreas Borgen (https://github.com/Sphinxxxx), Adam Brooks (https://github.com/dissimulate)
+	 * Released under the ISC license.
+	 */
+	(function (global, factory) {
+	   true ? module.exports = factory() :
+	  typeof define === 'function' && define.amd ? define(factory) :
+	  (global.Picker = factory());
+	}(this, (function () { 'use strict';
+
+	  var classCallCheck = function (instance, Constructor) {
+	    if (!(instance instanceof Constructor)) {
+	      throw new TypeError("Cannot call a class as a function");
+	    }
+	  };
+
+	  var createClass = function () {
+	    function defineProperties(target, props) {
+	      for (var i = 0; i < props.length; i++) {
+	        var descriptor = props[i];
+	        descriptor.enumerable = descriptor.enumerable || false;
+	        descriptor.configurable = true;
+	        if ("value" in descriptor) descriptor.writable = true;
+	        Object.defineProperty(target, descriptor.key, descriptor);
+	      }
+	    }
+
+	    return function (Constructor, protoProps, staticProps) {
+	      if (protoProps) defineProperties(Constructor.prototype, protoProps);
+	      if (staticProps) defineProperties(Constructor, staticProps);
+	      return Constructor;
+	    };
+	  }();
+
+	  var slicedToArray = function () {
+	    function sliceIterator(arr, i) {
+	      var _arr = [];
+	      var _n = true;
+	      var _d = false;
+	      var _e = undefined;
+
+	      try {
+	        for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+	          _arr.push(_s.value);
+
+	          if (i && _arr.length === i) break;
+	        }
+	      } catch (err) {
+	        _d = true;
+	        _e = err;
+	      } finally {
+	        try {
+	          if (!_n && _i["return"]) _i["return"]();
+	        } finally {
+	          if (_d) throw _e;
+	        }
+	      }
+
+	      return _arr;
+	    }
+
+	    return function (arr, i) {
+	      if (Array.isArray(arr)) {
+	        return arr;
+	      } else if (Symbol.iterator in Object(arr)) {
+	        return sliceIterator(arr, i);
+	      } else {
+	        throw new TypeError("Invalid attempt to destructure non-iterable instance");
+	      }
+	    };
+	  }();
+
+	  String.prototype.startsWith = String.prototype.startsWith || function (needle) {
+	  	return this.indexOf(needle) === 0;
+	  };
+	  String.prototype.padStart = String.prototype.padStart || function (len, pad) {
+	  	var str = this;while (str.length < len) {
+	  		str = pad + str;
+	  	}return str;
+	  };
+
+	  var colorNames = { aliceblue: '#f0f8ff', antiquewhite: '#faebd7', aqua: '#00ffff', aquamarine: '#7fffd4', azure: '#f0ffff', beige: '#f5f5dc', bisque: '#ffe4c4', black: '#000000', blanchedalmond: '#ffebcd', blue: '#0000ff', blueviolet: '#8a2be2', brown: '#a52a2a', burlywood: '#deb887', cadetblue: '#5f9ea0', chartreuse: '#7fff00', chocolate: '#d2691e', coral: '#ff7f50', cornflowerblue: '#6495ed', cornsilk: '#fff8dc', crimson: '#dc143c', cyan: '#00ffff', darkblue: '#00008b', darkcyan: '#008b8b', darkgoldenrod: '#b8860b', darkgray: '#a9a9a9', darkgreen: '#006400', darkgrey: '#a9a9a9', darkkhaki: '#bdb76b', darkmagenta: '#8b008b', darkolivegreen: '#556b2f', darkorange: '#ff8c00', darkorchid: '#9932cc', darkred: '#8b0000', darksalmon: '#e9967a', darkseagreen: '#8fbc8f', darkslateblue: '#483d8b', darkslategray: '#2f4f4f', darkslategrey: '#2f4f4f', darkturquoise: '#00ced1', darkviolet: '#9400d3', deeppink: '#ff1493', deepskyblue: '#00bfff', dimgray: '#696969', dimgrey: '#696969', dodgerblue: '#1e90ff', firebrick: '#b22222', floralwhite: '#fffaf0', forestgreen: '#228b22', fuchsia: '#ff00ff', gainsboro: '#dcdcdc', ghostwhite: '#f8f8ff', gold: '#ffd700', goldenrod: '#daa520', gray: '#808080', green: '#008000', greenyellow: '#adff2f', grey: '#808080', honeydew: '#f0fff0', hotpink: '#ff69b4', indianred: '#cd5c5c', indigo: '#4b0082', ivory: '#fffff0', khaki: '#f0e68c', lavender: '#e6e6fa', lavenderblush: '#fff0f5', lawngreen: '#7cfc00', lemonchiffon: '#fffacd', lightblue: '#add8e6', lightcoral: '#f08080', lightcyan: '#e0ffff', lightgoldenrodyellow: '#fafad2', lightgray: '#d3d3d3', lightgreen: '#90ee90', lightgrey: '#d3d3d3', lightpink: '#ffb6c1', lightsalmon: '#ffa07a', lightseagreen: '#20b2aa', lightskyblue: '#87cefa', lightslategray: '#778899', lightslategrey: '#778899', lightsteelblue: '#b0c4de', lightyellow: '#ffffe0', lime: '#00ff00', limegreen: '#32cd32', linen: '#faf0e6', magenta: '#ff00ff', maroon: '#800000', mediumaquamarine: '#66cdaa', mediumblue: '#0000cd', mediumorchid: '#ba55d3', mediumpurple: '#9370db', mediumseagreen: '#3cb371', mediumslateblue: '#7b68ee', mediumspringgreen: '#00fa9a', mediumturquoise: '#48d1cc', mediumvioletred: '#c71585', midnightblue: '#191970', mintcream: '#f5fffa', mistyrose: '#ffe4e1', moccasin: '#ffe4b5', navajowhite: '#ffdead', navy: '#000080', oldlace: '#fdf5e6', olive: '#808000', olivedrab: '#6b8e23', orange: '#ffa500', orangered: '#ff4500', orchid: '#da70d6', palegoldenrod: '#eee8aa', palegreen: '#98fb98', paleturquoise: '#afeeee', palevioletred: '#db7093', papayawhip: '#ffefd5', peachpuff: '#ffdab9', peru: '#cd853f', pink: '#ffc0cb', plum: '#dda0dd', powderblue: '#b0e0e6', purple: '#800080', rebeccapurple: '#663399', red: '#ff0000', rosybrown: '#bc8f8f', royalblue: '#4169e1', saddlebrown: '#8b4513', salmon: '#fa8072', sandybrown: '#f4a460', seagreen: '#2e8b57', seashell: '#fff5ee', sienna: '#a0522d', silver: '#c0c0c0', skyblue: '#87ceeb', slateblue: '#6a5acd', slategray: '#708090', slategrey: '#708090', snow: '#fffafa', springgreen: '#00ff7f', steelblue: '#4682b4', tan: '#d2b48c', teal: '#008080', thistle: '#d8bfd8', tomato: '#ff6347', turquoise: '#40e0d0', violet: '#ee82ee', wheat: '#f5deb3', white: '#ffffff', whitesmoke: '#f5f5f5', yellow: '#ffff00', yellowgreen: '#9acd32' };
+
+	  function printNum(num) {
+	  	var decs = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
+
+	  	var str = decs > 0 ? num.toFixed(decs).replace(/0+$/, '').replace(/\.$/, '') : num.toString();
+	  	return str || '0';
+	  }
+
+	  var Color = function () {
+	  	function Color(r, g, b, a) {
+	  		classCallCheck(this, Color);
+
+
+	  		var that = this;
+	  		function parseString(input) {
+
+	  			if (input.startsWith('hsl')) {
+	  				var _input$match$map = input.match(/([\-\d\.e]+)/g).map(Number),
+	  				    _input$match$map2 = slicedToArray(_input$match$map, 4),
+	  				    h = _input$match$map2[0],
+	  				    s = _input$match$map2[1],
+	  				    l = _input$match$map2[2],
+	  				    _a = _input$match$map2[3];
+
+	  				if (_a === undefined) {
+	  					_a = 1;
+	  				}
+
+	  				h /= 360;
+	  				s /= 100;
+	  				l /= 100;
+	  				that.hsla = [h, s, l, _a];
+	  			}
+
+	  			else if (input.startsWith('rgb')) {
+	  					var _input$match$map3 = input.match(/([\-\d\.e]+)/g).map(Number),
+	  					    _input$match$map4 = slicedToArray(_input$match$map3, 4),
+	  					    _r = _input$match$map4[0],
+	  					    _g = _input$match$map4[1],
+	  					    _b = _input$match$map4[2],
+	  					    _a2 = _input$match$map4[3];
+
+	  					if (_a2 === undefined) {
+	  						_a2 = 1;
+	  					}
+
+	  					that.rgba = [_r, _g, _b, _a2];
+	  				}
+
+	  				else {
+	  						if (input.startsWith('#')) {
+	  							that.rgba = Color.hexToRgb(input);
+	  						} else {
+	  							that.rgba = Color.nameToRgb(input) || Color.hexToRgb(input);
+	  						}
+	  					}
+	  		}
+
+	  		if (r === undefined) ;
+
+
+	  		else if (Array.isArray(r)) {
+	  				this.rgba = r;
+	  			}
+
+	  			else if (b === undefined) {
+	  					var color = r && '' + r;
+	  					if (color) {
+	  						parseString(color.toLowerCase());
+	  					}
+	  				} else {
+	  					this.rgba = [r, g, b, a === undefined ? 1 : a];
+	  				}
+	  	}
+
+
+	  	createClass(Color, [{
+	  		key: 'printRGB',
+	  		value: function printRGB(alpha) {
+	  			var rgb = alpha ? this.rgba : this.rgba.slice(0, 3),
+	  			    vals = rgb.map(function (x, i) {
+	  				return printNum(x, i === 3 ? 3 : 0);
+	  			});
+
+	  			return alpha ? 'rgba(' + vals + ')' : 'rgb(' + vals + ')';
+	  		}
+	  	}, {
+	  		key: 'printHSL',
+	  		value: function printHSL(alpha) {
+	  			var mults = [360, 100, 100, 1],
+	  			    suff = ['', '%', '%', ''];
+
+	  			var hsl = alpha ? this.hsla : this.hsla.slice(0, 3),
+
+	  			vals = hsl.map(function (x, i) {
+	  				return printNum(x * mults[i], i === 3 ? 3 : 1) + suff[i];
+	  			});
+
+	  			return alpha ? 'hsla(' + vals + ')' : 'hsl(' + vals + ')';
+	  		}
+	  	}, {
+	  		key: 'printHex',
+	  		value: function printHex(alpha) {
+	  			var hex = this.hex;
+	  			return alpha ? hex : hex.substring(0, 7);
+	  		}
+
+
+
+	  	}, {
+	  		key: 'rgba',
+	  		get: function get$$1() {
+	  			if (this._rgba) {
+	  				return this._rgba;
+	  			}
+	  			if (!this._hsla) {
+	  				throw new Error('No color is set');
+	  			}
+
+	  			return this._rgba = Color.hslToRgb(this._hsla);
+	  		},
+	  		set: function set$$1(rgb) {
+	  			if (rgb.length === 3) {
+	  				rgb[3] = 1;
+	  			}
+
+	  			this._rgba = rgb;
+	  			this._hsla = null;
+	  		}
+	  	}, {
+	  		key: 'rgbString',
+	  		get: function get$$1() {
+	  			return this.printRGB();
+	  		}
+	  	}, {
+	  		key: 'rgbaString',
+	  		get: function get$$1() {
+	  			return this.printRGB(true);
+	  		}
+
+
+	  	}, {
+	  		key: 'hsla',
+	  		get: function get$$1() {
+	  			if (this._hsla) {
+	  				return this._hsla;
+	  			}
+	  			if (!this._rgba) {
+	  				throw new Error('No color is set');
+	  			}
+
+	  			return this._hsla = Color.rgbToHsl(this._rgba);
+	  		},
+	  		set: function set$$1(hsl) {
+	  			if (hsl.length === 3) {
+	  				hsl[3] = 1;
+	  			}
+
+	  			this._hsla = hsl;
+	  			this._rgba = null;
+	  		}
+	  	}, {
+	  		key: 'hslString',
+	  		get: function get$$1() {
+	  			return this.printHSL();
+	  		}
+	  	}, {
+	  		key: 'hslaString',
+	  		get: function get$$1() {
+	  			return this.printHSL(true);
+	  		}
+
+
+	  	}, {
+	  		key: 'hex',
+	  		get: function get$$1() {
+	  			var rgb = this.rgba,
+	  			    hex = rgb.map(function (x, i) {
+	  				return i < 3 ? x.toString(16) : Math.round(x * 255).toString(16);
+	  			});
+
+	  			return '#' + hex.map(function (x) {
+	  				return x.padStart(2, '0');
+	  			}).join('');
+	  		},
+	  		set: function set$$1(hex) {
+	  			this.rgba = Color.hexToRgb(hex);
+	  		}
+	  	}], [{
+	  		key: 'hexToRgb',
+	  		value: function hexToRgb(input) {
+	  			var hex = (input.startsWith('#') ? input.slice(1) : input).replace(/^(\w{3})$/, '$1F') 
+	  			.replace(/^(\w)(\w)(\w)(\w)$/, '$1$1$2$2$3$3$4$4') 
+	  			.replace(/^(\w{6})$/, '$1FF'); 
+
+	  			if (!hex.match(/^([0-9a-fA-F]{8})$/)) {
+	  				throw new Error('Unknown hex color; ' + input);
+	  			}
+
+	  			var rgba = hex.match(/^(\w\w)(\w\w)(\w\w)(\w\w)$/).slice(1) 
+	  			.map(function (x) {
+	  				return parseInt(x, 16);
+	  			}); 
+
+	  			rgba[3] = rgba[3] / 255;
+	  			return rgba;
+	  		}
+
+
+	  	}, {
+	  		key: 'nameToRgb',
+	  		value: function nameToRgb(input) {
+	  			var hex = colorNames[input];
+	  			if (hex) {
+	  				return Color.hexToRgb(hex);
+	  			}
+	  		}
+
+
+	  	}, {
+	  		key: 'rgbToHsl',
+	  		value: function rgbToHsl(_ref) {
+	  			var _ref2 = slicedToArray(_ref, 4),
+	  			    r = _ref2[0],
+	  			    g = _ref2[1],
+	  			    b = _ref2[2],
+	  			    a = _ref2[3];
+
+	  			r /= 255;
+	  			g /= 255;
+	  			b /= 255;
+
+	  			var max = Math.max(r, g, b),
+	  			    min = Math.min(r, g, b);
+	  			var h = void 0,
+	  			    s = void 0,
+	  			    l = (max + min) / 2;
+
+	  			if (max === min) {
+	  				h = s = 0; 
+	  			} else {
+	  				var d = max - min;
+	  				s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+	  				switch (max) {
+	  					case r:
+	  						h = (g - b) / d + (g < b ? 6 : 0);break;
+	  					case g:
+	  						h = (b - r) / d + 2;break;
+	  					case b:
+	  						h = (r - g) / d + 4;break;
+	  				}
+
+	  				h /= 6;
+	  			}
+
+	  			return [h, s, l, a];
+	  		}
+
+
+	  	}, {
+	  		key: 'hslToRgb',
+	  		value: function hslToRgb(_ref3) {
+	  			var _ref4 = slicedToArray(_ref3, 4),
+	  			    h = _ref4[0],
+	  			    s = _ref4[1],
+	  			    l = _ref4[2],
+	  			    a = _ref4[3];
+
+	  			var r = void 0,
+	  			    g = void 0,
+	  			    b = void 0;
+
+	  			if (s === 0) {
+	  				r = g = b = l; 
+	  			} else {
+	  				var hue2rgb = function hue2rgb(p, q, t) {
+	  					if (t < 0) t += 1;
+	  					if (t > 1) t -= 1;
+	  					if (t < 1 / 6) return p + (q - p) * 6 * t;
+	  					if (t < 1 / 2) return q;
+	  					if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+	  					return p;
+	  				};
+
+	  				var q = l < 0.5 ? l * (1 + s) : l + s - l * s,
+	  				    p = 2 * l - q;
+
+	  				r = hue2rgb(p, q, h + 1 / 3);
+	  				g = hue2rgb(p, q, h);
+	  				b = hue2rgb(p, q, h - 1 / 3);
+	  			}
+
+	  			var rgba = [r * 255, g * 255, b * 255].map(Math.round);
+	  			rgba[3] = a;
+
+	  			return rgba;
+	  		}
+	  	}]);
+	  	return Color;
+	  }();
+
+	  var root = window;
+
+	  function dragTracker(options) {
+
+
+	      var ep = Element.prototype;
+	      if (!ep.matches) ep.matches = ep.msMatchesSelector || ep.webkitMatchesSelector;
+	      if (!ep.closest) ep.closest = function (s) {
+	          var node = this;
+	          do {
+	              if (node.matches(s)) return node;
+	              node = node.tagName === 'svg' ? node.parentNode : node.parentElement;
+	          } while (node);
+
+	          return null;
+	      };
+
+	      options = options || {};
+	      var container = options.container || document.documentElement,
+	          selector = options.selector,
+	          callback = options.callback || console.log,
+	          callbackStart = options.callbackDragStart,
+	          callbackEnd = options.callbackDragEnd,
+
+	      callbackClick = options.callbackClick,
+	          propagate = options.propagateEvents,
+	          roundCoords = options.roundCoords !== false,
+	          dragOutside = options.dragOutside !== false,
+
+	      handleOffset = options.handleOffset || options.handleOffset !== false;
+	      var offsetToCenter = null;
+	      switch (handleOffset) {
+	          case 'center':
+	              offsetToCenter = true;break;
+	          case 'topleft':
+	          case 'top-left':
+	              offsetToCenter = false;break;
+	      }
+
+	      var dragState = void 0;
+
+	      function getMousePos(e, elm, offset, stayWithin) {
+	          var x = e.clientX,
+	              y = e.clientY;
+
+	          function respectBounds(value, min, max) {
+	              return Math.max(min, Math.min(value, max));
+	          }
+
+	          if (elm) {
+	              var bounds = elm.getBoundingClientRect();
+	              x -= bounds.left;
+	              y -= bounds.top;
+
+	              if (offset) {
+	                  x -= offset[0];
+	                  y -= offset[1];
+	              }
+	              if (stayWithin) {
+	                  x = respectBounds(x, 0, bounds.width);
+	                  y = respectBounds(y, 0, bounds.height);
+	              }
+
+	              if (elm !== container) {
+	                  var center = offsetToCenter !== null ? offsetToCenter
+	                  : elm.nodeName === 'circle' || elm.nodeName === 'ellipse';
+
+	                  if (center) {
+	                      x -= bounds.width / 2;
+	                      y -= bounds.height / 2;
+	                  }
+	              }
+	          }
+	          return roundCoords ? [Math.round(x), Math.round(y)] : [x, y];
+	      }
+
+	      function stopEvent(e) {
+	          e.preventDefault();
+	          if (!propagate) {
+	              e.stopPropagation();
+	          }
+	      }
+
+	      function onDown(e) {
+	          var target = void 0;
+	          if (selector) {
+	              target = selector instanceof Element ? selector.contains(e.target) ? selector : null : e.target.closest(selector);
+	          } else {
+	              target = {};
+	          }
+
+	          if (target) {
+	              stopEvent(e);
+
+	              var mouseOffset = selector && handleOffset ? getMousePos(e, target) : [0, 0],
+	                  startPos = getMousePos(e, container, mouseOffset);
+	              dragState = {
+	                  target: target,
+	                  mouseOffset: mouseOffset,
+	                  startPos: startPos,
+	                  actuallyDragged: false
+	              };
+
+	              if (callbackStart) {
+	                  callbackStart(target, startPos);
+	              }
+	          }
+	      }
+
+	      function onMove(e) {
+	          if (!dragState) {
+	              return;
+	          }
+	          stopEvent(e);
+
+	          var start = dragState.startPos,
+	              pos = getMousePos(e, container, dragState.mouseOffset, !dragOutside);
+
+	          dragState.actuallyDragged = dragState.actuallyDragged || start[0] !== pos[0] || start[1] !== pos[1];
+
+	          callback(dragState.target, pos, start);
+	      }
+
+	      function onEnd(e, cancelled) {
+	          if (!dragState) {
+	              return;
+	          }
+
+	          if (callbackEnd || callbackClick) {
+	              var isClick = !dragState.actuallyDragged,
+	                  pos = isClick ? dragState.startPos : getMousePos(e, container, dragState.mouseOffset, !dragOutside);
+
+	              if (callbackClick && isClick && !cancelled) {
+	                  callbackClick(dragState.target, pos);
+	              }
+	              if (callbackEnd) {
+	                  callbackEnd(dragState.target, pos, dragState.startPos, cancelled || isClick && callbackClick);
+	              }
+	          }
+	          dragState = null;
+	      }
+
+
+	      addEvent(container, 'mousedown', function (e) {
+	          if (isLeftButton(e)) {
+	              onDown(e);
+	          } else {
+	              onEnd(e, true);
+	          }
+	      });
+	      addEvent(container, 'touchstart', function (e) {
+	          return relayTouch(e, onDown);
+	      });
+
+	      addEvent(root, 'mousemove', function (e) {
+	          if (!dragState) {
+	              return;
+	          }
+
+	          if (isLeftButton(e)) {
+	              onMove(e);
+	          }
+	          else {
+	                  onEnd(e);
+	              }
+	      });
+	      addEvent(root, 'touchmove', function (e) {
+	          return relayTouch(e, onMove);
+	      });
+
+	      addEvent(container, 'mouseup', function (e) {
+	          if (dragState && !isLeftButton(e)) {
+	              onEnd(e);
+	          }
+	      });
+	      function onTouchEnd(e, cancelled) {
+	          onEnd(tweakTouch(e), cancelled);
+	      }
+	      addEvent(container, 'touchend', function (e) {
+	          return onTouchEnd(e);
+	      });
+	      addEvent(container, 'touchcancel', function (e) {
+	          return onTouchEnd(e, true);
+	      });
+
+	      function addEvent(target, type, handler) {
+	          target.addEventListener(type, handler);
+	      }
+	      function isLeftButton(e) {
+	          return e.buttons !== undefined ? e.buttons === 1 :
+	          e.which === 1;
+	      }
+	      function relayTouch(e, handler) {
+	          if (e.touches.length !== 1) {
+	              onEnd(e, true);return;
+	          }
+
+	          handler(tweakTouch(e));
+	      }
+	      function tweakTouch(e) {
+	          var touch = e.targetTouches[0];
+	          if (!touch) {
+	              touch = e.changedTouches[0];
+	          }
+
+	          touch.preventDefault = e.preventDefault.bind(e);
+	          touch.stopPropagation = e.stopPropagation.bind(e);
+	          return touch;
+	      }
+	  }
+
+
+	  var BG_TRANSP = 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'2\' height=\'2\'%3E%3Cpath d=\'M1,0H0V1H2V2H1\' fill=\'lightgrey\'/%3E%3C/svg%3E")';
+	  var HUES = 360;
+	  var EVENT_KEY = 'keydown',
+	  EVENT_CLICK_OUTSIDE = 'mousedown',
+	      EVENT_TAB_MOVE = 'focusin';
+
+	  function parseHTML(htmlString) {
+	      var div = document.createElement('div');
+	      div.innerHTML = htmlString;
+	      return div.firstElementChild;
+	  }
+
+	  function $(selector, context) {
+	      return (context || document).querySelector(selector);
+	  }
+
+	  function addEvent(target, type, handler) {
+	      target.addEventListener(type, handler, false);
+	  }
+	  function stopEvent(e) {
+	      e.preventDefault();
+	      e.stopPropagation();
+	  }
+	  function onKey(target, keys, handler, stop) {
+	      addEvent(target, EVENT_KEY, function (e) {
+	          if (keys.indexOf(e.key) >= 0) {
+	              if (stop) {
+	                  stopEvent(e);
+	              }
+	              handler(e);
+	          }
+	      });
+	  }
+
+	  document.documentElement.firstElementChild 
+	  .appendChild(document.createElement('style')).textContent = '.picker_wrapper.no_alpha .picker_alpha{display:none}.picker_wrapper.no_editor .picker_editor{position:absolute;z-index:-1;opacity:0}.layout_default.picker_wrapper{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-orient:horizontal;-webkit-box-direction:normal;-ms-flex-flow:row wrap;flex-flow:row wrap;-webkit-box-pack:justify;-ms-flex-pack:justify;justify-content:space-between;-webkit-box-align:stretch;-ms-flex-align:stretch;align-items:stretch;font-size:10px;width:25em;padding:.5em}.layout_default.picker_wrapper input,.layout_default.picker_wrapper button{font-size:1rem}.layout_default.picker_wrapper>*{margin:.5em}.layout_default.picker_wrapper::before{content:\'\';display:block;width:100%;height:0;-webkit-box-ordinal-group:2;-ms-flex-order:1;order:1}.layout_default .picker_slider,.layout_default .picker_selector{padding:1em}.layout_default .picker_hue{width:100%}.layout_default .picker_sl{-webkit-box-flex:1;-ms-flex:1 1 auto;flex:1 1 auto}.layout_default .picker_sl::before{content:\'\';display:block;padding-bottom:100%}.layout_default .picker_editor{-webkit-box-ordinal-group:2;-ms-flex-order:1;order:1;width:6rem}.layout_default .picker_editor input{width:calc(100% + 2px);height:calc(100% + 2px)}.layout_default .picker_sample{-webkit-box-ordinal-group:2;-ms-flex-order:1;order:1;-webkit-box-flex:1;-ms-flex:1 1 auto;flex:1 1 auto}.layout_default .picker_done{-webkit-box-ordinal-group:2;-ms-flex-order:1;order:1}.picker_wrapper{-webkit-box-sizing:border-box;box-sizing:border-box;background:#f2f2f2;-webkit-box-shadow:0 0 0 1px silver;box-shadow:0 0 0 1px silver;cursor:default;font-family:sans-serif;color:#444;pointer-events:auto}.picker_wrapper:focus{outline:none}.picker_wrapper button,.picker_wrapper input{margin:-1px}.picker_selector{position:absolute;z-index:1;display:block;-webkit-transform:translate(-50%, -50%);transform:translate(-50%, -50%);border:2px solid white;border-radius:100%;-webkit-box-shadow:0 0 3px 1px #67b9ff;box-shadow:0 0 3px 1px #67b9ff;background:currentColor;cursor:pointer}.picker_slider .picker_selector{border-radius:2px}.picker_hue{position:relative;background-image:-webkit-gradient(linear, left top, right top, from(red), color-stop(yellow), color-stop(lime), color-stop(cyan), color-stop(blue), color-stop(magenta), to(red));background-image:linear-gradient(90deg, red, yellow, lime, cyan, blue, magenta, red);-webkit-box-shadow:0 0 0 1px silver;box-shadow:0 0 0 1px silver}.picker_sl{position:relative;-webkit-box-shadow:0 0 0 1px silver;box-shadow:0 0 0 1px silver;background-image:-webkit-gradient(linear, left top, left bottom, from(white), color-stop(50%, rgba(255,255,255,0))),-webkit-gradient(linear, left bottom, left top, from(black), color-stop(50%, rgba(0,0,0,0))),-webkit-gradient(linear, left top, right top, from(gray), to(rgba(128,128,128,0)));background-image:linear-gradient(180deg, white, rgba(255,255,255,0) 50%),linear-gradient(0deg, black, rgba(0,0,0,0) 50%),linear-gradient(90deg, gray, rgba(128,128,128,0))}.picker_alpha,.picker_sample{position:relative;background:url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'2\' height=\'2\'%3E%3Cpath d=\'M1,0H0V1H2V2H1\' fill=\'lightgrey\'/%3E%3C/svg%3E") left top/contain white;-webkit-box-shadow:0 0 0 1px silver;box-shadow:0 0 0 1px silver}.picker_alpha .picker_selector,.picker_sample .picker_selector{background:none}.picker_editor input{-webkit-box-sizing:border-box;box-sizing:border-box;font-family:monospace;padding:.1em .2em}.picker_sample::before{content:\'\';position:absolute;display:block;width:100%;height:100%;background:currentColor}.picker_done button{-webkit-box-sizing:border-box;box-sizing:border-box;padding:.2em .5em;cursor:pointer}.picker_arrow{position:absolute;z-index:-1}.picker_wrapper.popup{position:absolute;z-index:2;margin:1.5em}.picker_wrapper.popup,.picker_wrapper.popup .picker_arrow::before,.picker_wrapper.popup .picker_arrow::after{background:#f2f2f2;-webkit-box-shadow:0 0 10px 1px rgba(0,0,0,0.4);box-shadow:0 0 10px 1px rgba(0,0,0,0.4)}.picker_wrapper.popup .picker_arrow{width:3em;height:3em;margin:0}.picker_wrapper.popup .picker_arrow::before,.picker_wrapper.popup .picker_arrow::after{content:"";display:block;position:absolute;top:0;left:0;z-index:-99}.picker_wrapper.popup .picker_arrow::before{width:100%;height:100%;-webkit-transform:skew(45deg);transform:skew(45deg);-webkit-transform-origin:0 100%;transform-origin:0 100%}.picker_wrapper.popup .picker_arrow::after{width:150%;height:150%;-webkit-box-shadow:none;box-shadow:none}.popup.popup_top{bottom:100%;left:0}.popup.popup_top .picker_arrow{bottom:0;left:0;-webkit-transform:rotate(-90deg);transform:rotate(-90deg)}.popup.popup_bottom{top:100%;left:0}.popup.popup_bottom .picker_arrow{top:0;left:0;-webkit-transform:rotate(90deg) scale(1, -1);transform:rotate(90deg) scale(1, -1)}.popup.popup_left{top:0;right:100%}.popup.popup_left .picker_arrow{top:0;right:0;-webkit-transform:scale(-1, 1);transform:scale(-1, 1)}.popup.popup_right{top:0;left:100%}.popup.popup_right .picker_arrow{top:0;left:0}';
+
+	  var Picker = function () {
+
+
+	      function Picker(options) {
+	          var _this = this;
+
+	          classCallCheck(this, Picker);
+
+
+	          this.settings = {
+	              popup: 'right',
+	              layout: 'default',
+	              alpha: true,
+	              editor: true,
+	              editorFormat: 'hex'
+	          };
+
+	          this._openProxy = function (e) {
+	              return _this.openHandler(e);
+	          };
+
+	          this.onChange = null;
+	          this.onDone = null;
+	          this.onOpen = null;
+	          this.onClose = null;
+
+	          this.setOptions(options);
+	      }
+
+
+
+	      createClass(Picker, [{
+	          key: 'setOptions',
+	          value: function setOptions(options) {
+	              if (!options) {
+	                  return;
+	              }
+	              var settings = this.settings;
+
+	              function transfer(source, target, skipKeys) {
+	                  for (var key in source) {
+	                      if (skipKeys && skipKeys.indexOf(key) >= 0) {
+	                          continue;
+	                      }
+
+	                      target[key] = source[key];
+	                  }
+	              }
+
+	              if (options instanceof HTMLElement) {
+	                  settings.parent = options;
+	              } else {
+
+
+	                  if (settings.parent && options.parent && settings.parent !== options.parent) {
+	                      settings.parent.removeEventListener('click', this._openProxy, false);
+	                      this._popupInited = false;
+	                  }
+
+	                  transfer(options, settings );
+
+	                  if (options.onChange) {
+	                      this.onChange = options.onChange;
+	                  }
+	                  if (options.onDone) {
+	                      this.onDone = options.onDone;
+	                  }
+	                  if (options.onOpen) {
+	                      this.onOpen = options.onOpen;
+	                  }
+	                  if (options.onClose) {
+	                      this.onClose = options.onClose;
+	                  }
+
+	                  var col = options.color || options.colour;
+	                  if (col) {
+	                      this._setColor(col);
+	                  }
+	              }
+
+	              var parent = settings.parent;
+	              if (parent && settings.popup && !this._popupInited) {
+
+	                  addEvent(parent, 'click', this._openProxy);
+
+	                  onKey(parent, [' ', 'Spacebar', 'Enter'], this._openProxy );
+
+
+	                  this._popupInited = true;
+	              } else if (options.parent && !settings.popup) {
+	                  this.show();
+	              }
+	          }
+
+
+	      }, {
+	          key: 'openHandler',
+	          value: function openHandler(e) {
+	              if (this.show()) {
+	                  e && e.preventDefault();
+
+	                  this.settings.parent.style.pointerEvents = 'none';
+
+	                  var toFocus = e && e.type === EVENT_KEY ? this._domEdit : this.domElement;
+	                  setTimeout(function () {
+	                      return toFocus.focus();
+	                  }, 100);
+
+	                  if (this.onOpen) {
+	                      this.onOpen(this.colour);
+	                  }
+	              }
+	          }
+
+
+	      }, {
+	          key: 'closeHandler',
+	          value: function closeHandler(e) {
+	              var event = e && e.type;
+	              var doHide = false;
+
+	              if (!e) {
+	                  doHide = true;
+	              }
+	              else if (event === EVENT_CLICK_OUTSIDE || event === EVENT_TAB_MOVE) {
+
+	                      if (!this.domElement.contains(e.target)) {
+	                          doHide = true;
+	                      }
+	                  }
+	                  else {
+	                          stopEvent(e);
+
+	                          doHide = true;
+	                      }
+
+	              if (doHide && this.hide()) {
+	                  this.settings.parent.style.pointerEvents = '';
+
+	                  if (event !== EVENT_CLICK_OUTSIDE) {
+	                      this.settings.parent.focus();
+	                  }
+
+	                  if (this.onClose) {
+	                      this.onClose(this.colour);
+	                  }
+	              }
+	          }
+
+
+	      }, {
+	          key: 'movePopup',
+	          value: function movePopup(options, open) {
+	              this.closeHandler();
+
+	              this.setOptions(options);
+	              if (open) {
+	                  this.openHandler();
+	              }
+	          }
+
+
+	      }, {
+	          key: 'setColor',
+	          value: function setColor(color, silent) {
+	              this._setColor(color, { silent: silent });
+	          }
+	      }, {
+	          key: '_setColor',
+	          value: function _setColor(color, flags) {
+	              if (typeof color === 'string') {
+	                  color = color.trim();
+	              }
+	              if (!color) {
+	                  return;
+	              }
+
+	              flags = flags || {};
+	              var c = void 0;
+	              try {
+	                  c = new Color(color);
+	              } catch (ex) {
+	                  if (flags.failSilently) {
+	                      return;
+	                  }
+	                  throw ex;
+	              }
+
+	              if (!this.settings.alpha) {
+	                  var hsla = c.hsla;
+	                  hsla[3] = 1;
+	                  c.hsla = hsla;
+	              }
+	              this.colour = this.color = c;
+	              this._setHSLA(null, null, null, null, flags);
+	          }
+
+	      }, {
+	          key: 'setColour',
+	          value: function setColour(colour, silent) {
+	              this.setColor(colour, silent);
+	          }
+
+
+	      }, {
+	          key: 'show',
+	          value: function show() {
+	              var parent = this.settings.parent;
+	              if (!parent) {
+	                  return false;
+	              }
+
+	              if (this.domElement) {
+	                  var toggled = this._toggleDOM(true);
+
+	                  this._setPosition();
+
+	                  return toggled;
+	              }
+
+	              var html = this.settings.template || '<div class="picker_wrapper" tabindex="-1"><div class="picker_arrow"></div><div class="picker_hue picker_slider"><div class="picker_selector"></div></div><div class="picker_sl"><div class="picker_selector"></div></div><div class="picker_alpha picker_slider"><div class="picker_selector"></div></div><div class="picker_editor"><input aria-label="Type a color name or hex value"/></div><div class="picker_sample"></div><div class="picker_done"><button>Ok</button></div></div>';
+	              var wrapper = parseHTML(html);
+
+	              this.domElement = wrapper;
+	              this._domH = $('.picker_hue', wrapper);
+	              this._domSL = $('.picker_sl', wrapper);
+	              this._domA = $('.picker_alpha', wrapper);
+	              this._domEdit = $('.picker_editor input', wrapper);
+	              this._domSample = $('.picker_sample', wrapper);
+	              this._domOkay = $('.picker_done button', wrapper);
+
+	              wrapper.classList.add('layout_' + this.settings.layout);
+	              if (!this.settings.alpha) {
+	                  wrapper.classList.add('no_alpha');
+	              }
+	              if (!this.settings.editor) {
+	                  wrapper.classList.add('no_editor');
+	              }
+	              this._ifPopup(function () {
+	                  return wrapper.classList.add('popup');
+	              });
+
+	              this._setPosition();
+
+	              if (this.colour) {
+	                  this._updateUI();
+	              } else {
+	                  this._setColor('#0cf');
+	              }
+	              this._bindEvents();
+
+	              return true;
+	          }
+
+
+	      }, {
+	          key: 'hide',
+	          value: function hide() {
+	              return this._toggleDOM(false);
+	          }
+
+
+	      }, {
+	          key: '_bindEvents',
+	          value: function _bindEvents() {
+	              var _this2 = this;
+
+	              var that = this,
+	                  dom = this.domElement;
+
+	              addEvent(dom, 'click', function (e) {
+	                  return e.preventDefault();
+	              });
+
+
+	              function createDragConfig(container, callbackRelative) {
+
+	                  function relayDrag(_, pos) {
+	                      var relX = pos[0] / container.clientWidth,
+	                          relY = pos[1] / container.clientHeight;
+	                      callbackRelative(relX, relY);
+	                  }
+
+	                  var config = {
+	                      container: container,
+	                      dragOutside: false,
+	                      callback: relayDrag,
+	                      callbackDragStart: relayDrag,
+	                      propagateEvents: true
+	                  };
+	                  return config;
+	              }
+
+	              dragTracker(createDragConfig(this._domH, function (x, y) {
+	                  return that._setHSLA(x);
+	              }));
+
+	              dragTracker(createDragConfig(this._domSL, function (x, y) {
+	                  return that._setHSLA(null, x, 1 - y);
+	              }));
+
+	              if (this.settings.alpha) {
+	                  dragTracker(createDragConfig(this._domA, function (x, y) {
+	                      return that._setHSLA(null, null, null, 1 - y);
+	                  }));
+	              }
+
+
+	              var editInput = this._domEdit;
+	{
+	                  addEvent(editInput, 'input', function (e) {
+	                      that._setColor(this.value, { fromEditor: true, failSilently: true });
+	                  });
+	                  addEvent(editInput, 'focus', function (e) {
+	                      var input = this;
+	                      if (input.selectionStart === input.selectionEnd) {
+	                          input.select();
+	                      }
+	                  });
+	              }
+
+
+	              var popupCloseProxy = function popupCloseProxy(e) {
+	                  _this2._ifPopup(function () {
+	                      return _this2.closeHandler(e);
+	                  });
+	              };
+	              var onDoneProxy = function onDoneProxy(e) {
+	                  _this2._ifPopup(function () {
+	                      return _this2.closeHandler(e);
+	                  });
+	                  if (_this2.onDone) {
+	                      _this2.onDone(_this2.colour);
+	                  }
+	              };
+
+	              addEvent(window, EVENT_CLICK_OUTSIDE, popupCloseProxy);
+	              addEvent(window, EVENT_TAB_MOVE, popupCloseProxy); 
+	              onKey(dom, ['Esc', 'Escape'], popupCloseProxy);
+
+	              addEvent(this._domOkay, 'click', onDoneProxy);
+	              onKey(dom, ['Enter'], onDoneProxy);
+	          }
+
+
+	      }, {
+	          key: '_setPosition',
+	          value: function _setPosition() {
+	              var parent = this.settings.parent,
+	                  elm = this.domElement;
+
+	              if (parent !== elm.parentNode) {
+	                  parent.appendChild(elm);
+	              }
+
+	              this._ifPopup(function (popup) {
+
+	                  if (getComputedStyle(parent).position === 'static') {
+	                      parent.style.position = 'relative';
+	                  }
+
+	                  var cssClass = popup === true ? 'popup_right' : 'popup_' + popup;
+
+	                  ['popup_top', 'popup_bottom', 'popup_left', 'popup_right'].forEach(function (c) {
+	                      if (c === cssClass) {
+	                          elm.classList.add(c);
+	                      } else {
+	                          elm.classList.remove(c);
+	                      }
+	                  });
+
+	                  elm.classList.add(cssClass);
+	              });
+	          }
+
+
+	      }, {
+	          key: '_setHSLA',
+	          value: function _setHSLA(h, s, l, a, flags) {
+	              flags = flags || {};
+
+	              var col = this.colour,
+	                  hsla = col.hsla;
+
+	              [h, s, l, a].forEach(function (x, i) {
+	                  if (x || x === 0) {
+	                      hsla[i] = x;
+	                  }
+	              });
+	              col.hsla = hsla;
+
+	              this._updateUI(flags);
+
+	              if (this.onChange && !flags.silent) {
+	                  this.onChange(col);
+	              }
+	          }
+	      }, {
+	          key: '_updateUI',
+	          value: function _updateUI(flags) {
+	              if (!this.domElement) {
+	                  return;
+	              }
+	              flags = flags || {};
+
+	              var col = this.colour,
+	                  hsl = col.hsla,
+	                  cssHue = 'hsl(' + hsl[0] * HUES + ', 100%, 50%)',
+	                  cssHSL = col.hslString,
+	                  cssHSLA = col.hslaString;
+
+	              var uiH = this._domH,
+	                  uiSL = this._domSL,
+	                  uiA = this._domA,
+	                  thumbH = $('.picker_selector', uiH),
+	                  thumbSL = $('.picker_selector', uiSL),
+	                  thumbA = $('.picker_selector', uiA);
+
+	              function posX(parent, child, relX) {
+	                  child.style.left = relX * 100 + '%'; 
+	              }
+	              function posY(parent, child, relY) {
+	                  child.style.top = relY * 100 + '%'; 
+	              }
+
+
+	              posX(uiH, thumbH, hsl[0]);
+
+	              this._domSL.style.backgroundColor = this._domH.style.color = cssHue;
+
+
+	              posX(uiSL, thumbSL, hsl[1]);
+	              posY(uiSL, thumbSL, 1 - hsl[2]);
+
+	              uiSL.style.color = cssHSL;
+
+
+	              posY(uiA, thumbA, 1 - hsl[3]);
+
+	              var opaque = cssHSL,
+	                  transp = opaque.replace('hsl', 'hsla').replace(')', ', 0)'),
+	                  bg = 'linear-gradient(' + [opaque, transp] + ')';
+
+	              this._domA.style.backgroundImage = bg + ', ' + BG_TRANSP;
+
+
+	              if (!flags.fromEditor) {
+	                  var format = this.settings.editorFormat,
+	                      alpha = this.settings.alpha;
+
+	                  var value = void 0;
+	                  switch (format) {
+	                      case 'rgb':
+	                          value = col.printRGB(alpha);break;
+	                      case 'hsl':
+	                          value = col.printHSL(alpha);break;
+	                      default:
+	                          value = col.printHex(alpha);
+	                  }
+	                  this._domEdit.value = value;
+	              }
+
+
+	              this._domSample.style.color = cssHSLA;
+	          }
+	      }, {
+	          key: '_ifPopup',
+	          value: function _ifPopup(actionIf, actionElse) {
+	              if (this.settings.parent && this.settings.popup) {
+	                  actionIf && actionIf(this.settings.popup);
+	              } else {
+	                  actionElse && actionElse();
+	              }
+	          }
+	      }, {
+	          key: '_toggleDOM',
+	          value: function _toggleDOM(toVisible) {
+	              var dom = this.domElement;
+	              if (!dom) {
+	                  return false;
+	              }
+
+	              var displayStyle = toVisible ? '' : 'none',
+	                  toggle = dom.style.display !== displayStyle;
+
+	              if (toggle) {
+	                  dom.style.display = displayStyle;
+	              }
+	              return toggle;
+	          }
+
+
+	      }]);
+	      return Picker;
+	  }();
+
+	  return Picker;
+
+	})));
+
 
 /***/ })
 /******/ ]);

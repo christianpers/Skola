@@ -1,5 +1,6 @@
 import MusicNode from './MusicNode';
 import Tone from 'tone';
+import SequencerManager from '../managers/SequencerManager';
 
 export default class SequencerNode extends MusicNode{
 	constructor() {
@@ -7,6 +8,8 @@ export default class SequencerNode extends MusicNode{
 
 		SequencerNode.ROWS = 12;
 		SequencerNode.COLS = 16;
+
+		this.sequencerManager = new SequencerManager(SequencerNode.COLS, SequencerNode.ROWS);
 
 		this.isSequencer = true;
 		this.loop = null;
@@ -34,6 +37,11 @@ export default class SequencerNode extends MusicNode{
 		this.isPlaying = false;
 
 		this.onBtnClickBound = this.onBtnClick.bind(this);
+	}
+
+	removeFromDom() {
+		this.sequencerManager.removeAllSynths();
+		super.removeFromDom();
 	}
 
 	getKey(col, row) {
@@ -153,11 +161,12 @@ export default class SequencerNode extends MusicNode{
 					// keys.get(noteNames[i]).start(time, 0, "32n", 0, vel);
 					// console.log('play: ', ' col: ', col, ' row: ', row);
 					if (this.outConnectionsLength > 0) {
-						this.onSequencerTrigger(column[row].step, time);
+						// this.onSequencerTrigger(column[row].step, time);
+						this.sequencerManager.play(col, column[row].step, time);
 					}
 				}
 			}
-		}, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], "16n");
+		}, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], "8n");
 
 		// this.loop.start();
 	}
@@ -178,7 +187,8 @@ export default class SequencerNode extends MusicNode{
 	}
 
 	enableOutput(param, connectionData) {
-		super.enableOutput();
+		// super.enableOutput();
+		this.output.enable();
 
 		this.outConnections.push(connectionData.in);
 		this.outConnectionsLength = this.outConnections.length;
@@ -189,7 +199,10 @@ export default class SequencerNode extends MusicNode{
 		this.outConnectionsLength = this.outConnections.length;
 
 		if (this.outConnections.length === 0) {
-			super.disableOutput();
+			// super.disableOutput();
+			this.output.disable();
+			this.sequencerManager.removeAllSynths();
+			this.onPauseClick();
 		}
 	}
 
@@ -203,8 +216,10 @@ export default class SequencerNode extends MusicNode{
 				const data = this.data[col][row];
 				if (data.active) {
 					data.el.classList.add('active');
+					this.sequencerManager.addSynth(col, data.step);
 				} else {
 					data.el.classList.remove('active');
+					this.sequencerManager.removeSynth(col, data.step);
 				}
 			}
 		}
