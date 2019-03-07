@@ -11,13 +11,14 @@ export default class OscillatorNode extends MusicNode{
 
 		this.hasConnectedTrigger = false;
 		this.connectedTriggerID = -1;
+		this.synthParams = [];
 
 		// OscillatorNode.BASE_OCTAVE = 4;
 		OscillatorNode.BASE_FREQ = 440;
 		OscillatorNode.ROOT = Math.pow(2,(1/12));
 
 		this.isKeyboardListener = true;
-		this.isOscillator = true;
+		this.isSynthOscillator = true;
 		this.hasAudioInput = false;
 		this.hasEnvelopeConnection = false;
 
@@ -31,8 +32,8 @@ export default class OscillatorNode extends MusicNode{
 		const octaveRangeConfig = {
 			parentEl: rangeContainer,
 			title: 'Oktav',
-			initValue: 0,
-			settings: {min: -3, max: 3},
+			initValue: -2,
+			settings: {min: -4, max: 0},
 			valChangeCallback: this.onRangeChangeCallbackBound,
 			param: 'octave',
 			decimals: 0,
@@ -69,25 +70,6 @@ export default class OscillatorNode extends MusicNode{
 		this.params[triggerParam.param] = triggerParam;
 
 		this.paramVals = {};
-
-		// this.params = {
-		// 	'Octave' : {
-		// 		obj: RangeSlider,
-		// 		objSettings: {
-		// 			title: 'Octave',
-		// 			defaultVal: 0,
-		// 			range: {min: -3, max: 3},
-		// 			param: 'octave',
-		// 			decimals: 0
-		// 		},
-		// 		useAsInput: false,
-		// 	}
-		// };
-
-		// for (const loopKey in this.params) {
-		// 	const key = this.params[loopKey].objSettings.param;
-		// 	this.paramVals[key] = this.params[loopKey].objSettings.defaultVal;
-		// }
 	}
 
 	enableParam(param, connectionData) {
@@ -120,19 +102,17 @@ export default class OscillatorNode extends MusicNode{
 		}
 		
 		const params = {};
-		params.frequency = this.getFrequency(step);
-		params.type = "sawtooth";
+		// params.frequency = this.getFrequency(step);
+		// params.type = "sawtooth";
 
 		return params;
 	}
 
 	getAudioNode() {
 
-		const oscAudioNode = new Tone.Oscillator();
+		const oscAudioNode = new Tone.MembraneSynth();
 
-		oscAudioNode.type = "sawtooth";
-		// oscAudioNode.frequency.value = this.getFrequency(step);
-		// oscAudioNode.start();
+		// oscAudioNode.type = "sawtooth";
 
 		return oscAudioNode;
 	}
@@ -151,12 +131,5 @@ export default class OscillatorNode extends MusicNode{
 		return freq;
 	}
 
-
-	onParameterChange(val, type) {
-
-		// this.audioNode[type] = val;
-
-		// console.log(this.audioNode);
-	}
 
 }

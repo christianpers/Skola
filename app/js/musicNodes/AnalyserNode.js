@@ -1,10 +1,6 @@
 import Node from '../views/Nodes/Node';
 
-
-
 export default class AnalyserNode extends Node{
-
-	
 
 	constructor(parentEl, onConnectingCallback, onInputConnectionCallback, type) {
 		super(parentEl, onConnectingCallback, onInputConnectionCallback, type);

@@ -1,14 +1,19 @@
-import * as THREE from 'three';
 import Node from '../views/Nodes/Node';
 import * as SHADERS from '../../shaders/SHADERS';
 
 import NodeInput from '../views/Nodes/NodeComponents/NodeInput';
 import InputHelpers from './Helpers/InputHelpers';
+import ForegroundRender from './Scene/ForegroundRender';
+import Render from './Render';
+import NodeResizer from '../views/Nodes/NodeComponents/NodeResizer';
+import CameraControlSetting from './Scene/CameraControlSetting';
 
 export default class SceneNode extends Node{
 
-	constructor(mainRender) {
+	constructor() {
 		super();
+
+		this.mainRender = new Render();
 
 		this.hasOutput = false;
 		this.isGraphicsNode = true;
@@ -30,14 +35,22 @@ export default class SceneNode extends Node{
 		this.bottomPartEl = document.createElement('div');
 		this.bottomPartEl.className = 'bottom-part';
 
+		this.onNodeResizerDownBound = this.onNodeResizerDown.bind(this);
+		this.onResizeFromNodeResizerBound = this.onResizeFromNodeResizer.bind(this);
+		this.nodeResizer = new NodeResizer(this.bottomPartEl, this.onResizeFromNodeResizerBound, this.onNodeResizerDownBound);
+
 		this.el.appendChild(this.bottomPartEl);
 
+		this.foregroundRender = new ForegroundRender(this.mainRender, this.topPartEl);
+		this.cameraControlSetting = new CameraControlSetting(this.bottomPartEl, this.foregroundRender);
+
 		this.scene = new THREE.Scene();
-		this.renderer = mainRender.renderer;
+		this.renderer = this.mainRender.renderer;
 		this.renderer.setSize(this.topPartEl.clientWidth, this.topPartEl.clientHeight);
 		// this.renderer.autoClear = false;
 
 		this.topPartEl.appendChild(this.renderer.domElement);
+		// this.renderer.domElement.classList.add('prevent-drag');
 
 		const geometry = new THREE.PlaneGeometry( 2, 2 );
 
@@ -71,8 +84,8 @@ export default class SceneNode extends Node{
 		this.scene.add(this.mesh);
 	}
 
-	init(parentEl, onConnectingCallback, onInputConnectionCallback, type, initData, onNodeActive, onRemoveCallback) {
-		super.init(parentEl, onConnectingCallback, onInputConnectionCallback, type, initData, onNodeActive, onRemoveCallback);
+	init(pos, parentEl, onConnectingCallback, onInputConnectionCallback, type, initData, onNodeActive, onRemoveCallback) {
+		super.init(pos, parentEl, onConnectingCallback, onInputConnectionCallback, type, initData, onNodeActive, onRemoveCallback);
 
 		const w = window.innerWidth;
 		const h = window.innerHeight;
@@ -97,6 +110,45 @@ export default class SceneNode extends Node{
 		}, 100);
 
 		this.activateDrag();
+	}
+
+	getOutDotPos(el) {
+		this.inDotPos = el.getBoundingClientRect();
+		
+		return this.inDotPos;
+	}
+
+	getInDotPos(el) {
+		this.outDotPos = el.getBoundingClientRect();
+		
+		return this.outDotPos;
+	}
+
+	onNodeResizerDown() {
+
+		this.nodeResizer.currentDims.w = this.topPartEl.clientWidth;
+		this.nodeResizer.currentDims.h = this.topPartEl.clientHeight;
+
+		this.nodeResizer.currentNodeDims.w = this.el.clientWidth;
+		this.nodeResizer.currentNodeDims.h = this.el.clientHeight;
+	}
+
+	onResizeFromNodeResizer(delta) {
+
+		this.el.style.width = this.nodeResizer.currentNodeDims.w + delta.x + 'px';
+		this.el.style.height = this.nodeResizer.currentNodeDims.h + delta.y + 'px';
+
+		this.topPartEl.style.width = this.nodeResizer.currentDims.w + delta.x + 'px';
+		this.topPartEl.style.height = this.nodeResizer.currentDims.h + delta.y + 'px';
+
+		this.inputBackground.offsetLeft = this.inputBackground.el.offsetLeft;
+		this.inputBackground.offsetTop = this.inputBackground.el.offsetTop;
+
+		this.inputForeground.offsetLeft = this.inputForeground.el.offsetLeft;
+		this.inputForeground.offsetTop = this.inputForeground.el.offsetTop;
+
+		// console.log(this.nodeResizer.currentDims.h + delta.y);
+		this.onResize();
 	}
 
 	onInputClickBackground(param) {
@@ -130,9 +182,13 @@ export default class SceneNode extends Node{
 			this.mesh.material.uniforms.u_texture0.value = framebuffer;
 			this.mesh.material.uniforms.u_connection0.value = 1.0;
 		} else if (outputNode.isForegroundNode) {
-			const framebuffer = outputNode.framebuffer.texture;
-			this.mesh.material.uniforms.u_texture1.value = framebuffer;
-			this.mesh.material.uniforms.u_connection1.value = 1.0;
+			this.foregroundRender.addNode(outputNode);
+			if (this.foregroundRender.connectedNodes.length === 1) {
+				const framebuffer = this.foregroundRender.framebuffer.texture;
+				this.mesh.material.uniforms.u_texture1.value = framebuffer;
+				this.mesh.material.uniforms.u_connection1.value = 1.0;
+			}
+			
 		}
 
 		const obj = {
@@ -142,7 +198,7 @@ export default class SceneNode extends Node{
 		this.enabledInputs.push(obj);
 
 		this.mesh.material.uniforms.u_finalConnection.value = 1.0;
-		if (this.enabledInputs.length === 2) {
+		if (this.inputs['background'].isActive && this.inputs['foreground'].isActive) {
 			this.mesh.material.uniforms.u_multiConnection.value = 1.0;
 		}
 	}
@@ -150,22 +206,29 @@ export default class SceneNode extends Node{
 
 	disableInput(outNode, inputType) {
 
-		this.inputs[inputType].disable();
+		if (inputType === 'background') {
+			this.inputs[inputType].disable();
 
-		this.enabledInputs = this.enabledInputs.filter(t => t.type !== inputType);
+			this.mesh.material.uniforms.u_texture0.value = null;
+			this.mesh.material.uniforms.u_connection0.value = 0.0;
+
+		} else if (inputType === 'foreground') {
+			this.foregroundRender.removeNode(outNode);
+
+			if (this.foregroundRender.connectedNodes.length === 0) {
+				this.inputs[inputType].disable();
+
+				this.mesh.material.uniforms.u_texture1.value = null;
+				this.mesh.material.uniforms.u_connection1.value = 0.0;
+			}
+		}
+
+		this.enabledInputs = this.enabledInputs.filter(t => t.out.ID !== outNode.ID);
 
 		if (this.enabledInputs.length === 0) {
 			this.mesh.material.uniforms.u_finalConnection.value = 0.0;
-		} else if (this.enabledInputs.length === 1) {
+		} else if (!this.inputs['foreground'].isActive) {
 			this.mesh.material.uniforms.u_multiConnection.value = 0.0;
-		}
-
-		if (outNode.isBackgroundNode) {
-			this.mesh.material.uniforms.u_texture0.value = null;
-			this.mesh.material.uniforms.u_connection0.value = 0.0;
-		} else if (outNode.isForegroundNode) {
-			this.mesh.material.uniforms.u_texture1.value = null;
-			this.mesh.material.uniforms.u_connection1.value = 0.0;
 		}
 	}
 
@@ -174,18 +237,24 @@ export default class SceneNode extends Node{
 	}
 
 	update() {
-
+		this.foregroundRender.update();
 	}
 
 	render() {
-		// this.renderer.clear();
-		// this.renderer.render(this.sceneFBO, this.perspectiveCamera, this.framebuffer, true);
+		this.renderer.clear();
+
+		this.foregroundRender.render();
+		this.renderer.setRenderTarget(null);
 		this.renderer.render(this.scene, this.orthoCamera);
 	}
 
 	onResize() {
 		const w = this.topPartEl.clientWidth;
 		const h = this.topPartEl.clientHeight;
+
+		console.log(h);
+
+		this.foregroundRender.onResize({w, h});
 
 		// this.framebuffer.setSize(w, h);
 

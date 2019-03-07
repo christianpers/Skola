@@ -1,6 +1,8 @@
 import MusicNode from './MusicNode';
 import Tone from 'tone';
 
+import NodeOutput from '../views/Nodes/NodeComponents/NodeOutput';
+
 export default class Waveform extends MusicNode {
 	constructor() {
 		super();
@@ -8,10 +10,13 @@ export default class Waveform extends MusicNode {
 		this.el.classList.add('no-height');
 		this.el.classList.add('waveform-node');
 		this.needsUpdate = true;
-		this.needsManualDispose = true;
+		this.isAnalyser = true;
 		this.isDisposed = false;
+		this.hasMultipleOutputs = true;
 
 		this.arrSize = 256;
+
+		this.audioValue = 0;
 
 		this.isConnected = false;
 
@@ -33,9 +38,72 @@ export default class Waveform extends MusicNode {
 		this.params = {};
 	}
 
+	init(pos, parentEl, onConnectingCallback, onInputConnectionCallback, type, nodeConfig, onNodeActive, onParameterChange, onNodeRemove) {
+		super.init(pos, parentEl, onConnectingCallback, onInputConnectionCallback, type, nodeConfig, onNodeActive, onParameterChange, onNodeRemove);
+
+		this.onOutputClickAudioBound = this.onOutputClickAudio.bind(this);
+		this.onOutputClickDataBound = this.onOutputClickData.bind(this);
+
+		const outputContainer = document.createElement('div');
+		outputContainer.className = 'multiple-outputs';
+
+		this.bottomPartEl.appendChild(outputContainer);
+
+		this.outputAudio = new NodeOutput(outputContainer, this.onOutputClickAudioBound, false, false, false, false);
+		this.outputData = new NodeOutput(outputContainer, this.onOutputClickDataBound, true, false, false, false);
+
+		this.outputDataConnection = null;
+
+		this.outputs = {
+			'analyser-audio': this.outputAudio,
+			'analyser-data': this.outputData,
+		};
+
+		this.enabledOutputs = [];
+		this.inDotPos = {
+			'analyser-audio': null,
+			'analyser-data': null,
+		};
+	}
+
+	onOutputClickAudio(pos) {
+
+		this.onConnectingCallback(this, pos, 'analyser-audio');
+	}
+
+	onOutputClickData(pos) {
+
+		this.onConnectingCallback(this, pos, 'analyser-data');
+	}
+
+	getOutputPos(type) {
+		const obj = {
+			x: this.outputs[type].el.offsetLeft,
+			y: this.outputs[type].el.offsetTop,
+		};
+
+		return obj;
+	}
+
+	getOutDotPos(el, outputType) {
+		if (!this.inDotPos[outputType]) {
+			this.inDotPos[outputType] = this.outputs[outputType].el.getBoundingClientRect();
+		}
+
+		return this.inDotPos[outputType];
+	}
+
+	getOutputEl(outputType) {
+		return this.outputs[outputType];
+	}
+
 	dispose() {
-		this.audioNode.disconnect();
-		this.isDisposed = true;
+		if (!this.isDisposed) {
+			this.audioNode.disconnect();
+			this.isDisposed = true;
+			console.log('dispose');
+		}
+		
 	}
 
 	enableInput(outNode) {
@@ -50,15 +118,46 @@ export default class Waveform extends MusicNode {
 		this.isConnected = false;
 	}
 
+	enableOutput(param, connectionData) {
+		const type = connectionData.outputType;
+
+		this.outputs[type].enable();
+
+		this.enabledOutputs.push(type);
+
+		if (type === 'analyser-data') {
+			this.outputDataConnection = connectionData;
+		}
+
+	}
+
+	disableOutput(inNode, param, outputType) {
+		this.outputs[outputType].disable();
+
+		this.enabledOutputs = this.enabledOutputs.filter(t => t !== outputType);
+
+		if (outputType === 'analyser-data') {
+			this.audioValue = 0;
+			this.outputDataConnection = null;
+		}
+
+	}
+
 	getAudioNode() {
 
 		if (this.isDisposed) {
 			this.audioNode = Tone.context.createAnalyser();
 			this.audioNode.fftSize = this.arrSize;
 			this.isDisposed = false;
+			console.log('create audionode');
 		}
 
 		return this.audioNode;
+	}
+
+	getValue() {
+		console.log(this.isConnected ? this.audioValue : 0);
+		return this.isConnected ? this.audioValue : 0;
 	}
 
 	update() {
@@ -67,7 +166,6 @@ export default class Waveform extends MusicNode {
 			return;
 		}
 
-		// this.value = this.audioNode.getValue();
 		this.audioNode.getByteTimeDomainData(this.value);
 	}
 
@@ -79,18 +177,36 @@ export default class Waveform extends MusicNode {
 		this.ctx.fillStyle = 'black';
 		this.ctx.strokeStyle = 'red';
 
+		let aggregatedVal = 0;
+
 		this.ctx.beginPath();
 		for (let i = 0; i < this.arrSize; i++) {
 			const x = (i / this.arrSize) * w;
 			// const y = (((1 + this.value[i]) / 2) * h);
-			const y = (this.value[i] / 256) * h;
+			const y = (1 - (this.value[i] / 256)) * h;
+
+			aggregatedVal += (1 - (this.value[i] / 256));
 			
 			this.ctx.lineTo(x, y);
-			// this.ctx.arc(x, y, 2, 0, 2 * Math.PI);
-			// this.ctx.closePath();
-			// this.ctx.fill();
 		}
 
+		this.audioValue = ((aggregatedVal / this.arrSize) - .5) * 100.0;
+
 		this.ctx.stroke();
+
+		if (!this.outputDataConnection) {
+			return;
+		}
+
+		if (this.outputDataConnection.param) {
+			const param = this.outputDataConnection.param;
+			this.outputDataConnection.in.updateParam(param, this);
+		}
+
+		// for (let i = 0; i < this.currentOutConnectionsLength; i++) {
+		// 	const param = this.currentOutConnections[i].param;
+
+		// 	this.currentOutConnections[i].in.updateParam(param, this);
+		// }
 	}
 }

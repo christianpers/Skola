@@ -57,24 +57,30 @@ const onColorParamUpdate = (inNode, outNode) => {
 
 const isValidParamPositionInput = (outNode, param) => {
 
-	return outNode.isParam && !param.isConnected;
+	return (outNode.isParam && !param.isConnected) || (outNode.isAnalyser && !param.isConnected);
 };
 
 const onPositionParamUpdate = (inNode, outNode, param) => {
 
-
-	inNode.mesh.position[param.param] = outNode.getValue();
+	inNode.mesh.position[param.param] = outNode.getValue(param.param);
 };
 
 const onPositionDisconnect = (inNode, param, outNode) => {
 
-	param.defaultVal = outNode.getValue();
+	param.defaultVal = outNode.getValue(param.param);
 };
 
 
 const onRotationParamUpdate = (inNode, outNode, param) => {
 
 	inNode.mesh.rotation[param.param] = outNode.getValue();
+};
+
+const onScaleParamUpdate = (inNode, outNode, param) => {
+
+	const val = outNode.getValue();
+	const vector = new THREE.Vector3(val, val, val);
+	inNode.mesh.scale.set(val, val, val);
 };
 
 
@@ -113,6 +119,11 @@ const paramHelpers = {
 	},
 	rotation: {
 		update: onRotationParamUpdate,
+		isValid: isValidParamPositionInput,
+		disconnect: onPositionDisconnect,
+	},
+	scale: {
+		update: onScaleParamUpdate,
 		isValid: isValidParamPositionInput,
 		disconnect: onPositionDisconnect,
 	},

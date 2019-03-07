@@ -1,7 +1,6 @@
 import RenderNode from '../RenderNode';
 import * as SHADERS from '../../../shaders/SHADERS';
 import RangeSlider from '../../views/Nodes/NodeComponents/RangeSlider';
-import * as THREE from 'three';
 
 export default class CircleNode extends RenderNode{
 	constructor(mainRender) {

@@ -1,9 +1,20 @@
+import NodePlaceHelper from './NodePlaceHelper';
+
 export default class NodeLibrary{
-	constructor(parentEl, nodeTypes, onNodeAddedCallback) {
+	constructor(parentEl, nodeTypes, onNodeAddedCallback, workspaceManager) {
 
 		this.parentEl = parentEl;
 
 		this.onNodeAddedCallback = onNodeAddedCallback;
+		this.onMouseMoveBound = this.onMouseMove.bind(this);
+		this.onMouseUpBound = this.onMouseUp.bind(this);
+
+		this.workspaceManager = workspaceManager;
+
+		this.nodeToPlaceData = {
+			type: undefined,
+			data: undefined,
+		};
 
 		this.el = document.createElement('div');
 		this.el.className = 'node-library';
@@ -56,31 +67,57 @@ export default class NodeLibrary{
 					addBtn.className = 'node-add';
 					addBtn.src = 'assets/add.svg';
 					
-
 					nodeWrapper.appendChild(type);
 
 					nodeWrapper.appendChild(addBtn);
 
 					nodeContainer.appendChild(nodeWrapper);
 
-					// this.el.appendChild(nodeWrapper);
-
 					nodeWrapper.addEventListener('mousedown', (e) => {
-						this.onMouseDown(e, key, nodeTypes[key][keySub][i]);
+						this.nodeToPlaceData.type = key;
+						this.nodeToPlaceData.data = nodeTypes[key][keySub][i];
+						this.onMouseDown(e);
 					});
 				}
 			}
 
 			innerScroll.appendChild(level0);
 		}
-
-		
 	}
 
-	onMouseDown(e, type, data) {
-		this.onNodeAddedCallback(type, data);
+	onMouseDown(e) {
 
+		this.el.style.opacity = .1;
+		this.nodePlaceHelper = new NodePlaceHelper(this.workspaceManager, {x: e.clientX, y: e.clientY});
+		this.nodePlaceHelper.onMouseDown(e);
+
+		window.addEventListener('mouseup', this.onMouseUpBound);
+		window.addEventListener('mousemove', this.onMouseMoveBound);
 	}
 
+	onMouseMove(e) {
 
+		this.nodePlaceHelper.onMouseMove(e);
+	}
+
+	onMouseUp() {
+
+		this.nodePlaceHelper.onMouseUp();
+
+		this.el.style.opacity = 1;
+
+		window.removeEventListener('mouseup', this.onMouseUpBound);
+		window.removeEventListener('mousemove', this.onMouseMoveBound);
+
+		const nodePos = this.nodePlaceHelper.getPos();
+
+		if (Math.abs(this.nodePlaceHelper.deltaX) > 4) {
+			this.onNodeAddedCallback(this.nodeToPlaceData.type, this.nodeToPlaceData.data, nodePos);
+		}
+
+		this.nodeToPlaceData = {
+			type: undefined,
+			data: undefined,
+		};
+	}
 }

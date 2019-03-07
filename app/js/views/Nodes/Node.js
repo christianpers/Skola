@@ -9,12 +9,13 @@ export default class Node{
 		this.isGraphicsNode = false;
 		this.hasGraphicsInput = false;
 		this.needsUpdate = false;
+		this.hasMultipleOutputs = false;
 
 		this.outDotPos = undefined;
 		this.inDotPos = undefined;
 	}
 
-	init(parentEl, onConnectingCallback, onInputConnectionCallback, type, nodeConfig, onNodeActive, onNodeRemove) {
+	init(pos, parentEl, onConnectingCallback, onInputConnectionCallback, type, nodeConfig, onNodeActive, onNodeRemove) {
 
 		this.initNodeConfig = !!nodeConfig;
 
@@ -50,7 +51,7 @@ export default class Node{
 			this.input = new NodeInput(this.bottomPartEl, this.onInputClickBound, this.isGraphicsNode);
 		}
 		
-		if (this.hasOutput) {
+		if (this.hasOutput && !this.hasMultipleOutputs) {
 			this.output = new NodeOutput(
 				this.bottomPartEl,
 				this.onOutputClickBound,
@@ -67,8 +68,10 @@ export default class Node{
 				y: 0
 			},
 			offset: {
-				x: this.initNodeConfig ? nodeConfig.pos[0] : parentEl.clientWidth / 2 - 100 * Math.random(),
-				y: this.initNodeConfig ? nodeConfig.pos[1] : parentEl.clientHeight / 2 - 50 * Math.random(),
+				x: this.initNodeConfig ? nodeConfig.pos[0] : pos.x,
+				y: this.initNodeConfig ? nodeConfig.pos[1] : pos.y,
+				// x: this.initNodeConfig ? nodeConfig.pos[0] : parentEl.clientWidth / 2 - 100 * Math.random(),
+				// y: this.initNodeConfig ? nodeConfig.pos[1] : parentEl.clientHeight / 2 - 50 * Math.random(),
 			}
 		};
 
@@ -77,6 +80,15 @@ export default class Node{
 		this.onMouseDownBound = this.onMouseDown.bind(this);
 		this.onMouseMoveBound = this.onMouseMove.bind(this);
 		this.onMouseUpBound = this.onMouseUp.bind(this);
+	}
+
+	getOutputPos() {
+		const obj = {
+			x: this.output.el.offsetLeft,
+			y: this.output.el.offsetTop,
+		};
+
+		return obj;
 	}
 
 	getOutDotPos(el) {
@@ -101,6 +113,10 @@ export default class Node{
 
 	activateDrag() {
 		this.el.addEventListener('mousedown', this.onMouseDownBound);
+	}
+
+	getOutputEl() {
+		return this.output;
 	}
 
 	getInputEl() {
@@ -180,15 +196,6 @@ export default class Node{
 	}
 
 	onMouseUp(e) {
-
-		// if (this.output && this.output.el) {
-		// 	if ((e.target.parentNode !== this.output.el) && (Math.abs(this.lastDelta.x) < 2 && Math.abs(this.lastDelta.y) < 2)) {
-		// 		// if (this.onNodeActive) {
-		// 		// 	this.onNodeActive(this);
-		// 		// }
-				
-		// 	}
-		// }
 
 		window.removeEventListener('mouseup', this.onMouseUpBound);
 		window.removeEventListener('mousemove', this.onMouseMoveBound);

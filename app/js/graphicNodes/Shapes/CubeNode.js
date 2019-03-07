@@ -1,6 +1,5 @@
 import RenderNode from '../RenderNode';
 // import * as SHADERS from '../../../shaders/SHADERS';
-import * as THREE from 'three';
 import RangeSlider from '../../views/Nodes/NodeComponents/RangeSlider';
 
 export default class CubeNode extends RenderNode{

@@ -25,16 +25,15 @@ export default class NodeConnectionLine{
 
 	}
 
-	onConnectionActive(nodeOut, clickPos) {
+	onConnectionActive(nodeOut, clickPos, outputType) {
 
 		const nodeH = 100;
 
-		const dotPos = nodeOut.getOutDotPos(nodeOut.output.el);
-		const offsetX = nodeOut.output.el.offsetLeft;
-		const offsetY = nodeOut.output.el.offsetTop;
+		const dotPos = nodeOut.getOutDotPos(nodeOut.output ? nodeOut.output.el : null, outputType);
+		const offsetPos = nodeOut.getOutputPos(outputType);
 		
-		const x = nodeOut.moveCoords.offset.x + offsetX + dotPos.width;
-		const y = nodeOut.moveCoords.offset.y + offsetY + 7;
+		const x = nodeOut.moveCoords.offset.x + offsetPos.x + dotPos.width;
+		const y = nodeOut.moveCoords.offset.y + offsetPos.y + 7;
 
 		this.startPos.x = clickPos.x;
 		this.startPos.y = clickPos.y;

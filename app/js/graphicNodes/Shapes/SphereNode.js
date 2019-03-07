@@ -1,9 +1,8 @@
-import RenderNode from '../RenderNode';
-import * as THREE from 'three';
+import GraphicNode from '../GraphicNode';
 
-export default class SphereNode extends RenderNode{
-	constructor(mainRender) {
-		super(mainRender);
+export default class SphereNode extends GraphicNode{
+	constructor() {
+		super();
 
 		this.isForegroundNode = true;
 
@@ -14,26 +13,26 @@ export default class SphereNode extends RenderNode{
 		const w = window.innerWidth;
 		const h = window.innerHeight;
 
-		this.camera = new THREE.PerspectiveCamera( 75, w / h, 0.1, 1000 );
+		// this.camera = new THREE.PerspectiveCamera( 75, w / h, 0.1, 1000 );
 
-		this.camera.position.z = 10;
+		// this.camera.position.z = 10;
 
 		// this.texture = THREE.ImageUtils.loadTexture( 'assets/test/Image1.png', null );
 		// this.texture.magFilter = THREE.LinearFilter;
 		// this.texture.minFilter = THREE.LinearFilter;
 
-		this.geometry = new THREE.SphereGeometry(5, 32, 32);
+		this.geometry = new THREE.SphereGeometry(3, 32, 32);
 		this.material = new THREE.MeshPhongMaterial( {  } );
 		this.mesh = new THREE.Mesh(this.geometry, this.material);
 
-		const directionalLightBtm = new THREE.DirectionalLight( 0xffffff, 1 );
+		this.light = new THREE.DirectionalLight( 0xffffff, 1 );
 
-		directionalLightBtm.position.set(0, 0, 4);
-		this.scene.add( directionalLightBtm );
+		this.light.position.set(0, 0, 4);
+		// this.scene.add( directionalLightBtm );
 
-		this.scene.add(this.mesh);
+		// this.scene.add(this.mesh);
 
-		directionalLightBtm.target = this.mesh;
+		this.light.target = this.mesh;
 
 		const textureParam = {
 			title: 'Texture',
@@ -119,6 +118,17 @@ export default class SphereNode extends RenderNode{
 			defaultVal: 0,
 		};
 
+		const scaleParam = {
+			title: 'Scale',
+			param: 'scale',
+			useAsInput: true,
+			parent: 'Scale',
+			paramHelpersType: 'scale',
+			needsFrameUpdate: false,
+			minMax: {min: .1, max: 6},
+			defaultVal: 0,
+		};
+
 		this.params = {
 			textureParam,
 			colorParam,
@@ -128,7 +138,8 @@ export default class SphereNode extends RenderNode{
 			positionZParam,
 			rotationXParam,
 			rotationYParam,
-		}
+			scaleParam,
+		};
 
 		this.paramVals = {};
 	}

@@ -1,4 +1,3 @@
-import * as THREE from 'three';
 import * as SHADERS from '../../shaders/SHADERS';
 
 export default class Render{

@@ -9,8 +9,6 @@ export default class SequencerNode extends MusicNode{
 		SequencerNode.ROWS = 12;
 		SequencerNode.COLS = 16;
 
-		this.sequencerManager = new SequencerManager(SequencerNode.COLS, SequencerNode.ROWS);
-
 		this.isSequencer = true;
 		this.loop = null;
 		this.hasAudioInput = false;
@@ -37,6 +35,12 @@ export default class SequencerNode extends MusicNode{
 		this.isPlaying = false;
 
 		this.onBtnClickBound = this.onBtnClick.bind(this);
+	}
+
+	init(pos, parentEl, onConnectingCallback, onInputConnectionCallback, type, nodeConfig, onNodeActive, onParameterChange, onNodeRemove) {
+		super.init(pos, parentEl, onConnectingCallback, onInputConnectionCallback, type, nodeConfig, onNodeActive, onParameterChange, onNodeRemove);
+
+		this.sequencerManager = new SequencerManager(SequencerNode.COLS, SequencerNode.ROWS, this.ID);
 	}
 
 	removeFromDom() {
@@ -134,8 +138,11 @@ export default class SequencerNode extends MusicNode{
 			for (let row = 0; row < rows; row++) {
 			
 				this.data[col][row].active = false;
+
 			}
 		}
+
+		this.sequencerManager.removeAllSynths();
 
 		this.update();
 	}
@@ -182,6 +189,13 @@ export default class SequencerNode extends MusicNode{
 		
 		btnData.active = !btnData.active;
 
+		if (btnData.active) {
+			this.sequencerManager.addSynth(col, btnData.step);
+		} else {
+			this.sequencerManager.removeSynth(col, btnData.step);
+		}
+		
+		
 		this.update();
 
 	}
@@ -216,10 +230,9 @@ export default class SequencerNode extends MusicNode{
 				const data = this.data[col][row];
 				if (data.active) {
 					data.el.classList.add('active');
-					this.sequencerManager.addSynth(col, data.step);
 				} else {
 					data.el.classList.remove('active');
-					this.sequencerManager.removeSynth(col, data.step);
+					
 				}
 			}
 		}

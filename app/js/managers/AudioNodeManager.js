@@ -45,9 +45,10 @@ export default class AudioNodeManager{
 		}
 	}
 
-	createNode(data) {
+	createNode(data, pos) {
 		const node = new data.obj();
 		node.init(
+			pos,
 			this.parentEl,
 			this.onConnectingCallback,
 			this.onInputConnectionCallback,

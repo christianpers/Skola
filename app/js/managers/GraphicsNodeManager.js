@@ -2,7 +2,6 @@ import GraphicNode from '../graphicNodes/GraphicNode';
 import CanvasNode from '../graphicNodes/CanvasNode';
 
 import SceneNode from '../graphicNodes/SceneNode';
-import Render from '../graphicNodes/Render';
 
 export default class GraphicsNodeManager{
 	constructor(parentEl, onConnectingCallback, onInputConnectionCallback, addCallback, onNodeActive, removeCallback) {
@@ -14,23 +13,14 @@ export default class GraphicsNodeManager{
 		this.onNodeActive = onNodeActive;
 		this.removeCallback = removeCallback;
 
-		this.mainRender = new Render();
+		
 
-		// this.sceneNode = new SceneNode(this.mainRender);
-		// this.sceneNode.init(
-		// 	parentEl,
-		// 	onConnectingCallback,
-		// 	onInputConnectionCallback,
-		// 	'Canvas',
-		// 	this.removeCallback,
-		// );
-
-		// this.addCallback(this.sceneNode);
 	}
 
-	createNode(data) {
-		const node = new data.obj(this.mainRender);
+	createNode(data, pos) {
+		const node = new data.obj();
 		node.init(
+			pos,
 			this.parentEl,
 			this.onConnectingCallback,
 			this.onInputConnectionCallback,
@@ -38,7 +28,6 @@ export default class GraphicsNodeManager{
 			undefined,
 			undefined,
 			this.removeCallback,
-
 		);
 		
 		node.onResize({w: 540, h: 538});

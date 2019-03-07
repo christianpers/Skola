@@ -1,6 +1,5 @@
 import GraphicNode from './GraphicNode';
 import Picker from 'vanilla-picker';
-import { Color } from 'three';
 
 export default class ColorNode extends GraphicNode{
 	constructor() {
@@ -49,7 +48,7 @@ export default class ColorNode extends GraphicNode{
 		const cssColor = `rgb(${color._rgba[0]},${color._rgba[1]},${color._rgba[2]})`;
 		
 		this.setColor(cssColor);
-		this.currentColor = new Color(color.rgbString);
+		this.currentColor = new THREE.Color(color.rgbString);
 
 		for (let i = 0; i < this.currentOutConnectionsLength; i++) {
 			const param = this.currentOutConnections[i].param;

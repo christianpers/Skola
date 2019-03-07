@@ -115,6 +115,7 @@ export default class NodeRenderer{
 			const nodeIn = this.nodeManager._nodeConnections[i].in;
 			const param = this.nodeManager._nodeConnections[i].param;
 			const inputType = this.nodeManager._nodeConnections[i].inputType;
+			const outputType = this.nodeManager._nodeConnections[i].outputType;
 
 			const isParam = !!param;
 
@@ -124,10 +125,12 @@ export default class NodeRenderer{
 			} else {
 				inObj = nodeIn.getInputEl(inputType);
 			}
-			const outDotPos = nodeOut.getOutDotPos(nodeOut.output.el);
+			const outObj = nodeOut.getOutputEl(outputType);
+
+			const outDotPos = nodeOut.getOutDotPos(nodeOut.output ? nodeOut.output.el : null, outputType);
 			
-			const offsetXOut = nodeOut.output.getOffsetLeft();
-			const offsetYOut = nodeOut.output.getOffsetTop();
+			const offsetXOut = outObj.getOffsetLeft();
+			const offsetYOut = outObj.getOffsetTop();
 			
 			const startX = nodeOut.moveCoords.offset.x + offsetXOut + outDotPos.width - 3;
 			const startY = nodeOut.moveCoords.offset.y + offsetYOut + 7;

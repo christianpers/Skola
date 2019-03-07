@@ -16,7 +16,8 @@ export default class MusicNode extends Node{
 		this.hasAudioInput = true;
 		this.isSequencer = false;
 		this.isLFO = false;
-		this.needsManualDispose = false;
+		this.isAnalyser = false;
+		this.isSynthOscillator = false;
 
 		this.inputHelpersType = AudioInputHelpers.single;
 
@@ -40,8 +41,8 @@ export default class MusicNode extends Node{
 		this.inputParams = {};
 	}
 
-	init(parentEl, onConnectingCallback, onInputConnectionCallback, type, nodeConfig, onNodeActive, onParameterChange, onNodeRemove) {
-		super.init(parentEl, onConnectingCallback, onInputConnectionCallback, type, nodeConfig, onNodeActive, onNodeRemove);
+	init(pos, parentEl, onConnectingCallback, onInputConnectionCallback, type, nodeConfig, onNodeActive, onParameterChange, onNodeRemove) {
+		super.init(pos, parentEl, onConnectingCallback, onInputConnectionCallback, type, nodeConfig, onNodeActive, onNodeRemove);
 
 		this.onParameterChange = onParameterChange;
 

@@ -1,6 +1,5 @@
 import GraphicNode from './GraphicNode';
 import RangeSlider from '../views/Nodes/NodeComponents/RangeSlider';
-import { Vector3 } from 'three';
 import HorizontalRangeSlider from '../views/Nodes/NodeComponents/HorizontalRangeSlider';
 import Easing from './Helpers/Easing';
 

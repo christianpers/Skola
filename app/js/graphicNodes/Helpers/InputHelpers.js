@@ -1,5 +1,5 @@
 const isValidNeedsFramebufferInput = (outNode) => {
-	return outNode.framebuffer;
+	return outNode.framebuffer || outNode.isForegroundNode;
 };
 
 const isValidSceneNodeConnection = (outNode, inNode) => {

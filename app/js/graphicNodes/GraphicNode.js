@@ -42,6 +42,7 @@ export default class GraphicNode extends Node{
 	}
 
 	init(
+		pos,
 		parentEl,
 		onConnectingCallback,
 		onInputConnectionCallback,
@@ -51,6 +52,7 @@ export default class GraphicNode extends Node{
 		onNodeRemove,
 	) {
 		super.init(
+			pos,
 			parentEl,
 			onConnectingCallback,
 			onInputConnectionCallback,

@@ -1,6 +1,5 @@
 import RenderNode from '../RenderNode';
 import * as SHADERS from '../../../shaders/SHADERS';
-import * as THREE from 'three';
 
 export default class LavaNoiseNode extends RenderNode{
 	constructor(mainRender) {

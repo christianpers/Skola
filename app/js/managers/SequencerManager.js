@@ -1,8 +1,9 @@
 import SynthCopy from '../musicHelpers/SynthCopy';
 
 export default class SequencerManager{
-	constructor(cols, rows) {
+	constructor(cols, rows, ID) {
 
+		this.triggerID = ID;
 		this.cols = cols;
 		this.rows = rows;
 		this.synths = [];
@@ -54,7 +55,7 @@ export default class SequencerManager{
 	}
 
 	play(col, step, time) {
-		this.synths[col][step].synth.play(time);
+		this.synths[col][step].synth.play(time, this.triggerID);
 	}
 
 	onAudioNodeConnectionUpdate(connections) {

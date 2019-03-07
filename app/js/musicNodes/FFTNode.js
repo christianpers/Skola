@@ -8,7 +8,7 @@ export default class FFTNode extends MusicNode {
 		this.el.classList.add('no-height');
 		this.el.classList.add('waveform-node');
 		this.needsUpdate = true;
-		this.needsManualDispose = true;
+		this.isAnalyser = true;
 		this.isDisposed = false;
 
 		this.arrSize = 256;

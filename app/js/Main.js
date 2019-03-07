@@ -17,6 +17,8 @@ import SignalMultiplier from './musicHelpers/mathNodes/SignalMultiplier';
 import SequencerNode from './musicNodes/SequencerNode';
 import WaveformNode from './musicNodes/WaveformNode';
 import FFTNode from './musicNodes/FFTNode';
+import KickSynth from './musicNodes/KickSynth';
+import FMSynth from './musicNodes/FMSynth';
 
 import LavaNoiseNode from './graphicNodes/ProceduralTextures/LavaNoise';
 import VoronoiNode from './graphicNodes/ProceduralTextures/Voronoi';
@@ -24,6 +26,7 @@ import CircleNode from './graphicNodes/Shapes/CircleNode';
 import CubeNode from './graphicNodes/Shapes/CubeNode';
 import SphereNode from './graphicNodes/Shapes/SphereNode';
 import ParamDriverNode from './graphicNodes/ParamDriverNode';
+import OrbitDriverNode from './graphicNodes/OrbitDriverNode';
 import SceneNode from './graphicNodes/SceneNode';
 import ColorNode from './graphicNodes/ColorNode';
 
@@ -33,7 +36,7 @@ export default class Main{
 
 	constructor(){
 
-		Tone.Transport.bpm.value = 80;
+		Tone.Transport.bpm.value = 140;
 		Tone.Transport.start();
 
 		this.historyState = {id: window.location.pathname};
@@ -65,6 +68,16 @@ export default class Main{
 						obj: SpeakerNode,
 					},
 				],
+				synthar: [
+					{
+						type: 'Kick',
+						obj: KickSynth,
+					},
+					{
+						type: 'FM Synth',
+						obj: FMSynth,
+					},
+				],
 				data: [
 					{
 						type: 'LFO',
@@ -81,7 +94,7 @@ export default class Main{
 						obj: SequencerNode,
 					}
 				],
-				analysers: [
+				'Ljud analys': [
 					{
 						type: 'Ljudvåg',
 						obj: WaveformNode,
@@ -107,7 +120,7 @@ export default class Main{
 					{
 						type: 'Sphere',
 						obj: SphereNode,
-					}
+					},
 				],
 				'Procedural Texture (Material)': [
 					{
@@ -133,6 +146,10 @@ export default class Main{
 						type: 'ParamDriver',
 						obj: ParamDriverNode,
 					},
+					{
+						type: 'OrbitDriver',
+						obj: OrbitDriverNode,
+					},
 				]
 			}
 		}
@@ -147,7 +164,12 @@ export default class Main{
 
 		this.onResize();
 		
-		const nodeLibrary = new NodeLibrary(document.body, this.nodeTypes, this.onNodeAddedFromLibraryBound);
+		const nodeLibrary = new NodeLibrary(
+			document.body,
+			this.nodeTypes,
+			this.onNodeAddedFromLibraryBound,
+			this.workspaceManager,
+		);
 
 		const initData = {
 			nodes: [
@@ -223,8 +245,8 @@ export default class Main{
 		this.nodeSettings.show(node);
 	}
 
-	onNodeAddedFromLibrary(type, data) {
-		this.nodeManager.onNodeAddedFromLibrary(type, data);
+	onNodeAddedFromLibrary(type, data, e) {
+		this.nodeManager.onNodeAddedFromLibrary(type, data, e);
 	}
 
 	onPopStateChange(e) {
@@ -238,10 +260,6 @@ export default class Main{
 	}
 
 	update() {
-		// if (this._vImages)
-		// 	this._vImages.update();
-
-		// this.nodeRenderer.update();
 		this.nodeManager.update();
 	}
 
