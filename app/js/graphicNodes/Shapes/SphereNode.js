@@ -8,31 +8,25 @@ export default class SphereNode extends GraphicNode{
 
 		this.el.classList.add('no-height');
 
-		// this.shader = SHADERS.CIRCLE_SHAPE_MAIN;
-
 		const w = window.innerWidth;
 		const h = window.innerHeight;
-
-		// this.camera = new THREE.PerspectiveCamera( 75, w / h, 0.1, 1000 );
-
-		// this.camera.position.z = 10;
 
 		// this.texture = THREE.ImageUtils.loadTexture( 'assets/test/Image1.png', null );
 		// this.texture.magFilter = THREE.LinearFilter;
 		// this.texture.minFilter = THREE.LinearFilter;
 
-		this.geometry = new THREE.SphereGeometry(3, 32, 32);
+		this.geometry = new THREE.SphereGeometry(2, 32, 32);
 		this.material = new THREE.MeshPhongMaterial( {  } );
 		this.mesh = new THREE.Mesh(this.geometry, this.material);
 
-		this.light = new THREE.DirectionalLight( 0xffffff, 1 );
+		// this.light = new THREE.DirectionalLight( 0xffffff, 1 );
 
-		this.light.position.set(0, 0, 4);
+		// this.light.position.set(0, 0, 4);
 		// this.scene.add( directionalLightBtm );
 
 		// this.scene.add(this.mesh);
 
-		this.light.target = this.mesh;
+		// this.light.target = this.mesh;
 
 		const textureParam = {
 			title: 'Texture',
@@ -175,10 +169,6 @@ export default class SphereNode extends GraphicNode{
 			super.disableOutput();
 
 		}
-		
 	}
 
-	update() {
-		super.update();
-	}
 }

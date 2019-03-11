@@ -4,16 +4,16 @@ import * as SHADERS from '../../shaders/SHADERS';
 import NodeInput from '../views/Nodes/NodeComponents/NodeInput';
 import InputHelpers from './Helpers/InputHelpers';
 import ForegroundRender from './Scene/ForegroundRender';
-import Render from './Render';
 import NodeResizer from '../views/Nodes/NodeComponents/NodeResizer';
 import CameraControlSetting from './Scene/CameraControlSetting';
+import HorizontalSlider from '../views/Nodes/NodeComponents/HorizontalSlider';
 
 export default class SceneNode extends Node{
 
-	constructor() {
+	constructor(mainRender) {
 		super();
 
-		this.mainRender = new Render();
+		this.mainRender = mainRender;
 
 		this.hasOutput = false;
 		this.isGraphicsNode = true;
@@ -35,6 +35,11 @@ export default class SceneNode extends Node{
 		this.bottomPartEl = document.createElement('div');
 		this.bottomPartEl.className = 'bottom-part';
 
+		this.bottomPartSettings = document.createElement('div');
+		this.bottomPartSettings.className = 'bottom-part-settings';
+
+		this.bottomPartEl.appendChild(this.bottomPartSettings);
+
 		this.onNodeResizerDownBound = this.onNodeResizerDown.bind(this);
 		this.onResizeFromNodeResizerBound = this.onResizeFromNodeResizer.bind(this);
 		this.nodeResizer = new NodeResizer(this.bottomPartEl, this.onResizeFromNodeResizerBound, this.onNodeResizerDownBound);
@@ -42,7 +47,9 @@ export default class SceneNode extends Node{
 		this.el.appendChild(this.bottomPartEl);
 
 		this.foregroundRender = new ForegroundRender(this.mainRender, this.topPartEl);
-		this.cameraControlSetting = new CameraControlSetting(this.bottomPartEl, this.foregroundRender);
+		this.cameraControlSetting = new CameraControlSetting(this.bottomPartSettings, this.foregroundRender);
+		this.onAmbientLightSettingChangeBound = this.onAmbientLightSettingChange.bind(this);
+		this.ambientLightSetting = new HorizontalSlider(this.bottomPartSettings, 1, this.onAmbientLightSettingChangeBound, 2, {min: 0, max: 1}, 'ambient-light', 'Ambient light');
 
 		this.scene = new THREE.Scene();
 		this.renderer = this.mainRender.renderer;
@@ -96,13 +103,16 @@ export default class SceneNode extends Node{
 
 		this.onInputClickBackgroundBound = this.onInputClickBackground.bind(this);
 		this.onInputClickForegroundBound = this.onInputClickForeground.bind(this);
+		this.onInputClickLightBound = this.onInputClickLight.bind(this);
 
 		this.inputBackground = new NodeInput(this.bottomPartEl, this.onInputClickBackgroundBound, this.isGraphicsNode, 'Bakgrund In');
 		this.inputForeground = new NodeInput(this.bottomPartEl, this.onInputClickForegroundBound, this.isGraphicsNode, 'Förgrund In');
+		this.inputLight = new NodeInput(this.bottomPartEl, this.onInputClickLightBound, this.isGraphicsNode, 'Ljus In');
 
 		this.inputs = {
 			'background': this.inputBackground,
 			'foreground': this.inputForeground,
+			'light': this.inputLight,
 		};
 		
 		setTimeout(() => {
@@ -112,16 +122,8 @@ export default class SceneNode extends Node{
 		this.activateDrag();
 	}
 
-	getOutDotPos(el) {
-		this.inDotPos = el.getBoundingClientRect();
-		
-		return this.inDotPos;
-	}
-
-	getInDotPos(el) {
-		this.outDotPos = el.getBoundingClientRect();
-		
-		return this.outDotPos;
+	onAmbientLightSettingChange(val) {
+		this.foregroundRender.ambientLight.intensity = val;
 	}
 
 	onNodeResizerDown() {
@@ -147,6 +149,9 @@ export default class SceneNode extends Node{
 		this.inputForeground.offsetLeft = this.inputForeground.el.offsetLeft;
 		this.inputForeground.offsetTop = this.inputForeground.el.offsetTop;
 
+		this.inputLight.offsetLeft = this.inputLight.el.offsetLeft;
+		this.inputLight.offsetTop = this.inputLight.el.offsetTop;
+
 		// console.log(this.nodeResizer.currentDims.h + delta.y);
 		this.onResize();
 	}
@@ -161,6 +166,11 @@ export default class SceneNode extends Node{
 		this.onInputConnectionCallback(this, 'foreground', param);
 	}
 
+	onInputClickLight(param) {
+
+		this.onInputConnectionCallback(this, 'light', param);
+	}
+
 	getInputEl(inputType) {
 		return this.inputs[inputType];
 	}
@@ -170,15 +180,15 @@ export default class SceneNode extends Node{
 		return el.getBoundingClientRect();
 	}
 
-	setup() {
-
+	setBackgroundTexture(texture) {
+		this.mesh.material.uniforms.u_texture0.value = texture;
 	}
 
 	enableInput(outputNode, inputType) {
 		this.inputs[inputType].enable();
 
 		if (outputNode.isBackgroundNode) {
-			const framebuffer = outputNode.framebuffer.texture;
+			const framebuffer = outputNode.framebuffer ? outputNode.framebuffer.texture : outputNode.texture;
 			this.mesh.material.uniforms.u_texture0.value = framebuffer;
 			this.mesh.material.uniforms.u_connection0.value = 1.0;
 		} else if (outputNode.isForegroundNode) {
@@ -188,7 +198,8 @@ export default class SceneNode extends Node{
 				this.mesh.material.uniforms.u_texture1.value = framebuffer;
 				this.mesh.material.uniforms.u_connection1.value = 1.0;
 			}
-			
+		} else if (outputNode.isLightNode) {
+			this.foregroundRender.addLight(outputNode);
 		}
 
 		const obj = {
@@ -197,9 +208,11 @@ export default class SceneNode extends Node{
 		};
 		this.enabledInputs.push(obj);
 
-		this.mesh.material.uniforms.u_finalConnection.value = 1.0;
-		if (this.inputs['background'].isActive && this.inputs['foreground'].isActive) {
-			this.mesh.material.uniforms.u_multiConnection.value = 1.0;
+		if (!outputNode.isLightNode) {
+			this.mesh.material.uniforms.u_finalConnection.value = 1.0;
+			if (this.inputs['background'].isActive && this.inputs['foreground'].isActive) {
+				this.mesh.material.uniforms.u_multiConnection.value = 1.0;
+			}
 		}
 	}
 
@@ -211,6 +224,7 @@ export default class SceneNode extends Node{
 
 			this.mesh.material.uniforms.u_texture0.value = null;
 			this.mesh.material.uniforms.u_connection0.value = 0.0;
+			this.mesh.material.uniforms.u_multiConnection.value = 0.0;
 
 		} else if (inputType === 'foreground') {
 			this.foregroundRender.removeNode(outNode);
@@ -221,19 +235,21 @@ export default class SceneNode extends Node{
 				this.mesh.material.uniforms.u_texture1.value = null;
 				this.mesh.material.uniforms.u_connection1.value = 0.0;
 			}
+		} else if (inputType === 'light') {
+			this.inputs[inputType].disable();
+
+			this.foregroundRender.removeLight(outNode);
 		}
 
+		
 		this.enabledInputs = this.enabledInputs.filter(t => t.out.ID !== outNode.ID);
+		const graphicInputs = this.enabledInputs.filter(t => !t.out.isLightNode);
 
-		if (this.enabledInputs.length === 0) {
+		if (graphicInputs.length === 0) {
 			this.mesh.material.uniforms.u_finalConnection.value = 0.0;
 		} else if (!this.inputs['foreground'].isActive) {
 			this.mesh.material.uniforms.u_multiConnection.value = 0.0;
 		}
-	}
-
-	getRenderWindowDimensions() {
-		return {w: 540, h: 538};
 	}
 
 	update() {
@@ -252,16 +268,9 @@ export default class SceneNode extends Node{
 		const w = this.topPartEl.clientWidth;
 		const h = this.topPartEl.clientHeight;
 
-		console.log(h);
-
 		this.foregroundRender.onResize({w, h});
 
-		// this.framebuffer.setSize(w, h);
-
 		this.mesh.material.uniforms.u_res.value = new THREE.Vector2(w, h);
-
-		// this.perspectiveCamera.aspect = w / h;
-		// this.perspectiveCamera.updateProjectionMatrix();
 
 		this.orthoCamera.left = w / - 2;
 		this.orthoCamera.right = w / 2;

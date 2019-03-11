@@ -2,10 +2,32 @@ const isValidNeedsFramebufferInput = (outNode) => {
 	return outNode.framebuffer || outNode.isForegroundNode;
 };
 
-const isValidSceneNodeConnection = (outNode, inNode) => {
+const isValidSceneNodeConnection = (outNode, inNode, inputType) => {
+	const isValidBackgroundInput = () => {
+		return outNode.framebuffer || outNode.texture;
+	};
+
+	const isValidForegroundInput = () => {
+		return outNode.isForegroundNode;
+	};
+
+	const isValidLightInput = () => {
+		return outNode.isLightNode && !inNode.foregroundRender.hasConnectedLight;
+	};
+
 	const hasOutputConnection = inNode.enabledInputs.some(t => t.out.ID === outNode.ID);
 
-	return isValidNeedsFramebufferInput(outNode) && !hasOutputConnection;
+	if (hasOutputConnection || !inputType) {
+		return false;
+	}
+
+	const inputTypeValidations = {
+		'background': isValidBackgroundInput,
+		'foreground': isValidForegroundInput,
+		'light': isValidLightInput,
+	};
+
+	return inputTypeValidations[inputType]();
 
 };
 

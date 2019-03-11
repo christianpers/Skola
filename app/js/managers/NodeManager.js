@@ -106,7 +106,6 @@ export default class NodeManager{
 
 	onNodeRemove(node) {
 		const connections = this._nodeConnections.filter(t => t.out.ID === node.ID || t.in.ID === node.ID);
-		console.log('remove connections', connections);
 
 		for (let i = 0; i < connections.length; i++) {
 			this.removeConnection(connections[i]);
@@ -135,6 +134,8 @@ export default class NodeManager{
 		this.isConnecting = false;
 		this.outputActiveNode = null;
 		this.outputActiveType = undefined;
+
+		this.nodeConnectionLine.resetLine();
 	}
 
 	onConnecting(node, clickPos, outputType) {
@@ -158,23 +159,23 @@ export default class NodeManager{
 		let inputAvailable = true;
 
 		if (!this.isConnecting || !this.outputActiveNode) {
-			inputAvailable = false;
-			if (param) {
-				const connection = this._nodeConnections.find(t => t.in.ID === inputNode.ID && t.param && t.param.title === param.title);
-				if (connection) {
-					this.removeConnection(connection);
-				}
-			} else if (inputType) {
-				const connection = this._nodeConnections.find(t => t.in.ID === inputNode.ID && t.inputType === inputType);
-				if (connection) {
-					this.removeConnection(connection);
-				}
-			} else {
-				const connection = this._nodeConnections.find(t => t.in.ID === inputNode.ID);
-				if (connection) {
-					this.removeConnection(connection);
-				}
-			}
+			// inputAvailable = false;
+			// if (param) {
+			// 	const connection = this._nodeConnections.find(t => t.in.ID === inputNode.ID && t.param && t.param.title === param.title);
+			// 	if (connection) {
+			// 		this.removeConnection(connection);
+			// 	}
+			// } else if (inputType) {
+			// 	const connection = this._nodeConnections.find(t => t.in.ID === inputNode.ID && t.inputType === inputType);
+			// 	if (connection) {
+			// 		this.removeConnection(connection);
+			// 	}
+			// } else {
+			// 	const connection = this._nodeConnections.find(t => t.in.ID === inputNode.ID);
+			// 	if (connection) {
+			// 		this.removeConnection(connection);
+			// 	}
+			// }
 			
 			return;
 		}
@@ -198,29 +199,28 @@ export default class NodeManager{
 				this.resetConnecting();
 				return;
 			} else {
-				if (!inputNode.inputHelpersType.isValid(this.outputActiveNode, inputNode)) {
+				if (!inputNode.inputHelpersType.isValid(this.outputActiveNode, inputNode, inputType)) {
 					this.resetConnecting();
 					return;
 				}
 			}
-			
 		}
 
 		this.nodeConnectionLine.onInputClick(inputAvailable, inputNode, this.outputActiveNode);
 
 		this.isConnecting = false;
+
+		const paramID = param ? `${param.parent}-${param.param}` : '';
+		const lineID = `${inputNode.ID}---${this.outputActiveNode.ID}---${paramID}`;
 		
 		const connectionData = {
 			param: param,
 			out: this.outputActiveNode,
 			in: inputNode,
-			lineEl: this.nodeConnectionRenderer.addLine(inputNode.ID + '---' + this.outputActiveNode.ID),
+			lineEl: this.nodeConnectionRenderer.addLine(lineID),
 			inputType,
 			outputType: this.outputActiveType,
 		};
-		// connectionData.lineEl.addEventListener('click', (e) => {
-		// 	this.removeConnection(connectionData);
-		// });
 
 		this.outputActiveNode.enableOutput(param ? param : undefined, connectionData);
 

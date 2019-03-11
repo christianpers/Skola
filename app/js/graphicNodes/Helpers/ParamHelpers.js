@@ -6,7 +6,7 @@ const isValidParamTextureInput = (outNode) => {
 const onTextureParamUpdate = (inNode, outNode) => {
 
 	inNode.material.needsUpdate = true;
-	inNode.material.map = outNode.framebuffer.texture;
+	inNode.material.map = outNode.framebuffer ? outNode.framebuffer.texture : outNode.texture;
 };
 
 const onTextureDisconnect = (inNode) => {
@@ -62,18 +62,18 @@ const isValidParamPositionInput = (outNode, param) => {
 
 const onPositionParamUpdate = (inNode, outNode, param) => {
 
-	inNode.mesh.position[param.param] = outNode.getValue(param.param);
+	inNode.mesh.position[param.param] = outNode.getValue(param);
 };
 
 const onPositionDisconnect = (inNode, param, outNode) => {
 
-	param.defaultVal = outNode.getValue(param.param);
+	param.defaultVal = outNode.getValue(param);
 };
 
 
 const onRotationParamUpdate = (inNode, outNode, param) => {
 
-	inNode.mesh.rotation[param.param] = outNode.getValue();
+	inNode.mesh.rotation[param.param] = outNode.getValue(param);
 };
 
 const onScaleParamUpdate = (inNode, outNode, param) => {
@@ -81,6 +81,14 @@ const onScaleParamUpdate = (inNode, outNode, param) => {
 	const val = outNode.getValue();
 	const vector = new THREE.Vector3(val, val, val);
 	inNode.mesh.scale.set(val, val, val);
+};
+
+const onLightParamUpdate = (inNode, outNode, param) => {
+
+	const val = outNode.getValue(param);
+
+	inNode.mesh.position[param.param] = val;
+	inNode.light.position[param.param] = val;
 };
 
 
@@ -129,6 +137,11 @@ const paramHelpers = {
 	},
 	shaderParam: {
 		update: onShaderParamUpdate,
+		isValid: isValidParamPositionInput,
+		disconnect: onPositionDisconnect,
+	},
+	light: {
+		update: onLightParamUpdate,
 		isValid: isValidParamPositionInput,
 		disconnect: onPositionDisconnect,
 	}

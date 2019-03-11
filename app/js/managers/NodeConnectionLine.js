@@ -116,4 +116,24 @@ export default class NodeConnectionLine{
 		console.log('click connection');
 	}
 
+	resetLine() {
+		window.removeEventListener('mousemove', this.onMouseMoveBound);
+		window.removeEventListener('click', this.onMouseClickBound);
+
+		// this.resetConnecting();
+
+		const line = this.line;
+
+		const x = 0;
+		const y = 0;
+
+		line.setAttribute("stroke", "white");
+		line.setAttribute('x1', x);
+		line.setAttribute('y1', y);
+		line.setAttribute('x2', x);
+		line.setAttribute('y2', y);
+		line.setAttribute("stroke-opacity", 0);
+		console.log('reset connection');
+	}
+
 }

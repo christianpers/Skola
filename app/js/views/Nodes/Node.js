@@ -7,6 +7,7 @@ export default class Node{
 
 		this.hasOutput = true;
 		this.isGraphicsNode = false;
+		this.isLightNode = false;
 		this.hasGraphicsInput = false;
 		this.needsUpdate = false;
 		this.hasMultipleOutputs = false;

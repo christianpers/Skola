@@ -1,10 +1,8 @@
-import RenderNode from '../RenderNode';
-// import * as SHADERS from '../../../shaders/SHADERS';
-import RangeSlider from '../../views/Nodes/NodeComponents/RangeSlider';
+import GraphicNode from '../GraphicNode';
 
-export default class CubeNode extends RenderNode{
-	constructor(mainRender) {
-		super(mainRender);
+export default class CubeNode extends GraphicNode{
+	constructor() {
+		super();
 
 		this.isForegroundNode = true;
 
@@ -15,26 +13,26 @@ export default class CubeNode extends RenderNode{
 		const w = window.innerWidth;
 		const h = window.innerHeight;
 
-		this.camera = new THREE.PerspectiveCamera( 75, w / h, 0.1, 1000 );
+		// this.camera = new THREE.PerspectiveCamera( 75, w / h, 0.1, 1000 );
 
-		this.camera.position.z = 3;
+		// this.camera.position.z = 3;
 
 		// this.texture = THREE.ImageUtils.loadTexture( 'assets/test/Image1.png', null );
 		// this.texture.magFilter = THREE.LinearFilter;
 		// this.texture.minFilter = THREE.LinearFilter;
 
-		this.geometry = new THREE.BoxGeometry( 1, 1, 1, 10, 10, 10 );
+		this.geometry = new THREE.BoxGeometry( 3, 3, 3, 10, 10, 10 );
 		this.material = new THREE.MeshPhongMaterial( {  } );
 		this.mesh = new THREE.Mesh(this.geometry, this.material);
 
-		const directionalLightBtm = new THREE.DirectionalLight( 0xffffff, 1 );
+		// const directionalLightBtm = new THREE.DirectionalLight( 0xffffff, 1 );
 
-		directionalLightBtm.position.set(0, 0, 4);
-		this.scene.add( directionalLightBtm );
+		// directionalLightBtm.position.set(0, 0, 4);
+		// this.scene.add( directionalLightBtm );
 
-		this.scene.add(this.mesh);
+		// this.scene.add(this.mesh);
 
-		directionalLightBtm.target = this.mesh;
+		// directionalLightBtm.target = this.mesh;
 
 
 		const textureParam = {
@@ -121,6 +119,17 @@ export default class CubeNode extends RenderNode{
 			defaultVal: 0,
 		};
 
+		const scaleParam = {
+			title: 'Scale',
+			param: 'scale',
+			useAsInput: true,
+			parent: 'Scale',
+			paramHelpersType: 'scale',
+			needsFrameUpdate: false,
+			minMax: {min: .1, max: 6},
+			defaultVal: 0,
+		};
+
 		this.params = {
 			textureParam,
 			colorParam,
@@ -130,6 +139,7 @@ export default class CubeNode extends RenderNode{
 			positionZParam,
 			rotationXParam,
 			rotationYParam,
+			scaleParam,
 		}
 
 		this.paramVals = {};
@@ -144,8 +154,6 @@ export default class CubeNode extends RenderNode{
 
 		this.currentOutConnections.push(connection);
 		this.currentOutConnectionsLength = this.currentOutConnections.length;
-
-		
 	}
 
 	disableOutput(nodeIn, param) {
@@ -167,8 +175,7 @@ export default class CubeNode extends RenderNode{
 		if (this.currentOutConnectionsLength <= 0) {
 			super.disableOutput();
 
-		}
-		
+		}	
 	}
 
 	update() {

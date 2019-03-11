@@ -29,6 +29,9 @@ import ParamDriverNode from './graphicNodes/ParamDriverNode';
 import OrbitDriverNode from './graphicNodes/OrbitDriverNode';
 import SceneNode from './graphicNodes/SceneNode';
 import ColorNode from './graphicNodes/ColorNode';
+import DirectionalLightNode from './graphicNodes/Lights/DirectionalLightNode';
+import PointLightNode from './graphicNodes/Lights/PointLightNode';
+import TextureSelectorNode from './graphicNodes/Textures/TextureSelectorNode';
 
 import Tone from 'tone';
 
@@ -149,6 +152,22 @@ export default class Main{
 					{
 						type: 'OrbitDriver',
 						obj: OrbitDriverNode,
+					},
+				],
+				'Ljus': [
+					{
+						type: 'Directional Light',
+						obj: DirectionalLightNode,
+					},
+					{
+						type: 'Point Light',
+						obj: PointLightNode,
+					},
+				],
+				'Textures': [
+					{
+						type: 'Texture Selector',
+						obj: TextureSelectorNode,
 					},
 				]
 			}

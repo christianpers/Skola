@@ -1,8 +1,12 @@
 import GraphicNode from './GraphicNode';
+// import InputComponent from '../views/Nodes/NodeComponents/InputComponent';
+import VerticalSlider from '../views/Nodes/NodeComponents/VerticalSlider';
 
 export default class OrbitDriverNode extends GraphicNode{
 	constructor() {
 		super();
+
+		this.needsUpdate = true;
 
 		this.el.classList.add('no-height');
 		this.el.classList.add('left-padding');
@@ -13,65 +17,79 @@ export default class OrbitDriverNode extends GraphicNode{
 		this.animateValues = {
 			isRunning: false,
 			reqAnimFrame: -1,
+			counter: 1552337385540,
 		};
 
 		this.currentOrbit = 10;
-		this.currentSpeed = 10;
+		this.currentSpeed = 0;
+		this.currentRotationY = 0;
+		this.currentRotationX = 0;
 
 		this.outValues = {
-			x: 0,
-			z: 0,
-		},
+			Position: {
+				x: 0,
+				y: 0,
+				z: 0,
+			},
+			Rotation: {
+				x: 0,
+				y: 0,
+			}
+		};
 
 		this.onSpeedChangeBound = this.onSpeedChange.bind(this);
 		this.onOrbitChangeBound = this.onOrbitChange.bind(this);
+		this.onRotationChangeYBound = this.onRotationChangeY.bind(this);
+		this.onRotationChangeXBound = this.onRotationChangeX.bind(this);
 
 		const settingsContainer = document.createElement('div');
 		settingsContainer.className = 'settings-container-outer';
 
 		this.topPartEl.appendChild(settingsContainer);
 
-		const speedContainer = document.createElement('div');
-		speedContainer.className = 'speed-container settings-container';
+		this.speedSlider = new VerticalSlider(
+			settingsContainer, 0, this.onSpeedChangeBound, 2, {min: -10, max: 10}, 'Orbit speed',
+		);
 
-		const speedLabel = document.createElement('h4');
-		speedLabel.className = 'speed-label settings-label';
-		speedLabel.innerHTML = 'Speed';
+		this.orbitSlider = new VerticalSlider(
+			settingsContainer, 10, this.onOrbitChangeBound, 0, {min: 0, max: 20}, 'Orbit radie',
+		);
 
-		speedContainer.appendChild(speedLabel);
+		this.rotationXSlider = new VerticalSlider(
+			settingsContainer, 0, this.onRotationChangeXBound, 3, {min: -1, max: 1}, 'Rotation X',
+		);
 
-		this.speedEl = document.createElement('input');
-		this.speedEl.type = 'number';
-		this.speedEl.value = this.currentSpeed;
-		this.speedEl.step = 1;
-		this.speedEl.min = 1;
-		this.speedEl.max = 20;
-		this.speedEl.addEventListener('change', this.onSpeedChangeBound);
+		this.rotationYSlider = new VerticalSlider(
+			settingsContainer, 0, this.onRotationChangeYBound, 3, {min: -1, max: 1}, 'Rotation Y',
+		);
 
-		speedContainer.appendChild(this.speedEl);
 
-		settingsContainer.appendChild(speedContainer);
 
-		const orbitContainer = document.createElement('div');
-		orbitContainer.className = 'orbit-container settings-container';
 
-		const orbitLabel = document.createElement('h4');
-		orbitLabel.className = 'orbit-label settings-label';
-		orbitLabel.innerHTML = 'Orbit';
+		// const speedSettings = {
+		// 	step: 1,
+		// 	value: this.currentSpeed,
+		// 	min: 1,
+		// 	max: 20,
+		// };
+		// this.speedContainer = new InputComponent(settingsContainer, 'speed', speedSettings, this.onSpeedChangeBound);
 
-		orbitContainer.appendChild(orbitLabel);
+		// const orbitSettings = {
+		// 	step: 1,
+		// 	value: this.currentOrbit,
+		// 	min: 1,
+		// 	max: 100,
+		// };
+		// this.orbitContainer = new InputComponent(settingsContainer, 'radie', orbitSettings, this.onOrbitChangeBound);
 
-		this.orbitEl = document.createElement('input');
-		this.orbitEl.type = 'number';
-		this.orbitEl.value = this.currentOrbit;
-		this.orbitEl.step = 1;
-		this.orbitEl.min = 1;
-		this.orbitEl.max = 100;
-		this.orbitEl.addEventListener('change', this.onOrbitChangeBound);
-
-		orbitContainer.appendChild(this.orbitEl);
-
-		settingsContainer.appendChild(orbitContainer);
+		// const rotationSettings = {
+		// 	step: .01,
+		// 	value: this.currentRotationY,
+		// 	min: -10,
+		// 	max: 10,
+		// };
+		// this.rotationContainerY = new InputComponent(settingsContainer, 'rotation Y', rotationSettings, this.onRotationChangeYBound);
+		// this.rotationContainerX = new InputComponent(settingsContainer, 'rotation X', rotationSettings, this.onRotationChangeXBound);
 
 		this.topPartEl.appendChild(settingsContainer);
 
@@ -102,16 +120,24 @@ export default class OrbitDriverNode extends GraphicNode{
 		this.update();
 	}
 
-	onOrbitChange(e) {
+	onRotationChangeX(val) {
 		
-		this.currentOrbit = this.orbitEl.value;
+		this.currentRotationX = val;
 	}
 
-	onSpeedChange(e) {
+	onRotationChangeY(val) {
+		
+		this.currentRotationY = val;
+	}
 
-		console.log(this.speedEl.value);
+	onOrbitChange(val) {
+		
+		this.currentOrbit = val;
+	}
 
-		this.currentSpeed = this.speedEl.value;
+	onSpeedChange(val) {
+
+		this.currentSpeed = val;
 	}
 
 	reset() {
@@ -131,29 +157,34 @@ export default class OrbitDriverNode extends GraphicNode{
 	}
 
 	getValue(param) {
-		return this.outValues[param];
+		return this.outValues[param.parent][param.param];
 	}
 
 	update() {
-
-		this.animateValues.reqAnimFrame = requestAnimationFrame(this.updateBound);
-
 		if (!this.animateValues.isRunning) {
 			return;
 		}
 
-		const timestamp = Date.now() * 0.0001;
+		const timestamp = this.animateValues.counter * 0.01;
 		const x = Math.cos(timestamp * this.currentSpeed) * this.currentOrbit;
     	const z = Math.sin(timestamp * this.currentSpeed) * this.currentOrbit;
 
-    	this.outValues.x = x;
-    	this.outValues.z = z;
+    	this.outValues['Position'].x = x;
+    	this.outValues['Position'].z = z;
+    	this.outValues['Rotation'].y += this.currentRotationY;
+    	this.outValues['Rotation'].x += this.currentRotationX;
 
     	for (let i = 0; i < this.currentOutConnectionsLength; i++) {
 			const param = this.currentOutConnections[i].param;
 
 			this.currentOutConnections[i].in.updateParam(param, this);
 		}
+
+		this.animateValues.counter++;
+	}
+
+	render() {
+
 	}
 
 	
@@ -196,6 +227,14 @@ export default class OrbitDriverNode extends GraphicNode{
 
 		this.reset();
 		window.cancelAnimationFrame(this.animateValues.reqAnimFrame);
+
+		this.speedSlider.remove();
+
+		this.orbitSlider.remove();
+
+		this.rotationXSlider.remove();
+
+		this.rotationYSlider.remove();
 
 		super.removeFromDom();
 

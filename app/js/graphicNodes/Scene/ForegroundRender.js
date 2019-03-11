@@ -13,13 +13,17 @@ export default class ForegroundRender{
 		this.scene = new THREE.Scene();
 		this.renderer = mainRender.renderer;
 
-		this.light = new THREE.DirectionalLight( 0xffffff, 1 );
+		// this.light = new THREE.DirectionalLight( 0xffffff, 1 );
 
-		this.light.position.set(0, 0, 4);
+		// this.light.position.set(0, 0, 4);
 
-		this.scene.add(this.light);
+		this.ambientLight = new THREE.AmbientLight( );
+		// light.position.set( 0, 8, 0 );
+
+		this.scene.add(this.ambientLight);
 
 		this.connectedNodes = [];
+		this.hasConnectedLight = false;
 
 		this.framebuffer = new THREE.WebGLRenderTarget(
 			window.innerWidth,
@@ -38,12 +42,32 @@ export default class ForegroundRender{
 		}
 	}
 
+	addLight(node) {
+		const lightName = `${node.ID}-light`;
+		node.light.name = lightName;
+
+		const meshName = `${node.ID}-mesh`;
+		node.mesh.name = meshName;
+
+		this.scene.add(node.light);
+		this.scene.add(node.mesh);
+		this.hasConnectedLight = true;
+	}
+
+	removeLight(node) {
+		const lightName = `${node.ID}-light`;
+		const light = this.scene.getObjectByName(lightName);
+		this.scene.remove(light);
+
+		const meshName = `${node.ID}-mesh`;
+		const mesh = this.scene.getObjectByName(meshName);
+		this.scene.remove(mesh);
+
+		this.hasConnectedLight = false;
+	}
+
 	addNode(node) {
 		this.connectedNodes.push(node);
-
-		// const lightName = `${node.ID}-light`;
-		// node.light.name = lightName;
-		// this.scene.add(node.light);
 
 		const meshName = `${node.ID}-mesh`;
 		node.mesh.name = meshName;
@@ -52,9 +76,6 @@ export default class ForegroundRender{
 
 	removeNode(node) {
 		this.connectedNodes = this.connectedNodes.filter(t => t.ID !== node.ID);
-
-		// const lightName = `${node.ID}-light`;
-		// this.scene.remove(lightName);
 
 		const meshName = `${node.ID}-mesh`;
 		const mesh = this.scene.getObjectByName(meshName);

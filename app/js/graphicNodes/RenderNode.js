@@ -22,7 +22,10 @@ export default class RenderNode extends GraphicNode{
 	}
 
 	render() {
-		this.renderer.render(this.scene, this.camera, this.framebuffer, true);
+		this.renderer.setRenderTarget(this.framebuffer);
+		this.renderer.render(this.scene, this.camera);
+		this.renderer.setRenderTarget(null);
+		// this.renderer.render(this.scene, this.camera, this.framebuffer, true);
 	}
 
 	onResize(renderWindowDimensions) {
