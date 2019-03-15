@@ -1,0 +1,101 @@
+import GraphicsParamHelpers from '../../graphicNodes/Helpers/ParamHelpers';
+
+export default class AvailableConnections{
+	constructor() {
+		this.collectedInputs = [];
+	}
+
+	showAvailable(outputNode, nodes, nodeConnections) {
+		// const filteredNodes = outputNode.isGraphicsNode ?
+		// 	nodes.filter(t => t.isGraphicsNode && t.ID !== outputNode.ID) :
+		// 	nodes.filter(t => !t.isGraphicsNode && t.ID !== outputNode.ID);
+
+		const filteredNodes = nodes.map(t => t);
+
+		this.collectedInputs = [];
+		for (let i = 0; i < filteredNodes.length; i++) {
+			const node = filteredNodes[i];
+			const obj = {node: node, inputs: [], params: []};
+			if (node.input) {
+				obj.inputs.push(node.input);
+			} else if (node.inputs) {
+				for (const key in node.inputs) {
+					obj.inputs.push(node.inputs[key]);
+				}
+			}
+
+			for (const key in node.inputParams) {
+				obj.params.push(node.inputParams[key]);
+			}
+
+			this.collectedInputs.push(obj);
+		}
+
+		for (let i = 0; i < this.collectedInputs.length; i++) {
+			const inputs = this.collectedInputs[i].inputs;
+			const params = this.collectedInputs[i].params;
+			const inNode = this.collectedInputs[i].node;
+
+			if (inNode.isGraphicsNode) {
+				for (let q = 0; q < inputs.length; q++) {
+					const input = inputs[q];
+					if (!inNode.inputHelpersType.isValid(outputNode, inNode, input.inputType)) {
+
+						input.activatePossible();
+					}
+				}
+				for (let q = 0; q < params.length; q++) {
+					const param = params[q];
+					if (!GraphicsParamHelpers[param.param.paramHelpersType].isValid(outputNode, inNode, param.param)) {
+						param.activatePossible();
+					}
+				}
+			} else {
+				for (let q = 0; q < inputs.length; q++) {
+					const input = inputs[q];
+					if (!inNode.inputHelpersType.isValid(outputNode, inNode, param ? param.param : undefined, nodeConnections)) {
+
+						input.activatePossible();
+					}
+				}
+				for (let q = 0; q < params.length; q++) {
+					const param = params[q];
+					if (!param.param.helper.isValid(outputNode, inNode, param.param, nodeConnections)) {
+						param.activatePossible();
+					}
+				}
+				// if (param && param.helper) {
+				// 	if (!param.helper.isValid(this.outputActiveNode, inputNode, param, this._nodeConnections)) {
+				// 		this.resetConnecting();
+				// 		return;
+				// 	}
+				// } else {
+				// 	if (!inputNode.inputHelpersType.isValid(this.outputActiveNode, inputNode, param, this._nodeConnections)) {
+				// 		this.resetConnecting();
+				// 		return;
+				// 	}
+				// }
+			}
+
+			
+		}
+	}
+
+	resetAvailable() {
+
+		for (let i = 0; i < this.collectedInputs.length; i++) {
+			const inputs = this.collectedInputs[i].inputs;
+			const params = this.collectedInputs[i].params;
+
+			for (let q = 0; q < inputs.length; q++) {
+				const input = inputs[q];
+				input.deactivatePossible();
+			}
+
+			for (let q = 0; q < params.length; q++) {
+				const param = params[q];
+				param.deactivatePossible();
+			}
+		}
+	}
+}

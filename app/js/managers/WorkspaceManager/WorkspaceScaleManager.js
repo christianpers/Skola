@@ -1,26 +1,26 @@
-export default class VerticalSlider{
-	constructor(parentEl, value, valChangeCallback, decimals, settings, name, height) {
 
+
+export default class WorkspaceScaleManager{
+	constructor(parentEl, onScaleChange) {
 		this.parentEl = parentEl;
+		this.valChangeCallback = onScaleChange;
 
-		this.valChangeCallback = valChangeCallback;
+		this.height = 0;
 
-		this.height = height ? height : 60;
+		this.settings = {
+			max: 1,
+			min: .6,
+		}
 
-		this.decimals = decimals;
-		this.value = (value - settings.min) / (settings.max - settings.min);
-		
-		this.settings = settings;
+		const value = 1;
+
+		this.decimals = 2;
+
+		this.value = (value - this.settings.min) / (this.settings.max - this.settings.min);
 
 		this.el = document.createElement('div');
-		this.el.className = 'vertical-slider prevent-drag';
+		this.el.className = 'workspace-scale';
 
-		const label = document.createElement('h4');
-		label.className = 'vertical-slider-label';
-		label.innerHTML = name;
-
-		this.el.appendChild(label);
-		
 		this.rangeInnerContainer = document.createElement('div');
 		this.rangeInnerContainer.className = 'range-inner-container prevent-drag';
 		this.rangeInnerContainer.style.height = `${this.height}px`;
@@ -60,7 +60,6 @@ export default class VerticalSlider{
 
 		this.rangeInnerContainer.addEventListener('click', this.onRangeClickBound);
 		this.rangeKnob.addEventListener('mousedown', this.onMouseDownBound);
-		// this.el.addEventListener('mousedown', this.onMouseDownBound);
 	}
 
 	remove() {
@@ -144,8 +143,8 @@ export default class VerticalSlider{
 
 		const sliderBgRect = this.rangeInnerContainer.getBoundingClientRect();
 
-
 		const y = Math.round((e.y - sliderBgRect.top) * 100) / 100;
+
 		const val = 1 - (y / sliderHeight);
 
 		this.value = val > 1 ? 1 : val < 0 ? 0 : val;
@@ -156,7 +155,6 @@ export default class VerticalSlider{
 			this.valChangeCallback(parseFloat(this.getValue().toFixed(this.decimals)));
 		}
 		
-
 		this.valueEl.innerHTML = this.getValue().toFixed(this.decimals);
 	}
 
@@ -174,5 +172,16 @@ export default class VerticalSlider{
 		// this.knobEl.style.height = `${height}px`;
 
 		this.rangeKnob.style[window.NS.transform] = `translate3d(0px, ${pos}px, 0)`;
+	}
+
+	onResize(h) {
+		const height = h * .6;
+		this.el.style.height = `${height}px`;
+
+		this.height = height;
+
+		this.rangeInnerContainer.style.height = `${height}px`;
+
+		this.el.style.marginTop = `-${height / 2}px`;
 	}
 }

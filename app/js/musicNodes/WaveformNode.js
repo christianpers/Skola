@@ -101,7 +101,6 @@ export default class Waveform extends MusicNode {
 		if (!this.isDisposed) {
 			this.audioNode.disconnect();
 			this.isDisposed = true;
-			console.log('dispose');
 		}
 		
 	}
@@ -149,14 +148,13 @@ export default class Waveform extends MusicNode {
 			this.audioNode = Tone.context.createAnalyser();
 			this.audioNode.fftSize = this.arrSize;
 			this.isDisposed = false;
-			console.log('create audionode');
 		}
 
 		return this.audioNode;
 	}
 
 	getValue() {
-		console.log(this.isConnected ? this.audioValue : 0);
+		// console.log(this.isConnected ? this.audioValue : 0);
 		return this.isConnected ? this.audioValue : 0;
 	}
 
@@ -203,10 +201,5 @@ export default class Waveform extends MusicNode {
 			this.outputDataConnection.in.updateParam(param, this);
 		}
 
-		// for (let i = 0; i < this.currentOutConnectionsLength; i++) {
-		// 	const param = this.currentOutConnections[i].param;
-
-		// 	this.currentOutConnections[i].in.updateParam(param, this);
-		// }
 	}
 }

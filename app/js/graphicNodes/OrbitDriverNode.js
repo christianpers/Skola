@@ -48,19 +48,19 @@ export default class OrbitDriverNode extends GraphicNode{
 		this.topPartEl.appendChild(settingsContainer);
 
 		this.speedSlider = new VerticalSlider(
-			settingsContainer, 0, this.onSpeedChangeBound, 2, {min: -10, max: 10}, 'Orbit speed',
+			settingsContainer, 0, this.onSpeedChangeBound, 2, {min: -2, max: 2}, 'Orbit speed',
 		);
 
 		this.orbitSlider = new VerticalSlider(
-			settingsContainer, 10, this.onOrbitChangeBound, 0, {min: 0, max: 20}, 'Orbit radie',
+			settingsContainer, 0, this.onOrbitChangeBound, 0, {min: 0, max: 20}, 'Orbit radie',
 		);
 
 		this.rotationXSlider = new VerticalSlider(
-			settingsContainer, 0, this.onRotationChangeXBound, 3, {min: -1, max: 1}, 'Rotation X',
+			settingsContainer, 0, this.onRotationChangeXBound, 3, {min: -.1, max: .1}, 'Rotation X',
 		);
 
 		this.rotationYSlider = new VerticalSlider(
-			settingsContainer, 0, this.onRotationChangeYBound, 3, {min: -1, max: 1}, 'Rotation Y',
+			settingsContainer, 0, this.onRotationChangeYBound, 3, {min: -.1, max: .1}, 'Rotation Y',
 		);
 
 
@@ -157,6 +157,8 @@ export default class OrbitDriverNode extends GraphicNode{
 	}
 
 	getValue(param) {
+		// console.log(this.outValues);
+
 		return this.outValues[param.parent][param.param];
 	}
 

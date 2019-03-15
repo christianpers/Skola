@@ -21,6 +21,8 @@ export default class WorkspaceManager{
 		this.onMouseMoveBound = this.onMouseMove.bind(this);
 		this.onMouseUpBound = this.onMouseUp.bind(this);
 
+		this.currentScale = 1;
+
 		this.moveCoords = {
 			start: {
 				x: 0,
@@ -35,6 +37,11 @@ export default class WorkspaceManager{
 		this.el.style[window.NS.transform] = `translate3d(${this.moveCoords.offset.x}px, ${this.moveCoords.offset.y}px, 0)`;
 
 		this.el.addEventListener('mousedown', this.onMouseDownBound);
+	}
+
+	setScale(val) {
+		this.currentScale = val;
+		this.el.style[window.NS.transform] = `translate3d(${this.moveCoords.offset.x}px, ${this.moveCoords.offset.y}px, 0) scale(${val})`;
 	}
 
 	onMouseDown(e) {
@@ -62,8 +69,7 @@ export default class WorkspaceManager{
 		this.moveCoords.offset.x = deltaX;
 		this.moveCoords.offset.y = deltaY;
 
-		this.el.style[window.NS.transform] = `translate3d(${deltaX}px, ${deltaY}px, 0)`;
-
+		this.el.style[window.NS.transform] = `translate3d(${deltaX}px, ${deltaY}px, 0) scale(${this.currentScale})`;
 	}
 
 	onMouseUp(e) {

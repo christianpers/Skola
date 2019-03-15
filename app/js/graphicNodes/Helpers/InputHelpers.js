@@ -4,7 +4,7 @@ const isValidNeedsFramebufferInput = (outNode) => {
 
 const isValidSceneNodeConnection = (outNode, inNode, inputType) => {
 	const isValidBackgroundInput = () => {
-		return outNode.framebuffer || outNode.texture;
+		return outNode.isBackgroundNode;
 	};
 
 	const isValidForegroundInput = () => {
@@ -15,12 +15,14 @@ const isValidSceneNodeConnection = (outNode, inNode, inputType) => {
 		return outNode.isLightNode && !inNode.foregroundRender.hasConnectedLight;
 	};
 
+
 	const hasOutputConnection = inNode.enabledInputs.some(t => t.out.ID === outNode.ID);
 
 	if (hasOutputConnection || !inputType) {
 		return false;
 	}
 
+	
 	const inputTypeValidations = {
 		'background': isValidBackgroundInput,
 		'foreground': isValidForegroundInput,

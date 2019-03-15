@@ -114,6 +114,47 @@ button:focus {
 	}
 }
 
+.workspace-scale {
+	position: absolute;
+	top: calc(50% - 60px);
+	left: 20px;
+	width: 40px;
+	z-index: 2;
+
+	& .range-container {
+		height: 100%;
+		display: flex;
+		justify-content: center;
+	}
+
+	& .range-inner-container {
+		width: 10px;
+		// height: 100px;
+		background: black;
+		position: relative;
+
+		& .range-knob {
+			position: absolute;
+			top: 0;
+			left: 50%;
+			width: 20px;
+			height: 8px;
+			background: yellow;
+			margin-left: -10px;
+		}
+	}
+
+	& .value-container {
+		position: absolute;
+		bottom: -25px;
+		right: 1px;
+		color: yellow;
+		font-family: Arial;
+		width: 100%;
+		text-align: center;
+	}
+}
+
 .workspace-container{
 	overflow: hidden;
     position: relative;
@@ -330,6 +371,7 @@ button:focus {
 .node-component{
 	display: flex;
 	flex: 1;
+	transition: opacity .4s;
 	&.right-align{
 		text-align: right;
 	}
@@ -352,6 +394,10 @@ button:focus {
 		& .dot{
 			background: red;
 		}
+	}
+
+	&.not-possible {
+		opacity: 0;
 	}
 }
 
@@ -954,7 +1000,7 @@ button:focus {
 
 
 .canvas{
-	width: 540px;
+	width: 640px;
 	height: 600px;
 	& .top-part{
 		padding: 0;
@@ -967,7 +1013,7 @@ button:focus {
 
 		& .bottom-part-settings {
 			position: absolute;
-			left: 20%;
+			left: 16%;
 			z-index: 1;
 			display: flex;
 			justify-content: space-between;
@@ -983,6 +1029,7 @@ button:focus {
 	    justify-content: center;
 	    position: relative;
 	    width: 148px;
+	    text-align: center;
 		& .toggle-el {
 			width: 20px;
 			height: 20px;
@@ -992,6 +1039,31 @@ button:focus {
 			margin-top: 8px;
 			position: absolute;
 			left: 50%;
+			margin-left: -10px;
+
+			&.enabled{
+				background: rgba(255,255,0,1.0);
+			}
+		}
+	}
+
+	& .axes-helper-setting{
+		margin-left: 40px;
+	    color: white;
+	    align-items: center;
+	    justify-content: center;
+	    position: relative;
+	    width: 148px;
+		& .toggle-el {
+			width: 20px;
+			height: 20px;
+			background: rgba(50,50,50,1.0);
+			cursor: pointer;
+			border-radius: 3px;
+			margin-top: 8px;
+			position: absolute;
+			left: 50%;
+			margin-left: -10px;
 
 			&.enabled{
 				background: rgba(255,255,0,1.0);

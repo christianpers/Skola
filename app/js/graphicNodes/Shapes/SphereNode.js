@@ -11,22 +11,9 @@ export default class SphereNode extends GraphicNode{
 		const w = window.innerWidth;
 		const h = window.innerHeight;
 
-		// this.texture = THREE.ImageUtils.loadTexture( 'assets/test/Image1.png', null );
-		// this.texture.magFilter = THREE.LinearFilter;
-		// this.texture.minFilter = THREE.LinearFilter;
-
 		this.geometry = new THREE.SphereGeometry(2, 32, 32);
 		this.material = new THREE.MeshPhongMaterial( {  } );
 		this.mesh = new THREE.Mesh(this.geometry, this.material);
-
-		// this.light = new THREE.DirectionalLight( 0xffffff, 1 );
-
-		// this.light.position.set(0, 0, 4);
-		// this.scene.add( directionalLightBtm );
-
-		// this.scene.add(this.mesh);
-
-		// this.light.target = this.mesh;
 
 		const textureParam = {
 			title: 'Texture',
@@ -120,7 +107,7 @@ export default class SphereNode extends GraphicNode{
 			paramHelpersType: 'scale',
 			needsFrameUpdate: false,
 			minMax: {min: .1, max: 6},
-			defaultVal: 0,
+			defaultVal: 1,
 		};
 
 		this.params = {

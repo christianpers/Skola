@@ -1,10 +1,12 @@
 export default class NodeInput{
-	constructor(parentEl, onClickCallback, isGraphicsNode, str) {
+	constructor(parentEl, onClickCallback, isGraphicsNode, str, inputType) {
 
 		this.isActive = false;
 		this.onClickCallback = onClickCallback;
 
 		this.parentEl = parentEl;
+
+		this.inputType = inputType;
 
 		this.el = document.createElement('div');
 		this.el.className = 'node-input node-component';
@@ -68,10 +70,10 @@ export default class NodeInput{
 	}
 
 	activatePossible() {
-		this.el.classList.add('possible');
+		this.el.classList.add('not-possible');
 	}
 
 	deactivatePossible() {
-		this.el.classList.remove('possible');
+		this.el.classList.remove('not-possible');
 	}
 }

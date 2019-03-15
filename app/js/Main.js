@@ -4,6 +4,7 @@ import KeyboardManager from './managers/KeyboardManager';
 import NodeSettings from './views/NodeSettings';
 import WorkspaceManager from './managers/WorkspaceManager';
 import GlobalAudioSettings from './managers/GlobalAudioSettings';
+import WorkspaceScaleManager from './managers/WorkspaceManager/WorkspaceScaleManager';
 
 import OscillatorNode from './musicNodes/OscillatorNode';
 import GainNode from './musicNodes/GainNode';
@@ -179,6 +180,9 @@ export default class Main{
 
 		this.workspaceManager = new WorkspaceManager(document.body);
 
+		this.onScaleChangeBound = this.onScaleChange.bind(this);
+		// this.scaleManager = new WorkspaceScaleManager(document.body, this.onScaleChangeBound);
+
 		this.globalAudioSettings = new GlobalAudioSettings(this.workspaceManager.containerEl);
 
 		this.onResize();
@@ -260,6 +264,12 @@ export default class Main{
 		this.nodeManager = new NodeManager(null, this.keyboardManager, this.onNodeActiveBound, this.workspaceManager.el);
 	}
 
+	onScaleChange(val) {
+		console.log(val);
+
+		// this.workspaceManager.setScale(val);
+	}
+
 	onNodeActive(node) {
 		this.nodeSettings.show(node);
 	}
@@ -287,10 +297,9 @@ export default class Main{
 		this.nodeManager.render();
 	}
 
-	onResize() {
-		const w = window.innerWidth;
-		const h = window.innerHeight;
+	onResize(w, h) {
 		this.workspaceManager.onResize(w, h);
+		// this.scaleManager.onResize(h);
 	}
 
 }

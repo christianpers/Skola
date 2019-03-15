@@ -6,6 +6,7 @@ import InputHelpers from './Helpers/InputHelpers';
 import ForegroundRender from './Scene/ForegroundRender';
 import NodeResizer from '../views/Nodes/NodeComponents/NodeResizer';
 import CameraControlSetting from './Scene/CameraControlSetting';
+import AxesHelper from './Scene/AxesHelper';
 import HorizontalSlider from '../views/Nodes/NodeComponents/HorizontalSlider';
 
 export default class SceneNode extends Node{
@@ -51,22 +52,19 @@ export default class SceneNode extends Node{
 		this.onAmbientLightSettingChangeBound = this.onAmbientLightSettingChange.bind(this);
 		this.ambientLightSetting = new HorizontalSlider(this.bottomPartSettings, 1, this.onAmbientLightSettingChangeBound, 2, {min: 0, max: 1}, 'ambient-light', 'Ambient light');
 
+		this.axesHelper = new AxesHelper(this.bottomPartSettings, this.foregroundRender);
+		
+
 		this.scene = new THREE.Scene();
 		this.renderer = this.mainRender.renderer;
 		this.renderer.setSize(this.topPartEl.clientWidth, this.topPartEl.clientHeight);
-		// this.renderer.autoClear = false;
 
 		this.topPartEl.appendChild(this.renderer.domElement);
-		// this.renderer.domElement.classList.add('prevent-drag');
 
 		const geometry = new THREE.PlaneGeometry( 2, 2 );
 
 		const resUniforms = {};
 		resUniforms.u_res = {value: new THREE.Vector2(window.innerWidth, window.innerHeight)};
-
-		// this.texture = THREE.ImageUtils.loadTexture( 'assets/test/Image1.png', null );
-		// this.texture.magFilter = THREE.LinearFilter;
-		// this.texture.minFilter = THREE.LinearFilter;
 
 		const textureUniforms = {};
 		
@@ -105,9 +103,9 @@ export default class SceneNode extends Node{
 		this.onInputClickForegroundBound = this.onInputClickForeground.bind(this);
 		this.onInputClickLightBound = this.onInputClickLight.bind(this);
 
-		this.inputBackground = new NodeInput(this.bottomPartEl, this.onInputClickBackgroundBound, this.isGraphicsNode, 'Bakgrund In');
-		this.inputForeground = new NodeInput(this.bottomPartEl, this.onInputClickForegroundBound, this.isGraphicsNode, 'Förgrund In');
-		this.inputLight = new NodeInput(this.bottomPartEl, this.onInputClickLightBound, this.isGraphicsNode, 'Ljus In');
+		this.inputBackground = new NodeInput(this.bottomPartEl, this.onInputClickBackgroundBound, this.isGraphicsNode, 'Bakgrund In', 'background');
+		this.inputForeground = new NodeInput(this.bottomPartEl, this.onInputClickForegroundBound, this.isGraphicsNode, 'Förgrund In', 'foreground');
+		this.inputLight = new NodeInput(this.bottomPartEl, this.onInputClickLightBound, this.isGraphicsNode, 'Ljus In', 'light');
 
 		this.inputs = {
 			'background': this.inputBackground,
@@ -152,7 +150,6 @@ export default class SceneNode extends Node{
 		this.inputLight.offsetLeft = this.inputLight.el.offsetLeft;
 		this.inputLight.offsetTop = this.inputLight.el.offsetTop;
 
-		// console.log(this.nodeResizer.currentDims.h + delta.y);
 		this.onResize();
 	}
 

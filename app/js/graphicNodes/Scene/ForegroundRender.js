@@ -17,6 +17,10 @@ export default class ForegroundRender{
 
 		// this.light.position.set(0, 0, 4);
 
+		this.axesHelper = new THREE.AxesHelper( 5 );
+		this.axesHelper.name = 'AxesHelper';
+		
+
 		this.ambientLight = new THREE.AmbientLight( );
 		// light.position.set( 0, 8, 0 );
 
@@ -30,6 +34,15 @@ export default class ForegroundRender{
 			window.innerHeight,
 			{minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter}
 		);
+	}
+
+	toggleAxesHelper(enable) {
+		if (enable) {
+			this.scene.add(this.axesHelper);
+		} else {
+			const axesHelper = this.scene.getObjectByName(this.axesHelper.name);
+			this.scene.remove(this.axesHelper);
+		}
 	}
 
 	toggleCameraControl(enable) {

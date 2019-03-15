@@ -53,6 +53,13 @@ export default class NodeParam{
 
 	disable() {
 		this.el.classList.remove('active');
+	}
 
+	activatePossible() {
+		this.el.classList.add('not-possible');
+	}
+
+	deactivatePossible() {
+		this.el.classList.remove('not-possible');
 	}
 }

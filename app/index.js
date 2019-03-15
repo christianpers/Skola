@@ -47,7 +47,7 @@ class Starter {
 	onResize() {
 		var w = window.innerWidth;
 		var h = window.innerHeight;
-		// this.main.onResize(w,h);
+		this.main.onResize(w,h);
 	}
 
 };

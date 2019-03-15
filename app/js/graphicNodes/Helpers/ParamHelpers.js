@@ -47,7 +47,7 @@ const onBumpmapDisconnect = (inNode) => {
 
 const isValidParamColorInput = (outNode) => {
 
-	return outNode.picker;
+	return !!outNode.picker;
 };
 
 const onColorParamUpdate = (inNode, outNode) => {
@@ -55,7 +55,11 @@ const onColorParamUpdate = (inNode, outNode) => {
 	inNode.material.color = outNode.currentColor;
 };
 
-const isValidParamPositionInput = (outNode, param) => {
+const isValidParamPositionInput = (outNode, inNode, param) => {
+
+	if  (outNode.framebuffer || outNode.texture || outNode.picker || outNode.isSequencer) {
+		return false;
+	}
 
 	return (outNode.isParam && !param.isConnected) || (outNode.isAnalyser && !param.isConnected);
 };
@@ -83,6 +87,16 @@ const onScaleParamUpdate = (inNode, outNode, param) => {
 	inNode.mesh.scale.set(val, val, val);
 };
 
+const onScaleParamDisconnect = (inNode, param, outNode) => {
+
+	if (outNode.isAnalyser) {
+		inNode.mesh.scale.set(1, 1, 1);
+	} else {
+		param.defaultVal = outNode.getValue(param);
+	}
+	
+};
+
 const onLightParamUpdate = (inNode, outNode, param) => {
 
 	const val = outNode.getValue(param);
@@ -93,7 +107,6 @@ const onLightParamUpdate = (inNode, outNode, param) => {
 
 
 const onShaderParamUpdate = (inNode, outNode, param) => {
-
 
 	inNode.mesh.material.uniforms[param.param].value = outNode.getValue();
 };
@@ -133,7 +146,7 @@ const paramHelpers = {
 	scale: {
 		update: onScaleParamUpdate,
 		isValid: isValidParamPositionInput,
-		disconnect: onPositionDisconnect,
+		disconnect: onScaleParamDisconnect,
 	},
 	shaderParam: {
 		update: onShaderParamUpdate,

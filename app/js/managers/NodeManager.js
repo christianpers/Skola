@@ -7,6 +7,8 @@ import NodeConnectionLine from './NodeConnectionLine';
 import ParamHelpers from '../graphicNodes/Helpers/ParamHelpers';
 import Helpers from '../musicHelpers/Helpers';
 
+import AvailableConnections from './NodeManager/AvailableConnections';
+
 export default class NodeManager{
 	constructor(config, keyboardManager, onNodeActive, parentEl) {
 
@@ -14,6 +16,8 @@ export default class NodeManager{
 		this.hasConfig = !!config;
 
 		this.onNodeActiveCallback = onNodeActive;
+
+		this.availableConnections = new AvailableConnections();
 
 		this.constructorIsDone = false;
 
@@ -83,9 +87,7 @@ export default class NodeManager{
 					sequencers[i].out.sequencerManager.onAudioNodeConnectionUpdate(audioConnections);
 					sequencerIds.push(ID);
 				}
-				
 			}
-
 			sequencerIds = [];
 		}
 
@@ -136,6 +138,8 @@ export default class NodeManager{
 		this.outputActiveType = undefined;
 
 		this.nodeConnectionLine.resetLine();
+
+		this.availableConnections.resetAvailable();
 	}
 
 	onConnecting(node, clickPos, outputType) {
@@ -151,12 +155,16 @@ export default class NodeManager{
 		this.outputActiveType = outputType;
 
 		this.nodeConnectionLine.onConnectionActive(node, clickPos, outputType);
+
+		this.availableConnections.showAvailable(node, this._nodes, this._nodeConnections);
 		
 	}
 
 	onInputConnection(inputNode, inputType, param) {
 
 		let inputAvailable = true;
+
+		this.availableConnections.resetAvailable();
 
 		if (!this.isConnecting || !this.outputActiveNode) {
 			// inputAvailable = false;
@@ -195,7 +203,7 @@ export default class NodeManager{
 
 		} else {
 			
-			if (param && !ParamHelpers[param.paramHelpersType].isValid(this.outputActiveNode, param)) {
+			if (param && !ParamHelpers[param.paramHelpersType].isValid(this.outputActiveNode, inputNode, param, this._nodeConnections)) {
 				this.resetConnecting();
 				return;
 			} else {
