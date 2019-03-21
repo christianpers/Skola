@@ -70,35 +70,35 @@ export default class OscillatorNode extends MusicNode{
 			title: 'Octave',
 		};
 
-		const modulationIndexRangeConfig = {
-			parentEl: rangeContainer,
-			title: 'ModulationIndex',
-			initValue: 10,
-			settings: {min: 1, max: 40},
-			valChangeCallback: this.onRangeChangeCallbackBound,
-			param: 'modulationIndex',
-			decimals: 0,
-			disable: false,
-		};
+		// const modulationIndexRangeConfig = {
+		// 	parentEl: rangeContainer,
+		// 	title: 'ModulationIndex',
+		// 	initValue: 10,
+		// 	settings: {min: 1, max: 40},
+		// 	valChangeCallback: this.onRangeChangeCallbackBound,
+		// 	param: 'modulationIndex',
+		// 	decimals: 0,
+		// 	disable: false,
+		// };
 
-		this.modulationIndexRangeSlider = new RangeSlider(
-			modulationIndexRangeConfig.parentEl,
-			modulationIndexRangeConfig.title,
-			modulationIndexRangeConfig.initValue,
-			modulationIndexRangeConfig.settings,
-			modulationIndexRangeConfig.valChangeCallback,
-			modulationIndexRangeConfig.param,
-			modulationIndexRangeConfig.decimals,
-			modulationIndexRangeConfig.disable,
-		);
+		// this.modulationIndexRangeSlider = new RangeSlider(
+		// 	modulationIndexRangeConfig.parentEl,
+		// 	modulationIndexRangeConfig.title,
+		// 	modulationIndexRangeConfig.initValue,
+		// 	modulationIndexRangeConfig.settings,
+		// 	modulationIndexRangeConfig.valChangeCallback,
+		// 	modulationIndexRangeConfig.param,
+		// 	modulationIndexRangeConfig.decimals,
+		// 	modulationIndexRangeConfig.disable,
+		// );
 
-		const modulationIndexParam = {
-			useAsInput: false,
-			value: modulationIndexRangeConfig.initValue,
-			param: 'modulationIndex',
-			slider: this.modulationIndexRangeSlider,
-			title: 'Modulation',
-		};
+		// const modulationIndexParam = {
+		// 	useAsInput: false,
+		// 	value: modulationIndexRangeConfig.initValue,
+		// 	param: 'modulationIndex',
+		// 	slider: this.modulationIndexRangeSlider,
+		// 	title: 'Modulation',
+		// };
 
 		const oscillatorTypeParam = {
 			useAsInput: false,
@@ -129,11 +129,11 @@ export default class OscillatorNode extends MusicNode{
 
 		this.params[octaveParam.param] = octaveParam;
 		this.params[triggerParam.param] = triggerParam;
-		this.params[modulationIndexParam.param] = modulationIndexParam;
+		// this.params[modulationIndexParam.param] = modulationIndexParam;
 		this.params[oscillatorTypeParam.param] = oscillatorTypeParam;
 		// this.params[modulatorTypeParam.param] = modulatorTypeParam;
 
-		this.synthParams.push(modulationIndexParam.param);
+		// this.synthParams.push(modulationIndexParam.param);
 		this.synthParams.push(oscillatorTypeParam.param);
 		// this.synthParams.push(modulatorTypeParam.param);
 

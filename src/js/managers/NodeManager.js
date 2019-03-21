@@ -156,7 +156,7 @@ export default class NodeManager{
 
 		this.nodeConnectionLine.onConnectionActive(node, clickPos, outputType);
 
-		this.availableConnections.showAvailable(node, this._nodes, this._nodeConnections);
+		this.availableConnections.showAvailable(node, this._nodes, this._nodeConnections, outputType);
 		
 	}
 
@@ -195,7 +195,7 @@ export default class NodeManager{
 					return;
 				}
 			} else {
-				if (!inputNode.inputHelpersType.isValid(this.outputActiveNode, inputNode, param, this._nodeConnections)) {
+				if (!inputNode.inputHelpersType.isValid(this.outputActiveNode, inputNode, undefined, this._nodeConnections, this.outputActiveType)) {
 					this.resetConnecting();
 					return;
 				}

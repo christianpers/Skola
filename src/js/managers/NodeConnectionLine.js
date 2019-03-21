@@ -40,11 +40,19 @@ export default class NodeConnectionLine{
 
 		const line = this.line;
 
+		let color = nodeOut.isParam ? 'yellow' : 'red';
+		if (nodeOut.outputs && nodeOut.outputs[outputType]) {
+			const output = nodeOut.outputs[outputType];
+			if (output.isParamOutput) {
+				color = 'yellow';
+			}
+		}
+
 		line.setAttribute('x1', x);
 		line.setAttribute('y1', y);
 		line.setAttribute('x2', x);
 		line.setAttribute('y2', y);
-		line.setAttribute("stroke", nodeOut.isParam ? 'yellow' : 'red');
+		line.setAttribute("stroke", color);
 		line.setAttribute("stroke-opacity", .6);
 
 		window.addEventListener('mousemove', this.onMouseMoveBound);

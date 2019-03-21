@@ -195,8 +195,14 @@ export default class SequencerNode extends MusicNode{
 			this.sequencerManager.removeSynth(col, btnData.step);
 		}
 		
-		
 		this.update();
+	}
+
+	onOutputClick(clickPos) {
+
+		if (this.outConnectionsLength === 0) {
+			this.onConnectingCallback(this, clickPos);
+		}
 
 	}
 

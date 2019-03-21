@@ -5,7 +5,7 @@ export default class AvailableConnections{
 		this.collectedInputs = [];
 	}
 
-	showAvailable(outputNode, nodes, nodeConnections) {
+	showAvailable(outputNode, nodes, nodeConnections, outputType) {
 		// const filteredNodes = outputNode.isGraphicsNode ?
 		// 	nodes.filter(t => t.isGraphicsNode && t.ID !== outputNode.ID) :
 		// 	nodes.filter(t => !t.isGraphicsNode && t.ID !== outputNode.ID);
@@ -53,7 +53,7 @@ export default class AvailableConnections{
 			} else {
 				for (let q = 0; q < inputs.length; q++) {
 					const input = inputs[q];
-					if (!inNode.inputHelpersType.isValid(outputNode, inNode, param ? param.param : undefined, nodeConnections)) {
+					if (!inNode.inputHelpersType.isValid(outputNode, inNode, undefined, nodeConnections, outputType)) {
 
 						input.activatePossible();
 					}

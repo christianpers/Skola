@@ -1,9 +1,9 @@
 const isValidSingleInput = (outNode, inNode, paramConnection, connections) => {
 	let ret = true;
 
-	if (outNode.isParam && !paramConnection || !outNode.isParam && paramConnection) {
-		ret = false;
-	}
+	// if (outNode.isParam && !paramConnection || !outNode.isParam && paramConnection) {
+	// 	ret = false;
+	// }
 
 	const hasConnection = connections.some(t => t.in.ID === inNode.ID && !t.param);
 	if (hasConnection) {
@@ -13,12 +13,19 @@ const isValidSingleInput = (outNode, inNode, paramConnection, connections) => {
 	return ret;
 };
 
-const isValidMultipleInput = (outNode, inNode, paramConnection, connections) => {
+const isValidMultipleInput = (outNode, inNode, paramConnection, connections, outputType) => {
 	let ret = true;
 
-	if (outNode.isParam && !paramConnection || !outNode.isParam && paramConnection) {
-		ret = false;
+	if (outNode.outputs && outNode.outputs[outputType]) {
+		const output = outNode.outputs[outputType];
+		if (output.isParamOutput && !inNode.isParam) {
+			return false;
+		}
 	}
+
+	// if (outNode.isParam && !paramConnection || !outNode.isParam && paramConnection) {
+	// 	ret = false;
+	// }
 
 	return ret;
 };

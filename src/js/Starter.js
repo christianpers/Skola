@@ -1,9 +1,8 @@
 'use strict';
 
-import './main.scss';
-import Main from "./js/Main";
+import Main from "./Main";
 
-class Starter {
+export default class Starter {
 	constructor() {
 		
 		function transformProp() {
@@ -34,6 +33,10 @@ class Starter {
 
 	}
 
+	init() {
+		console.log('test');
+	}
+
 	reqFrame() {
 
 		this.main.update();
@@ -51,14 +54,3 @@ class Starter {
 	}
 
 };
-
-if(document.body) new Starter();
-else {
-	window.addEventListener("load", new Starter());
-}
-
-
-
-
-
-

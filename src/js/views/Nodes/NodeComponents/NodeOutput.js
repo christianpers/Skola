@@ -6,6 +6,8 @@ export default class NodeOutput{
 
 		this.parentEl = parentEl;
 
+		this.isParamOutput = isParam;
+
 		this.el = document.createElement('div');
 		const classes = 
 		this.el.className = `node-output node-component ${hasInput ? '' : 'right-align'} ${isParam ? 'param' : ''}`;
