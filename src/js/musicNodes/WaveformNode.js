@@ -13,6 +13,7 @@ export default class Waveform extends MusicNode {
 		this.isAnalyser = true;
 		this.isDisposed = false;
 		this.hasMultipleOutputs = true;
+		this.initAsNotCollapsed = true;
 
 		this.arrSize = 256;
 

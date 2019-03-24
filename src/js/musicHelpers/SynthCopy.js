@@ -53,7 +53,7 @@ export default class SynthCopy{
 	updateConnections(connections) {
 
 		// debugger;
-		console.log('updateConnections');
+		// console.log('updateConnections');
 
 		// DISCONNECT
 		this.reset(connections);

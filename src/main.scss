@@ -67,6 +67,108 @@ button:focus {
     outline: none;
 }
 
+.user-window {
+	position: absolute;
+    top: 0;
+    left: 0;
+    padding: 10px;
+    background: black;
+    transform: translateY(-100%);
+    transition: transform .4s;
+    color: white;
+    z-index: 4;
+    cursor: pointer;
+
+    &.show {
+    	transform: translateY(0);
+    }
+
+    .username-container {
+    	position: relative;
+
+    }
+
+    .logout-modal {
+		position: absolute;
+	    top: 100%;
+	    left: 50%;
+	    padding: 10px;
+	    transform: translate3d(-50%, -100%, 0);
+	    // transition: transform .4s;
+	    color: white;
+	    display: none;
+
+		.logout-btn {
+			padding: 6px 10px;
+		    background: yellow;
+		    border-radius: 4px;
+		    color: black;
+		    cursor: pointer;
+		    display: inline-block;
+		    white-space: nowrap;
+		}
+
+
+	    &.show {
+	    	transform: translate3d(-50%, 0%, 0);
+	    	display: block;
+	    }
+	}
+
+    
+}
+
+
+
+.sign-in {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	z-index: 4;
+	// transform: translate3d(-50%, -50%, 0);
+	margin-left: -150px;
+	margin-top: -100px;
+	width: 300px;
+	height: 240px;
+	padding: 14px 24px;
+	background: white;
+	text-align: right;
+	transition: transform .2s, opacity .2s;
+
+	.error-message {
+		color: red;
+		font-size: 14px;
+		margin-bottom: 10px;
+	}
+
+	.input-container {
+		width: 100%;
+		margin-bottom: 10px;
+		text-align: left;
+		& > input {
+			margin-top: 2px;
+			padding: 6px;
+			border: 0;
+			font-size: 12px;
+			width: 100%;
+			box-sizing: border-box;
+			background: #1b1c1e;
+			color: white;
+
+		}
+	}
+
+	.sign-in-button {
+		margin-top: 20px;
+		padding: 10px 14px;
+		background: #1b1c1e;
+		color: white;
+		font-size: 14px;
+		display: inline-block;
+		cursor: pointer;
+	}
+}
+
 .control-ui{
 	position: fixed;
 	bottom: 20%;
@@ -283,6 +385,38 @@ button:focus {
 	}
 }
 
+.node-top-options {
+	position: absolute;
+	top: -22px;
+	right: 0px;
+	display: flex;
+
+	.node-remove {
+		padding: 4px;
+		background: black;
+		color: white;
+		cursor: pointer;
+		border: 1px solid black;
+		&:hover {
+			border: 1px solid white;
+		}
+	}
+
+	.node-toggle-collapse {
+		padding: 4px;
+		color: white;
+		cursor: pointer;
+		margin-right: 6px;
+		color: black;
+		cursor: pointer;
+		border: 1px solid yellow;
+		background: yellow;
+		&:hover {
+			border: 1px solid black;
+		}
+	}
+}
+
 .node{
 	position: absolute;
 	width: 200px;
@@ -314,12 +448,15 @@ button:focus {
 	& .top-part{
 		width: 100%;
     	height: 60%;
-    	border-bottom: 2px solid #222223;
     	padding: 10px;
     	padding-left: 0;
+    	&.hide {
+    		display: none;
+    	}
 	}
 
 	& .bottom-part{
+		border-top: 2px solid #222223;
 		width: 100%;
     	height: 40%;
     	display: flex;
@@ -452,20 +589,6 @@ button:focus {
 .node-input{
 	position: relative;
     left: -5px;
-}
-
-.node-remove {
-	position: absolute;
-	top: -22px;
-	right: 0px;
-	padding: 4px;
-	background: black;
-	color: white;
-	cursor: pointer;
-	border: 1px solid black;
-	&:hover {
-		border: 1px solid white;
-	}
 }
 
 .node-settings{

@@ -11,9 +11,12 @@ export default class Node{
 		this.hasGraphicsInput = false;
 		this.needsUpdate = false;
 		this.hasMultipleOutputs = false;
+		this.initAsNotCollapsed = false;
 
 		this.outDotPos = undefined;
 		this.inDotPos = undefined;
+
+		this.isCollapsed = false;
 	}
 
 	init(pos, parentEl, onConnectingCallback, onInputConnectionCallback, type, nodeConfig, onNodeActive, onNodeRemove) {
@@ -44,8 +47,6 @@ export default class Node{
 		this.onInputClickBound = this.onInputClick.bind(this);
 		this.onRemoveClickBound = this.onRemoveClick.bind(this);
 
-		this.remove = new NodeRemove(this.topPartEl, this.onRemoveClickBound);
-
 		const hasInput = !this.isParam && this.hasAudioInput || this.hasGraphicsInput;
 
 		if (hasInput && !this.isCanvasNode) {
@@ -71,16 +72,50 @@ export default class Node{
 			offset: {
 				x: this.initNodeConfig ? nodeConfig.pos[0] : pos.x,
 				y: this.initNodeConfig ? nodeConfig.pos[1] : pos.y,
-				// x: this.initNodeConfig ? nodeConfig.pos[0] : parentEl.clientWidth / 2 - 100 * Math.random(),
-				// y: this.initNodeConfig ? nodeConfig.pos[1] : parentEl.clientHeight / 2 - 50 * Math.random(),
 			}
 		};
 
 		this.el.style[window.NS.transform] = `translate3d(${this.moveCoords.offset.x}px, ${this.moveCoords.offset.y}px, 0)`;
 
+		const optionWrapper = document.createElement('div');
+		optionWrapper.className = 'node-top-options';
+
+		this.el.appendChild(optionWrapper);
+
+		// Collapsed View
+		if (!this.initAsNotCollapsed) {
+			this.onToggleCollapseBound = this.onToggleCollapse.bind(this);
+			this.toggleCollapseView = document.createElement('div');
+			this.toggleCollapseView.className = 'node-toggle-collapse';
+			
+			this.toggleCollapseLabel = document.createElement('h5');
+			
+			this.toggleCollapseView.appendChild(this.toggleCollapseLabel);
+
+			optionWrapper.appendChild(this.toggleCollapseView);
+
+			this.toggleCollapseView.addEventListener('click', this.onToggleCollapseBound);
+
+			this.onToggleCollapse();
+		}
+
+		this.remove = new NodeRemove(optionWrapper, this.onRemoveClickBound);
+
 		this.onMouseDownBound = this.onMouseDown.bind(this);
 		this.onMouseMoveBound = this.onMouseMove.bind(this);
 		this.onMouseUpBound = this.onMouseUp.bind(this);
+	}
+
+	onToggleCollapse() {
+		if (this.isCollapsed) {
+			this.topPartEl.classList.remove('hide');
+			this.toggleCollapseLabel.innerHTML = 'Minimera';
+			this.isCollapsed = false;
+		} else {
+			this.topPartEl.classList.add('hide');
+			this.toggleCollapseLabel.innerHTML = 'Expandera';
+			this.isCollapsed = true;
+		}
 	}
 
 	getOutputPos() {
@@ -160,6 +195,9 @@ export default class Node{
 
 	removeFromDom() {
 		this.el.removeEventListener('mousedown', this.onMouseDownBound);
+		if (this.toggleCollapseView) {
+			this.toggleCollapseView.removeEventListener('click', this.onToggleCollapseBound);
+		}
 		this.parentEl.removeChild(this.el);
 	}
 

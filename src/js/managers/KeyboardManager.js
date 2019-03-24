@@ -14,33 +14,73 @@ export default class KeyboardManager{
 			this.keys.push(obj);
 		}
 
-		window.addEventListener('keydown', (e) => {
+		this.onKeyDownBound = this.onKeyDown.bind(this);
+		this.onKeyUpBound = this.onKeyUp.bind(this);
+
+		window.addEventListener('keydown', this.onKeyDownBound);
+		window.addEventListener('keyup', this.onKeyUpBound);
+
+		// window.addEventListener('keydown', (e) => {
 			
-			const keyCode = e.keyCode;
-			const keyObj = this.getKey(keyCode);
-			if (keyObj !== null){
+		// 	const keyCode = e.keyCode;
+		// 	const keyObj = this.getKey(keyCode);
+		// 	if (keyObj !== null){
 
-				e.preventDefault();
-				if (keyObj.triggered) return;
+		// 		e.preventDefault();
+		// 		if (keyObj.triggered) return;
 				
-				keyObj.triggered = true;
-				keyObj.synth.keyDown();
-			}
-		});
+		// 		keyObj.triggered = true;
+		// 		keyObj.synth.keyDown();
+		// 	}
+		// });
 
-		window.addEventListener('keyup', (e) => {			
+		// window.addEventListener('keyup', (e) => {			
+
+		// 	e.preventDefault();
+
+		// 	const keyCode = e.keyCode;
+		// 	const keyObj = this.getKey(keyCode);
+		// 	if (keyObj !== null){
+		// 		if (!keyObj.triggered) return;
+			
+		// 		keyObj.triggered = false;
+		// 		keyObj.synth.keyUp();	
+		// 	};
+		// });
+	}
+
+	onKeyDown(e) {
+		const keyCode = e.keyCode;
+		const keyObj = this.getKey(keyCode);
+		if (keyObj !== null){
 
 			e.preventDefault();
-
-			const keyCode = e.keyCode;
-			const keyObj = this.getKey(keyCode);
-			if (keyObj !== null){
-				if (!keyObj.triggered) return;
+			if (keyObj.triggered) return;
 			
-				keyObj.triggered = false;
-				keyObj.synth.keyUp();	
-			};
-		});
+			keyObj.triggered = true;
+			keyObj.synth.keyDown();
+		}
+	}
+
+	onKeyUp(e) {
+		const keyCode = e.keyCode;
+		const keyObj = this.getKey(keyCode);
+		if (keyObj !== null){
+			if (!keyObj.triggered) return;
+		
+			keyObj.triggered = false;
+			keyObj.synth.keyUp();	
+		};
+	}
+
+	enable() {
+		window.addEventListener('keydown', this.onKeyDownBound);
+		window.addEventListener('keyup', this.onKeyUpBound);
+	}
+
+	disable() {
+		window.removeEventListener('keydown', this.onKeyDownBound);
+		window.removeEventListener('keyup', this.onKeyUpBound);
 	}
 
 	play(step, time) {

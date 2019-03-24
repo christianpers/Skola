@@ -85,6 +85,14 @@ export default class NodeLibrary{
 		}
 	}
 
+	hide() {
+		this.el.style.transform = 'translateX(100%)';
+	}
+
+	show() {
+		this.el.style.transform = 'translateX(0)';
+	}
+
 	onMouseDown(e) {
 
 		this.el.style.opacity = .1;

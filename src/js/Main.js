@@ -176,18 +176,18 @@ export default class Main{
 
 		this.onNodeAddedFromLibraryBound = this.onNodeAddedFromLibrary.bind(this);
 
-		this.nodeSettings = new NodeSettings(document.body);
+		// this.nodeSettings = new NodeSettings(document.body);
 
 		this.workspaceManager = new WorkspaceManager(document.body);
 
 		this.onScaleChangeBound = this.onScaleChange.bind(this);
 		// this.scaleManager = new WorkspaceScaleManager(document.body, this.onScaleChangeBound);
 
-		this.globalAudioSettings = new GlobalAudioSettings(this.workspaceManager.containerEl);
+		// this.globalAudioSettings = new GlobalAudioSettings(this.workspaceManager.containerEl);
 
 		this.onResize();
 		
-		const nodeLibrary = new NodeLibrary(
+		this.nodeLibrary = new NodeLibrary(
 			document.body,
 			this.nodeTypes,
 			this.onNodeAddedFromLibraryBound,
@@ -262,6 +262,23 @@ export default class Main{
 		this.onNodeActiveBound = this.onNodeActive.bind(this);
 
 		this.nodeManager = new NodeManager(null, this.keyboardManager, this.onNodeActiveBound, this.workspaceManager.el);
+	}
+
+	onLogout() {
+		this.nodeLibrary.hide();
+		this.workspaceManager.disable();
+		this.keyboardManager.disable();
+
+		const nodes = this.nodeManager._nodes;
+		for (let i = 0; i < nodes.length; i++) {
+			this.nodeManager.onNodeRemove(nodes[i]);
+		}
+	}
+
+	onLogin() {
+		this.nodeLibrary.show();
+		this.workspaceManager.enable();
+		this.keyboardManager.enable();
 	}
 
 	onScaleChange(val) {

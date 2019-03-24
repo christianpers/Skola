@@ -39,6 +39,14 @@ export default class WorkspaceManager{
 		this.el.addEventListener('mousedown', this.onMouseDownBound);
 	}
 
+	disable() {
+		this.el.removeEventListener('mousedown', this.onMouseDownBound);
+	}
+
+	enable() {
+		this.el.addEventListener('mousedown', this.onMouseDownBound);
+	}
+
 	setScale(val) {
 		this.currentScale = val;
 		this.el.style[window.NS.transform] = `translate3d(${this.moveCoords.offset.x}px, ${this.moveCoords.offset.y}px, 0) scale(${val})`;

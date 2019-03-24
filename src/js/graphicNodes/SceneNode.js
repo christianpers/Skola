@@ -20,6 +20,7 @@ export default class SceneNode extends Node{
 		this.isGraphicsNode = true;
 		this.hasGraphicsInput = true;
 		this.isCanvasNode = true;
+		this.initAsNotCollapsed = true;
 
 		this.inputHelpersType = InputHelpers.sceneNode;
 

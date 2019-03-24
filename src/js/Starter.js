@@ -37,6 +37,16 @@ export default class Starter {
 		console.log('test');
 	}
 
+	onLogout() {
+
+		console.log('starter logout');
+		this.main.onLogout();
+	}
+
+	onLogin() {
+		this.main.onLogin();
+	}
+
 	reqFrame() {
 
 		this.main.update();
