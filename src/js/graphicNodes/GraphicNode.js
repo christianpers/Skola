@@ -97,6 +97,9 @@ export default class GraphicNode extends Node{
 		}
 
 		this.activateDrag();
+
+		this.postInit();
+
 	}
 
 	enableParam(param, connectionData) {

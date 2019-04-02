@@ -13,16 +13,10 @@ export default class ForegroundRender{
 		this.scene = new THREE.Scene();
 		this.renderer = mainRender.renderer;
 
-		// this.light = new THREE.DirectionalLight( 0xffffff, 1 );
-
-		// this.light.position.set(0, 0, 4);
-
 		this.axesHelper = new THREE.AxesHelper( 5 );
 		this.axesHelper.name = 'AxesHelper';
-		
 
 		this.ambientLight = new THREE.AmbientLight( );
-		// light.position.set( 0, 8, 0 );
 
 		this.scene.add(this.ambientLight);
 

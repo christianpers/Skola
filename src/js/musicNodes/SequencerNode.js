@@ -13,6 +13,7 @@ export default class SequencerNode extends MusicNode{
 		this.loop = null;
 		this.hasAudioInput = false;
 		this.isParam = true;
+		this.initAsNotCollapsed = true;
 
 		this.data = [];
 		

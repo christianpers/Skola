@@ -1,3 +1,35 @@
+export const PARTICLES_VERTEX = `
+    attribute float size;
+    varying vec3 vColor;
+    void main() {
+        vColor = color;
+        vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+        // gl_PointSize = size * ( 3.0 / -mvPosition.z );
+        gl_PointSize = size;
+        gl_Position = projectionMatrix * mvPosition;
+    }
+`;
+
+export const PARTICLES_FRAGMENT = `
+    // uniform sampler2D texture;
+    varying vec3 vColor;
+    // struct PointLight {
+    //     vec3 color;
+    //     vec3 position; // light position, in camera coordinates
+    //     float distance; // used for attenuation purposes. Since
+    //                     // we're writing our own shader, it can
+    //                     // really be anything we want (as long
+    //                     // as we assign it to our light in its
+    //                     // "distance" field
+    // };
+    
+    // uniform PointLight pointLights[NUM_POINT_LIGHTS];
+    void main() {
+        gl_FragColor = vec4( vColor, 1.0 );
+        // gl_FragColor = gl_FragColor * texture2D( texture, gl_PointCoord );
+    }
+`;
+
 export const CANVAS_RENDER_VERTEX = `
 #ifdef GL_ES
 precision mediump float;

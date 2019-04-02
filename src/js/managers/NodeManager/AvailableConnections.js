@@ -10,11 +10,17 @@ export default class AvailableConnections{
 		// 	nodes.filter(t => t.isGraphicsNode && t.ID !== outputNode.ID) :
 		// 	nodes.filter(t => !t.isGraphicsNode && t.ID !== outputNode.ID);
 
-		const filteredNodes = nodes.map(t => t);
+		// const filteredNodes = nodes.map(t => t);
+		const expandedNodes = nodes.filter(t => !t.isCollapsed && outputNode.ID !== t.ID);
+		this.collapsedNodes = nodes.filter(t => t.isCollapsed && outputNode.ID !== t.ID);
+
+		for (let i = 0; i < this.collapsedNodes.length; i++) {
+			this.collapsedNodes[i].setAsDisabled();
+		}
 
 		this.collectedInputs = [];
-		for (let i = 0; i < filteredNodes.length; i++) {
-			const node = filteredNodes[i];
+		for (let i = 0; i < expandedNodes.length; i++) {
+			const node = expandedNodes[i];
 			const obj = {node: node, inputs: [], params: []};
 			if (node.input) {
 				obj.inputs.push(node.input);
@@ -82,6 +88,10 @@ export default class AvailableConnections{
 	}
 
 	resetAvailable() {
+
+		for (let i = 0; i < this.collapsedNodes.length; i++) {
+			this.collapsedNodes[i].setAsEnabled();
+		}
 
 		for (let i = 0; i < this.collectedInputs.length; i++) {
 			const inputs = this.collectedInputs[i].inputs;

@@ -32,7 +32,7 @@ export default class NodeOutput{
 			return;
 		}
 
-		this.el.addEventListener('click', this.onClickBound);
+		dotEl.addEventListener('click', this.onClickBound);
 
 		this.offsetLeft = undefined;
 		this.offsetTop = undefined;
@@ -47,9 +47,9 @@ export default class NodeOutput{
 	}
 
 	getOffsetTop() {
-		if (!this.offsetTop) {
+		// if (!this.offsetTop) {
 			this.offsetTop = this.el.offsetTop;
-		}
+		// }
 
 		return this.offsetTop;
 	}

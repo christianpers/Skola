@@ -33,6 +33,7 @@ import ColorNode from './graphicNodes/ColorNode';
 import DirectionalLightNode from './graphicNodes/Lights/DirectionalLightNode';
 import PointLightNode from './graphicNodes/Lights/PointLightNode';
 import TextureSelectorNode from './graphicNodes/Textures/TextureSelectorNode';
+import ParticlesNode from './graphicNodes/Shapes/ParticlesNode';
 
 import Tone from 'tone';
 
@@ -125,6 +126,10 @@ export default class Main{
 						type: 'Sphere',
 						obj: SphereNode,
 					},
+					{
+						type: 'Particles',
+						obj: ParticlesNode,
+					},
 				],
 				'Procedural Texture (Material)': [
 					{
@@ -167,7 +172,7 @@ export default class Main{
 				],
 				'Textures': [
 					{
-						type: 'Texture Selector',
+						type: 'Välj Textur',
 						obj: TextureSelectorNode,
 					},
 				]

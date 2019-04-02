@@ -20,7 +20,7 @@ export default class OrbitDriverNode extends GraphicNode{
 			counter: 1552337385540,
 		};
 
-		this.currentOrbit = 10;
+		this.currentT = 0;
 		this.currentSpeed = 0;
 		this.currentRotationY = 0;
 		this.currentRotationX = 0;
@@ -38,7 +38,8 @@ export default class OrbitDriverNode extends GraphicNode{
 		};
 
 		this.onSpeedChangeBound = this.onSpeedChange.bind(this);
-		this.onOrbitChangeBound = this.onOrbitChange.bind(this);
+		this.onOrbitXChangeBound = this.onOrbitXChange.bind(this);
+		this.onOrbitYChangeBound = this.onOrbitYChange.bind(this);
 		this.onRotationChangeYBound = this.onRotationChangeY.bind(this);
 		this.onRotationChangeXBound = this.onRotationChangeX.bind(this);
 
@@ -48,11 +49,15 @@ export default class OrbitDriverNode extends GraphicNode{
 		this.topPartEl.appendChild(settingsContainer);
 
 		this.speedSlider = new VerticalSlider(
-			settingsContainer, 0, this.onSpeedChangeBound, 2, {min: -2, max: 2}, 'Orbit speed',
+			settingsContainer, 0, this.onSpeedChangeBound, 4, {min: 0, max: 10}, 'Orbit speed',
 		);
 
-		this.orbitSlider = new VerticalSlider(
-			settingsContainer, 0, this.onOrbitChangeBound, 0, {min: 0, max: 20}, 'Orbit radie',
+		this.orbitXSlider = new VerticalSlider(
+			settingsContainer, 10, this.onOrbitXChangeBound, 0, {min: 0, max: 40}, 'Orbit radie X',
+		);
+
+		this.orbitYSlider = new VerticalSlider(
+			settingsContainer, 10, this.onOrbitYChangeBound, 0, {min: 0, max: 40}, 'Orbit radie Y',
 		);
 
 		this.rotationXSlider = new VerticalSlider(
@@ -62,7 +67,15 @@ export default class OrbitDriverNode extends GraphicNode{
 		this.rotationYSlider = new VerticalSlider(
 			settingsContainer, 0, this.onRotationChangeYBound, 3, {min: -.1, max: .1}, 'Rotation Y',
 		);
+		
 
+		this.curve = new THREE.EllipseCurve(
+			0,  0,            // ax, aY
+			10, 10,           // xRadius, yRadius
+			0,  2 * Math.PI,  // aStartAngle, aEndAngle
+			true,            // aClockwise
+			0                 // aRotation
+		);
 
 
 
@@ -130,9 +143,16 @@ export default class OrbitDriverNode extends GraphicNode{
 		this.currentRotationY = val;
 	}
 
-	onOrbitChange(val) {
+	onOrbitXChange(val) {
 		
-		this.currentOrbit = val;
+		// this.currentOrbitX = val;
+		this.curve.xRadius = val;
+	}
+
+	onOrbitYChange(val) {
+		
+		// this.currentOrbitY = val;
+		this.curve.yRadius = val;
 	}
 
 	onSpeedChange(val) {
@@ -167,12 +187,14 @@ export default class OrbitDriverNode extends GraphicNode{
 			return;
 		}
 
-		const timestamp = this.animateValues.counter * 0.01;
-		const x = Math.cos(timestamp * this.currentSpeed) * this.currentOrbit;
-    	const z = Math.sin(timestamp * this.currentSpeed) * this.currentOrbit;
+		// const timestamp = this.animateValues.counter * 0.01;
+		// const x = Math.cos(timestamp * this.currentSpeed) * this.currentOrbit;
+		// const z = Math.sin(timestamp * this.currentSpeed) * this.currentOrbit;
+		
+		const point = this.curve.getPoint(this.currentT);
 
-    	this.outValues['Position'].x = x;
-    	this.outValues['Position'].z = z;
+    	this.outValues['Position'].x = point.x;
+    	this.outValues['Position'].z = point.y;
     	this.outValues['Rotation'].y += this.currentRotationY;
     	this.outValues['Rotation'].x += this.currentRotationX;
 
@@ -182,7 +204,11 @@ export default class OrbitDriverNode extends GraphicNode{
 			this.currentOutConnections[i].in.updateParam(param, this);
 		}
 
-		this.animateValues.counter++;
+		// this.animateValues.counter++;
+		this.currentT += this.currentSpeed * 0.001;
+		if (this.currentT > 1) {
+			this.currentT = 0;
+		}
 	}
 
 	render() {

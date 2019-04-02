@@ -10,6 +10,7 @@ export default class SpeakerNode extends MusicNode{
 
 		this.audioNode = Tone.context.destination;
 		this.isSpeaker = true;
+		this.initAsNotCollapsed = true;
 		
 	}
 

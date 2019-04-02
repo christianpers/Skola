@@ -1,6 +1,7 @@
 import NodeOutput from './NodeComponents/NodeOutput';
 import NodeInput from './NodeComponents/NodeInput';
 import NodeRemove from './NodeComponents/NodeRemove';
+import NodeCollapsedParam from './NodeComponents/NodeCollapsedParam';
 
 export default class Node{
 	constructor() {
@@ -17,6 +18,8 @@ export default class Node{
 		this.inDotPos = undefined;
 
 		this.isCollapsed = false;
+
+		this.nodeCollapsedParam = null;
 	}
 
 	init(pos, parentEl, onConnectingCallback, onInputConnectionCallback, type, nodeConfig, onNodeActive, onNodeRemove) {
@@ -106,15 +109,30 @@ export default class Node{
 		this.onMouseUpBound = this.onMouseUp.bind(this);
 	}
 
+	postInit() {
+		const inputParamsArr = Object.keys(this.inputParams);
+		if (inputParamsArr.length > 0) {
+			this.collapsedParam = new NodeCollapsedParam(this.topPartEl, inputParamsArr[inputParamsArr.length-1].el, inputParamsArr.length);
+		}
+		
+	}
+
 	onToggleCollapse() {
 		if (this.isCollapsed) {
 			this.topPartEl.classList.remove('hide');
 			this.toggleCollapseLabel.innerHTML = 'Minimera';
 			this.isCollapsed = false;
+			// for (const key in this.inputParams) {
+			// 	this.inputParams[key].removeCollapsed();
+			// }
 		} else {
 			this.topPartEl.classList.add('hide');
 			this.toggleCollapseLabel.innerHTML = 'Expandera';
 			this.isCollapsed = true;
+
+			// for (const key in this.inputParams) {
+			// 	this.inputParams[key].setAsCollapsed();
+			// }
 		}
 	}
 
@@ -181,6 +199,14 @@ export default class Node{
 		if (this.input){
 			this.input.disable();
 		}
+	}
+
+	setAsDisabled() {
+		this.el.style.opacity = .1;
+	}
+
+	setAsEnabled() {
+		this.el.style.opacity = 1;
 	}
 
 	onOutputClick(clickPos) {

@@ -63,6 +63,9 @@ export default class MusicNode extends Node{
 		}
 
 		this.activateDrag();
+
+		this.postInit();
+
 	}
 
 	enableParam(param) {

@@ -450,8 +450,35 @@ button:focus {
     	height: 60%;
     	padding: 10px;
     	padding-left: 0;
-    	&.hide {
+    	& .collapsed-param {
     		display: none;
+    		position: absolute;
+    	}
+
+    	&.hide {
+    		margin-bottom: 10px;
+    		height: 10px;
+    		overflow: hidden;
+
+    		& .node-param{
+    			position: absolute;
+
+    			& .label{
+    				opacity: 0;
+    			}
+    		}
+
+    		& .collapsed-param {
+	    		display: flex;
+
+	    		& .label {
+	    			opacity: 1;
+	    		}
+	    	}
+
+    		& .node-param-header{
+    			display: none;
+    		}
     	}
 	}
 
@@ -549,13 +576,13 @@ button:focus {
 	margin-bottom: 5px;
 	position: relative;
     left: -5px;
-    width: 70px;
     & .dot{
     	border: 2px solid yellow;
     }
 
     & .label{
 		color: yellow;
+		white-space: nowrap;
 	}
 
 	&.active{
@@ -874,6 +901,7 @@ button:focus {
 		& .color-picker-parent {
 			display: flex;
 			align-items: center;
+			margin-top: 0px;
 
 			& > h4 {
 				font-size: 12px;
@@ -886,6 +914,12 @@ button:focus {
 				background: white;
 				margin-left: 10px;
 				border-radius: 11px;
+			}
+		}
+
+		&.hide {
+			& .color-picker-parent {
+				margin-top: 40px;
 			}
 		}
 	}
@@ -944,11 +978,16 @@ button:focus {
 }
 
 .orbit-driver-node {
-
+	width: 290px;
 	& .settings-container-outer {
 		display: flex;
-		justify-content: space-between;
+		justify-content: flex-start;
 		flex-wrap: wrap;
+		margin-top: 10px;
+
+		& .vertical-slider{
+			margin-right: 8px;
+		}
 
 		& .settings-container {
 			width: 40%;
@@ -1103,15 +1142,27 @@ button:focus {
 .no-height{
 	height: auto;
 
-	& .range-container {
-		padding-left: 10px;
-	    height: 200px;
-	    color: white;
-	    display: flex;
-	    justify-content: center;
+	& .top-part {
+		& .range-container {
+			padding-left: 10px;
+		    height: 200px;
+		    color: white;
+		    display: flex;
+		    justify-content: center;
+		}
 
+		&.hide{
+			& .range-container{
+				display: none;
+			}
 
+			& .wave-type-container {
+				display: none;
+			}
+		}
 	}
+
+	
 }
 
 .left-padding{
@@ -1199,6 +1250,7 @@ button:focus {
 	& .wrapper {
 		margin-left: 10px;
 		color: white;
+		margin-top: 10px;
 
 		& .children-container {
 			> h4 {
