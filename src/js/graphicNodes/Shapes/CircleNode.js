@@ -37,7 +37,6 @@ export default class CircleNode extends RenderNode{
 
 		this.scene.add(this.mesh);
 
-
 		this.paramVals = {};
 
 		const amountParam = {

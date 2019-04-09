@@ -1,13 +1,17 @@
 import GraphicNode from '../GraphicNode';
 
+import NodeOutput from '../../views/Nodes/NodeComponents/NodeOutput';
+
 export default class SphereNode extends GraphicNode{
 	constructor() {
 		super();
 
 		this.isForegroundNode = true;
+		this.hasMultipleOutputs = true;
 
 		this.el.classList.add('no-height');
-
+		this.el.classList.add('no-input-multiple-outputs');
+		
 		const w = window.innerWidth;
 		const h = window.innerHeight;
 
@@ -125,37 +129,102 @@ export default class SphereNode extends GraphicNode{
 		this.paramVals = {};
 	}
 
+	init(
+		pos,
+		parentEl,
+		onConnectingCallback,
+		onInputConnectionCallback,
+		type,
+		initData,
+		onNodeActive,
+		onNodeRemove,
+	) {
+		super.init(
+			pos,
+			parentEl,
+			onConnectingCallback,
+			onInputConnectionCallback,
+			type,
+			initData,
+			onNodeActive,
+			onNodeRemove,
+		);
+
+		this.onOutputClickGraphicsBound = this.onOutputClickGraphics.bind(this);
+		this.onOutputClickTargetBound = this.onOutputClickTarget.bind(this);
+
+		const outputContainer = document.createElement('div');
+		outputContainer.className = 'multiple-outputs';
+
+		this.bottomPartEl.appendChild(outputContainer);
+
+		this.outputGraphics = new NodeOutput(outputContainer, this.onOutputClickGraphicsBound, false, false, false, true);
+		this.outputTarget = new NodeOutput(outputContainer, this.onOutputClickTargetBound, true, false, false, true);
+
+		this.outputDataConnection = null;
+
+		this.outputs = {
+			'sphere-graphics': this.outputGraphics,
+			'sphere-target': this.outputTarget,
+		};
+
+		this.inDotPos = {
+			'sphere-graphics': null,
+			'sphere-target': null,
+		};
+
+		this.enabledOutputs = [];
+	}
+
+	onOutputClickGraphics(pos) {
+
+		this.onConnectingCallback(this, pos, 'sphere-graphics');
+	}
+
+	onOutputClickTarget(pos) {
+
+		this.onConnectingCallback(this, pos, 'sphere-target');
+	}
+
+	getOutputPos(type) {
+		const obj = {
+			x: this.outputs[type].el.offsetLeft,
+			y: this.outputs[type].el.offsetTop,
+		};
+
+		return obj;
+	}
+
+	getOutDotPos(el, outputType) {
+		if (!this.inDotPos[outputType]) {
+			this.inDotPos[outputType] = this.outputs[outputType].el.getBoundingClientRect();
+		}
+
+		return this.inDotPos[outputType];
+	}
+
+	getOutputEl(outputType) {
+		return this.outputs[outputType];
+	}
+
+	enableOutput(param, connectionData) {
+		const type = connectionData.outputType;
+
+		this.outputs[type].enable();
+
+		this.enabledOutputs.push(type);
+
+	}
+
+	disableOutput(inNode, param, outputType) {
+		this.outputs[outputType].disable();
+
+		this.enabledOutputs = this.enabledOutputs.filter(t => t !== outputType);
+
+	}
+
 	getMesh() {
 		return this.mesh;
-	}
-
-	enableOutput(param, connection) {
-		super.enableOutput();
-
-		this.currentOutConnections.push(connection);
-		this.currentOutConnectionsLength = this.currentOutConnections.length;
-	}
-
-	disableOutput(nodeIn, param) {
-		const tempOutConnections = this.currentOutConnections.map(t => t);
-
-		let paramConnections = tempOutConnections.filter(t => t.param);
-		let nodeConnections = tempOutConnections.filter(t => !t.param);
-
-		if (param) {
-			paramConnections = paramConnections.filter(t => t.param && (t.param.title !== param.title));
-		} else {
-			nodeConnections = nodeConnections.filter(t => t.in.ID !== nodeIn.ID);
-		}
-		
-		const finalConnections = paramConnections.concat(nodeConnections);
-		this.currentOutConnections = finalConnections;
-		this.currentOutConnectionsLength = this.currentOutConnections.length;
-
-		if (this.currentOutConnectionsLength <= 0) {
-			super.disableOutput();
-
-		}
 	}
 
 }

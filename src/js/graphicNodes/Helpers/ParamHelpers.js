@@ -61,6 +61,14 @@ const isValidParamPositionInput = (outNode, inNode, param) => {
 		return false;
 	}
 
+	if (!param) {
+		return false;
+	}
+
+	if (!param.minMax) {
+		return false;
+	}
+
 	return (outNode.isParam && !param.isConnected) || (outNode.isAnalyser && !param.isConnected);
 };
 
@@ -71,7 +79,8 @@ const onPositionParamUpdate = (inNode, outNode, param) => {
 
 const onPositionDisconnect = (inNode, param, outNode) => {
 
-	param.defaultVal = outNode.getValue(param);
+	// param.defaultVal = outNode.getValue(param);
+	inNode.mesh.position[param.param] = param.defaultVal;
 };
 
 
@@ -111,8 +120,79 @@ const onShaderParamUpdate = (inNode, outNode, param) => {
 	inNode.mesh.material.uniforms[param.param].value = outNode.getValue();
 };
 
+const onTargetParamUpdate = (inNode, outNode) => {
+	inNode.targetPosition = outNode.mesh.position;
+};
+
+const isValidTarget = (outNode) => {
+	return !!outNode.mesh;
+};
+
+const onTargetParamDisconnect = (inNode, param, outNode) => {
+	param.defaultVal = outNode.mesh.position;
+};
+
+const onParticleParamUpdate = () => {};
+
+const isValidParticleFormInput = (outNode) => {
+	return !!outNode.curve;
+};
+
+const onParticleSizeParamUpdate = (inNode, outNode) => {
+	inNode.currentParticleSize = outNode.getValue();
+};
+
+const onParticleSizeParamDisconnect = (inNode, param) => {
+	inNode.currentParticleSize = param.defaultVal;
+};
+
+const onParticleColorParamUpdate = (inNode, outNode) => {
+	inNode.currentParticleColor = outNode.currentColor.toArray();
+};
+
+const onParticleColorParamDisconnect = (inNode, param) => {
+	inNode.currentParticleColor = param.defaultVal.toArray();
+};
+
+const isValidParamSingleNumberInput = (outNode, inNode, param) => {
+
+	if (!param) {
+		return false;
+	}
+
+	if (!param.minMax) {
+		return false;
+	}
+
+	return (outNode.returnsSingleNumber && !param.isConnected) || (outNode.isAnalyser && !param.isConnected);
+};
 
 const paramHelpers = {
+	particleColor: {
+		update: onParticleColorParamUpdate,
+		isValid: isValidParamColorInput,
+		disconnect: onParticleColorParamDisconnect,
+	},
+	particleSize: {
+		update: onParticleSizeParamUpdate,
+		isValid: isValidParamSingleNumberInput,
+		disconnect: onParticleSizeParamDisconnect,
+	},
+	particleForm: {
+		update: onParticleParamUpdate,
+		isValid: isValidParticleFormInput,
+		disconnect: onParticleParamUpdate,
+	},
+	particle: {
+		update: onParticleParamUpdate,
+		isValid: isValidParamPositionInput,
+		disconnect: onParticleParamUpdate,
+	},
+	target: {
+		update: onTargetParamUpdate,
+		isValid: isValidTarget,
+		disconnect: onTargetParamDisconnect,
+	},
 	texture: {
 		update: onTextureParamUpdate,
 		isValid: isValidParamTextureInput,

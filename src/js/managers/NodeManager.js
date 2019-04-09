@@ -207,7 +207,7 @@ export default class NodeManager{
 				this.resetConnecting();
 				return;
 			} else {
-				if (!inputNode.inputHelpersType.isValid(this.outputActiveNode, inputNode, inputType)) {
+				if (!inputNode.inputHelpersType.isValid(this.outputActiveNode, inputNode, inputType, this.outputActiveType)) {
 					this.resetConnecting();
 					return;
 				}

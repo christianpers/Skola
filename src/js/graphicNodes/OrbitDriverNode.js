@@ -9,7 +9,6 @@ export default class OrbitDriverNode extends GraphicNode{
 		this.needsUpdate = true;
 
 		this.el.classList.add('no-height');
-		this.el.classList.add('left-padding');
 		this.el.classList.add('orbit-driver-node');
 
 		this.isParam = true;
@@ -37,9 +36,27 @@ export default class OrbitDriverNode extends GraphicNode{
 			}
 		};
 
+		const targetParam = {
+			title: 'Center Point',
+			param: 'center',
+			useAsInput: true,
+			defaultVal: new THREE.Vector3(),
+			paramHelpersType: 'target',
+			needsFrameUpdate: false,
+		};
+
+		this.targetPosition = new THREE.Vector3();
+
+		this.params = {
+			targetParam,
+		};
+
+		this.paramVals = {};
+
 		this.onSpeedChangeBound = this.onSpeedChange.bind(this);
 		this.onOrbitXChangeBound = this.onOrbitXChange.bind(this);
 		this.onOrbitYChangeBound = this.onOrbitYChange.bind(this);
+		this.onOrbitZChangeBound = this.onOrbitZChange.bind(this);
 		this.onRotationChangeYBound = this.onRotationChangeY.bind(this);
 		this.onRotationChangeXBound = this.onRotationChangeX.bind(this);
 
@@ -48,61 +65,56 @@ export default class OrbitDriverNode extends GraphicNode{
 
 		this.topPartEl.appendChild(settingsContainer);
 
+		
+
+		this.orbitXSlider = new VerticalSlider(
+			settingsContainer, 10, this.onOrbitXChangeBound, 0, {min: 0, max: 40}, 'Radie X', 60, true,
+		);
+
+		this.orbitYSlider = new VerticalSlider(
+			settingsContainer, 10, this.onOrbitYChangeBound, 0, {min: 0, max: 40}, 'Radie Y', 60, true,
+		);
+
+		this.orbitZSlider = new VerticalSlider(
+			settingsContainer, 10, this.onOrbitZChangeBound, 0, {min: 0, max: 40}, 'Radie Z', 60, true,
+		);
+
 		this.speedSlider = new VerticalSlider(
 			settingsContainer, 0, this.onSpeedChangeBound, 4, {min: 0, max: 10}, 'Orbit speed',
 		);
 
-		this.orbitXSlider = new VerticalSlider(
-			settingsContainer, 10, this.onOrbitXChangeBound, 0, {min: 0, max: 40}, 'Orbit radie X',
-		);
-
-		this.orbitYSlider = new VerticalSlider(
-			settingsContainer, 10, this.onOrbitYChangeBound, 0, {min: 0, max: 40}, 'Orbit radie Y',
-		);
-
 		this.rotationXSlider = new VerticalSlider(
-			settingsContainer, 0, this.onRotationChangeXBound, 3, {min: -.1, max: .1}, 'Rotation X',
+			settingsContainer, 0, this.onRotationChangeXBound, 3, {min: -.1, max: .1}, 'Rotation X', 60, true,
 		);
 
 		this.rotationYSlider = new VerticalSlider(
-			settingsContainer, 0, this.onRotationChangeYBound, 3, {min: -.1, max: .1}, 'Rotation Y',
+			settingsContainer, 0, this.onRotationChangeYBound, 3, {min: -.1, max: .1}, 'Rotation Y', 60, true,
 		);
-		
 
+		this.orbitSliders = {
+			Position: {
+				x: this.orbitXSlider,
+				y: this.orbitYSlider,
+				z: this.orbitZSlider,
+			},
+			Rotation: {
+				x: this.rotationXSlider,
+				y: this.rotationYSlider,
+			},
+			Form: {
+				x: this.orbitXSlider,
+				y: this.orbitYSlider,
+				z: this.orbitZSlider,
+			},
+		};
+		
 		this.curve = new THREE.EllipseCurve(
 			0,  0,            // ax, aY
 			10, 10,           // xRadius, yRadius
 			0,  2 * Math.PI,  // aStartAngle, aEndAngle
-			true,            // aClockwise
+			false,            // aClockwise
 			0                 // aRotation
 		);
-
-
-
-		// const speedSettings = {
-		// 	step: 1,
-		// 	value: this.currentSpeed,
-		// 	min: 1,
-		// 	max: 20,
-		// };
-		// this.speedContainer = new InputComponent(settingsContainer, 'speed', speedSettings, this.onSpeedChangeBound);
-
-		// const orbitSettings = {
-		// 	step: 1,
-		// 	value: this.currentOrbit,
-		// 	min: 1,
-		// 	max: 100,
-		// };
-		// this.orbitContainer = new InputComponent(settingsContainer, 'radie', orbitSettings, this.onOrbitChangeBound);
-
-		// const rotationSettings = {
-		// 	step: .01,
-		// 	value: this.currentRotationY,
-		// 	min: -10,
-		// 	max: 10,
-		// };
-		// this.rotationContainerY = new InputComponent(settingsContainer, 'rotation Y', rotationSettings, this.onRotationChangeYBound);
-		// this.rotationContainerX = new InputComponent(settingsContainer, 'rotation X', rotationSettings, this.onRotationChangeXBound);
 
 		this.topPartEl.appendChild(settingsContainer);
 
@@ -117,16 +129,7 @@ export default class OrbitDriverNode extends GraphicNode{
 
 		this.toggleStartBtn.appendChild(this.toggleBtnText);
 
-		// bottomContainer.appendChild(this.toggleStartBtn);
 		this.topPartEl.appendChild(this.toggleStartBtn);
-
-		this.modifier = {
-		};
-
-		this.paramVals = {};
-
-		this.params = {
-		};
 
 		this.updateBound = this.update.bind(this);
 
@@ -144,20 +147,19 @@ export default class OrbitDriverNode extends GraphicNode{
 	}
 
 	onOrbitXChange(val) {
-		
-		// this.currentOrbitX = val;
 		this.curve.xRadius = val;
 	}
 
 	onOrbitYChange(val) {
-		
-		// this.currentOrbitY = val;
+		this.curve.yRadius = val;
+	}
+
+	onOrbitZChange(val) {
 		this.curve.yRadius = val;
 	}
 
 	onSpeedChange(val) {
-
-		this.currentSpeed = val;
+		this.currentSpeed = val * 0.001;
 	}
 
 	reset() {
@@ -172,28 +174,21 @@ export default class OrbitDriverNode extends GraphicNode{
 		} else {
 			this.toggleBtnText.innerHTML = 'Stop';
 			this.animateValues.isRunning = true;
-
 		}
 	}
 
 	getValue(param) {
-		// console.log(this.outValues);
-
 		return this.outValues[param.parent][param.param];
 	}
 
 	update() {
-		if (!this.animateValues.isRunning) {
-			return;
-		}
-
-		// const timestamp = this.animateValues.counter * 0.01;
-		// const x = Math.cos(timestamp * this.currentSpeed) * this.currentOrbit;
-		// const z = Math.sin(timestamp * this.currentSpeed) * this.currentOrbit;
-		
 		const point = this.curve.getPoint(this.currentT);
 
-    	this.outValues['Position'].x = point.x;
+		this.curve.aX = this.targetPosition.x;
+		this.curve.aY = this.targetPosition.z;
+
+		this.outValues['Position'].x = point.x;
+		this.outValues['Position'].y = point.y;
     	this.outValues['Position'].z = point.y;
     	this.outValues['Rotation'].y += this.currentRotationY;
     	this.outValues['Rotation'].x += this.currentRotationX;
@@ -204,8 +199,11 @@ export default class OrbitDriverNode extends GraphicNode{
 			this.currentOutConnections[i].in.updateParam(param, this);
 		}
 
-		// this.animateValues.counter++;
-		this.currentT += this.currentSpeed * 0.001;
+		if (!this.animateValues.isRunning) {
+			return;
+		}
+
+		this.currentT += this.currentSpeed;
 		if (this.currentT > 1) {
 			this.currentT = 0;
 		}
@@ -219,9 +217,12 @@ export default class OrbitDriverNode extends GraphicNode{
 	enableOutput(param, connection) {
 		super.enableOutput();
 
+		if (param) {
+			this.orbitSliders[param.parent][param.param].show();
+		}
+
 		this.currentOutConnections.push(connection);
 		this.currentOutConnectionsLength = this.currentOutConnections.length;
-
 	}
 
 	enableInput(outputNode) {
@@ -242,13 +243,16 @@ export default class OrbitDriverNode extends GraphicNode{
         
         const finalConnections = paramConnections.concat(nodeConnections);
         this.currentOutConnections = finalConnections;
-        this.currentOutConnectionsLength = this.currentOutConnections.length;
+		this.currentOutConnectionsLength = this.currentOutConnections.length;
+		
+		if (param) {
+			this.orbitSliders[param.parent][param.param].hide();
+		}
 
         if (this.currentOutConnectionsLength <= 0) {
             super.disableOutput();
             this.onToggleStartClick();
-
-        }		
+        }
 	}
 
 	removeFromDom() {
@@ -258,7 +262,10 @@ export default class OrbitDriverNode extends GraphicNode{
 
 		this.speedSlider.remove();
 
-		this.orbitSlider.remove();
+		// this.orbitSlider.remove();
+		this.orbitXSlider.remove();
+		this.orbitYSlider.remove();
+		this.orbitZSlider.remove();
 
 		this.rotationXSlider.remove();
 

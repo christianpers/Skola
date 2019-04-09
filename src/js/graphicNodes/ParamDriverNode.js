@@ -12,6 +12,7 @@ export default class ParamDriverNode extends GraphicNode{
 		this.el.classList.add('param-driver-node');
 
 		this.isParam = true;
+		this.returnsSingleNumber = true;
 
 		this.animateValues = {
 			isRunning: false,

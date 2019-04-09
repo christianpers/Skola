@@ -2,12 +2,17 @@ const isValidNeedsFramebufferInput = (outNode) => {
 	return outNode.framebuffer || outNode.isForegroundNode;
 };
 
-const isValidSceneNodeConnection = (outNode, inNode, inputType) => {
+const isValidSceneNodeConnection = (outNode, inNode, inputType, outType) => {
 	const isValidBackgroundInput = () => {
 		return outNode.isBackgroundNode;
 	};
 
 	const isValidForegroundInput = () => {
+		if (outType) {
+			if (outNode.outputs[outType]) {
+				return outNode.isForegroundNode && !outNode.outputs[outType].isParamOutput;
+			}
+		}
 		return outNode.isForegroundNode;
 	};
 

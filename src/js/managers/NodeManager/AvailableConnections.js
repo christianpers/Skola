@@ -45,7 +45,7 @@ export default class AvailableConnections{
 			if (inNode.isGraphicsNode) {
 				for (let q = 0; q < inputs.length; q++) {
 					const input = inputs[q];
-					if (!inNode.inputHelpersType.isValid(outputNode, inNode, input.inputType)) {
+					if (!inNode.inputHelpersType.isValid(outputNode, inNode, input.inputType, outputType)) {
 
 						input.activatePossible();
 					}

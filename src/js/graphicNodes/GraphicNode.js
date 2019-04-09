@@ -14,6 +14,7 @@ export default class GraphicNode extends Node{
 		this.inputParams = {};
 		this.isForegroundNode = false;
 		this.isBackgroundNode = false;
+		this.needsMinMax = false;
 
 		this.currentOutConnections = [];
 		this.currentOutConnectionsLength = 0;

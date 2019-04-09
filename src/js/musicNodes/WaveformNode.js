@@ -53,14 +53,15 @@ export default class Waveform extends MusicNode {
 		this.outputAudio = new NodeOutput(outputContainer, this.onOutputClickAudioBound, false, false, false, false);
 		this.outputData = new NodeOutput(outputContainer, this.onOutputClickDataBound, true, false, false, false);
 
-		this.outputDataConnection = null;
+		this.outputDataConnections = [];
+		this.outputDataConnectionsLength = 0;
 
 		this.outputs = {
 			'analyser-audio': this.outputAudio,
 			'analyser-data': this.outputData,
 		};
 
-		this.enabledOutputs = [];
+		// this.enabledOutputs = [];
 		this.inDotPos = {
 			'analyser-audio': null,
 			'analyser-data': null,
@@ -123,22 +124,27 @@ export default class Waveform extends MusicNode {
 
 		this.outputs[type].enable();
 
-		this.enabledOutputs.push(type);
+		// this.enabledOutputs.push(type);
 
 		if (type === 'analyser-data') {
-			this.outputDataConnection = connectionData;
+			// this.outputDataConnection = connectionData;
+			this.outputDataConnections.push(connectionData);
+			this.outputDataConnectionsLength = this.outputDataConnections.length;
 		}
 
 	}
 
 	disableOutput(inNode, param, outputType) {
-		this.outputs[outputType].disable();
-
-		this.enabledOutputs = this.enabledOutputs.filter(t => t !== outputType);
 
 		if (outputType === 'analyser-data') {
-			this.audioValue = 0;
-			this.outputDataConnection = null;
+			this.outputDataConnections = this.outputDataConnections.filter(t => t.param.title !== param.title);
+			this.outputDataConnectionsLength = this.outputDataConnections.length;
+			if (this.outputDataConnectionsLength === 0) {
+				this.audioValue = 0;
+				this.outputs[outputType].disable();
+			}
+		} else {
+			this.outputs[outputType].disable();
 		}
 
 	}
@@ -193,14 +199,15 @@ export default class Waveform extends MusicNode {
 
 		this.ctx.stroke();
 
-		if (!this.outputDataConnection) {
+		if (!this.outputDataConnectionsLength === 0) {
 			return;
 		}
 
-		if (this.outputDataConnection.param) {
-			const param = this.outputDataConnection.param;
-			this.outputDataConnection.in.updateParam(param, this);
+		for (let i = 0; i < this.outputDataConnectionsLength; i++) {
+			// if (this.outputDataConnection.param) {
+			const param = this.outputDataConnections[i].param;
+			this.outputDataConnections[i].in.updateParam(param, this);
+			// }
 		}
-
 	}
 }

@@ -13,6 +13,7 @@ export default class Node{
 		this.needsUpdate = false;
 		this.hasMultipleOutputs = false;
 		this.initAsNotCollapsed = false;
+		this.returnsSingleNumber = false;
 
 		this.outDotPos = undefined;
 		this.inDotPos = undefined;

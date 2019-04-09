@@ -1,5 +1,5 @@
 export default class VerticalSlider{
-	constructor(parentEl, value, valChangeCallback, decimals, settings, name, height) {
+	constructor(parentEl, value, valChangeCallback, decimals, settings, name, height, disabled) {
 
 		this.parentEl = parentEl;
 
@@ -14,6 +14,16 @@ export default class VerticalSlider{
 
 		this.el = document.createElement('div');
 		this.el.className = 'vertical-slider prevent-drag';
+		
+
+		this.disabledLayer = document.createElement('div');
+		this.disabledLayer.className = 'disabled-layer';
+
+		if (disabled) {
+			this.hide();
+		}
+
+		this.el.appendChild(this.disabledLayer);
 
 		const label = document.createElement('h4');
 		label.className = 'vertical-slider-label';
@@ -63,8 +73,15 @@ export default class VerticalSlider{
 		// this.el.addEventListener('mousedown', this.onMouseDownBound);
 	}
 
-	remove() {
+	hide() {
+		this.disabledLayer.classList.add('visible');
+	}
 
+	show() {
+		this.disabledLayer.classList.remove('visible');
+	}
+
+	remove() {
 		this.rangeInnerContainer.removeEventListener('click', this.onRangeClickBound);
 		this.rangeKnob.removeEventListener('mousedown', this.onMouseDownBound);
 		this.parentEl.removeChild(this.el);
