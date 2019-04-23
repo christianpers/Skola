@@ -67,12 +67,24 @@ export default class PointLightNode extends GraphicNode{
 			defaultVal: 4,
 		};
 
+		const scaleParam = {
+			title: 'Scale',
+			param: 'scale',
+			useAsInput: true,
+			parent: 'Scale',
+			paramHelpersType: 'scale',
+			needsFrameUpdate: false,
+			minMax: {min: .1, max: 6},
+			defaultVal: 1,
+		};
+
 		this.params = {
 			textureParam,
 			colorParam,
 			positionXParam,
 			positionYParam,
 			positionZParam,
+			scaleParam,
 		};
 
 		this.paramVals = {};

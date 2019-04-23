@@ -12,13 +12,13 @@ export default class TextureSelectorNode extends GraphicNode{
 		this.el.classList.add('no-height');
 		this.el.classList.add('texture-selector-node');
 
-		this.texture = new THREE.TextureLoader().load( 'assets/test/Image1.png' );
+		this.texture = new THREE.TextureLoader().load( 'assets/textures/blank.jpg' );
 		this.texture.magFilter = THREE.LinearFilter;
 		this.texture.minFilter = THREE.LinearFilter;
 
 		const textures = [
 			{
-				rymden: [
+				Rymden: [
 					{
 						title: 'Jorden',
 						name: 'space/2k_earth_daymap.jpg',
@@ -30,6 +30,10 @@ export default class TextureSelectorNode extends GraphicNode{
 					{
 						title: 'Mars',
 						name: 'space/2k_mars.jpg',
+					},
+					{
+						title: 'Månen',
+						name: 'space/2k_moon.jpg',
 					},
 				],
 			},

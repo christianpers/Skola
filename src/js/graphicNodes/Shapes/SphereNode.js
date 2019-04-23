@@ -220,7 +220,6 @@ export default class SphereNode extends GraphicNode{
 		this.outputs[outputType].disable();
 
 		this.enabledOutputs = this.enabledOutputs.filter(t => t !== outputType);
-
 	}
 
 	getMesh() {

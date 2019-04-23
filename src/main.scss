@@ -432,6 +432,7 @@ button:focus {
 
 	&:active{
 		cursor: grabbing;
+		z-index: 3;
 	}
 
 	& .node-type{

@@ -92,17 +92,16 @@ const onRotationParamUpdate = (inNode, outNode, param) => {
 const onScaleParamUpdate = (inNode, outNode, param) => {
 
 	const val = outNode.getValue();
-	const vector = new THREE.Vector3(val, val, val);
 	inNode.mesh.scale.set(val, val, val);
 };
 
 const onScaleParamDisconnect = (inNode, param, outNode) => {
 
-	if (outNode.isAnalyser) {
-		inNode.mesh.scale.set(1, 1, 1);
-	} else {
-		param.defaultVal = outNode.getValue(param);
-	}
+	// if (outNode.isAnalyser) {
+	inNode.mesh.scale.set(1, 1, 1);
+	// } else {
+	// 	param.defaultVal = outNode.getValue(param);
+	// }
 	
 };
 

@@ -123,17 +123,12 @@ export default class Node{
 			this.topPartEl.classList.remove('hide');
 			this.toggleCollapseLabel.innerHTML = 'Minimera';
 			this.isCollapsed = false;
-			// for (const key in this.inputParams) {
-			// 	this.inputParams[key].removeCollapsed();
-			// }
+			this.el.style.zIndex = 1;
 		} else {
 			this.topPartEl.classList.add('hide');
 			this.toggleCollapseLabel.innerHTML = 'Expandera';
 			this.isCollapsed = true;
-
-			// for (const key in this.inputParams) {
-			// 	this.inputParams[key].setAsCollapsed();
-			// }
+			this.el.style.zIndex = '';
 		}
 	}
 
