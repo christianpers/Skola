@@ -969,12 +969,12 @@ button:focus {
 
 			& .range-knob {
 				position: absolute;
-				top: -4px;
+				top: -8px;
 				left: 50%;
-				width: 20px;
-				height: 8px;
+				width: 32px;
+				height: 16px;
 				background: yellow;
-				margin-left: -10px;
+				margin-left: -16px;
 			}
 		}
 	}
