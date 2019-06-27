@@ -1,5 +1,7 @@
 import NodePlaceHelper from './NodePlaceHelper';
 
+import './NodeLibrary.scss';
+
 export default class NodeLibrary{
 	constructor(parentEl, nodeTypes, onNodeAddedCallback, workspaceManager) {
 
@@ -9,7 +11,12 @@ export default class NodeLibrary{
 		this.onMouseMoveBound = this.onMouseMove.bind(this);
 		this.onMouseUpBound = this.onMouseUp.bind(this);
 
+		this.onMouseOverBound = this.onMouseOver.bind(this);
+		this.onMouseOutBound = this.onMouseOut.bind(this);
+
 		this.workspaceManager = workspaceManager;
+
+		this.mouseIsDown = false;
 
 		this.nodeToPlaceData = {
 			type: undefined,
@@ -19,10 +26,26 @@ export default class NodeLibrary{
 		this.el = document.createElement('div');
 		this.el.className = 'node-library';
 
+		const outerScrollEl = document.createElement('div');
+		outerScrollEl.className = 'outer-scroll';
+
+		this.el.appendChild(outerScrollEl);
+
+		this.isShowing = false;
+
+		this.el.addEventListener('mouseover', this.onMouseOverBound);
+
+		this.titleEl = document.createElement('h4');
+		this.titleEl.innerHTML = 'NODE LIBRARY';
+		this.titleEl.className = 'title-bar';
+
+		this.el.appendChild(this.titleEl);
+		
+
 		const innerScroll = document.createElement('div');
 		innerScroll.className = 'inner-scroll';
 
-		this.el.appendChild(innerScroll);
+		outerScrollEl.appendChild(innerScroll);
 
 		this.parentEl.appendChild(this.el);
 
@@ -55,7 +78,8 @@ export default class NodeLibrary{
 
 				for (let i = 0; i < nodeTypes[key][keySub].length; i++) {
 					const nodeWrapper = document.createElement('div');
-					nodeWrapper.className = 'library-node audio';
+					const isModifier = nodeTypes[key][keySub][i].isModifier;
+					nodeWrapper.className = `library-node${isModifier ? ' modifier' : ''}`;
 					nodeWrapper.setAttribute('data-type-0', key);
 					nodeWrapper.setAttribute('data-type-1', keySub);
 
@@ -63,13 +87,26 @@ export default class NodeLibrary{
 					type.className = 'node-type';
 					type.innerHTML = nodeTypes[key][keySub][i].type;
 
-					const addBtn = document.createElement('img');
-					addBtn.className = 'node-add';
-					addBtn.src = 'assets/add.svg';
-					
-					nodeWrapper.appendChild(type);
+					const typeStr = nodeTypes[key][keySub][i].type;
 
-					nodeWrapper.appendChild(addBtn);
+					const title = isModifier ? `${typeStr}-modifier` : `${typeStr}-node`;
+
+					const shape = isModifier ? this.getTriangleShape() : this.getNonagonShape(true);
+
+					nodeWrapper.appendChild(shape);
+
+					if (title) {
+						const iconPath = `${title.replace(' ', '-').toLowerCase()}-icon`;
+
+						const iconImg = new Image();
+						iconImg.onload = () => {
+							console.log('loaded');
+							nodeWrapper.appendChild(iconImg);
+						};
+						iconImg.src = `/assets/icons/white/${iconPath}.svg`;
+					}
+				
+					nodeWrapper.appendChild(type);
 
 					nodeContainer.appendChild(nodeWrapper);
 
@@ -85,18 +122,87 @@ export default class NodeLibrary{
 		}
 	}
 
-	hide() {
-		this.el.style.transform = 'translateX(100%)';
+	onMouseOver() {
+		console.log('mouse over');
+
+		if (this.mouseIsDown) {
+			return;
+		}
+
+		if (!this.isShowing) {
+			this.isShowing = true;
+			this.el.classList.add('showing');
+
+			this.el.addEventListener('mouseout', this.onMouseOutBound);
+		}
 	}
 
-	show() {
-		this.el.style.transform = 'translateX(0)';
+	onMouseOut() {
+		console.log('mouseout');
+
+		if (this.mouseIsDown) {
+			return;
+		}
+
+		if (this.isShowing) {
+			this.isShowing = false;
+			this.el.classList.remove('showing');
+
+			this.el.removeEventListener('mouseout', this.onMouseOutBound);
+		}
+	}
+
+	getTriangleShape() {
+		const triangleSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        triangleSvg.classList.add("modifier");
+		triangleSvg.setAttribute("width", "40px");
+		triangleSvg.setAttribute("height", "40px");
+		triangleSvg.setAttribute("viewBox", "0 0 24 24");
+		triangleSvg.setAttribute("fill", 'rgba(50, 50, 50, .9)');
+
+		const shape = `M23.677 18.52c.914 1.523-.183 3.472-1.967 3.472h-19.414c-1.784 0-2.881-1.949-1.967-3.472l9.709-16.18c.891-1.483 3.041-1.48 3.93 0l9.709 16.18z`;
+
+		const trianglePath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+		trianglePath.setAttribute("d", shape);
+
+		triangleSvg.appendChild(trianglePath);
+		
+		return triangleSvg;
+	}
+
+	getNonagonShape(small) {
+		const nonagonSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+		nonagonSvg.setAttribute("width", small ? "50px" : "260px");
+		nonagonSvg.setAttribute("height", small ? "50px" : "260px");
+		nonagonSvg.setAttribute("viewBox", "0 0 1200 1200");
+		nonagonSvg.setAttribute("fill", 'rgba(50, 50, 50, .9)');
+
+		const nonagonShape = `M464.133,1097.487c-22.564,0-55.171-11.867-72.457-26.372l-208.16-174.667c-17.285-14.504-34.635-44.554-38.553-66.777
+						L97.777,562.066c-3.918-22.223,2.107-56.394,13.391-75.936l135.865-235.328c11.283-19.542,37.863-41.846,59.068-49.563
+						L561.446,108.3c21.205-7.718,55.902-7.718,77.107,0L893.9,201.239c21.205,7.718,47.785,30.021,59.067,49.563l135.864,235.328
+						c11.283,19.542,17.309,53.713,13.391,75.936l-47.186,267.604c-3.918,22.224-21.268,52.273-38.553,66.777l-208.16,174.667
+						c-17.286,14.505-49.893,26.372-72.457,26.372H464.133z
+		`;
+
+		const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+		path.setAttribute("d", nonagonShape);
+
+        nonagonSvg.appendChild(path);
+        
+        return nonagonSvg;
 	}
 
 	onMouseDown(e) {
 
-		this.el.style.opacity = .1;
-		this.nodePlaceHelper = new NodePlaceHelper(this.workspaceManager, {x: e.clientX, y: e.clientY});
+		this.mouseIsDown = true;
+
+		// this.el.style.opacity = .1;
+		this.nodePlaceHelper = new NodePlaceHelper(
+			this.workspaceManager,
+			{x: e.clientX, y: e.clientY},
+			this.nodeToPlaceData.data.isModifier,
+			this.nodeToPlaceData.data.isModifier ? this.getTriangleShape() : this.getNonagonShape()
+		);
 		this.nodePlaceHelper.onMouseDown(e);
 
 		window.addEventListener('mouseup', this.onMouseUpBound);
@@ -112,7 +218,7 @@ export default class NodeLibrary{
 
 		this.nodePlaceHelper.onMouseUp();
 
-		this.el.style.opacity = 1;
+		// this.el.style.opacity = 1;
 
 		window.removeEventListener('mouseup', this.onMouseUpBound);
 		window.removeEventListener('mousemove', this.onMouseMoveBound);
@@ -120,12 +226,14 @@ export default class NodeLibrary{
 		const nodePos = this.nodePlaceHelper.getPos();
 
 		if (Math.abs(this.nodePlaceHelper.deltaX) > 4) {
-			this.onNodeAddedCallback(this.nodeToPlaceData.type, this.nodeToPlaceData.data, nodePos);
+			this.onNodeAddedCallback(this.nodeToPlaceData, nodePos);
 		}
 
 		this.nodeToPlaceData = {
 			type: undefined,
 			data: undefined,
 		};
+
+		this.mouseIsDown = false;
 	}
 }

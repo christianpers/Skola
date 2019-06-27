@@ -1,16 +1,21 @@
 export default class NodePlaceHelper{
-	constructor(workspaceManager, pos) {
+	constructor(workspaceManager, pos, isModifier, shape) {
 
 		this.workspaceManager = workspaceManager;
 		this.parentEl = workspaceManager.el;
 		this.el = document.createElement('div');
-		this.el.style.width = '200px';
-		this.el.style.height = '200px';
+		this.el.style.width = isModifier ? '40px' : '260px';
+		this.el.style.height = isModifier ? '40px' : '260px';
 		this.el.style.position = 'absolute';
-		this.el.style.top = '0';
-		this.el.style.left = '0';
-		this.el.style.background = 'rgba(50, 50, 50, .9)';
-		this.el.style.borderRadius = '4px';
+		this.el.style.top = isModifier ? '-20px' : '-130px';
+		this.el.style.left = isModifier ? '-20px' : '-130px';
+		// this.el.style.background = 'rgba(50, 50, 50, .9)';
+		// this.el.style.borderRadius = '4px';
+		this.isModifier = isModifier;
+
+		// const shape = isModifier ? this.getTriangleShape() : this.getNonagonShape();
+
+		this.el.appendChild(shape);
 
 		this.parentEl.appendChild(this.el);
 
@@ -36,12 +41,14 @@ export default class NodePlaceHelper{
 
 	getPos() {
 
+		const shapeOffset = this.isModifier ? -20 : -130;
+
 		const workspaceOffsetX = Math.abs(this.workspaceManager.moveCoords.offset.x);
 		const workspaceOffsetY = Math.abs(this.workspaceManager.moveCoords.offset.y);
 
 		return {
-			x: this.moveCoords.offset.x + workspaceOffsetX,
-			y: this.moveCoords.offset.y + workspaceOffsetY,
+			x: this.moveCoords.offset.x + workspaceOffsetX + shapeOffset,
+			y: this.moveCoords.offset.y + workspaceOffsetY + shapeOffset,
 		};
 
 	}

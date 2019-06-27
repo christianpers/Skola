@@ -7,9 +7,10 @@ export default class OrbitDriverNode extends GraphicNode{
 		super();
 
 		this.needsUpdate = true;
+		this.title = 'Orbit modifier';
 
-		this.el.classList.add('no-height');
-		this.el.classList.add('orbit-driver-node');
+		// this.el.classList.add('no-height');
+		// this.el.classList.add('orbit-driver-node');
 
 		this.isParam = true;
 
@@ -60,53 +61,53 @@ export default class OrbitDriverNode extends GraphicNode{
 		this.onRotationChangeYBound = this.onRotationChangeY.bind(this);
 		this.onRotationChangeXBound = this.onRotationChangeX.bind(this);
 
-		const settingsContainer = document.createElement('div');
-		settingsContainer.className = 'settings-container-outer';
+		// const settingsContainer = document.createElement('div');
+		// settingsContainer.className = 'settings-container-outer';
 
-		this.topPartEl.appendChild(settingsContainer);
+		// this.topPartEl.appendChild(settingsContainer);
 
 		
 
-		this.orbitXSlider = new VerticalSlider(
-			settingsContainer, 10, this.onOrbitXChangeBound, 0, {min: 0, max: 40}, 'Radie X', 60, true,
-		);
+		// this.orbitXSlider = new VerticalSlider(
+		// 	settingsContainer, 10, this.onOrbitXChangeBound, 0, {min: 0, max: 40}, 'Radie X', 60, true,
+		// );
 
-		this.orbitYSlider = new VerticalSlider(
-			settingsContainer, 10, this.onOrbitYChangeBound, 0, {min: 0, max: 40}, 'Radie Y', 60, true,
-		);
+		// this.orbitYSlider = new VerticalSlider(
+		// 	settingsContainer, 10, this.onOrbitYChangeBound, 0, {min: 0, max: 40}, 'Radie Y', 60, true,
+		// );
 
-		this.orbitZSlider = new VerticalSlider(
-			settingsContainer, 10, this.onOrbitZChangeBound, 0, {min: 0, max: 40}, 'Radie Z', 60, true,
-		);
+		// this.orbitZSlider = new VerticalSlider(
+		// 	settingsContainer, 10, this.onOrbitZChangeBound, 0, {min: 0, max: 40}, 'Radie Z', 60, true,
+		// );
 
-		this.speedSlider = new VerticalSlider(
-			settingsContainer, 0, this.onSpeedChangeBound, 4, {min: 0, max: 10}, 'Orbit speed',
-		);
+		// this.speedSlider = new VerticalSlider(
+		// 	settingsContainer, 0, this.onSpeedChangeBound, 4, {min: 0, max: 10}, 'Orbit speed',
+		// );
 
-		this.rotationXSlider = new VerticalSlider(
-			settingsContainer, 0, this.onRotationChangeXBound, 3, {min: -.1, max: .1}, 'Rotation X', 60, true,
-		);
+		// this.rotationXSlider = new VerticalSlider(
+		// 	settingsContainer, 0, this.onRotationChangeXBound, 3, {min: -.1, max: .1}, 'Rotation X', 60, true,
+		// );
 
-		this.rotationYSlider = new VerticalSlider(
-			settingsContainer, 0, this.onRotationChangeYBound, 3, {min: -.1, max: .1}, 'Rotation Y', 60, true,
-		);
+		// this.rotationYSlider = new VerticalSlider(
+		// 	settingsContainer, 0, this.onRotationChangeYBound, 3, {min: -.1, max: .1}, 'Rotation Y', 60, true,
+		// );
 
-		this.orbitSliders = {
-			Position: {
-				x: this.orbitXSlider,
-				y: this.orbitYSlider,
-				z: this.orbitZSlider,
-			},
-			Rotation: {
-				x: this.rotationXSlider,
-				y: this.rotationYSlider,
-			},
-			Form: {
-				x: this.orbitXSlider,
-				y: this.orbitYSlider,
-				z: this.orbitZSlider,
-			},
-		};
+		// this.orbitSliders = {
+		// 	Position: {
+		// 		x: this.orbitXSlider,
+		// 		y: this.orbitYSlider,
+		// 		z: this.orbitZSlider,
+		// 	},
+		// 	Rotation: {
+		// 		x: this.rotationXSlider,
+		// 		y: this.rotationYSlider,
+		// 	},
+		// 	Form: {
+		// 		x: this.orbitXSlider,
+		// 		y: this.orbitYSlider,
+		// 		z: this.orbitZSlider,
+		// 	},
+		// };
 		
 		this.curve = new THREE.EllipseCurve(
 			0,  0,            // ax, aY
@@ -116,24 +117,89 @@ export default class OrbitDriverNode extends GraphicNode{
 			0                 // aRotation
 		);
 
-		this.topPartEl.appendChild(settingsContainer);
+		// this.topPartEl.appendChild(settingsContainer);
 
-		this.onToggleStartClickBound = this.onToggleStartClick.bind(this);
+		// this.onToggleStartClickBound = this.onToggleStartClick.bind(this);
 
-		this.toggleStartBtn = document.createElement('div');
-		this.toggleStartBtn.className = 'toggle-start';
-		this.toggleStartBtn.addEventListener('click', this.onToggleStartClickBound);
+		// this.toggleStartBtn = document.createElement('div');
+		// this.toggleStartBtn.className = 'toggle-start';
+		// this.toggleStartBtn.addEventListener('click', this.onToggleStartClickBound);
 
-		this.toggleBtnText = document.createElement('p');
-		this.toggleBtnText.innerHTML = 'Start';
+		// this.toggleBtnText = document.createElement('p');
+		// this.toggleBtnText.innerHTML = 'Start';
 
-		this.toggleStartBtn.appendChild(this.toggleBtnText);
+		// this.toggleStartBtn.appendChild(this.toggleBtnText);
 
-		this.topPartEl.appendChild(this.toggleStartBtn);
+		// this.topPartEl.appendChild(this.toggleStartBtn);
 
-		this.updateBound = this.update.bind(this);
+		// this.updateBound = this.update.bind(this);
 
-		this.update();
+		// this.update();
+	}
+
+	hideSettings() {
+		
+	}
+
+	getSettings() {
+		if (!this.settingsContainer) {
+			const settingsContainer = document.createElement('div');
+			settingsContainer.className = 'node-settings orbit-driver-node';
+
+			const orbitSliderContainer = document.createElement('div');
+			orbitSliderContainer.className = 'slider-row';
+
+			const rotationSliderContainer = document.createElement('div');
+			rotationSliderContainer.className = 'slider-row';
+			
+			const orbitXSlider = new VerticalSlider(
+				orbitSliderContainer, 10, this.onOrbitXChangeBound, 0, {min: 0, max: 40}, 'Radie X', 60, true,
+			);
+
+			const orbitYSlider = new VerticalSlider(
+				orbitSliderContainer, 10, this.onOrbitYChangeBound, 0, {min: 0, max: 40}, 'Radie Y', 60, true,
+			);
+
+			const orbitZSlider = new VerticalSlider(
+				orbitSliderContainer, 10, this.onOrbitZChangeBound, 0, {min: 0, max: 40}, 'Radie Z', 60, true,
+			);
+
+			const speedSlider = new VerticalSlider(
+				rotationSliderContainer, 0, this.onSpeedChangeBound, 4, {min: 0, max: 10}, 'Orbit speed',
+			);
+
+			const rotationXSlider = new VerticalSlider(
+				rotationSliderContainer, 0, this.onRotationChangeXBound, 3, {min: -.1, max: .1}, 'Rotation X', 60, true,
+			);
+
+			const rotationYSlider = new VerticalSlider(
+				rotationSliderContainer, 0, this.onRotationChangeYBound, 3, {min: -.1, max: .1}, 'Rotation Y', 60, true,
+			);
+
+			this.orbitSliders = {
+				Position: {
+					x: orbitXSlider,
+					y: orbitYSlider,
+					z: orbitZSlider,
+				},
+				Rotation: {
+					x: rotationXSlider,
+					y: rotationYSlider,
+				},
+				Form: {
+					x: orbitXSlider,
+					y: orbitYSlider,
+					z: orbitZSlider,
+				},
+			};
+
+			settingsContainer.appendChild(orbitSliderContainer);
+			settingsContainer.appendChild(rotationSliderContainer);
+
+			this.settingsContainer = settingsContainer;
+		}
+
+		return this.settingsContainer;
 	}
 
 	onRotationChangeX(val) {
@@ -260,16 +326,15 @@ export default class OrbitDriverNode extends GraphicNode{
 		this.reset();
 		window.cancelAnimationFrame(this.animateValues.reqAnimFrame);
 
-		this.speedSlider.remove();
+		// this.speedSlider.remove();
 
-		// this.orbitSlider.remove();
-		this.orbitXSlider.remove();
-		this.orbitYSlider.remove();
-		this.orbitZSlider.remove();
+		// this.orbitXSlider.remove();
+		// this.orbitYSlider.remove();
+		// this.orbitZSlider.remove();
 
-		this.rotationXSlider.remove();
+		// this.rotationXSlider.remove();
 
-		this.rotationYSlider.remove();
+		// this.rotationYSlider.remove();
 
 		super.removeFromDom();
 

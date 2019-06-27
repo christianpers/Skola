@@ -1,0 +1,96 @@
+.node-library{
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 260px;
+	height: 100vh;
+	padding-left: 20px;
+	padding-right: 10px;
+	background: rgb(10,10,10);
+	z-index: 2;
+    transform: translateX(240px);
+    transition: transform .4s;
+
+    & .outer-scroll {
+        height: 100vh;
+        overflow: scroll;
+    }
+
+    .title-bar {
+        position: fixed;
+        top: 50%;
+        left: -35px;
+        transform: rotate(90deg);
+        color: white;
+    }
+    
+    &.showing {
+        transform: translateX(0);
+
+        // .title-bar {
+        //     display: none;
+        // }
+    }
+
+	& .inner-scroll{
+		height: 100%;
+	}
+
+	& .level-title{
+		border-bottom: 1px solid rgb(60,60,60);
+		margin-top: 10px;
+		color: rgb(210,210,210);
+		text-transform: capitalize;
+	}
+
+	& .level-1{
+		margin-left: 10px;
+	}
+
+	& .node-container{
+		display: flex;
+		margin-top: 24px;
+		flex-wrap: wrap;
+	}
+
+	& .library-node{
+		// width: 25%;
+		margin-right: 2%;
+		// height: 40px;
+		// background: rgb(20,20,20);
+		padding: 5px;
+		display: flex;
+		flex-direction: column;
+		position: relative;
+		cursor: pointer;
+        margin-bottom: 30px;
+
+        &.modifier {
+            padding-bottom: 10px;
+        }
+
+		& .node-type{
+			color: rgb(210,210,210);
+		    position: absolute;
+		    top: -15px;
+		    left: 0;
+		    font-size: 8px;
+        }
+        
+        > img {
+            width: 20px;
+            height: 20px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.6;
+        }
+
+		& .node-add{
+			width: 30px;
+			align-self: center;
+			margin-top: 5px;
+		}
+	}
+}

@@ -8,9 +8,6 @@ export default class SphereNode extends GraphicNode{
 
 		this.isForegroundNode = true;
 		this.hasMultipleOutputs = true;
-
-		this.el.classList.add('no-height');
-		this.el.classList.add('no-input-multiple-outputs');
 		
 		const w = window.innerWidth;
 		const h = window.innerHeight;
@@ -23,7 +20,7 @@ export default class SphereNode extends GraphicNode{
 			title: 'Texture',
 			param: 'map',
 			useAsInput: true,
-			parent: 'Material',
+			parent: 'Texture',
 			paramHelpersType: 'texture',
 			needsFrameUpdate: false,
 		};
@@ -33,20 +30,20 @@ export default class SphereNode extends GraphicNode{
 			param: 'color',
 			useAsInput: true,
 			defaultVal: new THREE.Color(1,1,1),
-			parent: 'Material',
+			parent: 'Color',
 			paramHelpersType: 'color',
 			needsFrameUpdate: false,
 		};
 
-		const bumpMapParam = {
-			title: 'Displacement',
-			// param: 'displacementMap',
-			param: 'normalMap',
-			useAsInput: true,
-			parent: 'Material',
-			paramHelpersType: 'normalMap',
-			needsFrameUpdate: false,
-		};
+		// const bumpMapParam = {
+		// 	title: 'Displacement',
+		// 	// param: 'displacementMap',
+		// 	param: 'normalMap',
+		// 	useAsInput: true,
+		// 	parent: 'Displacement',
+		// 	paramHelpersType: 'normalMap',
+		// 	needsFrameUpdate: false,
+		// };
 
 		const positionXParam = {
 			title: 'Position X',
@@ -117,7 +114,7 @@ export default class SphereNode extends GraphicNode{
 		this.params = {
 			textureParam,
 			colorParam,
-			bumpMapParam,
+			// bumpMapParam,
 			positionXParam,
 			positionYParam,
 			positionZParam,
@@ -132,95 +129,103 @@ export default class SphereNode extends GraphicNode{
 	init(
 		pos,
 		parentEl,
-		onConnectingCallback,
+		onDisconnectCallback,
 		onInputConnectionCallback,
 		type,
 		initData,
 		onNodeActive,
 		onNodeRemove,
+		isModifier,
+		onNodeDragStart,
+		onNodeDragMove,
+		onNodeDragRelease,
 	) {
 		super.init(
 			pos,
 			parentEl,
-			onConnectingCallback,
+			onDisconnectCallback,
 			onInputConnectionCallback,
 			type,
 			initData,
 			onNodeActive,
 			onNodeRemove,
+			isModifier,
+			onNodeDragStart,
+			onNodeDragMove,
+			onNodeDragRelease,
 		);
 
-		this.onOutputClickGraphicsBound = this.onOutputClickGraphics.bind(this);
-		this.onOutputClickTargetBound = this.onOutputClickTarget.bind(this);
+		// this.onOutputClickGraphicsBound = this.onOutputClickGraphics.bind(this);
+		// this.onOutputClickTargetBound = this.onOutputClickTarget.bind(this);
 
-		const outputContainer = document.createElement('div');
-		outputContainer.className = 'multiple-outputs';
+		// const outputContainer = document.createElement('div');
+		// outputContainer.className = 'multiple-outputs';
 
-		this.bottomPartEl.appendChild(outputContainer);
+		// this.bottomPartEl.appendChild(outputContainer);
 
-		this.outputGraphics = new NodeOutput(outputContainer, this.onOutputClickGraphicsBound, false, false, false, true);
-		this.outputTarget = new NodeOutput(outputContainer, this.onOutputClickTargetBound, true, false, false, true);
+		// this.outputGraphics = new NodeOutput(outputContainer, this.onOutputClickGraphicsBound, false, false, false, true);
+		// this.outputTarget = new NodeOutput(outputContainer, this.onOutputClickTargetBound, true, false, false, true);
 
 		this.outputDataConnection = null;
 
-		this.outputs = {
-			'sphere-graphics': this.outputGraphics,
-			'sphere-target': this.outputTarget,
-		};
+		// this.outputs = {
+		// 	'sphere-graphics': this.outputGraphics,
+		// 	'sphere-target': this.outputTarget,
+		// };
 
-		this.inDotPos = {
-			'sphere-graphics': null,
-			'sphere-target': null,
-		};
+		// this.inDotPos = {
+		// 	'sphere-graphics': null,
+		// 	'sphere-target': null,
+		// };
 
 		this.enabledOutputs = [];
 	}
 
-	onOutputClickGraphics(pos) {
+	// onOutputClickGraphics(pos) {
 
-		this.onConnectingCallback(this, pos, 'sphere-graphics');
-	}
+	// 	this.onConnectingCallback(this, pos, 'sphere-graphics');
+	// }
 
-	onOutputClickTarget(pos) {
+	// onOutputClickTarget(pos) {
 
-		this.onConnectingCallback(this, pos, 'sphere-target');
-	}
+	// 	this.onConnectingCallback(this, pos, 'sphere-target');
+	// }
 
-	getOutputPos(type) {
-		const obj = {
-			x: this.outputs[type].el.offsetLeft,
-			y: this.outputs[type].el.offsetTop,
-		};
+	// getOutputPos(type) {
+	// 	const obj = {
+	// 		x: this.outputs[type].el.offsetLeft,
+	// 		y: this.outputs[type].el.offsetTop,
+	// 	};
 
-		return obj;
-	}
+	// 	return obj;
+	// }
 
-	getOutDotPos(el, outputType) {
-		if (!this.inDotPos[outputType]) {
-			this.inDotPos[outputType] = this.outputs[outputType].el.getBoundingClientRect();
-		}
+	// getOutDotPos(el, outputType) {
+	// 	if (!this.inDotPos[outputType]) {
+	// 		this.inDotPos[outputType] = this.outputs[outputType].el.getBoundingClientRect();
+	// 	}
 
-		return this.inDotPos[outputType];
-	}
+	// 	return this.inDotPos[outputType];
+	// }
 
-	getOutputEl(outputType) {
-		return this.outputs[outputType];
-	}
+	// getOutputEl(outputType) {
+	// 	return this.outputs[outputType];
+	// }
 
-	enableOutput(param, connectionData) {
-		const type = connectionData.outputType;
+	// enableOutput(param, connectionData) {
+	// 	const type = connectionData.outputType;
 
-		this.outputs[type].enable();
+	// 	this.outputs[type].enable();
 
-		this.enabledOutputs.push(type);
+	// 	this.enabledOutputs.push(type);
 
-	}
+	// }
 
-	disableOutput(inNode, param, outputType) {
-		this.outputs[outputType].disable();
+	// disableOutput(inNode, param, outputType) {
+	// 	this.outputs[outputType].disable();
 
-		this.enabledOutputs = this.enabledOutputs.filter(t => t !== outputType);
-	}
+	// 	this.enabledOutputs = this.enabledOutputs.filter(t => t !== outputType);
+	// }
 
 	getMesh() {
 		return this.mesh;

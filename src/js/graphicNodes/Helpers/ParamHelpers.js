@@ -46,6 +46,7 @@ const onBumpmapDisconnect = (inNode) => {
 };
 
 const isValidParamColorInput = (outNode) => {
+	console.log('valid color ', outNode);
 
 	return !!outNode.picker;
 };

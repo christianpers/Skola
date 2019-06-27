@@ -2,6 +2,8 @@ import NodeOutput from './NodeComponents/NodeOutput';
 import NodeInput from './NodeComponents/NodeInput';
 import NodeRemove from './NodeComponents/NodeRemove';
 import NodeCollapsedParam from './NodeComponents/NodeCollapsedParam';
+import NonagonType from './NodeTypes/NonagonType';
+import TriangleType from './NodeTypes/TriangleType';
 
 export default class Node{
 	constructor() {
@@ -12,61 +14,99 @@ export default class Node{
 		this.hasGraphicsInput = false;
 		this.needsUpdate = false;
 		this.hasMultipleOutputs = false;
-		this.initAsNotCollapsed = false;
 		this.returnsSingleNumber = false;
 
-		this.outDotPos = undefined;
-		this.inDotPos = undefined;
+		this.onConnectionAddBound = this.onConnectionAdd.bind(this);
+		this.onConnectionRemoveBound = this.onConnectionRemove.bind(this);
 
-		this.isCollapsed = false;
-
-		this.nodeCollapsedParam = null;
+		document.documentElement.addEventListener('param-connections-add', this.onConnectionAddBound);
+		document.documentElement.addEventListener('param-connections-remove', this.onConnectionRemoveBound);
 	}
 
-	init(pos, parentEl, onConnectingCallback, onInputConnectionCallback, type, nodeConfig, onNodeActive, onNodeRemove) {
+	init(
+		pos,
+		parentEl,
+		onDisconnectCallback,
+		onInputConnectionCallback,
+		type,
+		nodeConfig,
+		onNodeActive,
+		onNodeRemove,
+		isModifier,
+		onNodeDragStart,
+		onNodeDragMove,
+		onNodeDragRelease,
+	) {
 
 		this.initNodeConfig = !!nodeConfig;
 
 		this.ID = this.initNodeConfig ? nodeConfig.id : '_' + Math.random().toString(36).substr(2, 9);
-		this.onConnectingCallback = onConnectingCallback;
+		this.onDisconnectCallback = onDisconnectCallback;
 		this.onInputConnectionCallback = onInputConnectionCallback;
 		this.hasActiveInput = false;
 		this.type = type;
 		this.onNodeActive = onNodeActive;
 		this.onNodeRemove = onNodeRemove;
+		this.isModifier = isModifier;
+		this.onNodeDragStart = onNodeDragStart;
+		this.onNodeDragMove = onNodeDragMove;
+		this.onNodeDragRelease = onNodeDragRelease;
+
+		// this.title = isModifier ? `${type}-modifier` : `${type}-node`;
+
+		this.connectedNodes = [];
 		
 		this.parentEl = parentEl;
 
 		this.lastDelta = {x: 0, y: 0};
 
-		const typeEl = document.createElement('h4');
-		typeEl.innerHTML = this.type;
-		typeEl.className = 'node-type';
+		if (!this.isCanvasNode) {
+			this.nodeType = isModifier
+				? new TriangleType(this.el, this.params, this) : new NonagonType(this.el, this.params, this);
+			
+			const typeStr = this.type;
 
-		this.el.appendChild(typeEl);
+			const title = this.isModifier ? `${typeStr}-modifier` : `${typeStr}-node`;
 
-		this.parentEl.appendChild(this.el);
 
-		this.onOutputClickBound = this.onOutputClick.bind(this);
-		this.onInputClickBound = this.onInputClick.bind(this);
-		this.onRemoveClickBound = this.onRemoveClick.bind(this);
+			const iconPath = `${title.replace(' ', '-').toLowerCase()}-icon`;
 
-		const hasInput = !this.isParam && this.hasAudioInput || this.hasGraphicsInput;
+			console.log(iconPath);
 
-		if (hasInput && !this.isCanvasNode) {
-			this.input = new NodeInput(this.bottomPartEl, this.onInputClickBound, this.isGraphicsNode);
+			const iconImg = document.createElement('img');
+			iconImg.src = `/assets/icons/${iconPath}.svg`;
+
+			this.el.appendChild(iconImg);
+
+			if (isModifier) {
+				this.el.classList.add('modifier-node');
+			}
 		}
 		
-		if (this.hasOutput && !this.hasMultipleOutputs) {
-			this.output = new NodeOutput(
-				this.bottomPartEl,
-				this.onOutputClickBound,
-				this.isParam,
-				hasInput,
-				this.isSpeaker,
-				this.isGraphicsNode,
-			);
-		}
+		this.parentEl.appendChild(this.el);
+
+		
+
+		// this.onOutputClickBound = this.onOutputClick.bind(this);
+		// this.onInputClickBound = this.onInputClick.bind(this);
+		this.onRemoveClickBound = this.onRemoveClick.bind(this);
+
+		// const hasInput = !this.isParam && this.hasAudioInput || this.hasGraphicsInput;
+
+		// if (hasInput && !this.isCanvasNode) {
+		// 	this.input = new NodeInput(this.bottomPartEl, this.onInputClickBound, this.isGraphicsNode);
+		// }
+		
+		// if (this.hasOutput && !this.hasMultipleOutputs) {
+		// 	this.output = new NodeOutput(
+		// 		this.bottomPartEl,
+		// 		this.onOutputClickBound,
+		// 		this.isParam,
+		// 		hasInput,
+		// 		this.isSpeaker,
+		// 		this.isGraphicsNode,
+		// 	);
+		// }
 		
 		this.moveCoords = {
 			start: {
@@ -81,80 +121,96 @@ export default class Node{
 
 		this.el.style[window.NS.transform] = `translate3d(${this.moveCoords.offset.x}px, ${this.moveCoords.offset.y}px, 0)`;
 
-		const optionWrapper = document.createElement('div');
-		optionWrapper.className = 'node-top-options';
+		// const optionWrapper = document.createElement('div');
+		// optionWrapper.className = 'node-top-options';
 
-		this.el.appendChild(optionWrapper);
+		// this.el.appendChild(optionWrapper);
 
 		// Collapsed View
-		if (!this.initAsNotCollapsed) {
-			this.onToggleCollapseBound = this.onToggleCollapse.bind(this);
-			this.toggleCollapseView = document.createElement('div');
-			this.toggleCollapseView.className = 'node-toggle-collapse';
+		// if (!this.initAsNotCollapsed) {
+		// 	this.onToggleCollapseBound = this.onToggleCollapse.bind(this);
+		// 	this.toggleCollapseView = document.createElement('div');
+		// 	this.toggleCollapseView.className = 'node-toggle-collapse';
 			
-			this.toggleCollapseLabel = document.createElement('h5');
+		// 	this.toggleCollapseLabel = document.createElement('h5');
 			
-			this.toggleCollapseView.appendChild(this.toggleCollapseLabel);
+		// 	this.toggleCollapseView.appendChild(this.toggleCollapseLabel);
 
-			optionWrapper.appendChild(this.toggleCollapseView);
+		// 	optionWrapper.appendChild(this.toggleCollapseView);
 
-			this.toggleCollapseView.addEventListener('click', this.onToggleCollapseBound);
+		// 	this.toggleCollapseView.addEventListener('click', this.onToggleCollapseBound);
 
-			this.onToggleCollapse();
-		}
+		// 	this.onToggleCollapse();
+		// }
 
-		this.remove = new NodeRemove(optionWrapper, this.onRemoveClickBound);
+		// this.remove = new NodeRemove(optionWrapper, this.onRemoveClickBound);
 
 		this.onMouseDownBound = this.onMouseDown.bind(this);
 		this.onMouseMoveBound = this.onMouseMove.bind(this);
 		this.onMouseUpBound = this.onMouseUp.bind(this);
 	}
 
-	postInit() {
-		const inputParamsArr = Object.keys(this.inputParams);
-		if (inputParamsArr.length > 0) {
-			this.collapsedParam = new NodeCollapsedParam(this.topPartEl, inputParamsArr[inputParamsArr.length-1].el, inputParamsArr.length);
-		}
+	onConnectionAdd(e) {
+		console.log('node on connection add: ', e.detail, e.type, this.ID);
+
 		
 	}
 
-	onToggleCollapse() {
-		if (this.isCollapsed) {
-			this.topPartEl.classList.remove('hide');
-			this.toggleCollapseLabel.innerHTML = 'Minimera';
-			this.isCollapsed = false;
-			this.el.style.zIndex = 1;
-		} else {
-			this.topPartEl.classList.add('hide');
-			this.toggleCollapseLabel.innerHTML = 'Expandera';
-			this.isCollapsed = true;
-			this.el.style.zIndex = '';
-		}
+	onConnectionRemove(e) {
+		console.log('node on connection remove: ', e.detail, e.type, this.ID);
+
 	}
 
-	getOutputPos() {
-		const obj = {
-			x: this.output.el.offsetLeft,
-			y: this.output.el.offsetTop,
-		};
-
-		return obj;
+	setAsChildToParamContainer(paramContainer) {
+		paramContainer.el.appendChild(this.el);
+		this.el.style[window.NS.transform] = 'initial';
+		this.onInputConnectionCallback(this, paramContainer);
 	}
 
-	getOutDotPos(el) {
-		if (!this.inDotPos) {
-			this.inDotPos = el.getBoundingClientRect();
-		}
-
-		return this.inDotPos;
+	setAsNotChildToParamContainer(paramContainer, e) {
+		this.onDisconnectCallback(this, paramContainer);
+		const pos = paramContainer.getCleanPos();
+		this.parentEl.appendChild(this.el);
+		const nodeBoundingRect = paramContainer.node.el.getBoundingClientRect();
+		
+		const offsetX = pos.x - nodeBoundingRect.x;
+		const offsetY = pos.y - nodeBoundingRect.y;
+		this.moveCoords.start.x = e.x - (paramContainer.node.moveCoords.offset.x + offsetX);
+		this.moveCoords.start.y = e.y - (paramContainer.node.moveCoords.offset.y + offsetY);
 	}
 
-	getInDotPos(el) {
-		if (!this.outDotPos) {
-			this.outDotPos = el.getBoundingClientRect();
-		}
+	getParamContainers() {
+		return this.nodeType.paramContainers;
+	}
 
-		return this.outDotPos;
+	enableOutput(param, connection) {
+		console.log('enable output');
+		// super.enableOutput();
+
+		this.currentOutConnections.push(connection);
+		this.currentOutConnectionsLength = this.currentOutConnections.length;
+	}
+
+	disableOutput(paramID) {
+		const tempOutConnections = this.currentOutConnections.map(t => t);
+
+        let paramConnections = tempOutConnections.filter(t => t.paramID);
+        let nodeConnections = tempOutConnections.filter(t => !t.paramID);
+
+        if (paramID) {
+            paramConnections = paramConnections.filter(t => t.paramID && (t.paramID !== paramID));
+        } else {
+            nodeConnections = nodeConnections.filter(t => t.in.ID !== nodeIn.ID);
+        }
+        
+        const finalConnections = paramConnections.concat(nodeConnections);
+        this.currentOutConnections = finalConnections;
+        this.currentOutConnectionsLength = this.currentOutConnections.length;
+
+        // if (this.currentOutConnectionsLength <= 0) {
+        //     super.disableOutput();
+
+        // }
 	}
 
 	onRemoveClick() {
@@ -165,37 +221,11 @@ export default class Node{
 		this.el.addEventListener('mousedown', this.onMouseDownBound);
 	}
 
-	getOutputEl() {
-		return this.output;
-	}
-
-	getInputEl() {
-		return this.input;
-	}
 
 	getConnectNode() {
 		return this;
 	}
 
-	enableOutput() {
-		this.output.enable();
-	}
-
-	disableOutput() {
-		this.output.disable();
-	}
-
-	enableInput(param) {
-		if (this.input) {
-			this.input.enable();
-		}
-	}
-
-	disableInput() {
-		if (this.input){
-			this.input.disable();
-		}
-	}
 
 	setAsDisabled() {
 		this.el.style.opacity = .1;
@@ -205,21 +235,16 @@ export default class Node{
 		this.el.style.opacity = 1;
 	}
 
-	onOutputClick(clickPos) {
+	// onOutputClick(clickPos) {
+	// 	this.onConnectingCallback(this, clickPos);
+	// }
 
-		this.onConnectingCallback(this, clickPos);
-	}
-
-	onInputClick(param) {
-
-		this.onInputConnectionCallback(this, 'main', param);
-	}
+	// onInputClick(param) {
+	// 	this.onInputConnectionCallback(this, 'main', param);
+	// }
 
 	removeFromDom() {
 		this.el.removeEventListener('mousedown', this.onMouseDownBound);
-		if (this.toggleCollapseView) {
-			this.toggleCollapseView.removeEventListener('click', this.onToggleCollapseBound);
-		}
 		this.parentEl.removeChild(this.el);
 	}
 
@@ -232,17 +257,43 @@ export default class Node{
 		e.stopPropagation();
 		e.preventDefault();
 
+		
+		
 		this.moveCoords.start.x = e.x - this.moveCoords.offset.x;
 		this.moveCoords.start.y = e.y - this.moveCoords.offset.y;
 
+		// console.log(e.x, e.y);
+
 		this.lastDelta.x = 0;
 		this.lastDelta.y = 0;
+
+		if (this.isModifier) {
+			this.onNodeDragStart(this, e);
+		}
+
+		console.log('mouse down', this.moveCoords.start);
+
+		
+
+		// if (this.nodeType.paramContainers) {
+		// 	for (let i = 0; i < this.nodeType.paramContainers.length; i++) {
+		// 		const paramContainer = this.nodeType.paramContainers[i];
+		// 		const connectedNodes = paramContainer.connectedNodes;
+		// 		for (let q = 0; q < connectedNodes.length; q++) {
+		// 			connectedNodes
+		// 		}
+		// 	}
+		// }
 
 		window.addEventListener('mouseup', this.onMouseUpBound);
 		window.addEventListener('mousemove', this.onMouseMoveBound);
 	}
 
 	onMouseMove(e) {
+
+		if (this.isModifier) {
+			this.onNodeDragMove();
+		}
 
 		const deltaX = e.x - this.moveCoords.start.x;
 		const deltaY = e.y - this.moveCoords.start.y;
@@ -257,7 +308,9 @@ export default class Node{
 	}
 
 	onMouseUp(e) {
-
+		if (this.isModifier) {
+			this.onNodeDragRelease();
+		}
 		window.removeEventListener('mouseup', this.onMouseUpBound);
 		window.removeEventListener('mousemove', this.onMouseMoveBound);
 	}

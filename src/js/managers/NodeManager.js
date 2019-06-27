@@ -2,10 +2,16 @@ import Node from '../views/Nodes/Node';
 import NodeRenderer from './NodeRenderer';
 import GraphicsNodeManager from './GraphicsNodeManager';
 import AudioNodeManager from './AudioNodeManager';
-import NodeConnectionLine from './NodeConnectionLine';
+
+import WindowManager from './Windows/WindowManager';
+import ConnectionWindow from './Windows/ConnectionWindow';
+import NodeSettingsWindow from './Windows/NodeSettingsWindow';
 
 import ParamHelpers from '../graphicNodes/Helpers/ParamHelpers';
 import Helpers from '../musicHelpers/Helpers';
+import SceneNode from '../graphicNodes/SceneNode';
+
+import ModifierCollisionManager from './ModiferCollisionManager';
 
 import AvailableConnections from './NodeManager/AvailableConnections';
 
@@ -23,6 +29,19 @@ export default class NodeManager{
 
 		this.keyboardManager = keyboardManager;
 
+		this.showConnectionsWindowBound = this.showConnectionsWindow.bind(this);
+		this.enableParamConnectionBound = this.enableParamConnection.bind(this);
+		this.disableParamConnectionBound = this.disableParamConnection.bind(this);
+
+		this.modifierCollisionManager = new ModifierCollisionManager(this.showConnectionsWindowBound);
+		this.connectionWindow = new ConnectionWindow(
+			parentEl.parentElement,
+			this.enableParamConnectionBound,
+			this.disableParamConnectionBound
+		);
+		this.nodeSettingsWindow = new NodeSettingsWindow(parentEl.parentElement);
+		// this.windowManager = new WindowManager(parentEl.parentElement);
+
 		this._nodes = [];
 		this._nodeConnections = [];
 		this._graphicNodes = [];
@@ -30,23 +49,28 @@ export default class NodeManager{
 
 		this.resetConnectingBound = this.resetConnecting.bind(this);
 
-		this.nodeConnectionRenderer = new NodeRenderer(parentEl, this);
-		this.nodeConnectionLine = new NodeConnectionLine(this.nodeConnectionRenderer.el, this.resetConnectingBound);
+		// this.nodeConnectionRenderer = new NodeRenderer(parentEl, this);
+		// this.nodeConnectionLine = new NodeConnectionLine(this.nodeConnectionRenderer.el, this.resetConnectingBound);
 
 		this.isConnecting = false;
 
 		this.outputActiveNode = null;
 		this.outputActiveType = undefined;
 
-		this.onConnectingBound = this.onConnecting.bind(this);
+		// this.onConnectingBound = this.onConnecting.bind(this);
+		this.onDisconnectBound = this.onDisconnect.bind(this);
 		this.onInputConnectionBound = this.onInputConnection.bind(this);
 		this.addBound = this.add.bind(this);
 		this.removeBound = this.onNodeRemove.bind(this);
 		this.onAudioNodeParamChangeBound = this.onAudioNodeParamChange.bind(this);
+
+		this.onNodeDragStartBound = this.onNodeDragStart.bind(this);
+		this.onNodeDragMoveBound = this.onNodeDragMove.bind(this);
+		this.onNodeDragReleaseBound = this.onNodeDragRelease.bind(this);
 		
 		this.audioNodeManager = new AudioNodeManager(
 			parentEl,
-			this.onConnectingBound,
+			null,
 			this.onInputConnectionBound,
 			this.addBound,
 			this.hasConfig ? this.config.nodes : [],
@@ -58,11 +82,17 @@ export default class NodeManager{
 
 		this.graphicsNodeManager = new GraphicsNodeManager(
 			parentEl,
-			this.onConnectingBound,
+			this.onDisconnectBound,
 			this.onInputConnectionBound,
 			this.addBound,
 			onNodeActive,
 			this.removeBound,
+			// this.modifierCollisionManager.onDragStartBound,
+			// this.modifierCollisionManager.onDragMoveBound,
+			// this.modifierCollisionManager.onDragReleaseBound,
+			this.onNodeDragStartBound,
+			this.onNodeDragMoveBound,
+			this.onNodeDragReleaseBound,
 		);
 
 		if (this.hasConfig) {
@@ -92,17 +122,52 @@ export default class NodeManager{
 		}
 
 		this.constructorIsDone = true;
+
+		const canvasData = {
+			type: 'Canvas',
+			obj: SceneNode,
+			isModifier: false,
+		};
+
+		this.graphicsNodeManager.createNode(canvasData, {x: 1300, y: 700});
 	}
 
-	onNodeAddedFromLibrary(type, data, e) {
-		if (type === 'graphics') {
+	showConnectionsWindow(paramContainer) {
+		this.nodeSettingsWindow.hide();
+
+		this.connectionWindow.show(paramContainer);
+	}
+
+	// EVENT ONLY FOR MODIFIERS
+	onNodeDragStart(node, e) {
+		this.nodeSettingsWindow.show(node);
+		this.modifierCollisionManager.onModifierDragStart(node.nodeType, e);
+		this.availableConnections.showAvailable(node, this._nodes, this._nodeConnections);
+		// this.windowManager.showSettings(node);
+		
+	}
+
+	// EVENT ONLY FOR MODIFIERS
+	onNodeDragMove() {
+		this.modifierCollisionManager.onModifierDragMove();
+	}
+
+	// EVENT ONLY FOR MODIFIERS
+	onNodeDragRelease() {
+		this.modifierCollisionManager.onModifierDragRelease();
+		this.availableConnections.resetAvailable();
+	}
+
+	onNodeAddedFromLibrary(nodeData, e) {
+		if (nodeData.type === 'graphics') {
 			const hasSceneNode = this._graphicNodes.some(t => t.isCanvasNode);
-			if (hasSceneNode && data.type === 'Canvas') {
+			if (hasSceneNode && nodeData.data.type === 'Canvas') {
 				return;
 			}
-			this.graphicsNodeManager.createNode(data, e);
+			this.graphicsNodeManager.createNode(nodeData.data, e);
+			
 		} else {
-			this.audioNodeManager.createNode(data, e);
+			this.audioNodeManager.createNode(nodeData.data, e);
 		}
 	}
 
@@ -137,209 +202,236 @@ export default class NodeManager{
 		this.outputActiveNode = null;
 		this.outputActiveType = undefined;
 
-		this.nodeConnectionLine.resetLine();
+		// this.nodeConnectionLine.resetLine();
 
 		this.availableConnections.resetAvailable();
 	}
 
-	onConnecting(node, clickPos, outputType) {
-
-		if (this.isConnecting || this.outputActiveNode) {
-			return;
+	enableParamConnection(paramObj, outNode, inNode) {
+		if (!ParamHelpers[paramObj.param.paramHelpersType].isValid(outNode, inNode, paramObj.param, this._nodeConnections)) {
+			this.resetConnecting();
+			return false;
 		}
 
-		const outputHasConnection = this._nodeConnections.some(t => t.out.ID === node.ID);
-		
-		this.isConnecting = true;
-		this.outputActiveNode = node;
-		this.outputActiveType = outputType;
-
-		this.nodeConnectionLine.onConnectionActive(node, clickPos, outputType);
-
-		this.availableConnections.showAvailable(node, this._nodes, this._nodeConnections, outputType);
-		
+		window.NS.singletons.ConnectionsManager.addParamConnection(paramObj, outNode);
+		return true;
 	}
 
-	onInputConnection(inputNode, inputType, param) {
+	disableParamConnection(paramObj, outNode, inNode) {
+		window.NS.singletons.ConnectionsManager.removeParamConnection(paramObj, outNode);
+		return true;
+	}
 
-		let inputAvailable = true;
-
-		this.availableConnections.resetAvailable();
-
-		if (!this.isConnecting || !this.outputActiveNode) {
-			// inputAvailable = false;
-			// if (param) {
-			// 	const connection = this._nodeConnections.find(t => t.in.ID === inputNode.ID && t.param && t.param.title === param.title);
-			// 	if (connection) {
-			// 		this.removeConnection(connection);
-			// 	}
-			// } else if (inputType) {
-			// 	const connection = this._nodeConnections.find(t => t.in.ID === inputNode.ID && t.inputType === inputType);
-			// 	if (connection) {
-			// 		this.removeConnection(connection);
-			// 	}
-			// } else {
-			// 	const connection = this._nodeConnections.find(t => t.in.ID === inputNode.ID);
-			// 	if (connection) {
-			// 		this.removeConnection(connection);
-			// 	}
-			// }
-			
-			return;
-		}
-
-		if (!inputNode.isGraphicsNode) {
-			if (param && param.helper) {
-				if (!param.helper.isValid(this.outputActiveNode, inputNode, param, this._nodeConnections)) {
-					this.resetConnecting();
-					return;
-				}
-			} else {
-				if (!inputNode.inputHelpersType.isValid(this.outputActiveNode, inputNode, undefined, this._nodeConnections, this.outputActiveType)) {
-					this.resetConnecting();
-					return;
-				}
-			}
-
-		} else {
-			
-			if (param && !ParamHelpers[param.paramHelpersType].isValid(this.outputActiveNode, inputNode, param, this._nodeConnections)) {
-				this.resetConnecting();
-				return;
-			} else {
-				if (!inputNode.inputHelpersType.isValid(this.outputActiveNode, inputNode, inputType, this.outputActiveType)) {
-					this.resetConnecting();
-					return;
-				}
-			}
-		}
-
-		this.nodeConnectionLine.onInputClick(inputAvailable, inputNode, this.outputActiveNode);
-
-		this.isConnecting = false;
-
-		const paramID = param ? `${param.parent}-${param.param}` : '';
-		const lineID = `${inputNode.ID}---${this.outputActiveNode.ID}---${paramID}`;
+	onInputConnection(outNode, paramContainer) {
+		console.log('on input connection', outNode, paramContainer);
 		
-		const connectionData = {
-			param: param,
-			out: this.outputActiveNode,
-			in: inputNode,
-			lineEl: this.nodeConnectionRenderer.addLine(lineID),
-			inputType,
-			outputType: this.outputActiveType,
-		};
+		window.NS.singletons.ConnectionsManager.addNodeConnection(outNode, paramContainer);
+	};
 
-		this.outputActiveNode.enableOutput(param ? param : undefined, connectionData);
-
-		if (param) {
-			inputNode.enableParam(param, connectionData);
-		} else {
-			inputNode.enableInput(this.outputActiveNode, inputType);
+	onDisconnect(outNode, paramContainer) {
+		console.log('on disconnect');
+		const params = Object.keys(paramContainer.inputParams);
+		for (let i = 0; i < params.length; i++) {
+			const param = paramContainer.inputParams[params[i]];
+			this.disableParamConnection(param, outNode, paramContainer.node);
 		}
 
-		this._nodeConnections.push(connectionData);
+		window.NS.singletons.ConnectionsManager.removeNodeConnection(paramContainer, outNode);
 
-		if (this.constructorIsDone) {
-			const audioConnections = this.getAudioConnections(this._nodeConnections);
-			Helpers.updateOscillators(audioConnections);
+		this.connectionWindow.hide();
+	}
 
-			this.disconnectAnalyserNodes(audioConnections);
+	// onInputConnectionOld(inputNode, inputType, param) {
+
+
+
+	// 	// this.availableConnections.resetAvailable();
+
+	// 	if (!this.isConnecting || !this.outputActiveNode) {
+	// 		// inputAvailable = false;
+	// 		// if (param) {
+	// 		// 	const connection = this._nodeConnections.find(t => t.in.ID === inputNode.ID && t.param && t.param.title === param.title);
+	// 		// 	if (connection) {
+	// 		// 		this.removeConnection(connection);
+	// 		// 	}
+	// 		// } else if (inputType) {
+	// 		// 	const connection = this._nodeConnections.find(t => t.in.ID === inputNode.ID && t.inputType === inputType);
+	// 		// 	if (connection) {
+	// 		// 		this.removeConnection(connection);
+	// 		// 	}
+	// 		// } else {
+	// 		// 	const connection = this._nodeConnections.find(t => t.in.ID === inputNode.ID);
+	// 		// 	if (connection) {
+	// 		// 		this.removeConnection(connection);
+	// 		// 	}
+	// 		// }
 			
-			this.keyboardManager.onAudioNodeConnectionUpdate(audioConnections);
+	// 		return;
+	// 	}
+
+	// 	if (!inputNode.isGraphicsNode) {
+	// 		if (param && param.helper) {
+	// 			if (!param.helper.isValid(this.outputActiveNode, inputNode, param, this._nodeConnections)) {
+	// 				this.resetConnecting();
+	// 				return;
+	// 			}
+	// 		} else {
+	// 			if (!inputNode.inputHelpersType.isValid(this.outputActiveNode, inputNode, undefined, this._nodeConnections, this.outputActiveType)) {
+	// 				this.resetConnecting();
+	// 				return;
+	// 			}
+	// 		}
+
+	// 	} else {
 			
-			const sequencers = audioConnections.filter(t => t.out.isSequencer);
-			let sequencerIds = [];
-			for (let i = 0; i < sequencers.length; i++) {
-				const ID = sequencers[i].out.ID;
-				if (sequencerIds.indexOf(ID) < 0) {
-					sequencers[i].out.sequencerManager.onAudioNodeConnectionUpdate(audioConnections);
-					sequencerIds.push(ID);
-				}
+	// 		if (param && !ParamHelpers[param.paramHelpersType].isValid(this.outputActiveNode, inputNode, param, this._nodeConnections)) {
+	// 			this.resetConnecting();
+	// 			return;
+	// 		} else {
+	// 			if (!inputNode.inputHelpersType.isValid(this.outputActiveNode, inputNode, inputType, this.outputActiveType)) {
+	// 				this.resetConnecting();
+	// 				return;
+	// 			}
+	// 		}
+	// 	}
+
+	// 	// this.nodeConnectionLine.onInputClick(inputAvailable, inputNode, this.outputActiveNode);
+
+	// 	this.isConnecting = false;
+
+	// 	// const paramID = param ? `${param.parent}-${param.param}` : '';
+	// 	// const lineID = `${inputNode.ID}---${this.outputActiveNode.ID}---${paramID}`;
+		
+	// 	const connectionData = {
+	// 		param: param,
+	// 		out: this.outputActiveNode,
+	// 		in: inputNode,
+	// 		// lineEl: this.nodeConnectionRenderer.addLine(lineID),
+	// 		inputType,
+	// 		outputType: this.outputActiveType,
+	// 	};
+
+	// 	this.outputActiveNode.enableOutput(param ? param : undefined, connectionData);
+
+	// 	if (param) {
+	// 		inputNode.enableParam(param, connectionData);
+	// 	} else {
+	// 		inputNode.enableInput(this.outputActiveNode, inputType);
+	// 	}
+
+	// 	this._nodeConnections.push(connectionData);
+
+	// 	if (this.constructorIsDone) {
+	// 		const audioConnections = this.getAudioConnections(this._nodeConnections);
+	// 		Helpers.updateOscillators(audioConnections);
+
+	// 		this.disconnectAnalyserNodes(audioConnections);
+			
+	// 		this.keyboardManager.onAudioNodeConnectionUpdate(audioConnections);
+			
+	// 		const sequencers = audioConnections.filter(t => t.out.isSequencer);
+	// 		let sequencerIds = [];
+	// 		for (let i = 0; i < sequencers.length; i++) {
+	// 			const ID = sequencers[i].out.ID;
+	// 			if (sequencerIds.indexOf(ID) < 0) {
+	// 				sequencers[i].out.sequencerManager.onAudioNodeConnectionUpdate(audioConnections);
+	// 				sequencerIds.push(ID);
+	// 			}
 				
-			}
+	// 		}
 
-			sequencerIds = [];
-		}
+	// 		sequencerIds = [];
+	// 	}
 		
-		this.resetConnecting();
-	}
+	// 	this.resetConnecting();
+	// }
 
-	removeConnection(connectionData) {
+	// removeConnectionOld(connectionData) {
 
-		if (connectionData.param) {
-			connectionData.in.disableParam(connectionData.param, connectionData);
-		} else {
-			connectionData.in.disableInput(connectionData.out, connectionData.inputType);
-		}
+	// 	if (connectionData.param) {
+	// 		connectionData.in.disableParam(connectionData.param, connectionData);
+	// 	} else {
+	// 		connectionData.in.disableInput(connectionData.out, connectionData.inputType);
+	// 	}
 
-		connectionData.out.disableOutput(connectionData.in, connectionData.param, connectionData.outputType);
+	// 	connectionData.out.disableOutput(connectionData.in, connectionData.param, connectionData.outputType);
 
-		let tempNodeConnections = this._nodeConnections.filter((t) => {
-			if (t.out.ID === connectionData.out.ID && t.in.ID === connectionData.in.ID) {
-				return false;
-			}
-			return true;
-		});
+	// 	let tempNodeConnections = this._nodeConnections.filter((t) => {
+	// 		if (t.out.ID === connectionData.out.ID && t.in.ID === connectionData.in.ID) {
+	// 			return false;
+	// 		}
+	// 		return true;
+	// 	});
 
-		if (connectionData.param) {
-			tempNodeConnections = this._nodeConnections.filter(t => {
-				const hasParam = t.param;
-				if (!hasParam) return true;
+	// 	if (connectionData.param) {
+	// 		tempNodeConnections = this._nodeConnections.filter(t => {
+	// 			const hasParam = t.param;
+	// 			if (!hasParam) return true;
 
-				if (t.param.title === connectionData.param.title && t.in.ID === connectionData.in.ID) {
-					return false;
-				}
-				return true;
-			});
-		}
+	// 			if (t.param.title === connectionData.param.title && t.in.ID === connectionData.in.ID) {
+	// 				return false;
+	// 			}
+	// 			return true;
+	// 		});
+	// 	}
 
-		this._nodeConnections = tempNodeConnections;
+	// 	this._nodeConnections = tempNodeConnections;
 
-		const audioConnections = this.getAudioConnections(this._nodeConnections);
-		Helpers.updateOscillators(audioConnections);
+	// 	const audioConnections = this.getAudioConnections(this._nodeConnections);
+	// 	Helpers.updateOscillators(audioConnections);
 
-		this.disconnectAnalyserNodes(audioConnections);
+	// 	this.disconnectAnalyserNodes(audioConnections);
 
-		this.keyboardManager.onAudioNodeConnectionUpdate(audioConnections);
+	// 	this.keyboardManager.onAudioNodeConnectionUpdate(audioConnections);
 
-		const sequencers = audioConnections.filter(t => t.out.isSequencer);
-		let sequencerIds = [];
-		for (let i = 0; i < sequencers.length; i++) {
-			const ID = sequencers[i].out.ID;
-			if (sequencerIds.indexOf(ID) < 0) {
-				sequencers[i].out.sequencerManager.onAudioNodeConnectionUpdate(audioConnections);
-				sequencerIds.push(ID);
-			}
-		}
+	// 	const sequencers = audioConnections.filter(t => t.out.isSequencer);
+	// 	let sequencerIds = [];
+	// 	for (let i = 0; i < sequencers.length; i++) {
+	// 		const ID = sequencers[i].out.ID;
+	// 		if (sequencerIds.indexOf(ID) < 0) {
+	// 			sequencers[i].out.sequencerManager.onAudioNodeConnectionUpdate(audioConnections);
+	// 			sequencerIds.push(ID);
+	// 		}
+	// 	}
 
-		sequencerIds = [];
+	// 	sequencerIds = [];
 		
-		this.nodeConnectionRenderer.removeLine(connectionData.lineEl);
-	}
+	// 	// this.nodeConnectionRenderer.removeLine(connectionData.lineEl);
+	// }
 
 	onNodePlaced(node) {
 		console.log('node placed', node);
 	}
 
 	add(node) {
+		// window.NS.singletons.ConnectionsManager.addParamListener(node);
+		window.NS.singletons.ConnectionsManager.addNode(node);
 		this._nodes.push(node);
 		if (node.isRenderNode || node.isCanvasNode || node.needsUpdate) {
 			this._graphicNodes.push(node);
 			this._graphicNodeLength = this._graphicNodes.length;
 		}
 
-		if (node.isSequencer) {
-			const audioConnections = this.getAudioConnections(this._nodeConnections);
-			node.sequencerManager.init(audioConnections);
+		// if (node.isSequencer) {
+		// 	const audioConnections = this.getAudioConnections(this._nodeConnections);
+		// 	node.sequencerManager.init(audioConnections);
+		// }
+		if (!node.isModifier) {
+			this.modifierCollisionManager.addNonagon(node);
 		}
 	}
 
 	remove(node) {
+		// window.NS.singletons.ConnectionsManager.removeParamListener(node);
+		window.NS.singletons.ConnectionsManager.removeNode(node);
 		if (node.isGraphicsNode || node.needsUpdate) {
 			const tempNodes = this._graphicNodes.filter(t => t.ID !== node.ID);
 			this._graphicNodes = tempNodes;
 			this._graphicNodeLength = this._graphicNodes.length;
+		}
+
+		if (!node.isModifier) {
+			this.modifierCollisionManager.removeNonagon(node);
 		}
 
 		node.removeFromDom();
@@ -348,7 +440,7 @@ export default class NodeManager{
 	}
 
 	update() {
-		this.nodeConnectionRenderer.update();
+		// this.nodeConnectionRenderer.update();
 
 		for (let i = 0; i < this._graphicNodeLength; i++) {
 			this._graphicNodes[i].update();
@@ -356,7 +448,7 @@ export default class NodeManager{
 	}
 
 	render() {
-		this.nodeConnectionRenderer.render();
+		// this.nodeConnectionRenderer.render();
 
 		for (let i = 0; i < this._graphicNodeLength; i++) {
 			this._graphicNodes[i].render();

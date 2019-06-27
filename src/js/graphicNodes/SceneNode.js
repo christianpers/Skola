@@ -104,15 +104,15 @@ export default class SceneNode extends Node{
 		this.onInputClickForegroundBound = this.onInputClickForeground.bind(this);
 		this.onInputClickLightBound = this.onInputClickLight.bind(this);
 
-		this.inputBackground = new NodeInput(this.bottomPartEl, this.onInputClickBackgroundBound, this.isGraphicsNode, 'Bakgrund In', 'background');
-		this.inputForeground = new NodeInput(this.bottomPartEl, this.onInputClickForegroundBound, this.isGraphicsNode, 'Förgrund In', 'foreground');
-		this.inputLight = new NodeInput(this.bottomPartEl, this.onInputClickLightBound, this.isGraphicsNode, 'Ljus In', 'light');
+		// this.inputBackground = new NodeInput(this.bottomPartEl, this.onInputClickBackgroundBound, this.isGraphicsNode, 'Bakgrund In', 'background');
+		// this.inputForeground = new NodeInput(this.bottomPartEl, this.onInputClickForegroundBound, this.isGraphicsNode, 'Förgrund In', 'foreground');
+		// this.inputLight = new NodeInput(this.bottomPartEl, this.onInputClickLightBound, this.isGraphicsNode, 'Ljus In', 'light');
 
-		this.inputs = {
-			'background': this.inputBackground,
-			'foreground': this.inputForeground,
-			'light': this.inputLight,
-		};
+		// this.inputs = {
+		// 	'background': this.inputBackground,
+		// 	'foreground': this.inputForeground,
+		// 	'light': this.inputLight,
+		// };
 		
 		setTimeout(() => {
 			this.onResize();

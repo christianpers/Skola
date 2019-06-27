@@ -6,6 +6,8 @@ import WorkspaceManager from './managers/WorkspaceManager';
 import GlobalAudioSettings from './managers/GlobalAudioSettings';
 import WorkspaceScaleManager from './managers/WorkspaceManager/WorkspaceScaleManager';
 
+import ConnectionsManager from './managers/ConnectionsManager';
+
 import OscillatorNode from './musicNodes/OscillatorNode';
 import GainNode from './musicNodes/GainNode';
 import SpeakerNode from './musicNodes/SpeakerNode';
@@ -45,6 +47,8 @@ export default class Main{
 		Tone.Transport.start();
 
 		this.historyState = {id: window.location.pathname};
+
+		
 
 		window.addEventListener('popstate', this.onPopStateChange.bind(this));
 
@@ -115,34 +119,41 @@ export default class Main{
 					{
 						type: 'Canvas',
 						obj: SceneNode,
+						isModifier: false,
 					}
 				],
 				'3D - Shapes': [
 					{
 						type: 'Cube',
 						obj: CubeNode,
+						isModifier: false,
 					},
 					{
 						type: 'Sphere',
 						obj: SphereNode,
+						isModifier: false,
 					},
 					{
 						type: 'Particles',
 						obj: ParticlesNode,
+						isModifier: false,
 					},
 				],
 				'Procedural Texture (Material)': [
 					{
 						type: 'Circle',
 						obj: CircleNode,
+						isModifier: false,
 					},
 					{
 						type: 'Voronoi',
 						obj: VoronoiNode,
+						isModifier: false,
 					},
 					{
 						type: 'LavaNoise',
 						obj: LavaNoiseNode,
+						isModifier: false,
 					},
 					
 				],
@@ -150,30 +161,36 @@ export default class Main{
 					{
 						type: 'Color',
 						obj: ColorNode,
+						isModifier: true,
 					},
 					{
 						type: 'ParamDriver',
 						obj: ParamDriverNode,
+						isModifier: true,
 					},
 					{
 						type: 'OrbitDriver',
 						obj: OrbitDriverNode,
+						isModifier: true,
 					},
 				],
 				'Ljus': [
 					{
 						type: 'Directional Light',
 						obj: DirectionalLightNode,
+						isModifier: false,
 					},
 					{
 						type: 'Point Light',
 						obj: PointLightNode,
+						isModifier: false,
 					},
 				],
 				'Textures': [
 					{
 						type: 'Välj Textur',
 						obj: TextureSelectorNode,
+						isModifier: true,
 					},
 				]
 			}
@@ -183,7 +200,9 @@ export default class Main{
 
 		// this.nodeSettings = new NodeSettings(document.body);
 
-		this.workspaceManager = new WorkspaceManager(document.body);
+		this.onWorkspaceClickBound = this.onWorkspaceClick.bind(this);
+
+		this.workspaceManager = new WorkspaceManager(document.body, this.onWorkspaceClickBound);
 
 		this.onScaleChangeBound = this.onScaleChange.bind(this);
 		// this.scaleManager = new WorkspaceScaleManager(document.body, this.onScaleChangeBound);
@@ -199,68 +218,9 @@ export default class Main{
 			this.workspaceManager,
 		);
 
-		const initData = {
-			nodes: [
-				{
-					node: new LowpassFilterNode(),
-					type: 'LowpassFilterNode',
-					id: 3,
-					pos: [300, 50],
-				},
-				{
-					node: new SpeakerNode(),
-					type: 'SpeakerNode',
-					id: 4,
-					pos: [900, 200],
-				},
-				{
-					node: new OscillatorNode(),
-					type: 'Oscillator',
-					id: 7,
-					pos: [20, 400],
-				},
-				{
-					node: new GainNode(),
-					type: 'Amp',
-					id: 8,
-					pos: [600, 400],
-				},
-				{
-					node: new EnvelopeNode(),
-					type: 'EnvelopeNode',
-					id: 10,
-					pos: [460, 550],
-				},
-				{
-					node: new LFONode(),
-					type: 'LFONode',
-					id: 12,
-					pos: [800, 550],
-				},
-			],
-			connections: [
-				{
-					in: 3,
-					out: 7,
-				},
-				{
-					in: 3,
-					out: 12,
-				},
-				{
-					in: 8,
-					out: 10,
-				},
-				{
-					in: 8,
-					out: 3
-				},
-				{
-					in: 4,
-					out: 8,
-				},
-			]
-		};
+		// window.NS = {};
+		window.NS.singletons = {};
+		window.NS.singletons.ConnectionsManager = new ConnectionsManager();
 
 		this.keyboardManager = new KeyboardManager();
 
@@ -292,6 +252,10 @@ export default class Main{
 		// this.workspaceManager.setScale(val);
 	}
 
+	onWorkspaceClick() {
+		this.nodeManager.nodeSettingsWindow.hide();
+	}
+
 	onNodeActive(node) {
 		this.nodeSettings.show(node);
 	}
@@ -315,7 +279,6 @@ export default class Main{
 	}
 
 	render() {
-
 		this.nodeManager.render();
 	}
 

@@ -1,17 +1,29 @@
 import Render from '../graphicNodes/Render';
 
 export default class GraphicsNodeManager{
-	constructor(parentEl, onConnectingCallback, onInputConnectionCallback, addCallback, onNodeActive, removeCallback) {
+	constructor(
+		parentEl,
+		onDisconnectCallback,
+		onInputConnectionCallback,
+		addCallback,
+		onNodeActive,
+		removeCallback,
+		onNodeDragStart,
+		onNodeDragMove,
+		onNodeDragRelease,
+	) {
 
 		this.parentEl = parentEl;
-		this.onConnectingCallback = onConnectingCallback;
+		this.onDisconnectCallback = onDisconnectCallback;
 		this.onInputConnectionCallback = onInputConnectionCallback;
 		this.addCallback = addCallback;
 		this.onNodeActive = onNodeActive;
 		this.removeCallback = removeCallback;
+		this.onNodeDragStart = onNodeDragStart;
+		this.onNodeDragMove = onNodeDragMove;
+		this.onNodeDragRelease = onNodeDragRelease;
 
 		this.mainRenderer = new Render();
-
 	}
 
 	createNode(data, pos) {
@@ -19,12 +31,16 @@ export default class GraphicsNodeManager{
 		node.init(
 			pos,
 			this.parentEl,
-			this.onConnectingCallback,
+			this.onDisconnectCallback,
 			this.onInputConnectionCallback,
 			data.type,
 			undefined,
 			undefined,
 			this.removeCallback,
+			data.isModifier,
+			this.onNodeDragStart,
+			this.onNodeDragMove,
+			this.onNodeDragRelease,
 		);
 		
 		node.onResize({w: 540, h: 538});

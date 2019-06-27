@@ -1,15 +1,21 @@
 export default class NodeParam{
-	constructor(parentEl, param, onClickCallback, parentTitle) {
+	constructor(parentEl, param, paramContainer) {
 
 		this.el = document.createElement('div');
 		this.el.className = 'node-param node-component';
 
+		this.ID = Math.random().toString(36).substr(2, 9);
+
 		this.param = param;
 
-		const dotEl = document.createElement('div');
-		dotEl.className = 'dot';
+		this.isConnected = false;
 
-		this.el.appendChild(dotEl);
+		this.paramContainer = paramContainer;
+
+		// const dotEl = document.createElement('div');
+		// dotEl.className = 'dot';
+
+		// this.el.appendChild(dotEl);
 
 		const labelEl = document.createElement('p');
 		
@@ -20,39 +26,27 @@ export default class NodeParam{
 
 		parentEl.appendChild(this.el);
 
-		this.el.addEventListener('click', (e) => {
-			console.log('param click');
-			e.preventDefault();
-			e.stopPropagation();
-			onClickCallback(param);
-		});
+		window.NS.singletons.ConnectionsManager.addParam(this);
 
-		this.offsetLeft = undefined;
-		this.offsetTop = undefined;
-	}
+		// this.el.addEventListener('click', (e) => {
+		// 	console.log('param click');
+		// 	e.preventDefault();
+		// 	e.stopPropagation();
+		// 	onClickCallback(param);
+		// });
 
-	getOffsetLeft() {
-		if (!this.offsetLeft) {
-			this.offsetLeft = this.el.offsetLeft;
-		}
-
-		return this.offsetLeft;
-	}
-
-	getOffsetTop() {
-		// if (!this.offsetTop) {
-			this.offsetTop = this.el.offsetTop;
-		// }
-
-		return this.offsetTop;
+		// this.offsetLeft = undefined;
+		// this.offsetTop = undefined;
 	}
 
 	enable() {
 		this.el.classList.add('active');
+		this.isConnected = true;
 	}
 
 	disable() {
 		this.el.classList.remove('active');
+		this.isConnected = false;
 	}
 
 	activatePossible() {

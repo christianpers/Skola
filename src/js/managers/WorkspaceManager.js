@@ -1,8 +1,10 @@
 export default class WorkspaceManager{
-	constructor(parentEl) {
+	constructor(parentEl, onClick) {
 
 		this.width = 3000;
 		this.height = 2000;
+
+		this.onClickCallback = onClick;
 
 		this.containerEl = document.createElement('div');
 		this.containerEl.className = 'workspace-container';
@@ -57,6 +59,8 @@ export default class WorkspaceManager{
 		if (e.target.nodeName === 'INPUT' || e.target.classList.contains('prevent-drag')) {
 			return;
 		}
+
+		this.onClickCallback();
 
 		e.preventDefault();
 
