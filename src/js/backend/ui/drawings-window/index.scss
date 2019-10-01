@@ -1,0 +1,134 @@
+.drawings-window {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,.8);
+    z-index: 3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &.hide {
+        display: none;
+    }
+
+    .drawings-outer-content {
+        padding-top: 40px;
+        min-width: 400px;
+
+        > h4 {
+            margin-bottom: 4px;
+            background: white;
+            color: black;
+            padding: 2px 4px;
+            display: inline-block;
+        }
+
+        .new-drawing {
+            padding: 20px;
+            background: white;
+            margin-top: 4px;
+            cursor: pointer;
+            position: relative;
+
+            &:hover {
+                background: rgba(255,255,255, 0.94);
+            }
+
+            .init-container {
+                > h4 {
+                    text-align: center;
+                    color: black;
+                }
+            }
+
+            
+
+            > .data-container {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: white;
+                display: none;
+                justify-content: center;
+                align-items: center;
+
+                &.visible {
+                    display: flex;
+                }
+
+                .input-title-container {
+                    display: flex;
+
+                    > input {
+                        border: none;
+                        background: black;
+                        color: white;
+                        padding: 4px 6px;
+                        font-size: 14px;
+                        margin-right: 4px;
+                    }
+
+                    > button {
+                        margin-left: 4px;
+                        background: black;
+                        border: 0;
+                        border-radius: 0;
+                        color: white;
+                    }
+                }
+            }
+        }
+    }
+
+    .drawings-window-content-wrapper {
+        padding: 20px;
+        background: white;
+
+        > h4 {
+            color: black;
+            text-align: center;
+        }
+
+        .drawings-item {
+            padding: 20px;
+            margin-bottom: 10px;
+            background: rgba(0,0,0,.03);
+            cursor: pointer;
+            position: relative;
+
+            &:hover {
+                background: rgba(0,0,0,.08);  
+            }
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+
+            > h4 {
+                margin-bottom: 6px;
+                background: black;
+                padding: 2px 4px;
+                display: inline-block;
+            }
+
+            > h5 {
+                color: black;
+                margin-bottom: 2px;
+            }
+
+            > .click-cover {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+            }
+        }
+
+    }
+}

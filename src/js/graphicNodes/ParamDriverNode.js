@@ -1,18 +1,25 @@
 import GraphicNode from './GraphicNode';
 import RangeSlider from '../views/Nodes/NodeComponents/RangeSlider';
 import HorizontalRangeSlider from '../views/Nodes/NodeComponents/HorizontalRangeSlider';
+import VerticalRangeSlider from '../views/Nodes/NodeComponents/VerticalRangeSlider';
 import Easing from './Helpers/Easing';
 
 export default class ParamDriverNode extends GraphicNode{
-	constructor() {
+	constructor(renderer, backendData) {
 		super();
 
-		this.el.classList.add('no-height');
-		this.el.classList.add('left-padding');
-		this.el.classList.add('param-driver-node');
+		console.log('1', backendData);
+
+		this.initValues = backendData ? backendData.data.visualSettings : null;
+
+		// this.el.classList.add('no-height');
+		// this.el.classList.add('left-padding');
+		// this.el.classList.add('param-driver-node');
 
 		this.isParam = true;
 		this.returnsSingleNumber = true;
+		this.needsUpdate = true;
+		this.title = 'Param modifier';
 
 		this.animateValues = {
 			isRunning: false,
@@ -26,45 +33,8 @@ export default class ParamDriverNode extends GraphicNode{
 
 		this.onInputChangeBound = this.onInputChange.bind(this);
 
-		this.horizontalRangeSlider = new HorizontalRangeSlider(
-			this.topPartEl, 0, this.onRangeValChangeBound, 2, this.onInputChangeBound
-		);
-
-		this.durationEl = document.createElement('input');
-		this.durationEl.type = 'number';
-		this.durationEl.value = 2000;
-		this.durationEl.step = 1;
-		this.durationEl.min = 400;
-		this.durationEl.max = 10000;
-		this.durationEl.addEventListener('change', this.onInputChangeBound);
-
-		const durationContainer = document.createElement('div');
-		durationContainer.className = 'duration-container (ms)';
-
-		const durationLabel = document.createElement('p');
-		durationLabel.innerHTML = 'Duration';
-
-		durationContainer.appendChild(durationLabel);
-		durationContainer.appendChild(this.durationEl);
-
-		const bottomContainer = document.createElement('div');
-		bottomContainer.className = 'top-bottom-container';
-
-		bottomContainer.appendChild(durationContainer);
-
-		this.onToggleStartClickBound = this.onToggleStartClick.bind(this);
-
-		this.toggleStartBtn = document.createElement('div');
-		this.toggleStartBtn.className = 'toggle-start';
-		this.toggleStartBtn.addEventListener('click', this.onToggleStartClickBound);
-
-		this.toggleBtnText = document.createElement('p');
-		this.toggleBtnText.innerHTML = 'Start';
-
-		this.toggleStartBtn.appendChild(this.toggleBtnText);
-
-		bottomContainer.appendChild(this.toggleStartBtn);
-		this.topPartEl.appendChild(bottomContainer);
+		// bottomContainer.appendChild(this.toggleStartBtn);
+		// this.topPartEl.appendChild(bottomContainer);
 
 		this.modifier = {
 		};
@@ -80,12 +50,90 @@ export default class ParamDriverNode extends GraphicNode{
 	}
 
 	onInputChange(e) {
-		
+		this.updateVisualSettings();
 		this.reset();
 	}
 
+	updateVisualSettings() {
+		const minMaxVal = this.verticalRangeSlider.getMinMaxValue();
+		const knobValue = this.verticalRangeSlider.value;
+
+		this.syncVisualSettings({
+			min: minMaxVal.min,
+			max: minMaxVal.max,
+			value: knobValue,
+		});
+	}
+
+	getSettings() {
+		if (!this.settingsContainer) {
+			console.log('create new settings container');
+			const settingsContainer = document.createElement('div');
+			settingsContainer.className = 'node-settings param-driver-node';
+
+			const sliderContainer = document.createElement('div');
+			sliderContainer.className = 'slider-row';
+			
+			this.verticalRangeSlider = new VerticalRangeSlider(
+				sliderContainer, 0, this.onRangeValChangeBound, 2, this.onInputChangeBound
+			);
+			if (this.initValues) {
+				const obj = {
+					minMax: {
+						min: this.initValues.min,
+						max: this.initValues.max,
+					},
+					defaultVal: this.initValues.value,
+				};
+				this.verticalRangeSlider.setDefaultValues(obj);
+			}
+	
+			this.durationEl = document.createElement('input');
+			this.durationEl.type = 'number';
+			this.durationEl.value = 2000;
+			this.durationEl.step = 1;
+			this.durationEl.min = 400;
+			this.durationEl.max = 10000;
+			this.durationEl.addEventListener('change', this.onInputChangeBound);
+	
+			const durationContainer = document.createElement('div');
+			durationContainer.className = 'duration-container (ms)';
+	
+			const durationLabel = document.createElement('p');
+			durationLabel.innerHTML = 'Duration';
+	
+			durationContainer.appendChild(durationLabel);
+			durationContainer.appendChild(this.durationEl);
+	
+			const bottomContainer = document.createElement('div');
+			bottomContainer.className = 'top-bottom-container';
+	
+			bottomContainer.appendChild(durationContainer);
+	
+			this.onToggleStartClickBound = this.onToggleStartClick.bind(this);
+	
+			this.toggleStartBtn = document.createElement('div');
+			this.toggleStartBtn.className = 'toggle-start';
+			this.toggleStartBtn.addEventListener('click', this.onToggleStartClickBound);
+	
+			this.toggleBtnText = document.createElement('p');
+			this.toggleBtnText.innerHTML = 'Start';
+	
+			this.toggleStartBtn.appendChild(this.toggleBtnText);
+
+			settingsContainer.appendChild(sliderContainer);
+			settingsContainer.appendChild(bottomContainer);
+			// settingsContainer.appendChild(rotationSliderContainer);
+			bottomContainer.appendChild(this.toggleStartBtn);
+
+			this.settingsContainer = settingsContainer;
+		}
+
+		return this.settingsContainer;
+	}
+
 	reset() {
-		// this.horizontalRangeSlider.setValue(0);
+		// this.verticalRangeSlider.setValue(0);
 		this.animateValues.isRunning = false;
 		this.toggleBtnText.innerHTML = 'Start';
 	}
@@ -99,16 +147,15 @@ export default class ParamDriverNode extends GraphicNode{
 			this.animateValues.timestamp = Date.now();
 			this.animateValues.duration = parseInt(this.durationEl.value);
 
-			this.animateValues.firstRunOffset = Math.floor(this.horizontalRangeSlider.value * this.animateValues.duration);
+			this.animateValues.firstRunOffset = Math.floor(this.verticalRangeSlider.value * this.animateValues.duration);
 			this.animateValues.isReverse = false;
 			this.animateValues.easing = Easing.linear;
 			this.animateValues.isRunning = true;
-
 		}
 	}
 
 	getValue() {
-		return this.horizontalRangeSlider.getReadyValue();
+		return this.verticalRangeSlider ? this.verticalRangeSlider.getReadyValue() : 0;
 	}
 
 	update() {
@@ -135,61 +182,108 @@ export default class ParamDriverNode extends GraphicNode{
 			this.animateValues.isReverse = false;
 		}
 
-		this.horizontalRangeSlider.setValue(normalizedVal);
+		this.verticalRangeSlider.setValue(normalizedVal);
+
+	}
+
+	render() {
 
 	}
 
 	onRangeValChange(value) {
 
+		this.updateVisualSettings();
+
 		// loop through connections
 		for (let i = 0; i < this.currentOutConnectionsLength; i++) {
-			const param = this.currentOutConnections[i].param;
+			const param = window.NS.singletons.ConnectionsManager.params[this.currentOutConnections[i].connection.paramID];
+			// const param = this.currentOutConnections[i].param;
+			const inNode = window.NS.singletons.ConnectionsManager.nodes[this.currentOutConnections[i].inNodeID];
 
-			this.currentOutConnections[i].in.updateParam(param, this);
+			inNode.updateParam(param, this);
 		}
 
+	}
+
+	onConnectionAdd(e) {
+		console.log('graphic node on connection add param: ', e.detail, e.type, this.ID);
+
+		if (e.detail.connection.outNodeID === this.ID) {
+			// const connection = e.detail.connection;
+			// const paramContainer = window.NS.singletons.ConnectionsManager.params[connection.paramID];
+			
+			// this.orbitSliders[paramContainer.param.parent][paramContainer.param.param].show();
+			this.currentOutConnections.push(e.detail);
+			this.currentOutConnectionsLength = this.currentOutConnections.length;
+			
+		}
+	}
+
+	onConnectionRemove(e) {
+		console.log('graphic node on connection remove: ', e.detail, e.type, this.ID);
+
+		if (e.detail.connection.outNodeID === this.ID) {
+			const connection = e.detail.connection;
+			const paramIDToRemove = connection.paramID;
+			const outIDToRemove = connection.outNodeID;
+			const inIDToRemove = e.detail.inNodeID;
+			// const paramContainer = window.NS.singletons.ConnectionsManager.params[connection.paramID];
+			
+			const tempOutConnections = this.currentOutConnections.map(t => t);
+
+			const paramConnections = tempOutConnections.filter(t => (t.inNodeID === inIDToRemove && t.connection.paramID !== paramIDToRemove));
+			const nodeConnections = tempOutConnections.filter(t => (t.inNodeID === inIDToRemove && t.connection.outNodeID !== outIDToRemove));
+			
+			const finalConnections = paramConnections.concat(nodeConnections);
+			this.currentOutConnections = finalConnections;
+			this.currentOutConnectionsLength = this.currentOutConnections.length;
+
+			// if (this.currentOutConnectionsLength <= 0) {
+			// 	this.reset();
+			// }
+		}
 	}
 
 	
-	enableOutput(param, connection) {
-		super.enableOutput();
+	// enableOutput(param, connection) {
+	// 	super.enableOutput();
 
-		this.currentOutConnections.push(connection);
-		this.currentOutConnectionsLength = this.currentOutConnections.length;
+	// 	this.currentOutConnections.push(connection);
+	// 	this.currentOutConnectionsLength = this.currentOutConnections.length;
 
-		if (this.currentOutConnectionsLength === 1) {
-			this.horizontalRangeSlider.setDefaultValues(param);
-		}
+	// 	if (this.currentOutConnectionsLength === 1) {
+	// 		this.verticalRangeSlider.setDefaultValues(param);
+	// 	}
 		
-	}
+	// }
 
 	enableInput(outputNode) {
 		super.enableInput();		
 	}
 
-	disableOutput(node, param) {
-		const tempOutConnections = this.currentOutConnections.map(t => t);
+	// disableOutput(node, param) {
+	// 	const tempOutConnections = this.currentOutConnections.map(t => t);
 
-        let paramConnections = tempOutConnections.filter(t => t.param);
-        let nodeConnections = tempOutConnections.filter(t => !t.param);
+    //     let paramConnections = tempOutConnections.filter(t => t.param);
+    //     let nodeConnections = tempOutConnections.filter(t => !t.param);
 
-        if (param) {
-            paramConnections = paramConnections.filter(t => t.param && (t.param.title !== param.title));
-        } else {
-            nodeConnections = nodeConnections.filter(t => t.in.ID !== nodeIn.ID);
-        }
+    //     if (param) {
+    //         paramConnections = paramConnections.filter(t => t.param && (t.param.title !== param.title));
+    //     } else {
+    //         nodeConnections = nodeConnections.filter(t => t.in.ID !== nodeIn.ID);
+    //     }
         
-        const finalConnections = paramConnections.concat(nodeConnections);
-        this.currentOutConnections = finalConnections;
-        this.currentOutConnectionsLength = this.currentOutConnections.length;
+    //     const finalConnections = paramConnections.concat(nodeConnections);
+    //     this.currentOutConnections = finalConnections;
+    //     this.currentOutConnectionsLength = this.currentOutConnections.length;
 
-        if (this.currentOutConnectionsLength <= 0) {
-            super.disableOutput();
+    //     if (this.currentOutConnectionsLength <= 0) {
+    //         super.disableOutput();
 
-        }
+    //     }
 		
 		
-	}
+	// }
 
 	removeFromDom() {
 

@@ -1,13 +1,13 @@
-import NodeOutput from './NodeComponents/NodeOutput';
-import NodeInput from './NodeComponents/NodeInput';
-import NodeRemove from './NodeComponents/NodeRemove';
-import NodeCollapsedParam from './NodeComponents/NodeCollapsedParam';
+
 import NonagonType from './NodeTypes/NonagonType';
 import TriangleType from './NodeTypes/TriangleType';
+import NodeTitle from './NodeComponents/NodeTitle/NodeTitle';
+import { createNode, updateNode } from '../../backend/set';
+import { getNodeRef } from '../../backend/get';
+
 
 export default class Node{
 	constructor() {
-
 		this.hasOutput = true;
 		this.isGraphicsNode = false;
 		this.isLightNode = false;
@@ -16,11 +16,15 @@ export default class Node{
 		this.hasMultipleOutputs = false;
 		this.returnsSingleNumber = false;
 
+		this.title = 'Enter node title';
+
 		this.onConnectionAddBound = this.onConnectionAdd.bind(this);
 		this.onConnectionRemoveBound = this.onConnectionRemove.bind(this);
+		// this.onConnectionsUpdateBound = this.onConnectionsUpdate.bind(this);
 
 		document.documentElement.addEventListener('param-connections-add', this.onConnectionAddBound);
 		document.documentElement.addEventListener('param-connections-remove', this.onConnectionRemoveBound);
+		// document.documentElement.addEventListener('node-connections-update', this.onConnectionRemoveBound);
 	}
 
 	init(
@@ -36,11 +40,11 @@ export default class Node{
 		onNodeDragStart,
 		onNodeDragMove,
 		onNodeDragRelease,
+		addCallback,
 	) {
-
 		this.initNodeConfig = !!nodeConfig;
 
-		this.ID = this.initNodeConfig ? nodeConfig.id : '_' + Math.random().toString(36).substr(2, 9);
+		this.ID = this.initNodeConfig ? nodeConfig.id : 'temp__' + Math.random().toString(36).substr(2, 9);
 		this.onDisconnectCallback = onDisconnectCallback;
 		this.onInputConnectionCallback = onInputConnectionCallback;
 		this.hasActiveInput = false;
@@ -51,132 +55,298 @@ export default class Node{
 		this.onNodeDragStart = onNodeDragStart;
 		this.onNodeDragMove = onNodeDragMove;
 		this.onNodeDragRelease = onNodeDragRelease;
+		this.addCallback = addCallback;
 
-		// this.title = isModifier ? `${type}-modifier` : `${type}-node`;
+		this.parentEl = parentEl;
 
 		this.connectedNodes = [];
+
+		this.visualSettings = null;
 		
-		this.parentEl = parentEl;
+		this.innerContainer = document.createElement('div');
+		this.innerContainer.className = 'node-inner';
+
+		this.upperContainer = document.createElement('div');
+		this.upperContainer.className = 'node-upper';
+
+		this.el.appendChild(this.innerContainer);
+		this.el.appendChild(this.upperContainer);
 
 		this.lastDelta = {x: 0, y: 0};
 
-		if (!this.isCanvasNode) {
-			this.nodeType = isModifier
-				? new TriangleType(this.el, this.params, this) : new NonagonType(this.el, this.params, this);
-			
-			const typeStr = this.type;
-
-			const title = this.isModifier ? `${typeStr}-modifier` : `${typeStr}-node`;
-
-
-			const iconPath = `${title.replace(' ', '-').toLowerCase()}-icon`;
-
-			console.log(iconPath);
-
-			const iconImg = document.createElement('img');
-			iconImg.src = `/assets/icons/${iconPath}.svg`;
-
-			this.el.appendChild(iconImg);
-
-			if (isModifier) {
-				this.el.classList.add('modifier-node');
-			}
-		}
-		
 		this.parentEl.appendChild(this.el);
-
-		
 
 		// this.onOutputClickBound = this.onOutputClick.bind(this);
 		// this.onInputClickBound = this.onInputClick.bind(this);
 		this.onRemoveClickBound = this.onRemoveClick.bind(this);
 
-		// const hasInput = !this.isParam && this.hasAudioInput || this.hasGraphicsInput;
+		if (!this.isCanvasNode) {
+			// this.nodeType = this.isModifier
+			// 	? new TriangleType(this.el, this.params, this) : new NonagonType(this.innerContainer, this.params, this);
+			
+			const typeStr = this.type;
 
-		// if (hasInput && !this.isCanvasNode) {
-		// 	this.input = new NodeInput(this.bottomPartEl, this.onInputClickBound, this.isGraphicsNode);
-		// }
-		
-		// if (this.hasOutput && !this.hasMultipleOutputs) {
-		// 	this.output = new NodeOutput(
-		// 		this.bottomPartEl,
-		// 		this.onOutputClickBound,
-		// 		this.isParam,
-		// 		hasInput,
-		// 		this.isSpeaker,
-		// 		this.isGraphicsNode,
-		// 	);
-		// }
-		
+			const title = this.isModifier ? `${typeStr}-modifier` : `${typeStr}-node`;
+
+			const iconPath = `${title.replace(' ', '-').toLowerCase()}-icon`;
+
+			// console.log(iconPath);
+
+			const iconImg = document.createElement('img');
+			iconImg.src = `/assets/icons/${iconPath}.svg`;
+
+			this.innerContainer.appendChild(iconImg);
+
+			if (this.isModifier) {
+				this.el.classList.add('modifier-node');
+			} else {
+				if (this.initNodeConfig) {
+					this.title = nodeConfig.data.title;
+				}
+				this.nodeTitle = new NodeTitle(this.upperContainer, this);
+			}
+		}
+
 		this.moveCoords = {
 			start: {
 				x: 0,
 				y: 0
 			},
 			offset: {
-				x: this.initNodeConfig ? nodeConfig.pos[0] : pos.x,
-				y: this.initNodeConfig ? nodeConfig.pos[1] : pos.y,
+				x: pos.x,
+				y: pos.y,
 			}
 		};
 
+		console.log('set init transform', this.ID);
 		this.el.style[window.NS.transform] = `translate3d(${this.moveCoords.offset.x}px, ${this.moveCoords.offset.y}px, 0)`;
 
-		// const optionWrapper = document.createElement('div');
-		// optionWrapper.className = 'node-top-options';
+		if (this.initNodeConfig) {
+			const ref = getNodeRef(this.ID);
+			window.NS.singletons.refs.addNodeRef(ref);
+			window.NS.singletons.ConnectionsManager.addNode(this);
+			this.nodeCreated(nodeConfig);
+		} else {
+			let nodeObj = {
+				type,
+				title: this.title,
+				pos,
+			};
+			nodeObj = this.isModifier ? Object.assign({}, nodeObj, { paramConnections: [] }) : Object.assign({}, nodeObj);
+			createNode(nodeObj)
+			.then((ref) => {
+				this.ID = ref.id;
+				window.NS.singletons.ConnectionsManager.addNode(this);
+				if (ref) {
+					window.NS.singletons.refs.addNodeRef(ref);
+				} else {
+					const ref = getNodeRef(this.ID);
+					window.NS.singletons.refs.addNodeRef(ref);
+				}
 
-		// this.el.appendChild(optionWrapper);
-
-		// Collapsed View
-		// if (!this.initAsNotCollapsed) {
-		// 	this.onToggleCollapseBound = this.onToggleCollapse.bind(this);
-		// 	this.toggleCollapseView = document.createElement('div');
-		// 	this.toggleCollapseView.className = 'node-toggle-collapse';
-			
-		// 	this.toggleCollapseLabel = document.createElement('h5');
-			
-		// 	this.toggleCollapseView.appendChild(this.toggleCollapseLabel);
-
-		// 	optionWrapper.appendChild(this.toggleCollapseView);
-
-		// 	this.toggleCollapseView.addEventListener('click', this.onToggleCollapseBound);
-
-		// 	this.onToggleCollapse();
-		// }
-
+				this.nodeCreated();
+				console.log('node created in db');
+			})
+			.catch(() => {
+				console.log('err creating node in db');
+			});
+		}
+		
 		// this.remove = new NodeRemove(optionWrapper, this.onRemoveClickBound);
 
 		this.onMouseDownBound = this.onMouseDown.bind(this);
 		this.onMouseMoveBound = this.onMouseMove.bind(this);
 		this.onMouseUpBound = this.onMouseUp.bind(this);
+
+		this.activateDrag();
+
+		
+		// this.setNotSelected();
+	}
+
+	// CALLED FROM CONNECTIONSMANAGER
+	onNodeDisconnectFromNonagonDelete() {
+		this.nodeType.deactivateAsChild({x: 0, y: 0}, true);
+	}
+
+	nodeCreated(nodeConfig) {
+		if (!this.isCanvasNode) {
+			this.nodeType = this.isModifier
+				? new TriangleType(this.el, this.params, this) : new NonagonType(this.innerContainer, this.params, this, nodeConfig);
+		}
+
+		if (this.nodeType.paramContainers.length > 0 && !this.initNodeConfig) {
+			const ids = [];
+
+			for (let i = 0; i < this.nodeType.paramContainers.length; i++) {
+				const obj = {};
+				const paramContainer = this.nodeType.paramContainers[i];
+				const inputParamKeys = Object.keys(paramContainer.inputParams);
+				obj.inputParams = [];
+				for (let q = 0; q < inputParamKeys.length; q++) {
+					const inputParam = paramContainer.inputParams[inputParamKeys[q]];
+					obj.inputParams.push(inputParam.ID);
+				}
+				obj.paramContainerID = paramContainer.ID;
+				ids.push(obj);
+			}
+
+			updateNode({
+				paramContainers: ids,
+			}, this.ID)
+			.then(() => {
+				console.log('paramcontainers updated');
+			})
+			.catch(() => {
+				console.log('error updating node');
+			});
+		}
+
+		this.addCallback(this);
+	}
+
+	getSettings() {
+		if (!this.settingsContainer) {
+			this.settingsContainer = document.createElement('div');
+			this.settingsContainer.className = 'node-settings';
+		}
+
+		return this.settingsContainer;
+	}
+
+	setTitle(value) {
+		this.title = value;
+
+		updateNode({
+			title: this.title,
+		}, this.ID)
+		.then(() => {
+			console.log('updated node');
+		})
+		.catch(() => {
+			console.log('error updating node');
+		});
 	}
 
 	onConnectionAdd(e) {
-		console.log('node on connection add: ', e.detail, e.type, this.ID);
+		console.log('node on param connection add: ', e.detail, e.type, this.ID);
 
-		
 	}
 
 	onConnectionRemove(e) {
-		console.log('node on connection remove: ', e.detail, e.type, this.ID);
+		console.log('node on param connection remove: ', e.detail, e.type, this.ID);
 
 	}
 
-	setAsChildToParamContainer(paramContainer) {
+	// onConnectionsUpdate(e) {
+	// 	const getDiff = (a1, a2) => {
+	// 		const diff = (a1, a2) => {
+	// 			const a2Set = new Set(a2);
+	// 			return a1.filter(function(x) { return !a2Set.has(x); });
+	// 		};
+
+	// 		return diff(a1, a2).concat(diff(a2, a1));
+	// 	}
+		
+
+	// 	const connections = e.detail;
+	// 	const keys = Object.keys(connections);
+	// 	const outNodesInConnections = [];
+	// 	for (let i = 0; i < keys.length; i++) {
+	// 		const connection = connections[keys[i]];
+	// 		outNodesInConnections.push(connection.outNodeID);
+	// 	}
+
+	// 	const allOutNodesWithConnections = [];
+	// 	const connectionManagerNodes = window.NS.singletons.ConnectionsManager.nodes
+	// 	const nodeKeys = Object.keys(connectionManagerNodes);
+	// 	for (let i = 0; i < nodeKeys.length; i++) {
+	// 		if (connectionManagerNodes[nodeKeys[i]].nodeType.isConnected) {
+	// 			allOutNodesWithConnections.push(nodeKeys[i]);
+	// 		}
+	// 	}
+
+	// 	const diff = getDiff(outNodesInConnections, allOutNodesWithConnections);
+
+
+
+	// }
+
+	syncVisualSettings(settings) {
+		this.visualSettings = Object.assign({}, this.visualSettings, settings);
+		updateNode({
+			visualSettings: settings,
+		}, this.ID)
+		.then(() => {
+
+		})
+		.catch(() => {
+
+		});
+	}
+
+	setAsChildToParamContainer(paramContainer, updateBackend) {
 		paramContainer.el.appendChild(this.el);
+		console.log('set initial transform');
 		this.el.style[window.NS.transform] = 'initial';
 		this.onInputConnectionCallback(this, paramContainer);
+
+		if (!updateBackend) {
+			return;
+		}
+
+		updateNode({
+			connectionData: {
+				paramContainer: paramContainer.ID,
+				node: paramContainer.node.ID,
+			}
+		}, this.ID)
+		.then(() => {
+
+		})
+		.catch(() => {
+
+		});
 	}
 
-	setAsNotChildToParamContainer(paramContainer, e) {
+	setAsNotChildToParamContainer(paramContainer, e, fromNodeRemove) {
 		this.onDisconnectCallback(this, paramContainer);
 		const pos = paramContainer.getCleanPos();
 		this.parentEl.appendChild(this.el);
 		const nodeBoundingRect = paramContainer.node.el.getBoundingClientRect();
+
+		if (fromNodeRemove) {
 		
-		const offsetX = pos.x - nodeBoundingRect.x;
-		const offsetY = pos.y - nodeBoundingRect.y;
-		this.moveCoords.start.x = e.x - (paramContainer.node.moveCoords.offset.x + offsetX);
-		this.moveCoords.start.y = e.y - (paramContainer.node.moveCoords.offset.y + offsetY);
+			const offsetX = pos.x - nodeBoundingRect.x;
+			const offsetY = pos.y - nodeBoundingRect.y;
+			// this.moveCoords.start.x = e.x - (paramContainer.node.moveCoords.offset.x + offsetX);
+			// this.moveCoords.start.y = e.y - (paramContainer.node.moveCoords.offset.y + offsetY);
+
+			
+			this.moveCoords.start.x = paramContainer.node.moveCoords.offset.x + offsetX;
+			this.moveCoords.start.y = paramContainer.node.moveCoords.offset.y + offsetY;
+
+			const { x, y } = this.moveCoords.start;
+
+		
+			this.el.style[window.NS.transform] = `translate3d(${x}px, ${y}px, 0)`;
+		} else {
+			const offsetX = pos.x - nodeBoundingRect.x;
+			const offsetY = pos.y - nodeBoundingRect.y;
+			this.moveCoords.start.x = e.x - (paramContainer.node.moveCoords.offset.x + offsetX);
+			this.moveCoords.start.y = e.y - (paramContainer.node.moveCoords.offset.y + offsetY);
+
+		}
+
+		updateNode({
+			connectionData: firebase.firestore.FieldValue.delete(),
+		}, this.ID)
+		.then(() => {
+
+		})
+		.catch(() => {
+
+		});
 	}
 
 	getParamContainers() {
@@ -218,7 +388,7 @@ export default class Node{
 	}
 
 	activateDrag() {
-		this.el.addEventListener('mousedown', this.onMouseDownBound);
+		this.innerContainer.addEventListener('mousedown', this.onMouseDownBound);
 	}
 
 
@@ -226,14 +396,41 @@ export default class Node{
 		return this;
 	}
 
+	setNotSelected() {
+		this.el.classList.remove('selected');
+		if (this.nodeTitle) {
+			this.nodeTitle.blurInput();
+		}
 
-	setAsDisabled() {
-		this.el.style.opacity = .1;
+		if (this.nodeType.setInactive) {
+			this.nodeType.setInactive();
+		}
 	}
 
-	setAsEnabled() {
-		this.el.style.opacity = 1;
+	setSelected() {
+		this.el.classList.add('selected');
+
+		if (this.nodeType.setActive) {
+			this.nodeType.setActive();
+		}
 	}
+
+	getPos() {
+		const pos = new THREE.Vector2();
+		const rect = this.innerContainer.getBoundingClientRect();
+		pos.set(rect.x + rect.width / 2, rect.y + rect.height / 2);
+		
+		return pos;
+	}
+
+
+	// setAsDisabled() {
+	// 	this.el.style.opacity = .1;
+	// }
+
+	// setAsEnabled() {
+	// 	this.el.style.opacity = 1;
+	// }
 
 	// onOutputClick(clickPos) {
 	// 	this.onConnectingCallback(this, clickPos);
@@ -244,25 +441,28 @@ export default class Node{
 	// }
 
 	removeFromDom() {
-		this.el.removeEventListener('mousedown', this.onMouseDownBound);
+		this.innerContainer.removeEventListener('mousedown', this.onMouseDownBound);
 		this.parentEl.removeChild(this.el);
 	}
 
 	onMouseDown(e) {
-
 		if (e.target.nodeName === 'INPUT' || e.target.classList.contains('prevent-drag')) {
 			return;
+		}
+
+		if (this.nodeTitle) {
+			this.nodeTitle.blurInput();
 		}
 
 		e.stopPropagation();
 		e.preventDefault();
 
-		
-		
+		console.log('on mouse down', this);
+		const nodeSelectedEvent = new CustomEvent('node-selected', { detail: this });
+        document.documentElement.dispatchEvent(nodeSelectedEvent);
+
 		this.moveCoords.start.x = e.x - this.moveCoords.offset.x;
 		this.moveCoords.start.y = e.y - this.moveCoords.offset.y;
-
-		// console.log(e.x, e.y);
 
 		this.lastDelta.x = 0;
 		this.lastDelta.y = 0;
@@ -270,20 +470,6 @@ export default class Node{
 		if (this.isModifier) {
 			this.onNodeDragStart(this, e);
 		}
-
-		console.log('mouse down', this.moveCoords.start);
-
-		
-
-		// if (this.nodeType.paramContainers) {
-		// 	for (let i = 0; i < this.nodeType.paramContainers.length; i++) {
-		// 		const paramContainer = this.nodeType.paramContainers[i];
-		// 		const connectedNodes = paramContainer.connectedNodes;
-		// 		for (let q = 0; q < connectedNodes.length; q++) {
-		// 			connectedNodes
-		// 		}
-		// 	}
-		// }
 
 		window.addEventListener('mouseup', this.onMouseUpBound);
 		window.addEventListener('mousemove', this.onMouseMoveBound);
@@ -304,6 +490,7 @@ export default class Node{
 		this.lastDelta.x = deltaX;
 		this.lastDelta.y = deltaY;
 
+		console.log('set translate node', this.lastDelta);
 		this.el.style[window.NS.transform] = `translate3d(${deltaX}px, ${deltaY}px, 0)`;
 	}
 
@@ -313,5 +500,19 @@ export default class Node{
 		}
 		window.removeEventListener('mouseup', this.onMouseUpBound);
 		window.removeEventListener('mousemove', this.onMouseMoveBound);
+
+		if (this.lastDelta.x === 0 && this.lastDelta.y === 0) {
+			return;
+		}
+
+		updateNode({
+			pos: this.lastDelta,
+		}, this.ID)
+		.then(() => {
+			console.log('updated node');
+		})
+		.catch(() => {
+			console.log('error updating node');
+		});
 	}
 }

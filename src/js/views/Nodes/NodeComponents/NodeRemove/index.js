@@ -1,3 +1,5 @@
+import './index.scss';
+
 export default class NodeRemove{
 	constructor(parentEl, onClickCallback) {
 
@@ -27,5 +29,13 @@ export default class NodeRemove{
 		e.preventDefault();
 
 		this.onClickCallback();
-	}
+    }
+    
+    show() {
+        this.el.classList.add('visible');
+    }
+
+    hide() {
+        this.el.classList.remove('visible');
+    }
 }

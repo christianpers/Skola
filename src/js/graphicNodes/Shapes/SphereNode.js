@@ -7,14 +7,27 @@ export default class SphereNode extends GraphicNode{
 		super();
 
 		this.isForegroundNode = true;
-		this.hasMultipleOutputs = true;
+		// this.hasMultipleOutputs = true;
+		this.isRendered = true;
+		this.needsUpdate = true;
 		
-		const w = window.innerWidth;
-		const h = window.innerHeight;
-
 		this.geometry = new THREE.SphereGeometry(2, 32, 32);
 		this.material = new THREE.MeshPhongMaterial( {  } );
-		this.mesh = new THREE.Mesh(this.geometry, this.material);
+		const mesh = new THREE.Mesh(this.geometry, this.material);
+
+		this.mesh = new THREE.Group();
+		this.mesh.add(mesh);
+
+		// const nameTexture = new THREE.CanvasTexture();
+
+		var planeGeometry = new THREE.PlaneBufferGeometry( 8, 2, 10, 10 );
+		var planeMaterial = new THREE.MeshBasicMaterial( {side: THREE.DoubleSide} );
+
+		this.nameMesh = new THREE.Mesh(planeGeometry, planeMaterial);
+		this.nameMesh.position.y = 3;
+		this.nameMesh.scale.set(.2, .2, .2);
+
+		this.mesh.add(this.nameMesh);
 
 		const textureParam = {
 			title: 'Texture',
@@ -139,6 +152,7 @@ export default class SphereNode extends GraphicNode{
 		onNodeDragStart,
 		onNodeDragMove,
 		onNodeDragRelease,
+		addCallback,
 	) {
 		super.init(
 			pos,
@@ -153,6 +167,7 @@ export default class SphereNode extends GraphicNode{
 			onNodeDragStart,
 			onNodeDragMove,
 			onNodeDragRelease,
+			addCallback,
 		);
 
 		// this.onOutputClickGraphicsBound = this.onOutputClickGraphics.bind(this);
@@ -168,6 +183,8 @@ export default class SphereNode extends GraphicNode{
 
 		this.outputDataConnection = null;
 
+		
+
 		// this.outputs = {
 		// 	'sphere-graphics': this.outputGraphics,
 		// 	'sphere-target': this.outputTarget,
@@ -177,6 +194,11 @@ export default class SphereNode extends GraphicNode{
 		// 	'sphere-graphics': null,
 		// 	'sphere-target': null,
 		// };
+
+		const canvas = this.nodeTitle.canvas;
+		this.nameTexture = new THREE.CanvasTexture(canvas);
+		this.nameMesh.material.map = this.nameTexture;
+		this.nameTexture.needsUpdate = true;
 
 		this.enabledOutputs = [];
 	}
@@ -229,6 +251,14 @@ export default class SphereNode extends GraphicNode{
 
 	getMesh() {
 		return this.mesh;
+	}
+
+	update() {
+		this.nameTexture.needsUpdate = true;
+	}
+
+	render() {
+
 	}
 
 }

@@ -13,11 +13,24 @@ export default class ConnectionsManager{
 
     addNode(node) {
         this.nodes[node.ID] = node;
-
-        console.log(this.nodes);
     }
 
     removeNode(node) {
+        // remove param connections
+        const connections = this.paramConnections[node.ID] ? this.paramConnections[node.ID] : [];
+
+        for (let i = 0; i < connections.length; i++) {
+            const connection = connections[i];
+            this.removeParamConnection(this.params[connection.paramID], this.nodes[connection.outNodeID]);
+        }
+
+        const nodeConnections = this.nodeConnections[node.ID] ? this.nodeConnections[node.ID] : [];
+        for (let i = 0; i < nodeConnections.length; i++) {
+            const nodeConnection = nodeConnections[i];
+            const paramContainer = node.nodeType.paramContainers.find(t => t.ID === nodeConnection.paramContainerID);
+            this.removeNodeConnection(paramContainer, this.nodes[nodeConnection.outNodeID], true);
+        }
+
         delete this.nodes[node.ID];
     }
 
@@ -51,10 +64,15 @@ export default class ConnectionsManager{
         document.documentElement.dispatchEvent(nodeConnectionsUpdateEvent);
     }
 
-    removeNodeConnection(paramContainer, outNode) {
+    removeNodeConnection(paramContainer, outNode, fromDelete) {
+        if (fromDelete) {
+            outNode.onNodeDisconnectFromNonagonDelete();
+        }
+        
         const inNodeID = paramContainer.node.ID;
 
-        this.nodeConnections[inNodeID] = this.nodeConnections[inNodeID]
+        const nodeConnections = this.nodeConnections[inNodeID] ? this.nodeConnections[inNodeID] : [];
+        this.nodeConnections[inNodeID] = nodeConnections
             .filter(t => t.paramContainerID !== paramContainer.ID && t.outNodeID !== outNode.ID);
 
         if (this.nodeConnections[inNodeID].length === 0) {
@@ -64,8 +82,6 @@ export default class ConnectionsManager{
         const nodeConnectionsUpdateEvent = new CustomEvent('node-connections-update', { detail: this.nodeConnections });
         document.documentElement.dispatchEvent(nodeConnectionsUpdateEvent);
     }
-
-
 
     // PARAMS OUTNODE -> PARAM
 

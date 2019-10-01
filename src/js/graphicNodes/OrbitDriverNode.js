@@ -60,54 +60,6 @@ export default class OrbitDriverNode extends GraphicNode{
 		this.onOrbitZChangeBound = this.onOrbitZChange.bind(this);
 		this.onRotationChangeYBound = this.onRotationChangeY.bind(this);
 		this.onRotationChangeXBound = this.onRotationChangeX.bind(this);
-
-		// const settingsContainer = document.createElement('div');
-		// settingsContainer.className = 'settings-container-outer';
-
-		// this.topPartEl.appendChild(settingsContainer);
-
-		
-
-		// this.orbitXSlider = new VerticalSlider(
-		// 	settingsContainer, 10, this.onOrbitXChangeBound, 0, {min: 0, max: 40}, 'Radie X', 60, true,
-		// );
-
-		// this.orbitYSlider = new VerticalSlider(
-		// 	settingsContainer, 10, this.onOrbitYChangeBound, 0, {min: 0, max: 40}, 'Radie Y', 60, true,
-		// );
-
-		// this.orbitZSlider = new VerticalSlider(
-		// 	settingsContainer, 10, this.onOrbitZChangeBound, 0, {min: 0, max: 40}, 'Radie Z', 60, true,
-		// );
-
-		// this.speedSlider = new VerticalSlider(
-		// 	settingsContainer, 0, this.onSpeedChangeBound, 4, {min: 0, max: 10}, 'Orbit speed',
-		// );
-
-		// this.rotationXSlider = new VerticalSlider(
-		// 	settingsContainer, 0, this.onRotationChangeXBound, 3, {min: -.1, max: .1}, 'Rotation X', 60, true,
-		// );
-
-		// this.rotationYSlider = new VerticalSlider(
-		// 	settingsContainer, 0, this.onRotationChangeYBound, 3, {min: -.1, max: .1}, 'Rotation Y', 60, true,
-		// );
-
-		// this.orbitSliders = {
-		// 	Position: {
-		// 		x: this.orbitXSlider,
-		// 		y: this.orbitYSlider,
-		// 		z: this.orbitZSlider,
-		// 	},
-		// 	Rotation: {
-		// 		x: this.rotationXSlider,
-		// 		y: this.rotationYSlider,
-		// 	},
-		// 	Form: {
-		// 		x: this.orbitXSlider,
-		// 		y: this.orbitYSlider,
-		// 		z: this.orbitZSlider,
-		// 	},
-		// };
 		
 		this.curve = new THREE.EllipseCurve(
 			0,  0,            // ax, aY
@@ -117,24 +69,7 @@ export default class OrbitDriverNode extends GraphicNode{
 			0                 // aRotation
 		);
 
-		// this.topPartEl.appendChild(settingsContainer);
-
-		// this.onToggleStartClickBound = this.onToggleStartClick.bind(this);
-
-		// this.toggleStartBtn = document.createElement('div');
-		// this.toggleStartBtn.className = 'toggle-start';
-		// this.toggleStartBtn.addEventListener('click', this.onToggleStartClickBound);
-
-		// this.toggleBtnText = document.createElement('p');
-		// this.toggleBtnText.innerHTML = 'Start';
-
-		// this.toggleStartBtn.appendChild(this.toggleBtnText);
-
-		// this.topPartEl.appendChild(this.toggleStartBtn);
-
-		// this.updateBound = this.update.bind(this);
-
-		// this.update();
+		this.onToggleStartClickBound = this.onToggleStartClick.bind(this);
 	}
 
 	hideSettings() {
@@ -143,6 +78,7 @@ export default class OrbitDriverNode extends GraphicNode{
 
 	getSettings() {
 		if (!this.settingsContainer) {
+			console.log('create new settings container');
 			const settingsContainer = document.createElement('div');
 			settingsContainer.className = 'node-settings orbit-driver-node';
 
@@ -193,8 +129,18 @@ export default class OrbitDriverNode extends GraphicNode{
 				},
 			};
 
+			this.toggleStartBtn = document.createElement('div');
+			this.toggleStartBtn.className = 'toggle-start';
+			this.toggleStartBtn.addEventListener('click', this.onToggleStartClickBound);
+
+			this.toggleBtnText = document.createElement('h4');
+			this.toggleBtnText.innerHTML = 'Start';
+
+			this.toggleStartBtn.appendChild(this.toggleBtnText);
+
 			settingsContainer.appendChild(orbitSliderContainer);
 			settingsContainer.appendChild(rotationSliderContainer);
+			settingsContainer.appendChild(this.toggleStartBtn);
 
 			this.settingsContainer = settingsContainer;
 		}
@@ -233,7 +179,7 @@ export default class OrbitDriverNode extends GraphicNode{
 		this.toggleBtnText.innerHTML = 'Start';
 	}
 
-	onToggleStartClick() {
+	onToggleStartClick(e) {
 		if (this.animateValues.isRunning) {
 			this.animateValues.isRunning = false;
 			this.toggleBtnText.innerHTML = 'Start';
@@ -257,12 +203,16 @@ export default class OrbitDriverNode extends GraphicNode{
 		this.outValues['Position'].y = point.y;
     	this.outValues['Position'].z = point.y;
     	this.outValues['Rotation'].y += this.currentRotationY;
-    	this.outValues['Rotation'].x += this.currentRotationX;
+		this.outValues['Rotation'].x += this.currentRotationX;
+		
+		console.log(this.currentOutConnectionsLength);
 
     	for (let i = 0; i < this.currentOutConnectionsLength; i++) {
-			const param = this.currentOutConnections[i].param;
-
-			this.currentOutConnections[i].in.updateParam(param, this);
+			const connectionData = this.currentOutConnections[i];
+			const inNode = window.NS.singletons.ConnectionsManager.nodes[connectionData.inNodeID];
+			const paramContainer = window.NS.singletons.ConnectionsManager.params[connectionData.connection.paramID];
+			
+			inNode.updateParam(paramContainer, this);
 		}
 
 		if (!this.animateValues.isRunning) {
@@ -279,46 +229,49 @@ export default class OrbitDriverNode extends GraphicNode{
 
 	}
 
-	
-	enableOutput(param, connection) {
-		super.enableOutput();
+	onConnectionAdd(e) {
+		console.log('graphic node on connection add orbit: ', e.detail, e.type, this.ID);
 
-		if (param) {
-			this.orbitSliders[param.parent][param.param].show();
+		if (e.detail.connection.outNodeID === this.ID) {
+			const connection = e.detail.connection;
+			const paramContainer = window.NS.singletons.ConnectionsManager.params[connection.paramID];
+			
+			this.orbitSliders[paramContainer.param.parent][paramContainer.param.param].show();
+			this.currentOutConnections.push(e.detail);
+			this.currentOutConnectionsLength = this.currentOutConnections.length;
+			
 		}
+	}
 
-		this.currentOutConnections.push(connection);
-		this.currentOutConnectionsLength = this.currentOutConnections.length;
+	onConnectionRemove(e) {
+		console.log('graphic node on connection remove: ', e.detail, e.type, this.ID);
+
+		if (e.detail.connection.outNodeID === this.ID) {
+			const connection = e.detail.connection;
+			const paramIDToRemove = connection.paramID;
+			const outIDToRemove = connection.outNodeID;
+			const inIDToRemove = e.detail.inNodeID;
+			const paramContainer = window.NS.singletons.ConnectionsManager.params[connection.paramID];
+			
+			this.orbitSliders[paramContainer.param.parent][paramContainer.param.param].hide();
+
+			const tempOutConnections = this.currentOutConnections.map(t => t);
+
+			const paramConnections = tempOutConnections.filter(t => (t.inNodeID === inIDToRemove && t.connection.paramID !== paramIDToRemove));
+			const nodeConnections = tempOutConnections.filter(t => (t.inNodeID === inIDToRemove && t.connection.outNodeID !== outIDToRemove));
+			
+			const finalConnections = paramConnections.concat(nodeConnections);
+			this.currentOutConnections = finalConnections;
+			this.currentOutConnectionsLength = this.currentOutConnections.length;
+
+			if (this.currentOutConnectionsLength <= 0) {
+				this.reset();
+			}
+		}
 	}
 
 	enableInput(outputNode) {
 		super.enableInput();		
-	}
-
-	disableOutput(node, param) {
-		const tempOutConnections = this.currentOutConnections.map(t => t);
-
-        let paramConnections = tempOutConnections.filter(t => t.param);
-        let nodeConnections = tempOutConnections.filter(t => !t.param);
-
-        if (param) {
-            paramConnections = paramConnections.filter(t => t.param && (t.param.title !== param.title));
-        } else {
-            nodeConnections = nodeConnections.filter(t => t.in.ID !== nodeIn.ID);
-        }
-        
-        const finalConnections = paramConnections.concat(nodeConnections);
-        this.currentOutConnections = finalConnections;
-		this.currentOutConnectionsLength = this.currentOutConnections.length;
-		
-		if (param) {
-			this.orbitSliders[param.parent][param.param].hide();
-		}
-
-        if (this.currentOutConnectionsLength <= 0) {
-            super.disableOutput();
-            this.onToggleStartClick();
-        }
 	}
 
 	removeFromDom() {

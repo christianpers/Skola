@@ -1,0 +1,83 @@
+.connection-window {
+	position: absolute;
+    top: 300px;
+	left: 0;
+	height: 146px;
+	width: 30px;
+	opacity: .2;
+	z-index: 2;
+
+	&.visible {
+		width: auto;
+		z-index: 3;
+
+		.content-container {
+			display: flex;
+		}
+
+		.close-btn {
+			display: block;
+		}
+	}
+
+	&.has-params {
+		opacity: 1;
+	}
+
+	.close-btn {
+		display: none;
+		position: absolute;
+		right: 10px;
+		top: -16px;
+		color: white;
+		cursor: pointer;
+	}
+
+	.title {
+		transform: rotate(90deg);
+		transform-origin: left center;
+		position: absolute;
+		top: -8px;
+		left: 13px;
+		white-space: nowrap;
+		padding: 0 0px 4px 13px;
+	}
+
+	.content-container {
+		display: none;
+		align-items: center;
+		padding-top: 30px;
+		padding-bottom: 30px;
+		padding-left: 40px;
+		padding-right: 40px;
+		background: black;
+	}
+
+	.param-item-container {
+		margin-right: 20px;
+		p {
+			color: yellow;
+			margin-bottom: 4px;
+		}
+
+		&:last-child {
+			margin-right: 0;
+		}
+
+		.connect-btn {
+			background: yellow;
+			margin-top: 10px;
+			display: inline-block;
+			padding: 4px 6px;
+			cursor: pointer;
+
+			> h5 {
+				color: black;
+			}
+		}
+	}
+
+	.connected-nodes-container {
+		margin-top: 20px;
+	}
+}

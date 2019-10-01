@@ -69,7 +69,6 @@ export default class AvailableConnections{
 				for (let q = 0; q < inputs.length; q++) {
 					const input = inputs[q];
 					if (!inNode.inputHelpersType.isValid(outputNode, inNode, input.inputType, outputType)) {
-
 						input.activatePossible();
 					}
 				}

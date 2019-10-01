@@ -1,0 +1,147 @@
+.node-settings-window {
+	position: absolute;
+    top: 100px;
+	left: 0;
+	height: 110px;
+    width: 30px;
+	opacity: .2;
+	z-index: 2;
+
+    &.has-settings {
+        opacity: 1;
+    }
+
+	&.visible {
+		width: auto;
+		z-index: 3;
+
+		.node-settings {
+			display: flex;
+		}
+
+		.close-btn {
+			display: block;
+		}
+	}
+
+	.close-btn {
+		display: none;
+		position: absolute;
+		right: 10px;
+		top: -16px;
+		color: white;
+		cursor: pointer;
+	}
+
+	.title {
+		transform: rotate(90deg);
+		transform-origin: left center;
+		position: absolute;
+		top: -8px;
+		left: 13px;
+		white-space: nowrap;
+		padding: 0 0px 4px 13px;
+		z-index: 2;
+	}
+	.node-settings {
+		display: none;
+		align-items: center;
+		padding-top: 30px;
+		padding-bottom: 30px;
+		padding-left: 40px;
+		padding-right: 40px;
+		background: black;
+		min-width: 160px;
+		position: relative;
+
+		&.color-node {
+			margin-left: 30px;
+
+			.color-preview {
+				width: 10px;
+				height: 10px;
+				background: white;
+				margin-left: 10px;
+				cursor: pointer;
+			}
+		}
+
+		&.orbit-driver-node {
+			flex-direction: column;
+			.slider-row {
+				width: 100%;
+				display: flex;
+				justify-content: center;
+
+				.vertical-slider {
+					margin-right: 10px;
+
+					&:last-child {
+						margin-right: 0;
+					}
+				}
+			}
+
+			.toggle-start {
+				color: black;
+				display: block;
+				background: yellow;
+				padding: 6px 20px;
+				border-radius: 4px;
+
+				> h4 {
+					color: black;
+				}
+			}
+		}
+
+		&.param-driver-node {
+			flex-direction: column;
+
+			& .top-bottom-container {
+				display: flex;
+				justify-content: space-between;
+				margin-top: 14px;
+				align-items: flex-end;
+			}
+			& .duration-container {
+				& > p{
+					color: yellow;
+					font-size: 10px;
+					margin-top: 0;
+					margin-bottom: 4px;
+					text-align: left;
+				}
+		
+				& > input {
+					width: 100%;
+					height: 20px;
+					padding: 12px 3px;
+					background: yellow;
+					color: black;
+					border: 0;
+				}
+			}
+		
+			& .toggle-start{
+				padding: 5px;
+				color: yellow;
+				background: black;
+				border: 1px solid yellow;
+				cursor: pointer;
+				margin-left: 10px;
+				& > p{
+					text-align: center;
+					color: yellow;
+				}
+		
+				&:hover {
+					background: yellow;
+					> p {
+						color: black;
+					}
+				}
+			}
+		}
+	}
+}

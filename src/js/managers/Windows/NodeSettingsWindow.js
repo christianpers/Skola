@@ -1,6 +1,12 @@
+import NodeRemove from '../../views/Nodes/NodeComponents/NodeRemove/index';
+
+import './NodeSettingsWindow.scss';
+
 export default class NodeSettingsWindow{
-    constructor(parentEl) {
+    constructor(parentEl, onShowCallback, onRemoveCallback) {
         this.parentEl = parentEl;
+        this.onShowCallback = onShowCallback;
+        this.onRemoveCallback = onRemoveCallback;
 
         this.el = document.createElement('div');
         this.el.className = 'node-settings-window window';
@@ -10,6 +16,10 @@ export default class NodeSettingsWindow{
         label.className = 'title';
 
         this.el.appendChild(label);
+
+        this.isOpen = false;
+
+        this.nodeRemove = new NodeRemove(this.el, this.onRemoveCallback);
 
         this.closeBtn = document.createElement('h5');
         this.closeBtn.innerHTML = 'Hide';
@@ -23,9 +33,23 @@ export default class NodeSettingsWindow{
         this.parentEl.appendChild(this.el);
 
         this.currentSettingsEl = null;
+
+        this.onClickBound = this.onClick.bind(this);
+
+        this.el.addEventListener('click', this.onClickBound);
     }
 
-    onHideClick() {
+    onClick() {
+        // if (this.el.classList.contains('has-settings')) {
+        //     this.show();
+        // }
+        this.show();
+    }
+
+    onHideClick(e) {
+
+        e.preventDefault();
+        e.stopPropagation();
         this.hide();
     }
 
@@ -34,11 +58,16 @@ export default class NodeSettingsWindow{
             return;
         }
         this.el.removeChild(this.currentSettingsEl);
+
+        this.el.classList.remove('has-settings');
     }
 
-    show(node) {
+    setupForNode(node) {
         this.removeCurrent();
         const settings = node.getSettings();
+        if (!settings) {
+            return;
+        }
         this.currentSettingsEl = settings;
         this.el.appendChild(settings);
 
@@ -46,10 +75,24 @@ export default class NodeSettingsWindow{
             node.afterSettingsAddedToDom();
         }
 
+        this.el.classList.add('has-settings');
+    }
+
+    show() {
+        this.onShowCallback();
         this.el.classList.add('visible');
+
+        this.nodeRemove.show();
     }
 
     hide() {
         this.el.classList.remove('visible');
+
+        this.nodeRemove.hide();
+    }
+
+    blur() {
+        this.hide();
+        this.removeCurrent();
     }
 }

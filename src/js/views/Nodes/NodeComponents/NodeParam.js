@@ -1,10 +1,10 @@
 export default class NodeParam{
-	constructor(parentEl, param, paramContainer) {
+	constructor(parentEl, param, paramContainer, ID) {
 
 		this.el = document.createElement('div');
 		this.el.className = 'node-param node-component';
 
-		this.ID = Math.random().toString(36).substr(2, 9);
+		this.ID = ID;
 
 		this.param = param;
 
@@ -17,12 +17,12 @@ export default class NodeParam{
 
 		// this.el.appendChild(dotEl);
 
-		const labelEl = document.createElement('p');
+		this.labelEl = document.createElement('p');
 		
-		labelEl.className = 'label';
-		labelEl.innerHTML = param.param;
+		this.labelEl.className = 'label';
+		this.labelEl.innerHTML = param.param;
 		
-		this.el.appendChild(labelEl);
+		this.el.appendChild(this.labelEl);
 
 		parentEl.appendChild(this.el);
 

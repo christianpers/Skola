@@ -2,7 +2,7 @@ import GraphicNode from './GraphicNode';
 import Picker from 'vanilla-picker';
 
 export default class ColorNode extends GraphicNode{
-	constructor() {
+	constructor(renderer, backendData) {
 		super();
 
 		// this.el.classList.add('no-height');
@@ -30,9 +30,11 @@ export default class ColorNode extends GraphicNode{
 
 		// this.topPartEl.appendChild(colorPickerParent);
 
-		
-
-		this.currentColor = undefined;
+		if (backendData && backendData.data && backendData.data.visualSettings) {
+			this.currentColor = new THREE.Color(backendData.data.visualSettings.color);
+		} else {
+			this.currentColor = undefined;
+		}
 
 		// this.picker = new Picker(colorConfig);
 		this.onPickerChangeBound = this.onPickerChange.bind(this);
@@ -46,11 +48,13 @@ export default class ColorNode extends GraphicNode{
 		// };
 	}
 
+	// event from connectionsmanager
 	onConnectionAdd(e) {
+		
 		const detail = e.detail;
 
 		if (this.ID === detail.inNodeID) {
-			super.onConnectionAdd(e);
+			super.onConnectionAdd(e.detail);
 		} else if (this.ID === detail.connection.outNodeID) {
 			const connectionObj = {
 				paramID: detail.connection.paramID,
@@ -63,6 +67,7 @@ export default class ColorNode extends GraphicNode{
 		}
 	}
 
+	// event from connectionsmanager
 	onConnectionRemove(e) {
 		const detail = e.detail;
 		if (this.ID === detail.inNodeID) {
@@ -73,7 +78,6 @@ export default class ColorNode extends GraphicNode{
 	}
 
 	onColorClick() {
-		console.log('sfsdf');
 		this.picker.show();
 	}
 
@@ -106,11 +110,16 @@ export default class ColorNode extends GraphicNode{
 			color: this.currentColor ? this.currentColor.getStyle() : '#FFFFFF',
 			alpha: false,
 		};
-		console.log('test');
 		// const picker = new Picker(colorConfig);
 		this.picker.setOptions(colorConfig);
 		// this.picker.show();
 		this.picker.onChange = this.onPickerChangeBound;
+
+		if (this.currentColor) {
+			const hex =  `#${this.currentColor.getHexString()}`;
+			this.setColor(hex);
+		}
+		
 	}
 
 	hideSettings() {
@@ -118,9 +127,6 @@ export default class ColorNode extends GraphicNode{
 	}
 
 	onPickerChange(color) {
-
-		console.log('picker change');
-
 		if (!color._rgba) {
 			return;
 		}
@@ -129,6 +135,10 @@ export default class ColorNode extends GraphicNode{
 		
 		this.setColor(cssColor);
 		this.currentColor = new THREE.Color(color.rgbString);
+
+		this.syncVisualSettings({
+			color: color.rgbString,
+		});
 
 		for (let i = 0; i < this.currentOutConnectionsLength; i++) {
 			const paramID = this.currentOutConnections[i].paramID;
@@ -145,11 +155,13 @@ export default class ColorNode extends GraphicNode{
 	}
 
 	setColor(color) {
-		this.colorPreview.style.background = color;
+		if (this.colorPreview) {
+			this.colorPreview.style.background = color;
+		}	
 	}
 
 	enableOutput(param, connection) {
-		console.log('enable output');
+		console.log('enable output color');
 		// super.enableOutput();
 
 		// this.currentOutConnections.push(connection);
@@ -158,9 +170,16 @@ export default class ColorNode extends GraphicNode{
 		super.enableOutput(param, connection);
 
 		if (this.currentOutConnectionsLength === 1) {
-			const hex = `#${param.defaultVal.getHexString()}`;
-			this.picker.color = hex;
-			this.currentColor = param.defaultVal;
+			let hex = `#${param.defaultVal.getHexString()}`;
+			if (!this.currentColor) {
+				this.currentColor = param.defaultVal;
+			} else {
+				hex = this.currentColor.getHexString();
+			}
+			if (this.picker) {
+				this.picker.color = hex;
+			}
+			
 			this.setColor(hex);
 		}
 	}

@@ -15,6 +15,7 @@ export default class GraphicNode extends Node{
 		this.isForegroundNode = false;
 		this.isBackgroundNode = false;
 		this.needsMinMax = false;
+		this.isRendered = false;
 
 		this.currentOutConnections = [];
 		this.currentOutConnectionsLength = 0;
@@ -47,6 +48,7 @@ export default class GraphicNode extends Node{
 		onNodeDragStart,
 		onNodeDragMove,
 		onNodeDragRelease,
+		addCallback,
 	) {
 		super.init(
 			pos,
@@ -61,17 +63,15 @@ export default class GraphicNode extends Node{
 			onNodeDragStart,
 			onNodeDragMove,
 			onNodeDragRelease,
+			addCallback,
 		);
-
-		this.activateDrag();
 
 		// this.postInit();
 
 	}
 
 	onConnectionAdd(e) {
-		console.log('graphic node on connection add: ', e.detail, e.type, this.ID);
-
+		console.log('graphic node on connection add graphic node: ', e.detail, e.type, this.ID);
 		if (e.detail.inNodeID === this.ID) {
 			const connection = e.detail.connection;
 			const param = window.NS.singletons.ConnectionsManager.params[connection.paramID];
@@ -98,7 +98,7 @@ export default class GraphicNode extends Node{
 	}
 
 	updateParam(paramObj, outNode) {
-		console.log('update', paramObj.param);
+		// console.log('update', paramObj.param);
 		ParamHelpers[paramObj.param.paramHelpersType].update(this, outNode, paramObj.param);
 	}
 

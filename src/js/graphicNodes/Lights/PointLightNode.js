@@ -5,8 +5,9 @@ export default class PointLightNode extends GraphicNode{
 		super();
 
 		this.isLightNode = true;
+		this.isRendered = true;
 
-		this.el.classList.add('no-height');
+		// this.el.classList.add('no-height');
 
 		this.light = new THREE.PointLight( 0xffffff, 1, 100 );
 		this.light.position.set(0, 0, 0);
@@ -19,7 +20,7 @@ export default class PointLightNode extends GraphicNode{
 			title: 'Texture',
 			param: 'map',
 			useAsInput: true,
-			parent: 'Material',
+			parent: 'Texture',
 			paramHelpersType: 'texture',
 			needsFrameUpdate: false,
 		};
@@ -29,7 +30,7 @@ export default class PointLightNode extends GraphicNode{
 			param: 'color',
 			useAsInput: true,
 			defaultVal: new THREE.Color(1,1,1),
-			parent: 'Material',
+			parent: 'Color',
 			paramHelpersType: 'color',
 			needsFrameUpdate: false,
 		};

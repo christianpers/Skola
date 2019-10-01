@@ -2,34 +2,54 @@ import ConnectionWindow from './ConnectionWindow';
 import NodeSettingsWindow from './NodeSettingsWindow';
 
 export default class WindowManager{
-    constructor(parentEl) {
+    constructor(parentEl, enableParamCallback, disableParamCallback) {
         this.parentEl = parentEl;
 
-        this.el = document.createElement('div');
-        this.el.className = 'window-manager';
-
-        this.parentEl.appendChild(this.el);
-
         this.activeNode = null;
 
-        this.connectionWindow = new ConnectionWindow(this.el);
-        this.nodeSettingsWindow = new NodeSettingsWindow(this.el);
+        this.onConnectionWindowShowBound = this.onConnectionWindowShow.bind(this);
+        this.onNodeSettingsWindowShowBound = this.onNodeSettingsWindowShow.bind(this);
+        this.onNodeRemoveClickBound = this.onNodeRemoveClick.bind(this);
+
+        this.connectionWindow = new ConnectionWindow(parentEl, enableParamCallback, disableParamCallback, this.onConnectionWindowShowBound);
+        this.nodeSettingsWindow = new NodeSettingsWindow(parentEl, this.onNodeSettingsWindowShowBound, this.onNodeRemoveClickBound);
     }
 
-    showSettings(node) {
-        this.nodeSettingsWindow.removeCurrent();
-        if (this.activeNode) {
-            this.activeNode.hideSettings();
+    onNodeRemoveClick() {
+        if (!this.activeNode) {
+            return;
         }
+
+        this.activeNode.onRemoveClick();
+    }
+
+    setupForNode(node) {
         this.activeNode = node;
-        this.nodeSettingsWindow.show(node);
+        // if (node.nodeType.assignedParamContainer) {
+        //     this.connectionWindow.setupForNode(node);
+        // }
+        this.connectionWindow.setupForNode(node);
+        this.nodeSettingsWindow.setupForNode(node);
     }
 
-    hideSettings() {
+    onNodeConnect(activeNode) {
+        this.connectionWindow.setupForNode(activeNode);
+    }
+
+    onConnectionWindowShow() {
         this.nodeSettingsWindow.hide();
-        if (this.activeNode) {
-            this.activeNode.hideSettings();
-        }
-        this.activeNode = null;
+    }
+
+    onNodeSettingsWindowShow() {
+        this.connectionWindow.hide();
+    }
+
+    onNodeDisconnect() {
+        this.connectionWindow.blur();
+    }
+
+    blur() {
+        this.nodeSettingsWindow.blur();
+        this.connectionWindow.blur();
     }
 }

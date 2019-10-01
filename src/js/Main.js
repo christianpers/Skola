@@ -23,20 +23,6 @@ import FFTNode from './musicNodes/FFTNode';
 import KickSynth from './musicNodes/KickSynth';
 import FMSynth from './musicNodes/FMSynth';
 
-import LavaNoiseNode from './graphicNodes/ProceduralTextures/LavaNoise';
-import VoronoiNode from './graphicNodes/ProceduralTextures/Voronoi';
-import CircleNode from './graphicNodes/Shapes/CircleNode';
-import CubeNode from './graphicNodes/Shapes/CubeNode';
-import SphereNode from './graphicNodes/Shapes/SphereNode';
-import ParamDriverNode from './graphicNodes/ParamDriverNode';
-import OrbitDriverNode from './graphicNodes/OrbitDriverNode';
-import SceneNode from './graphicNodes/SceneNode';
-import ColorNode from './graphicNodes/ColorNode';
-import DirectionalLightNode from './graphicNodes/Lights/DirectionalLightNode';
-import PointLightNode from './graphicNodes/Lights/PointLightNode';
-import TextureSelectorNode from './graphicNodes/Textures/TextureSelectorNode';
-import ParticlesNode from './graphicNodes/Shapes/ParticlesNode';
-
 import Tone from 'tone';
 
 export default class Main{
@@ -47,8 +33,6 @@ export default class Main{
 		Tone.Transport.start();
 
 		this.historyState = {id: window.location.pathname};
-
-		
 
 		window.addEventListener('popstate', this.onPopStateChange.bind(this));
 
@@ -115,44 +99,31 @@ export default class Main{
 				]
 			},
 			graphics: {
-				'Canvas': [
-					{
-						type: 'Canvas',
-						obj: SceneNode,
-						isModifier: false,
-					}
-				],
 				'3D - Shapes': [
 					{
 						type: 'Cube',
-						obj: CubeNode,
 						isModifier: false,
 					},
 					{
 						type: 'Sphere',
-						obj: SphereNode,
 						isModifier: false,
 					},
 					{
 						type: 'Particles',
-						obj: ParticlesNode,
 						isModifier: false,
 					},
 				],
 				'Procedural Texture (Material)': [
 					{
 						type: 'Circle',
-						obj: CircleNode,
 						isModifier: false,
 					},
 					{
 						type: 'Voronoi',
-						obj: VoronoiNode,
 						isModifier: false,
 					},
 					{
 						type: 'LavaNoise',
-						obj: LavaNoiseNode,
 						isModifier: false,
 					},
 					
@@ -160,36 +131,30 @@ export default class Main{
 				'Modifiers' : [
 					{
 						type: 'Color',
-						obj: ColorNode,
 						isModifier: true,
 					},
 					{
 						type: 'ParamDriver',
-						obj: ParamDriverNode,
 						isModifier: true,
 					},
 					{
 						type: 'OrbitDriver',
-						obj: OrbitDriverNode,
 						isModifier: true,
 					},
 				],
 				'Ljus': [
 					{
 						type: 'Directional Light',
-						obj: DirectionalLightNode,
 						isModifier: false,
 					},
 					{
 						type: 'Point Light',
-						obj: PointLightNode,
 						isModifier: false,
 					},
 				],
 				'Textures': [
 					{
-						type: 'Välj Textur',
-						obj: TextureSelectorNode,
+						type: 'Texture Selector',
 						isModifier: true,
 					},
 				]
@@ -218,15 +183,20 @@ export default class Main{
 			this.workspaceManager,
 		);
 
+		this.nodeManager = new NodeManager(null, this.keyboardManager, this.onNodeActiveBound, this.workspaceManager.el, this.nodeLibrary);
+
+
 		// window.NS = {};
-		window.NS.singletons = {};
 		window.NS.singletons.ConnectionsManager = new ConnectionsManager();
 
 		this.keyboardManager = new KeyboardManager();
 
 		this.onNodeActiveBound = this.onNodeActive.bind(this);
 
-		this.nodeManager = new NodeManager(null, this.keyboardManager, this.onNodeActiveBound, this.workspaceManager.el);
+	}
+
+	init(selectedDrawing) {
+		this.nodeManager.init(selectedDrawing);
 	}
 
 	onLogout() {
@@ -253,7 +223,8 @@ export default class Main{
 	}
 
 	onWorkspaceClick() {
-		this.nodeManager.nodeSettingsWindow.hide();
+		this.nodeManager.windowManager.blur();
+		this.nodeManager.onNodeSelectedEvent();
 	}
 
 	onNodeActive(node) {
@@ -261,7 +232,7 @@ export default class Main{
 	}
 
 	onNodeAddedFromLibrary(type, data, e) {
-		this.nodeManager.onNodeAddedFromLibrary(type, data, e);
+		this.nodeManager.initNode(type, data, e);
 	}
 
 	onPopStateChange(e) {

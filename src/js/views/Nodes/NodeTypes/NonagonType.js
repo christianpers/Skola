@@ -1,31 +1,22 @@
 import NodeParamContainer from '../NodeComponents/NodeParamContainer';
 
 export default class NonagonType {
-    constructor(parentEl, params, node) {
+    constructor(parentEl, params, node, nodeConfig) {
         this.parentEl = parentEl;
         this.params = params;
         this.paramContainers = [];
         this.inputParams = [];
-        this.node = node;
+		this.node = node;
+		this.nodeConfig = nodeConfig;
 
         this.parentEl.classList.add('nonagon-node');
 
         const nonagonSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
 		nonagonSvg.setAttribute("width", "260px");
 		nonagonSvg.setAttribute("height", "260px");
-		nonagonSvg.setAttribute("viewBox", "0 0 1200 1200");
-
-		const nonagonShape = `M464.133,1097.487c-22.564,0-55.171-11.867-72.457-26.372l-208.16-174.667c-17.285-14.504-34.635-44.554-38.553-66.777
-						L97.777,562.066c-3.918-22.223,2.107-56.394,13.391-75.936l135.865-235.328c11.283-19.542,37.863-41.846,59.068-49.563
-						L561.446,108.3c21.205-7.718,55.902-7.718,77.107,0L893.9,201.239c21.205,7.718,47.785,30.021,59.067,49.563l135.864,235.328
-						c11.283,19.542,17.309,53.713,13.391,75.936l-47.186,267.604c-3.918,22.224-21.268,52.273-38.553,66.777l-208.16,174.667
-						c-17.286,14.505-49.893,26.372-72.457,26.372H464.133z
-		`;
-
-		const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-		path.setAttribute("d", nonagonShape);
-
-        nonagonSvg.appendChild(path);
+		nonagonSvg.setAttribute("viewBox", "0 0 260 260");
+		
+		this.nonagonSvg = nonagonSvg;
         
         parentEl.appendChild(nonagonSvg);
 
@@ -52,7 +43,10 @@ export default class NonagonType {
 			for (let i = 0; i < paramParents.length; i++) {
 				const obj = paramParents[i];
 				// const paramHeader = new NodeHeader(this.topPartEl, obj.parent, i > 0);
-				const paramContainer = new NodeParamContainer(this.parentEl, i, obj, this.node);
+				// const index = -Math.floor(paramParents.length / 2) + i;
+				const ID = Math.random().toString(36).substr(2, 9);
+				const backendConfig = this.nodeConfig ? this.nodeConfig.data.paramContainers[i] : null;
+				const paramContainer = new NodeParamContainer(this.parentEl, obj, this.node, ID, backendConfig);
 				
                 this.paramContainers.push(paramContainer);
 				
@@ -61,12 +55,87 @@ export default class NonagonType {
 			const index = 0;
 			for (const key in this.params) {
 				const paramContainer = new NodeParamContainer(this.parentEl, index);
-				if (this.params[key].useAsInput) {
+				// if (this.params[key].useAsInput) {
 					// const param = new NodeParam(this.topPartEl, this.params[key], this.onInputClickBound);
 					// this.inputParams[this.params[key].title] = param;
-				}
+				// }
 				index++;
 			}
 		}
-    }
+
+		const angle = 360 / paramParents.length;
+		const sides = paramParents.length;
+		const radius = 130;
+		const a = ((Math.PI * 2) / sides);
+		const points = [];
+		for (let i = 0; i < sides; i++) {
+			const x = radius * Math.cos(a * i);
+			const y = radius * Math.sin(a * i);
+			const point = {x, y};
+			points.push(point);
+
+			const rotation = i * angle + (angle / 2);
+			this.paramContainers[i].setRotation(rotation, i);
+		}
+
+		let pathStr = `M ${points[0].x} ${points[0].y}`;
+		for (let i = 1; i < points.length; i++) {
+			pathStr += ` L ${points[i].x} ${points[i].y}`;
+		}
+		pathStr+= 'Z';
+
+		const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+		g.setAttribute('transform', 'translate(130, 130) rotate(-90)');
+		g.setAttribute("width", "260");
+		g.setAttribute("height", "260");
+
+		const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+		path.setAttribute("d", pathStr);
+		path.setAttribute("stroke", 'black');
+
+		g.appendChild(path);
+
+		const color1 = 'rgb(61, 63, 67)';
+		const color2 = 'rgb(48, 50, 54)';
+		const color3 = 'rgb(36, 37, 41)';
+		const color4 = 'rgb(84, 86, 95)';
+		const color5 = 'rgb(72, 74, 81)';
+		const colors = [color1, color2, color3, color4, color5];
+
+		for (let i = 0; i < points.length; i++) {
+			const trianglePath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+			const startIndex = i;
+			const endIndex = i + 1 < points.length ? i + 1 : 0;
+			const startPoint = points[startIndex];
+			const endPoint = points[endIndex];
+
+			this.paramContainers[i].setTextRotation(startPoint, endPoint);
+
+			const triangleStr = `M ${startPoint.x} ${startPoint.y} L 0 0 L ${endPoint.x} ${endPoint.y}`;
+			trianglePath.setAttribute("fill", colors[i % 5]);
+			// console.log(colors[i % 4]);
+			trianglePath.setAttribute("d", triangleStr);
+
+			g.appendChild(trianglePath);
+
+			const outlinePath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+			const outlineStr = `M ${startPoint.x} ${startPoint.y} ${endPoint.x} ${endPoint.y}`;
+
+			outlinePath.setAttribute("class", 'outline');
+			outlinePath.setAttribute("d", outlineStr);
+			// outlinePath.setAttribute("stroke", "white");
+			// outlinePath.setAttribute("stroke-width", 0);
+
+			g.appendChild(outlinePath);
+		}
+		this.nonagonSvg.appendChild(g);
+	}
+
+	setActive() {
+		this.parentEl.style.transform = `scale(1)`;
+	}
+
+	setInactive() {
+		this.parentEl.style.transform = `scale(.6)`;
+	}
 }

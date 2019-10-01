@@ -1,0 +1,26 @@
+.node-title {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+
+    .node-inner-title {
+        background: black;
+        padding: 4px;
+        display: inline-block;
+
+        & > input {
+            text-align: center;
+            background: transparent;
+            border: 0;
+            color: yellow;
+        }
+    }
+
+    & > canvas {
+        width: 512px;
+        height: 128px;
+        display: none;
+    }
+    
+    
+}

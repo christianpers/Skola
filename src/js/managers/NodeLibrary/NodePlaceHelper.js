@@ -4,11 +4,11 @@ export default class NodePlaceHelper{
 		this.workspaceManager = workspaceManager;
 		this.parentEl = workspaceManager.el;
 		this.el = document.createElement('div');
-		this.el.style.width = isModifier ? '40px' : '260px';
-		this.el.style.height = isModifier ? '40px' : '260px';
+		this.el.style.width = isModifier ? '44px' : '260px';
+		this.el.style.height = isModifier ? '44px' : '260px';
 		this.el.style.position = 'absolute';
-		this.el.style.top = isModifier ? '-20px' : '-130px';
-		this.el.style.left = isModifier ? '-20px' : '-130px';
+		this.el.style.top = isModifier ? '-22px' : '-130px';
+		this.el.style.left = isModifier ? '-22px' : '-130px';
 		// this.el.style.background = 'rgba(50, 50, 50, .9)';
 		// this.el.style.borderRadius = '4px';
 		this.isModifier = isModifier;

@@ -41,25 +41,24 @@ export default class TriangleType {
     setAngle(angle) {
         this.triangleSvg.style.transform = `rotate(${angle}deg)`;
         this.latestAngle = angle;
-        // console.log('set angle', angle);
-
-        // this.el.style.transform = `rotate(${(this.index) * 40}deg)`;
     }
 
-    activateAsChild(paramContainer) {
+    activateAsChild(paramContainer, updateBackend) {
         this.triangleSvg.style.transform = `rotate(0deg)`;
+        // this.setAngle(0);
         this.isConnected = true;
         this.assignedParamContainer = paramContainer;
         paramContainer.addModifierAsChild(this);
-        this.node.setAsChildToParamContainer(paramContainer);
+        this.node.setAsChildToParamContainer(paramContainer, updateBackend);
     }
 
-    deactivateAsChild(e) {
+    deactivateAsChild(e, fromNodeRemove) {
         this.setAngle(this.latestAngle);
         this.isConnected = false;
         this.assignedParamContainer.removeModifierAsChild(this.node.ID);
-        this.node.setAsNotChildToParamContainer(this.assignedParamContainer, e);
+        this.node.setAsNotChildToParamContainer(this.assignedParamContainer, e, fromNodeRemove);
         this.assignedParamContainer = null;
+
     }
 
     hide() {

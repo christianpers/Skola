@@ -54,7 +54,7 @@ export default class KeyboardManager{
 		const keyObj = this.getKey(keyCode);
 		if (keyObj !== null){
 
-			e.preventDefault();
+			// e.preventDefault();
 			if (keyObj.triggered) return;
 			
 			keyObj.triggered = true;

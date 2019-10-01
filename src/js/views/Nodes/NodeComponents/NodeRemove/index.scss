@@ -1,0 +1,18 @@
+.node-remove {
+    cursor: pointer;
+    background: yellow;
+    padding: 4px 10px;
+    position: absolute;
+    transform: translateY(22px);
+    right: 43px;
+    top: -22px;
+    transition: transform .3s;
+
+    > h5 {
+        color: black;
+    }
+
+    &.visible {
+        transform: translateY(0);
+    }
+}

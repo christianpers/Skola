@@ -4,22 +4,27 @@ import GraphicsNodeManager from './GraphicsNodeManager';
 import AudioNodeManager from './AudioNodeManager';
 
 import WindowManager from './Windows/WindowManager';
-import ConnectionWindow from './Windows/ConnectionWindow';
-import NodeSettingsWindow from './Windows/NodeSettingsWindow';
+// import ConnectionWindow from './Windows/ConnectionWindow';
+// import NodeSettingsWindow from './Windows/NodeSettingsWindow';
 
 import ParamHelpers from '../graphicNodes/Helpers/ParamHelpers';
 import Helpers from '../musicHelpers/Helpers';
-import SceneNode from '../graphicNodes/SceneNode';
+// import SceneNode from '../graphicNodes/SceneNode';
 
 import ModifierCollisionManager from './ModiferCollisionManager';
 
 import AvailableConnections from './NodeManager/AvailableConnections';
 
+import BackendSync from '../backend/BackendSync';
+import { deleteNode, updateNode } from '../backend/set';
+
 export default class NodeManager{
-	constructor(config, keyboardManager, onNodeActive, parentEl) {
+	constructor(config, keyboardManager, onNodeActive, parentEl, nodeLibrary) {
 
 		this.config = config;
 		this.hasConfig = !!config;
+
+		this.nodeLibrary = nodeLibrary;
 
 		this.onNodeActiveCallback = onNodeActive;
 
@@ -29,19 +34,26 @@ export default class NodeManager{
 
 		this.keyboardManager = keyboardManager;
 
-		this.showConnectionsWindowBound = this.showConnectionsWindow.bind(this);
+		this.selectedNode = null;
+
 		this.enableParamConnectionBound = this.enableParamConnection.bind(this);
 		this.disableParamConnectionBound = this.disableParamConnection.bind(this);
 
-		this.modifierCollisionManager = new ModifierCollisionManager(this.showConnectionsWindowBound);
-		this.connectionWindow = new ConnectionWindow(
+		this.backendSync = new BackendSync();
+
+		this.modifierCollisionManager = new ModifierCollisionManager();
+		// this.connectionWindow = new ConnectionWindow(
+		// 	parentEl.parentElement,
+		// 	this.enableParamConnectionBound,
+		// 	this.disableParamConnectionBound
+		// );
+		// this.nodeSettingsWindow = new NodeSettingsWindow(parentEl.parentElement);
+		this.windowManager = new WindowManager(
 			parentEl.parentElement,
 			this.enableParamConnectionBound,
 			this.disableParamConnectionBound
 		);
-		this.nodeSettingsWindow = new NodeSettingsWindow(parentEl.parentElement);
-		// this.windowManager = new WindowManager(parentEl.parentElement);
-
+		
 		this._nodes = [];
 		this._nodeConnections = [];
 		this._graphicNodes = [];
@@ -87,64 +99,86 @@ export default class NodeManager{
 			this.addBound,
 			onNodeActive,
 			this.removeBound,
-			// this.modifierCollisionManager.onDragStartBound,
-			// this.modifierCollisionManager.onDragMoveBound,
-			// this.modifierCollisionManager.onDragReleaseBound,
 			this.onNodeDragStartBound,
 			this.onNodeDragMoveBound,
 			this.onNodeDragReleaseBound,
 		);
 
 		if (this.hasConfig) {
-			for (let i = 0; i < this.config.connections.length; i++) {
-				this.isConnecting = true;
-				const outputNode = this._nodes.find(t => t.ID === this.config.connections[i].out);
-				const inputNode = this._nodes.find(t => t.ID === this.config.connections[i].in);
-				this.outputActiveNode = outputNode;
-				this.onInputConnection(inputNode);
-			}
 
-			this.outputActiveNode = null;
+			console.log('has config', this.config);
+			// for (let i = 0; i < this.config.connections.length; i++) {
+			// 	this.isConnecting = true;
+			// 	const outputNode = this._nodes.find(t => t.ID === this.config.connections[i].out);
+			// 	const inputNode = this._nodes.find(t => t.ID === this.config.connections[i].in);
+			// 	this.outputActiveNode = outputNode;
+			// 	this.onInputConnection(inputNode);
+			// }
 
-			const audioConnections = this.getAudioConnections(this._nodeConnections);
-			this.keyboardManager.onAudioNodeConnectionUpdate(audioConnections);
+			// this.outputActiveNode = null;
 
-			const sequencers = audioConnections.filter(t => t.out.isSequencer);
-			let sequencerIds = [];
-			for (let i = 0; i < sequencers.length; i++) {
-				const ID = sequencers[i].out.ID;
-				if (sequencerIds.indexOf(ID) < 0) {
-					sequencers[i].out.sequencerManager.onAudioNodeConnectionUpdate(audioConnections);
-					sequencerIds.push(ID);
-				}
-			}
-			sequencerIds = [];
+			// const audioConnections = this.getAudioConnections(this._nodeConnections);
+			// this.keyboardManager.onAudioNodeConnectionUpdate(audioConnections);
+
+			// const sequencers = audioConnections.filter(t => t.out.isSequencer);
+			// let sequencerIds = [];
+			// for (let i = 0; i < sequencers.length; i++) {
+			// 	const ID = sequencers[i].out.ID;
+			// 	if (sequencerIds.indexOf(ID) < 0) {
+			// 		sequencers[i].out.sequencerManager.onAudioNodeConnectionUpdate(audioConnections);
+			// 		sequencerIds.push(ID);
+			// 	}
+			// }
+			// sequencerIds = [];
 		}
 
 		this.constructorIsDone = true;
 
-		const canvasData = {
-			type: 'Canvas',
-			obj: SceneNode,
-			isModifier: false,
-		};
+		const canvasWindow = this.graphicsNodeManager.createCanvasNode();
+		window.NS.singletons.CanvasNode = canvasWindow;
 
-		this.graphicsNodeManager.createNode(canvasData, {x: 1300, y: 700});
+		this.onNodeSelectedEventBound = this.onNodeSelectedEvent.bind(this);
+		document.documentElement.addEventListener('node-selected', this.onNodeSelectedEventBound);
 	}
 
-	showConnectionsWindow(paramContainer) {
-		this.nodeSettingsWindow.hide();
+	init(selectedDrawing) {
 
-		this.connectionWindow.show(paramContainer);
+		const drawing = selectedDrawing.nodes ? selectedDrawing : { nodes: [] };
+
+		this.backendSync.setSelectedDrawing(drawing);
+
+		for (let i = 0; i < drawing.nodes.length; i++) {
+			const node = drawing.nodes[i];
+			const initObj = {
+				type: 'graphics',
+				data: node.data,
+			};
+			this.initNode(initObj, node.data.pos, node);
+		}
+	}
+
+	onNodeSelectedEvent(event) {
+		for (let i = 0; i < this._nodes.length; i++) {
+			this._nodes[i].setNotSelected();
+		}
+
+		if (event && event.detail) {
+			event.detail.setSelected();
+
+			// this.nodeSettingsWindow.setupForNode(event.detail);
+			// if (event.detail.nodeType.assignedParamContainer) {
+			// 	this.connectionWindow.setupForNode(event.detail);
+			// }
+			this.windowManager.setupForNode(event.detail);	
+		}
 	}
 
 	// EVENT ONLY FOR MODIFIERS
 	onNodeDragStart(node, e) {
-		this.nodeSettingsWindow.show(node);
+		// this.nodeSettingsWindow.show(node);
 		this.modifierCollisionManager.onModifierDragStart(node.nodeType, e);
 		this.availableConnections.showAvailable(node, this._nodes, this._nodeConnections);
 		// this.windowManager.showSettings(node);
-		
 	}
 
 	// EVENT ONLY FOR MODIFIERS
@@ -158,25 +192,27 @@ export default class NodeManager{
 		this.availableConnections.resetAvailable();
 	}
 
-	onNodeAddedFromLibrary(nodeData, e) {
+	initNode(nodeData, e, backendData) {
 		if (nodeData.type === 'graphics') {
 			const hasSceneNode = this._graphicNodes.some(t => t.isCanvasNode);
 			if (hasSceneNode && nodeData.data.type === 'Canvas') {
 				return;
 			}
-			this.graphicsNodeManager.createNode(nodeData.data, e);
-			
+			this.graphicsNodeManager.createNode(nodeData.data, e, backendData);
 		} else {
-			this.audioNodeManager.createNode(nodeData.data, e);
+			this.audioNodeManager.createNode(nodeData.data, e, backendData);
 		}
+		this.nodeLibrary.hide();
 	}
 
 	onNodeRemove(node) {
-		const connections = this._nodeConnections.filter(t => t.out.ID === node.ID || t.in.ID === node.ID);
+		// const connections = this._nodeConnections.filter(t => t.out.ID === node.ID || t.in.ID === node.ID);
 
-		for (let i = 0; i < connections.length; i++) {
-			this.removeConnection(connections[i]);
-		}
+		// for (let i = 0; i < connections.length; i++) {
+		// 	this.removeConnection(connections[i]);
+		// }
+
+		// window.NS.singletons.ConnectionsManager.removeNodeConnection
 
 		this.remove(node);
 	}
@@ -213,11 +249,30 @@ export default class NodeManager{
 			return false;
 		}
 
+		updateNode({
+			paramConnections: firebase.firestore.FieldValue.arrayUnion(paramObj.ID),
+		}, outNode.ID)
+		.then(() => {
+			console.log('updated node');
+		})
+		.catch(() => {
+			console.log('error updating node');
+		});
+
 		window.NS.singletons.ConnectionsManager.addParamConnection(paramObj, outNode);
 		return true;
 	}
 
 	disableParamConnection(paramObj, outNode, inNode) {
+		updateNode({
+			paramConnections: firebase.firestore.FieldValue.arrayRemove(paramObj.ID),
+		}, outNode.ID)
+		.then(() => {
+			console.log('updated node');
+		})
+		.catch(() => {
+			console.log('error updating node');
+		});
 		window.NS.singletons.ConnectionsManager.removeParamConnection(paramObj, outNode);
 		return true;
 	}
@@ -226,6 +281,8 @@ export default class NodeManager{
 		console.log('on input connection', outNode, paramContainer);
 		
 		window.NS.singletons.ConnectionsManager.addNodeConnection(outNode, paramContainer);
+
+		this.windowManager.onNodeConnect(outNode);
 	};
 
 	onDisconnect(outNode, paramContainer) {
@@ -238,175 +295,18 @@ export default class NodeManager{
 
 		window.NS.singletons.ConnectionsManager.removeNodeConnection(paramContainer, outNode);
 
-		this.connectionWindow.hide();
-	}
-
-	// onInputConnectionOld(inputNode, inputType, param) {
-
-
-
-	// 	// this.availableConnections.resetAvailable();
-
-	// 	if (!this.isConnecting || !this.outputActiveNode) {
-	// 		// inputAvailable = false;
-	// 		// if (param) {
-	// 		// 	const connection = this._nodeConnections.find(t => t.in.ID === inputNode.ID && t.param && t.param.title === param.title);
-	// 		// 	if (connection) {
-	// 		// 		this.removeConnection(connection);
-	// 		// 	}
-	// 		// } else if (inputType) {
-	// 		// 	const connection = this._nodeConnections.find(t => t.in.ID === inputNode.ID && t.inputType === inputType);
-	// 		// 	if (connection) {
-	// 		// 		this.removeConnection(connection);
-	// 		// 	}
-	// 		// } else {
-	// 		// 	const connection = this._nodeConnections.find(t => t.in.ID === inputNode.ID);
-	// 		// 	if (connection) {
-	// 		// 		this.removeConnection(connection);
-	// 		// 	}
-	// 		// }
-			
-	// 		return;
-	// 	}
-
-	// 	if (!inputNode.isGraphicsNode) {
-	// 		if (param && param.helper) {
-	// 			if (!param.helper.isValid(this.outputActiveNode, inputNode, param, this._nodeConnections)) {
-	// 				this.resetConnecting();
-	// 				return;
-	// 			}
-	// 		} else {
-	// 			if (!inputNode.inputHelpersType.isValid(this.outputActiveNode, inputNode, undefined, this._nodeConnections, this.outputActiveType)) {
-	// 				this.resetConnecting();
-	// 				return;
-	// 			}
-	// 		}
-
-	// 	} else {
-			
-	// 		if (param && !ParamHelpers[param.paramHelpersType].isValid(this.outputActiveNode, inputNode, param, this._nodeConnections)) {
-	// 			this.resetConnecting();
-	// 			return;
-	// 		} else {
-	// 			if (!inputNode.inputHelpersType.isValid(this.outputActiveNode, inputNode, inputType, this.outputActiveType)) {
-	// 				this.resetConnecting();
-	// 				return;
-	// 			}
-	// 		}
-	// 	}
-
-	// 	// this.nodeConnectionLine.onInputClick(inputAvailable, inputNode, this.outputActiveNode);
-
-	// 	this.isConnecting = false;
-
-	// 	// const paramID = param ? `${param.parent}-${param.param}` : '';
-	// 	// const lineID = `${inputNode.ID}---${this.outputActiveNode.ID}---${paramID}`;
-		
-	// 	const connectionData = {
-	// 		param: param,
-	// 		out: this.outputActiveNode,
-	// 		in: inputNode,
-	// 		// lineEl: this.nodeConnectionRenderer.addLine(lineID),
-	// 		inputType,
-	// 		outputType: this.outputActiveType,
-	// 	};
-
-	// 	this.outputActiveNode.enableOutput(param ? param : undefined, connectionData);
-
-	// 	if (param) {
-	// 		inputNode.enableParam(param, connectionData);
-	// 	} else {
-	// 		inputNode.enableInput(this.outputActiveNode, inputType);
-	// 	}
-
-	// 	this._nodeConnections.push(connectionData);
-
-	// 	if (this.constructorIsDone) {
-	// 		const audioConnections = this.getAudioConnections(this._nodeConnections);
-	// 		Helpers.updateOscillators(audioConnections);
-
-	// 		this.disconnectAnalyserNodes(audioConnections);
-			
-	// 		this.keyboardManager.onAudioNodeConnectionUpdate(audioConnections);
-			
-	// 		const sequencers = audioConnections.filter(t => t.out.isSequencer);
-	// 		let sequencerIds = [];
-	// 		for (let i = 0; i < sequencers.length; i++) {
-	// 			const ID = sequencers[i].out.ID;
-	// 			if (sequencerIds.indexOf(ID) < 0) {
-	// 				sequencers[i].out.sequencerManager.onAudioNodeConnectionUpdate(audioConnections);
-	// 				sequencerIds.push(ID);
-	// 			}
-				
-	// 		}
-
-	// 		sequencerIds = [];
-	// 	}
-		
-	// 	this.resetConnecting();
-	// }
-
-	// removeConnectionOld(connectionData) {
-
-	// 	if (connectionData.param) {
-	// 		connectionData.in.disableParam(connectionData.param, connectionData);
-	// 	} else {
-	// 		connectionData.in.disableInput(connectionData.out, connectionData.inputType);
-	// 	}
-
-	// 	connectionData.out.disableOutput(connectionData.in, connectionData.param, connectionData.outputType);
-
-	// 	let tempNodeConnections = this._nodeConnections.filter((t) => {
-	// 		if (t.out.ID === connectionData.out.ID && t.in.ID === connectionData.in.ID) {
-	// 			return false;
-	// 		}
-	// 		return true;
-	// 	});
-
-	// 	if (connectionData.param) {
-	// 		tempNodeConnections = this._nodeConnections.filter(t => {
-	// 			const hasParam = t.param;
-	// 			if (!hasParam) return true;
-
-	// 			if (t.param.title === connectionData.param.title && t.in.ID === connectionData.in.ID) {
-	// 				return false;
-	// 			}
-	// 			return true;
-	// 		});
-	// 	}
-
-	// 	this._nodeConnections = tempNodeConnections;
-
-	// 	const audioConnections = this.getAudioConnections(this._nodeConnections);
-	// 	Helpers.updateOscillators(audioConnections);
-
-	// 	this.disconnectAnalyserNodes(audioConnections);
-
-	// 	this.keyboardManager.onAudioNodeConnectionUpdate(audioConnections);
-
-	// 	const sequencers = audioConnections.filter(t => t.out.isSequencer);
-	// 	let sequencerIds = [];
-	// 	for (let i = 0; i < sequencers.length; i++) {
-	// 		const ID = sequencers[i].out.ID;
-	// 		if (sequencerIds.indexOf(ID) < 0) {
-	// 			sequencers[i].out.sequencerManager.onAudioNodeConnectionUpdate(audioConnections);
-	// 			sequencerIds.push(ID);
-	// 		}
-	// 	}
-
-	// 	sequencerIds = [];
-		
-	// 	// this.nodeConnectionRenderer.removeLine(connectionData.lineEl);
-	// }
-
-	onNodePlaced(node) {
-		console.log('node placed', node);
+		this.windowManager.onNodeDisconnect();
 	}
 
 	add(node) {
-		// window.NS.singletons.ConnectionsManager.addParamListener(node);
-		window.NS.singletons.ConnectionsManager.addNode(node);
-		this._nodes.push(node);
+		if (node.isRendered) {
+			window.NS.singletons.CanvasNode.enableInput(node, 'foreground');
+			this._nodes.push(node);
+		} else {
+			this._nodes.push(node);
+		}
+		// window.NS.singletons.ConnectionsManager.addNode(node);
+		
 		if (node.isRenderNode || node.isCanvasNode || node.needsUpdate) {
 			this._graphicNodes.push(node);
 			this._graphicNodeLength = this._graphicNodes.length;
@@ -416,8 +316,13 @@ export default class NodeManager{
 		// 	const audioConnections = this.getAudioConnections(this._nodeConnections);
 		// 	node.sequencerManager.init(audioConnections);
 		// }
-		if (!node.isModifier) {
+		if (!node.isModifier && !node.isCanvasNode) {
 			this.modifierCollisionManager.addNonagon(node);
+		}
+
+		if (!this.backendSync.isDone()) {
+			console.log('node added backend sync');
+			this.backendSync.onNodeAdded();
 		}
 	}
 
@@ -430,13 +335,24 @@ export default class NodeManager{
 			this._graphicNodeLength = this._graphicNodes.length;
 		}
 
-		if (!node.isModifier) {
+		if (!node.isModifier && !node.isCanvasNode) {
 			this.modifierCollisionManager.removeNonagon(node);
 		}
 
 		node.removeFromDom();
 		const tempNodes = this._nodes.filter((t) => t.ID !== node.ID);
 		this._nodes = tempNodes;
+
+		deleteNode(node.ID)
+		.then(() => {
+			console.log('node deleted', node.ID);
+			// const ref = getNodeRef(node.ID);
+			// console.log('ref: ', ref);
+			window.NS.singletons.refs.removeNodeRef(node.ID);
+		})
+		.catch((err) => {
+			console.log('error deleting', err);
+		});
 	}
 
 	update() {
@@ -445,13 +361,15 @@ export default class NodeManager{
 		for (let i = 0; i < this._graphicNodeLength; i++) {
 			this._graphicNodes[i].update();
 		}
+		window.NS.singletons.CanvasNode.update();
+
 	}
 
 	render() {
-		// this.nodeConnectionRenderer.render();
-
 		for (let i = 0; i < this._graphicNodeLength; i++) {
 			this._graphicNodes[i].render();
 		}
+
+		window.NS.singletons.CanvasNode.render();
 	}
 }

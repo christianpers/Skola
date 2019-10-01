@@ -2,21 +2,29 @@ import NodeParam from './NodeParam';
 import GraphicsParamHelpers from '../../../graphicNodes/Helpers/ParamHelpers';
 
 export default class NodeParamContainer{
-	constructor(parentEl, index, paramObj, node) {
+	constructor(parentEl, paramObj, node, ID, backendConfig) {
 
 		this.el = document.createElement('div');
-		this.el.className = `node-param-container angle-${index}`;
+		this.el.className = `node-param-container`;
 
 		this.pos = new THREE.Vector2();
+		this.ID = backendConfig ? backendConfig.paramContainerID : ID;
 
-		this.ID = Math.random().toString(36).substr(2, 9);
+		// createParamContainer({})
+		// .then((ref) => {
+		// 	window.NS.singletons.refs.addParamContainerRef(ref);
+		// 	this.ID = ref.id;
+		// })
+		// .catch((err) => {
+		// 	console.log(err, 'error creating param container');
+		// });
 
 		this.onConnectionUpdateBound = this.onConnectionUpdate.bind(this);
 
 		document.documentElement.addEventListener('node-connections-update', this.onConnectionUpdateBound);
 
+		this.rotation = 0;
 		this.node = node;
-		this.index = index - 2;
 		this.nodeID = node.ID;
 		this.paramObj = paramObj;
 		this.inputParams = [];
@@ -24,7 +32,7 @@ export default class NodeParamContainer{
 
 		this.connectedNodes = [];
 
-		this.el.style.transform = `rotate(${(this.index) * 40}deg)`;
+		// this.el.style.transform = `rotate(${(this.index) * 40}deg)`;
 
 		const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
 		svg.setAttribute("width", "40px");
@@ -45,10 +53,10 @@ export default class NodeParamContainer{
 		this.paramContainer = document.createElement('div');
 		this.paramContainer.className = 'inner-param-container';
 
-		const parentLabel = document.createElement('h5');
-		parentLabel.innerHTML = paramObj.parent;
+		this.parentLabel = document.createElement('h5');
+		this.parentLabel.innerHTML = paramObj.parent;
 
-		this.paramContainer.appendChild(parentLabel);
+		this.paramContainer.appendChild(this.parentLabel);
 
 		this.detailParamContainer = document.createElement('div');
 		this.detailParamContainer.className = 'detail-param-container';
@@ -60,11 +68,26 @@ export default class NodeParamContainer{
 		this.currentModifierChildren = [];
 
 		for (let q = 0; q < paramObj.children.length; q++) {
-			const param = new NodeParam(this.detailParamContainer, paramObj.children[q], this);
+			const paramID = backendConfig ? backendConfig.inputParams[q] : 'param-' + Math.random().toString(36).substr(2, 9);
+			const param = new NodeParam(this.detailParamContainer, paramObj.children[q], this, paramID);
 			this.inputParams[paramObj.children[q].title] = param;
 		}
+	}
 
+	setRotation(rotation, index) {
+		this.el.style.transform = `rotate(${rotation}deg)`;
+		this.el.classList.add(`angle-${index}`);
+		this.rotation = rotation;
+	}
 
+	setTextRotation(startPoint, endPoint) {
+		const midPointX = (startPoint.x + endPoint.x) / 2;
+		const midPointY = (startPoint.y + endPoint.y) / 2;
+		const atan = Math.abs(Math.atan2(midPointY, midPointX));
+		if (atan > 1.8) {
+			this.parentLabel.style.transform = 'rotate(180deg)';
+			this.detailParamContainer.style.transform = 'rotate(180deg)';
+		}
 	}
 
 	getPos() {
@@ -78,8 +101,6 @@ export default class NodeParamContainer{
 	}
 
 	addModifierAsChild(modifier) {
-		console.log(this.pos);
-		// this.el.appendChild(modifier.node.el);
 		this.currentModifierChildren.push({id: modifier.node.ID, modifier});
 	}
 
@@ -115,14 +136,6 @@ export default class NodeParamContainer{
 		this.isDisabledForConnection = true;
 	}
 
-	// addConnectedNode(node) {
-	// 	this.connectedNodes.push(node);
-	// }
-
-	// removeConnectedNode(node) {
-	// 	this.connectedNodes = this.connectedNodes.filter(t => t.ID !== node.ID);
-	// }
-
 	onConnectionUpdate(e) {
 		const connections = e.detail;
 
@@ -137,6 +150,4 @@ export default class NodeParamContainer{
 			this.connectedNodes.push(node);
 		}
 	}
-
-
 }

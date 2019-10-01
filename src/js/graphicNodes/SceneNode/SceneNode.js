@@ -1,20 +1,26 @@
-import Node from '../views/Nodes/Node';
-import * as SHADERS from '../../shaders/SHADERS';
+import Node from '../../views/Nodes/Node';
+import * as SHADERS from '../../../shaders/SHADERS';
 
-import NodeInput from '../views/Nodes/NodeComponents/NodeInput';
-import InputHelpers from './Helpers/InputHelpers';
-import ForegroundRender from './Scene/ForegroundRender';
-import NodeResizer from '../views/Nodes/NodeComponents/NodeResizer';
-import CameraControlSetting from './Scene/CameraControlSetting';
-import AxesHelper from './Scene/AxesHelper';
-import HorizontalSlider from '../views/Nodes/NodeComponents/HorizontalSlider';
+import NodeInput from '../../views/Nodes/NodeComponents/NodeInput';
+import InputHelpers from '../Helpers/InputHelpers';
+import ForegroundRender from '../Scene/ForegroundRender';
+import NodeResizer from '../../views/Nodes/NodeComponents/NodeResizer';
+import CameraControlSetting from '../Scene/CameraControlSetting';
+import AxesHelper from '../Scene/AxesHelper';
+import HorizontalSlider from '../../views/Nodes/NodeComponents/HorizontalSlider';
 
-export default class SceneNode extends Node{
+import './index.scss';
+
+export default class SceneNode{
 
 	constructor(mainRender) {
-		super();
+		// super();
 
 		this.mainRender = mainRender;
+
+        this.ID = '_' + Math.random().toString(36).substr(2, 9);
+        
+        this.isVisible = false;
 
 		this.hasOutput = false;
 		this.isGraphicsNode = true;
@@ -27,7 +33,7 @@ export default class SceneNode extends Node{
 		this.enabledInputs = [];
 
 		this.el = document.createElement('div');
-		this.el.className = 'node canvas';
+		this.el.className = 'canvas';
 
 		this.topPartEl = document.createElement('div');
 		this.topPartEl.className = 'top-part';
@@ -40,7 +46,21 @@ export default class SceneNode extends Node{
 		this.bottomPartSettings = document.createElement('div');
 		this.bottomPartSettings.className = 'bottom-part-settings';
 
-		this.bottomPartEl.appendChild(this.bottomPartSettings);
+        this.bottomPartEl.appendChild(this.bottomPartSettings);
+        
+        this.bottomLabelContainer = document.createElement('div');
+        this.bottomLabelContainer.className = 'bottom-label';
+        
+        const labelEl = document.createElement('h5');
+        labelEl.className = 'canvas-label';
+        labelEl.innerHTML = 'CANVAS WINDOW';
+
+        this.bottomLabelContainer.appendChild(labelEl);
+
+        this.el.appendChild(this.bottomLabelContainer);
+
+        this.onToggleVisibleClickBound = this.onToggleVisibleClick.bind(this);
+        this.bottomLabelContainer.addEventListener('click', this.onToggleVisibleClickBound);
 
 		this.onNodeResizerDownBound = this.onNodeResizerDown.bind(this);
 		this.onResizeFromNodeResizerBound = this.onResizeFromNodeResizer.bind(this);
@@ -90,11 +110,13 @@ export default class SceneNode extends Node{
 		this.scene.add(this.mesh);
 	}
 
-	init(pos, parentEl, onConnectingCallback, onInputConnectionCallback, type, initData, onNodeActive, onRemoveCallback) {
-		super.init(pos, parentEl, onConnectingCallback, onInputConnectionCallback, type, initData, onNodeActive, onRemoveCallback);
+	init(parentEl) {
+		// super.init(pos, parentEl, onConnectingCallback, onInputConnectionCallback, type, initData, onNodeActive, onRemoveCallback);
 
 		const w = window.innerWidth;
 		const h = window.innerHeight;
+
+		this.parentEl = parentEl;
 		
 		this.orthoCamera = new THREE.OrthographicCamera( w / - 2, w / 2, h / 2, h / - 2, 1, 1000 );
 
@@ -104,22 +126,34 @@ export default class SceneNode extends Node{
 		this.onInputClickForegroundBound = this.onInputClickForeground.bind(this);
 		this.onInputClickLightBound = this.onInputClickLight.bind(this);
 
-		// this.inputBackground = new NodeInput(this.bottomPartEl, this.onInputClickBackgroundBound, this.isGraphicsNode, 'Bakgrund In', 'background');
-		// this.inputForeground = new NodeInput(this.bottomPartEl, this.onInputClickForegroundBound, this.isGraphicsNode, 'Förgrund In', 'foreground');
-		// this.inputLight = new NodeInput(this.bottomPartEl, this.onInputClickLightBound, this.isGraphicsNode, 'Ljus In', 'light');
+		this.inputBackground = new NodeInput(this.bottomPartEl, this.onInputClickBackgroundBound, this.isGraphicsNode, 'Bakgrund In', 'background');
+		this.inputForeground = new NodeInput(this.bottomPartEl, this.onInputClickForegroundBound, this.isGraphicsNode, 'Förgrund In', 'foreground');
+		this.inputLight = new NodeInput(this.bottomPartEl, this.onInputClickLightBound, this.isGraphicsNode, 'Ljus In', 'light');
 
-		// this.inputs = {
-		// 	'background': this.inputBackground,
-		// 	'foreground': this.inputForeground,
-		// 	'light': this.inputLight,
-		// };
+		this.inputs = {
+			'background': this.inputBackground,
+			'foreground': this.inputForeground,
+			'light': this.inputLight,
+		};
 		
 		setTimeout(() => {
 			this.onResize();
 		}, 100);
 
-		this.activateDrag();
-	}
+		this.parentEl.appendChild(this.el);
+
+		// this.activateDrag();
+    }
+    
+    onToggleVisibleClick() {
+        if (this.isVisible) {
+            this.isVisible = false;
+            this.el.classList.remove('visible');
+        } else {
+            this.isVisible = true;
+            this.el.classList.add('visible');
+        }
+    }
 
 	onAmbientLightSettingChange(val) {
 		this.foregroundRender.ambientLight.intensity = val;

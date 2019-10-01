@@ -1,10 +1,10 @@
 export default class ModifierCollisionManager{
-    constructor(showConnectionsWindow) {
+    constructor() {
         this.activeModifier = undefined;
         this.nonagons = [];
-        this.showConnectionsWindow = showConnectionsWindow;
 
         this.currentCloseParamContainer = undefined;
+        this.currentClosestNode = undefined;
 
         this.onDragStartBound = this.onModifierDragStart.bind(this);
         this.onDragMoveBound = this.onModifierDragMove.bind(this);
@@ -21,19 +21,39 @@ export default class ModifierCollisionManager{
         this.nonagons = this.nonagons.filter(t => t.ID !== nonagon.ID);
     }
 
+    overNonagonCheck() {
+        for (let i=0; i < this.nonagons.length; i++) {
+            const nonagonPos = this.nonagons[i].getPos();
+            const modifierPos = this.activeModifier.getPos();
+            const dist = nonagonPos.distanceTo(modifierPos);
+            
+            if (dist < 160) {
+                this.nonagons[i].setSelected();
+                // const nodeSelectedEvent = new CustomEvent('node-selected', { detail: this.nonagons[i] });
+                // document.documentElement.dispatchEvent(nodeSelectedEvent);
+            } else {
+                this.nonagons[i].setNotSelected();
+            }
+        }
+    }
+
     onModifierDragStart(activeModifier, e) {
         this.activeModifier = activeModifier;
         clearTimeout(this.disconnectTimer);
+        this.overNonagonCheck();
         if (this.activeModifier.isConnected) {
             this.disconnectTimer = setTimeout(() => {
                 console.log('deactivate as child');
                 this.activeModifier.deactivateAsChild(e);
             }, 300);
-            this.showConnectionsWindow(this.activeModifier.assignedParamContainer);
+            // this.showConnectionsWindow(this.activeModifier.assignedParamContainer);
         }
     }
+    
 
     onModifierDragMove() {
+        this.overNonagonCheck();
+
         if (!this.currentCloseParamContainer) {
             for (let i=0; i < this.nonagons.length; i++) {
                 const paramContainers = this.nonagons[i].getParamContainers();
@@ -42,7 +62,6 @@ export default class ModifierCollisionManager{
                     const paramContainerPos = paramContainer.getPos();
                     const modifierPos = this.activeModifier.getPos();
                     const dist = paramContainerPos.distanceTo(modifierPos);
-                    // console.log(paramContainerPos, modifierPos);
                     
                     if (dist < 15) {
                         this.currentCloseParamContainer = paramContainer;
@@ -59,18 +78,14 @@ export default class ModifierCollisionManager{
                 this.activeModifier.setAngle(0);
                 
             } else {
-                // console.log((10 - dist) / 10);
                 if (this.currentCloseParamContainer.isDisabledForConnection) {
                     return;
                 }
-                const angle = Math.min(((15 - dist) / 5), 1) * (this.currentCloseParamContainer.index * 40);
+                const angle = Math.min(((15 - dist) / 5), 1) * this.currentCloseParamContainer.rotation;
                 this.activeModifier.setAngle(angle);
                 // this.el.style.transform = `rotate(${(this.index) * 40}deg)`;
             }
-
         }
-        
-
     }
 
     onModifierDragRelease() {
@@ -79,8 +94,14 @@ export default class ModifierCollisionManager{
             (this.currentCloseParamContainer && !this.currentCloseParamContainer.isDisabledForConnection)
             && this.activeModifier && !this.activeModifier.isConnected
         ) {
-            console.log('activate as child');
-            this.activeModifier.activateAsChild(this.currentCloseParamContainer);
+            this.activeModifier.activateAsChild(this.currentCloseParamContainer, true);
+        } else {
+
+            if (this.currentClosestNode) {
+                this.currentClosestNode.setNotSelected();
+                this.currentClosestNode = undefined;
+            }
+            
         }
     }
 }

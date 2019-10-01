@@ -41,7 +41,6 @@ export default class NodeLibrary{
 
 		this.el.appendChild(this.titleEl);
 		
-
 		const innerScroll = document.createElement('div');
 		innerScroll.className = 'inner-scroll';
 
@@ -98,6 +97,8 @@ export default class NodeLibrary{
 					if (title) {
 						const iconPath = `${title.replace(' ', '-').toLowerCase()}-icon`;
 
+						console.log(title);
+
 						const iconImg = new Image();
 						iconImg.onload = () => {
 							console.log('loaded');
@@ -123,40 +124,46 @@ export default class NodeLibrary{
 	}
 
 	onMouseOver() {
-		console.log('mouse over');
-
 		if (this.mouseIsDown) {
 			return;
 		}
 
 		if (!this.isShowing) {
-			this.isShowing = true;
-			this.el.classList.add('showing');
-
-			this.el.addEventListener('mouseout', this.onMouseOutBound);
+			
+			this.show();
+			
 		}
 	}
 
 	onMouseOut() {
-		console.log('mouseout');
-
 		if (this.mouseIsDown) {
 			return;
 		}
 
 		if (this.isShowing) {
-			this.isShowing = false;
-			this.el.classList.remove('showing');
-
-			this.el.removeEventListener('mouseout', this.onMouseOutBound);
+			
+			this.hide();
+			
 		}
+	}
+
+	hide() {
+		this.isShowing = false;
+		this.el.classList.remove('showing');
+		this.el.removeEventListener('mouseout', this.onMouseOutBound);
+	}
+
+	show() {
+		this.isShowing = true;
+		this.el.classList.add('showing');
+		this.el.addEventListener('mouseout', this.onMouseOutBound);
 	}
 
 	getTriangleShape() {
 		const triangleSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
         triangleSvg.classList.add("modifier");
-		triangleSvg.setAttribute("width", "40px");
-		triangleSvg.setAttribute("height", "40px");
+		triangleSvg.setAttribute("width", "44px");
+		triangleSvg.setAttribute("height", "44px");
 		triangleSvg.setAttribute("viewBox", "0 0 24 24");
 		triangleSvg.setAttribute("fill", 'rgba(50, 50, 50, .9)');
 

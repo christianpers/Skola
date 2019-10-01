@@ -8,72 +8,57 @@ export default class NodeInput{
 
 		this.inputType = inputType;
 
-		this.el = document.createElement('div');
-		this.el.className = 'node-input node-component';
+		// this.el = document.createElement('div');
+		// this.el.className = 'node-input node-component';
 
-		const dotEl = document.createElement('div');
-		dotEl.className = 'dot';
+		// const dotEl = document.createElement('div');
+		// dotEl.className = 'dot';
 
-		this.el.appendChild(dotEl);
+		// this.el.appendChild(dotEl);
 
-		const labelEl = document.createElement('p');
-		labelEl.className = 'label';
-		labelEl.innerHTML = isGraphicsNode ? str ? str : 'Grafik in' : 'Ljud in';
+		// const labelEl = document.createElement('p');
+		// labelEl.className = 'label';
+		// labelEl.innerHTML = isGraphicsNode ? str ? str : 'Grafik in' : 'Ljud in';
 
-		this.el.appendChild(labelEl);
+		// this.el.appendChild(labelEl);
 
-		this.parentEl.appendChild(this.el);
+		// this.parentEl.appendChild(this.el);
 
-		this.onClickBound = this.onClick.bind(this);
+		// this.onClickBound = this.onClick.bind(this);
 
-		this.el.addEventListener('click', this.onClickBound);
+		// this.el.addEventListener('click', this.onClickBound);
 
 		this.offsetLeft = undefined;
 		this.offsetTop = undefined;
 	}
 
-	getOffsetLeft() {
-		if (!this.offsetLeft) {
-			this.offsetLeft = this.el.offsetLeft;
-		}
 
-		return this.offsetLeft;
-	}
+	// onClick(e) {
 
-	getOffsetTop() {
-		if (!this.offsetTop) {
-			this.offsetTop = this.el.offsetTop;
-		}
+	// 	e.stopPropagation();
+	// 	e.preventDefault();
 
-		return this.offsetTop;
-	}
-
-	onClick(e) {
-
-		e.stopPropagation();
-		e.preventDefault();
-
-		this.onClickCallback();
-	}
+	// 	this.onClickCallback();
+	// }
 
 	enable() {
 		this.isActive = true;
 
-		this.el.classList.add('active');
+		// this.el.classList.add('active');
 		this.deactivatePossible();
 	}
 
 	disable() {
 		this.isActive = false;
 
-		this.el.classList.remove('active');
+		// this.el.classList.remove('active');
 	}
 
 	activatePossible() {
-		this.el.classList.add('not-possible');
+		// this.el.classList.add('not-possible');
 	}
 
 	deactivatePossible() {
-		this.el.classList.remove('not-possible');
+		// this.el.classList.remove('not-possible');
 	}
 }
