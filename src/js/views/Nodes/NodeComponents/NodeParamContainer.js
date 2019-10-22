@@ -112,7 +112,6 @@ export default class NodeParamContainer{
 	}
 
 	isAvailableForConnection(outputNode, inNode) {
-		
 		const keys = Object.keys(this.inputParams);
 		for (let i = 0; i < keys.length; i++) {
 			const key = keys[i];

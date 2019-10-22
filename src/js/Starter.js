@@ -4,24 +4,21 @@ import Main from "./Main";
 import DrawingsWindow from './backend/ui/drawings-window';
 import Refs from './backend/refs';
 
+function transformProp() {
+	var testEl = document.createElement('div');
+	if(testEl.style.transform == null) {
+	var vendors = ['Webkit', 'Moz', 'ms'];
+	for(var vendor in vendors) {
+		if(testEl.style[ vendors[vendor] + 'Transform' ] !== undefined) {
+		return vendors[vendor] + 'Transform';
+		}
+	}
+	}
+	return 'transform';
+};
+
 export default class Starter {
 	constructor(username) {
-
-		console.log('val', username);
-		
-		function transformProp() {
-		  var testEl = document.createElement('div');
-		  if(testEl.style.transform == null) {
-		    var vendors = ['Webkit', 'Moz', 'ms'];
-		    for(var vendor in vendors) {
-		      if(testEl.style[ vendors[vendor] + 'Transform' ] !== undefined) {
-		        return vendors[vendor] + 'Transform';
-		      }
-		    }
-		  }
-		  return 'transform';
-		};
-		
 		window.NS = {};
 		window.NS.transform = transformProp();
 		window.NS.iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
@@ -42,14 +39,10 @@ export default class Starter {
 
 		this.reqFrameBound = this.reqFrame.bind(this);
 		this.reqFrame();
-	}
-
-	init() {
-		console.log('test');
+		
 	}
 
 	onDrawingSelected(drawing) {
-		console.log('drawing selected', drawing);
 		this.drawingsWindow.hide();
 
 		this.main.init(drawing);

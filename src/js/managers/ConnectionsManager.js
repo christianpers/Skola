@@ -17,21 +17,54 @@ export default class ConnectionsManager{
 
     removeNode(node) {
         // remove param connections
-        const connections = this.paramConnections[node.ID] ? this.paramConnections[node.ID] : [];
 
-        for (let i = 0; i < connections.length; i++) {
-            const connection = connections[i];
+        // get param connections if node to remove is inNode
+        const connectionsInNode = this.paramConnections[node.ID] ? this.paramConnections[node.ID] : [];
+
+        for (let i = 0; i < connectionsInNode.length; i++) {
+            const connection = connectionsInNode[i];
             this.removeParamConnection(this.params[connection.paramID], this.nodes[connection.outNodeID]);
         }
 
-        const nodeConnections = this.nodeConnections[node.ID] ? this.nodeConnections[node.ID] : [];
-        for (let i = 0; i < nodeConnections.length; i++) {
-            const nodeConnection = nodeConnections[i];
-            const paramContainer = node.nodeType.paramContainers.find(t => t.ID === nodeConnection.paramContainerID);
-            this.removeNodeConnection(paramContainer, this.nodes[nodeConnection.outNodeID], true);
+        // get param connections if node to remove is outNode
+        const keys = Object.keys(this.paramConnections);
+        for (let i = 0; i < keys.length; i++) {
+            const paramConn = this.paramConnections[keys[i]];
+            for (let q = 0; q < paramConn.length; q++) {
+                if (paramConn[q].outNodeID === node.ID) {
+                    const param = this.params[paramConn[q].paramID];
+                    const outNode = this.nodes[paramConn[q].outNodeID];
+                    this.removeParamConnection(param, outNode);
+                }
+            }
+        }
+        
+        // get in connections  if node to remove is inNode
+        const nodeInConnections = this.nodeConnections[node.ID] ? this.nodeConnections[node.ID] : [];
+        for (let i = 0; i < nodeInConnections.length; i++) {
+            const nodeInConnection = nodeInConnections[i];
+            const paramContainer = node.nodeType.paramContainers.find(t => t.ID === nodeInConnection.paramContainerID);
+            this.removeNodeConnection(paramContainer, this.nodes[nodeInConnection.outNodeID], true);
+        }
+
+
+        // get out connections  if node to remove is outNode
+        const nodeKeys = Object.keys(this.nodeConnections);
+        for (let i = 0; i < nodeKeys.length; i++) {
+            const nodeConn = this.nodeConnections[nodeKeys[i]];
+            for (let q = 0; q < nodeConn.length; q++) {
+                if (nodeConn[q].outNodeID === node.ID) {
+                    const inNode = this.nodes[nodeKeys[i]];
+                    const paramContainerIn = inNode.nodeType.paramContainers.find(t => t.ID === nodeConn[q].paramContainerID);
+                    this.removeNodeConnection(paramContainerIn, this.nodes[nodeConn[q].outNodeID]);
+                }
+            }
         }
 
         delete this.nodes[node.ID];
+
+        console.log('paramConnections: ', this.paramConnections);
+        console.log('nodeConnections: ', this.nodeConnections);
     }
 
     addParam(param) {

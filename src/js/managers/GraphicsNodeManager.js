@@ -8,7 +8,6 @@ export default class GraphicsNodeManager{
 		onDisconnectCallback,
 		onInputConnectionCallback,
 		addCallback,
-		onNodeActive,
 		removeCallback,
 		onNodeDragStart,
 		onNodeDragMove,
@@ -19,7 +18,6 @@ export default class GraphicsNodeManager{
 		this.onDisconnectCallback = onDisconnectCallback;
 		this.onInputConnectionCallback = onInputConnectionCallback;
 		this.addCallback = addCallback;
-		this.onNodeActive = onNodeActive;
 		this.removeCallback = removeCallback;
 		this.onNodeDragStart = onNodeDragStart;
 		this.onNodeDragMove = onNodeDragMove;
@@ -40,7 +38,6 @@ export default class GraphicsNodeManager{
 			this.onInputConnectionCallback,
 			data.type,
 			backendData,
-			undefined,
 			this.removeCallback,
 			isModifier,
 			this.onNodeDragStart,
@@ -50,8 +47,6 @@ export default class GraphicsNodeManager{
 		);
 		
 		node.onResize({w: 540, h: 538});
-		
-		// this.addCallback(node);
 	}
 
 	createCanvasNode() {

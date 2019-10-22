@@ -1,21 +1,21 @@
 import GraphicNode from './GraphicNode';
-// import InputComponent from '../views/Nodes/NodeComponents/InputComponent';
 import VerticalSlider from '../views/Nodes/NodeComponents/VerticalSlider';
 
 export default class OrbitDriverNode extends GraphicNode{
-	constructor() {
+	constructor(renderer, backendData) {
 		super();
+
+		this.initValues = backendData ? backendData.data.visualSettings : null;
 
 		this.needsUpdate = true;
 		this.title = 'Orbit modifier';
-
-		// this.el.classList.add('no-height');
-		// this.el.classList.add('orbit-driver-node');
+		this.isVisualHelper = true;
+		this.isForegroundNode = true;
 
 		this.isParam = true;
 
 		this.animateValues = {
-			isRunning: false,
+			isRunning: this.initValues ? this.initValues['isRunning'] : false,
 			reqAnimFrame: -1,
 			counter: 1552337385540,
 		};
@@ -69,7 +69,17 @@ export default class OrbitDriverNode extends GraphicNode{
 			0                 // aRotation
 		);
 
+		const points = this.curve.getPoints( 50 );
+		const geometry = new THREE.BufferGeometry().setFromPoints( points );
+
+		const material = new THREE.LineBasicMaterial( { color : 0xff0000 } );
+
+		// Create the final object to add to the scene
+		this.mesh = new THREE.Line( geometry, material );
+
 		this.onToggleStartClickBound = this.onToggleStartClick.bind(this);
+
+		this.getSettings();
 	}
 
 	hideSettings() {
@@ -78,7 +88,6 @@ export default class OrbitDriverNode extends GraphicNode{
 
 	getSettings() {
 		if (!this.settingsContainer) {
-			console.log('create new settings container');
 			const settingsContainer = document.createElement('div');
 			settingsContainer.className = 'node-settings orbit-driver-node';
 
@@ -89,27 +98,67 @@ export default class OrbitDriverNode extends GraphicNode{
 			rotationSliderContainer.className = 'slider-row';
 			
 			const orbitXSlider = new VerticalSlider(
-				orbitSliderContainer, 10, this.onOrbitXChangeBound, 0, {min: 0, max: 40}, 'Radie X', 60, true,
+				orbitSliderContainer,
+				this.initValues ? this.initValues['orbitX'] : 10,
+				this.onOrbitXChangeBound,
+				0,
+				{min: 0, max: 40},
+				'Radie X',
+				60,
+				true,
 			);
 
 			const orbitYSlider = new VerticalSlider(
-				orbitSliderContainer, 10, this.onOrbitYChangeBound, 0, {min: 0, max: 40}, 'Radie Y', 60, true,
+				orbitSliderContainer,
+				this.initValues ? this.initValues['orbitY'] : 10,
+				this.onOrbitYChangeBound,
+				0,
+				{min: 0, max: 40},
+				'Radie Y',
+				60,
+				true,
 			);
 
 			const orbitZSlider = new VerticalSlider(
-				orbitSliderContainer, 10, this.onOrbitZChangeBound, 0, {min: 0, max: 40}, 'Radie Z', 60, true,
+				orbitSliderContainer,
+				this.initValues ? this.initValues['orbitY'] : 10,
+				this.onOrbitZChangeBound,
+				0,
+				{min: 0, max: 40},
+				'Radie Z',
+				60,
+				true,
 			);
 
 			const speedSlider = new VerticalSlider(
-				rotationSliderContainer, 0, this.onSpeedChangeBound, 4, {min: 0, max: 10}, 'Orbit speed',
+				rotationSliderContainer,
+				this.initValues ? this.initValues['speed'] : 0,
+				this.onSpeedChangeBound,
+				4,
+				{min: 0, max: 10},
+				'Orbit speed',
 			);
 
 			const rotationXSlider = new VerticalSlider(
-				rotationSliderContainer, 0, this.onRotationChangeXBound, 3, {min: -.1, max: .1}, 'Rotation X', 60, true,
+				rotationSliderContainer,
+				this.initValues ? this.initValues['rotationX'] : 0,
+				this.onRotationChangeXBound, 
+				3,
+				{min: -.1, max: .1},
+				'Rotation X',
+				60,
+				true,
 			);
 
 			const rotationYSlider = new VerticalSlider(
-				rotationSliderContainer, 0, this.onRotationChangeYBound, 3, {min: -.1, max: .1}, 'Rotation Y', 60, true,
+				rotationSliderContainer,
+				this.initValues ? this.initValues['rotationY'] : 0,
+				this.onRotationChangeYBound,
+				3,
+				{min: -.1, max: .1},
+				'Rotation Y',
+				60,
+				true,
 			);
 
 			this.orbitSliders = {
@@ -134,7 +183,7 @@ export default class OrbitDriverNode extends GraphicNode{
 			this.toggleStartBtn.addEventListener('click', this.onToggleStartClickBound);
 
 			this.toggleBtnText = document.createElement('h4');
-			this.toggleBtnText.innerHTML = 'Start';
+			this.toggleBtnText.innerHTML = this.initValues ? this.initValues['isRunning'] : 'Start';
 
 			this.toggleStartBtn.appendChild(this.toggleBtnText);
 
@@ -149,29 +198,44 @@ export default class OrbitDriverNode extends GraphicNode{
 	}
 
 	onRotationChangeX(val) {
-		
 		this.currentRotationX = val;
+		this.updateVisualSettings();
 	}
 
 	onRotationChangeY(val) {
-		
 		this.currentRotationY = val;
+		this.updateVisualSettings();
 	}
 
 	onOrbitXChange(val) {
 		this.curve.xRadius = val;
+		this.updateVisualSettings();
 	}
 
 	onOrbitYChange(val) {
 		this.curve.yRadius = val;
+		this.updateVisualSettings();
 	}
 
 	onOrbitZChange(val) {
 		this.curve.yRadius = val;
+		this.updateVisualSettings();
 	}
 
 	onSpeedChange(val) {
 		this.currentSpeed = val * 0.001;
+		this.updateVisualSettings();
+	}
+
+	updateVisualSettings() {
+		this.syncVisualSettings({
+			rotationX: this.currentRotationX,
+			rotationY: this.currentRotationY,
+			orbitX: this.curve.xRadius,
+			orbitY: this.curve.yRadius,
+			speed: this.currentSpeed * 1000.0,
+			isRunning: this.animateValues.isRunning,
+		});
 	}
 
 	reset() {
@@ -187,6 +251,8 @@ export default class OrbitDriverNode extends GraphicNode{
 			this.toggleBtnText.innerHTML = 'Stop';
 			this.animateValues.isRunning = true;
 		}
+
+		this.updateVisualSettings();
 	}
 
 	getValue(param) {
@@ -205,7 +271,7 @@ export default class OrbitDriverNode extends GraphicNode{
     	this.outValues['Rotation'].y += this.currentRotationY;
 		this.outValues['Rotation'].x += this.currentRotationX;
 		
-		console.log(this.currentOutConnectionsLength);
+		// console.log(this.currentOutConnectionsLength);
 
     	for (let i = 0; i < this.currentOutConnectionsLength; i++) {
 			const connectionData = this.currentOutConnections[i];

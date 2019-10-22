@@ -1,0 +1,28 @@
+.status-window {
+    position: absolute;
+    top: 0;
+    left: 300px;
+    padding: 10px 14px;
+    background: black;
+    color: yellow;
+    cursor: pointer;
+    z-index: 2;
+
+    > h4 {
+        color: yellow;
+    }
+
+    > p {
+        > span {
+            font-style: italic;
+            color: yellow;
+        }
+    }
+
+    &.unsaved {
+
+        > p > span {
+            color: red;
+        }
+    }
+}

@@ -24,8 +24,8 @@ export default class ForegroundRender{
 		this.hasConnectedLight = false;
 
 		this.framebuffer = new THREE.WebGLRenderTarget(
-			window.innerWidth,
-			window.innerHeight,
+			640,
+			600,
 			{minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter}
 		);
 	}

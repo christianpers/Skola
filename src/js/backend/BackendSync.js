@@ -17,7 +17,7 @@ export default class BackendSync {
     }
 
     initNodeSettings() {
-        console.log('init node settings');
+        console.log('init backend node settings');
 
         const connectedModifierNodes = this.selectedDrawing.nodes.filter(t => !!t.data.connectionData);
         for (let i = 0; i < connectedModifierNodes.length; i++) {
@@ -35,8 +35,6 @@ export default class BackendSync {
                 
                 window.NS.singletons.ConnectionsManager.addParamConnection(paramObj, outNode);
             }
-            
-            
         }
     }
 

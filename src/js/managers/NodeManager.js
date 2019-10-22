@@ -1,5 +1,4 @@
 import Node from '../views/Nodes/Node';
-import NodeRenderer from './NodeRenderer';
 import GraphicsNodeManager from './GraphicsNodeManager';
 import AudioNodeManager from './AudioNodeManager';
 
@@ -19,14 +18,12 @@ import BackendSync from '../backend/BackendSync';
 import { deleteNode, updateNode } from '../backend/set';
 
 export default class NodeManager{
-	constructor(config, keyboardManager, onNodeActive, parentEl, nodeLibrary) {
+	constructor(config, keyboardManager, parentEl, nodeLibrary) {
 
 		this.config = config;
 		this.hasConfig = !!config;
 
 		this.nodeLibrary = nodeLibrary;
-
-		this.onNodeActiveCallback = onNodeActive;
 
 		this.availableConnections = new AvailableConnections();
 
@@ -42,12 +39,7 @@ export default class NodeManager{
 		this.backendSync = new BackendSync();
 
 		this.modifierCollisionManager = new ModifierCollisionManager();
-		// this.connectionWindow = new ConnectionWindow(
-		// 	parentEl.parentElement,
-		// 	this.enableParamConnectionBound,
-		// 	this.disableParamConnectionBound
-		// );
-		// this.nodeSettingsWindow = new NodeSettingsWindow(parentEl.parentElement);
+
 		this.windowManager = new WindowManager(
 			parentEl.parentElement,
 			this.enableParamConnectionBound,
@@ -61,15 +53,11 @@ export default class NodeManager{
 
 		this.resetConnectingBound = this.resetConnecting.bind(this);
 
-		// this.nodeConnectionRenderer = new NodeRenderer(parentEl, this);
-		// this.nodeConnectionLine = new NodeConnectionLine(this.nodeConnectionRenderer.el, this.resetConnectingBound);
-
 		this.isConnecting = false;
 
 		this.outputActiveNode = null;
 		this.outputActiveType = undefined;
 
-		// this.onConnectingBound = this.onConnecting.bind(this);
 		this.onDisconnectBound = this.onDisconnect.bind(this);
 		this.onInputConnectionBound = this.onInputConnection.bind(this);
 		this.addBound = this.add.bind(this);
@@ -87,7 +75,6 @@ export default class NodeManager{
 			this.addBound,
 			this.hasConfig ? this.config.nodes : [],
 			this.onAudioNodeParamChangeBound,
-			onNodeActive,
 			this.removeBound,
 		);
 		this.audioNodeManager.init();
@@ -97,7 +84,6 @@ export default class NodeManager{
 			this.onDisconnectBound,
 			this.onInputConnectionBound,
 			this.addBound,
-			onNodeActive,
 			this.removeBound,
 			this.onNodeDragStartBound,
 			this.onNodeDragMoveBound,
@@ -142,7 +128,6 @@ export default class NodeManager{
 	}
 
 	init(selectedDrawing) {
-
 		const drawing = selectedDrawing.nodes ? selectedDrawing : { nodes: [] };
 
 		this.backendSync.setSelectedDrawing(drawing);
@@ -164,11 +149,6 @@ export default class NodeManager{
 
 		if (event && event.detail) {
 			event.detail.setSelected();
-
-			// this.nodeSettingsWindow.setupForNode(event.detail);
-			// if (event.detail.nodeType.assignedParamContainer) {
-			// 	this.connectionWindow.setupForNode(event.detail);
-			// }
 			this.windowManager.setupForNode(event.detail);	
 		}
 	}
@@ -251,7 +231,7 @@ export default class NodeManager{
 
 		updateNode({
 			paramConnections: firebase.firestore.FieldValue.arrayUnion(paramObj.ID),
-		}, outNode.ID)
+		}, outNode.ID, true)
 		.then(() => {
 			console.log('updated node');
 		})
@@ -264,9 +244,10 @@ export default class NodeManager{
 	}
 
 	disableParamConnection(paramObj, outNode, inNode) {
+		console.log('remove param connection', paramObj.ID);
 		updateNode({
 			paramConnections: firebase.firestore.FieldValue.arrayRemove(paramObj.ID),
-		}, outNode.ID)
+		}, outNode.ID, true)
 		.then(() => {
 			console.log('updated node');
 		})
@@ -299,7 +280,7 @@ export default class NodeManager{
 	}
 
 	add(node) {
-		if (node.isRendered) {
+		if (node.isRendered || node.isVisualHelper) {
 			window.NS.singletons.CanvasNode.enableInput(node, 'foreground');
 			this._nodes.push(node);
 		} else {
@@ -321,7 +302,6 @@ export default class NodeManager{
 		}
 
 		if (!this.backendSync.isDone()) {
-			console.log('node added backend sync');
 			this.backendSync.onNodeAdded();
 		}
 	}
@@ -346,17 +326,16 @@ export default class NodeManager{
 		deleteNode(node.ID)
 		.then(() => {
 			console.log('node deleted', node.ID);
-			// const ref = getNodeRef(node.ID);
-			// console.log('ref: ', ref);
 			window.NS.singletons.refs.removeNodeRef(node.ID);
 		})
 		.catch((err) => {
 			console.log('error deleting', err);
 		});
+
+		this.windowManager.blur();
 	}
 
 	update() {
-		// this.nodeConnectionRenderer.update();
 
 		for (let i = 0; i < this._graphicNodeLength; i++) {
 			this._graphicNodes[i].update();

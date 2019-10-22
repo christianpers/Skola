@@ -31,8 +31,6 @@ export default class GraphicNode extends Node{
 		this.isCanvasNode = false;
 
 		this.dotPos = undefined;
-
-		
 	}
 
 	init(
@@ -42,7 +40,6 @@ export default class GraphicNode extends Node{
 		onInputConnectionCallback,
 		type,
 		initData,
-		onNodeActive,
 		onNodeRemove,
 		isModifier,
 		onNodeDragStart,
@@ -57,7 +54,6 @@ export default class GraphicNode extends Node{
 			onInputConnectionCallback,
 			type,
 			initData,
-			onNodeActive,
 			onNodeRemove,
 			isModifier,
 			onNodeDragStart,

@@ -39,13 +39,6 @@ class Index {
 					initStart(email);
 				}
 				
-				// if (!this.starter) {
-				// 	import(/* webpackChunkName: "Starter" */'./js/Starter')
-				// 	.then(Starter => {
-				// 		this.starter = new Starter.default('test');
-				// 	});
-				// }
-				
 			} else {
 				// User is signed out.
 

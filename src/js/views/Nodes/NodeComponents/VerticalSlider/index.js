@@ -1,3 +1,5 @@
+import './index.scss';
+
 export default class VerticalSlider{
 	constructor(parentEl, value, valChangeCallback, decimals, settings, name, height, disabled) {
 

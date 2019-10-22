@@ -1,0 +1,82 @@
+.dropdown {
+    width: 140px;
+    height: 46px;
+    position: relative;
+    overflow: hidden;
+
+    > h3 {
+        padding-left: 3px;
+        margin-bottom: 10px;
+    }
+
+    .selected-container {
+        margin-bottom: 6px;
+
+        > h4 {
+            padding: 3px 4px;
+        }
+    }
+
+    .list-container {
+        width: calc(100% - 30px);
+        height: auto;
+        background: yellow;
+        
+        .list-item {
+            padding: 4px 4px;
+            cursor: pointer;
+            position: relative;
+
+            > h4 {
+                color: black;
+            }
+
+            > .touch-layer {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+            }
+
+            &.selected {
+                background: black;
+
+                > h4 {
+                    color: yellow;
+                }
+            }
+
+            &:hover {
+                background: black;
+                > h4 {
+                    color: yellow;
+                }
+            }
+        }
+    }
+
+    .arrow-toggle-container {
+        width: 20px;
+        height: 20px;
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        background: black;
+        cursor: pointer;
+
+        > img {
+            transition: transform .2s;
+        }
+    }
+
+    &.open {
+        overflow: initial;
+
+        .arrow-toggle-container {
+            > img {
+                transform: rotate(180deg);
+            }
+        }
+    }
+}

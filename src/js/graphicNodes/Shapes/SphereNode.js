@@ -146,7 +146,6 @@ export default class SphereNode extends GraphicNode{
 		onInputConnectionCallback,
 		type,
 		initData,
-		onNodeActive,
 		onNodeRemove,
 		isModifier,
 		onNodeDragStart,
@@ -161,7 +160,6 @@ export default class SphereNode extends GraphicNode{
 			onInputConnectionCallback,
 			type,
 			initData,
-			onNodeActive,
 			onNodeRemove,
 			isModifier,
 			onNodeDragStart,
@@ -254,7 +252,7 @@ export default class SphereNode extends GraphicNode{
 	}
 
 	update() {
-		this.nameTexture.needsUpdate = true;
+		// this.nameTexture.needsUpdate = true;
 	}
 
 	render() {

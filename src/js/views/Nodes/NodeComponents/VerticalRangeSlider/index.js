@@ -13,7 +13,7 @@ export default class VerticalRangeSlider{
 		
 		// this.settings = settings;
 
-		this.onInputChangeBound = this.onInputChange.bind(this);
+		// this.onInputChangeBound = this.onInputChange.bind(this);
 
 		this.el = document.createElement('div');
 		this.el.className = 'vertical-range-slider';
@@ -31,7 +31,7 @@ export default class VerticalRangeSlider{
 		this.inputLowEl.step = 1;
 		this.inputLowEl.min = -10;
 		this.inputLowEl.max = 1;
-		this.inputLowEl.addEventListener('change', this.onInputChangeBound);
+		this.inputLowEl.addEventListener('change', this.onInputChangeCallback);
 
 		inputLowContainer.appendChild(this.inputLowEl);
 
@@ -48,7 +48,7 @@ export default class VerticalRangeSlider{
 		this.inputHighEl.step = .1;
 		this.inputHighEl.min = 2;
 		this.inputHighEl.max = 10;
-		this.inputHighEl.addEventListener('change', this.onInputChangeBound);
+		this.inputHighEl.addEventListener('change', this.onInputChangeCallback);
 
 		inputHighContainer.appendChild(this.inputHighEl);
 
@@ -101,9 +101,9 @@ export default class VerticalRangeSlider{
 		// this.el.addEventListener('mousedown', this.onMouseDownBound);
 	}
 
-	onInputChange(e, type) {
-		this.onInputChangeCallback();
-	}
+	// onInputChange(e, type) {
+	// 	this.onInputChangeCallback();
+	// }
 
 	setDefaultValues(param) {
 		const obj = param.minMax;
@@ -117,7 +117,7 @@ export default class VerticalRangeSlider{
 
 		const value = param.defaultVal;
 
-        this.setValue(value);
+        this.setValue(value, true);
 
 		this.setPos(100);
 
@@ -140,14 +140,14 @@ export default class VerticalRangeSlider{
 		this.parentEl.removeChild(this.el);
 	}
 
-	setValue(value) {
+	setValue(value, fromDefaultUpdate) {
 		this.value = value;
 		
 		this.setPos(100);
 		const val = this.getValue().toFixed(this.decimals);
 		this.valueEl.innerHTML = val;
 
-		if (this.valChangeCallback) {
+		if (this.valChangeCallback && !fromDefaultUpdate) {
 
 			this.valChangeCallback(val);
 		}
@@ -225,7 +225,7 @@ export default class VerticalRangeSlider{
 
 		this.setPos(sliderHeight);
 		if (this.valChangeCallback) {
-
+			console.log('val change callback');
 			this.valChangeCallback(parseFloat(this.getValue().toFixed(this.decimals)));
 		}
 		

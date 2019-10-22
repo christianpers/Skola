@@ -1,17 +1,17 @@
 // import OscillatorNode from '../musicNodes/OscillatorNode';
 // import GainNode from '../musicNodes/GainNode';
-// import SpeakerNode from './musicNodes/SpeakerNode';
+import SpeakerNode from '../musicNodes/SpeakerNode';
 // import AnalyserNode from './musicNodes/AnalyserNode';
 // import LowpassFilterNode from './musicNodes/LowpassFilterNode';
 // import EnvelopeNode from './musicNodes/EnvelopeNode';
 // import FrequencyEnvelopeNode from './musicNodes/FrequencyEnvelopeNode';
 // import LFONode from './musicNodes/LFONode';
 // import SignalMultiplier from './musicHelpers/mathNodes/SignalMultiplier';
-// import SequencerNode from './musicNodes/SequencerNode';
-// import WaveformNode from './musicNodes/WaveformNode';
+import SequencerNode from '../musicNodes/SequencerNode';
+import WaveformNode from '../musicNodes/WaveformNode';
 // import FFTNode from './musicNodes/FFTNode';
-// import KickSynth from './musicNodes/KickSynth';
-// import FMSynth from './musicNodes/FMSynth';
+import KickSynth from '../musicNodes/KickSynth';
+import FMSynth from '../musicNodes/FMSynth';
 
 // import LavaNoiseNode from './graphicNodes/ProceduralTextures/LavaNoise';
 // import VoronoiNode from './graphicNodes/ProceduralTextures/Voronoi';
@@ -24,10 +24,25 @@ import OrbitDriverNode from '../graphicNodes/OrbitDriverNode';
 import ColorNode from '../graphicNodes/ColorNode';
 import DirectionalLightNode from '../graphicNodes/Lights/DirectionalLightNode';
 import PointLightNode from '../graphicNodes/Lights/PointLightNode';
-import TextureSelectorNode from '../graphicNodes/Textures/TextureSelectorNode';
+import TextureSelectorNode from '../graphicNodes/TextureSelectorNode';
 import ParticlesNode from '../graphicNodes/Shapes/ParticlesNode';
 
 const nodeMapping = {
+  'Kick': {
+    obj: KickSynth,
+  },
+  'FMSynth': {
+    obj: FMSynth,
+  },
+  'SequencerNode': {
+    obj: SequencerNode,
+  },
+  'WaveformNode': {
+    obj: WaveformNode,
+  },
+  'SpeakerNode': {
+    obj: SpeakerNode,
+  },
   'Sphere': {
     obj: SphereNode,
     isModifier: false,

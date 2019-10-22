@@ -1,9 +1,10 @@
 import NodePlaceHelper from './NodePlaceHelper';
+import nodeTypes from './NodeTypes'; 
 
 import './NodeLibrary.scss';
 
 export default class NodeLibrary{
-	constructor(parentEl, nodeTypes, onNodeAddedCallback, workspaceManager) {
+	constructor(parentEl, onNodeAddedCallback, workspaceManager) {
 
 		this.parentEl = parentEl;
 
@@ -97,11 +98,8 @@ export default class NodeLibrary{
 					if (title) {
 						const iconPath = `${title.replace(' ', '-').toLowerCase()}-icon`;
 
-						console.log(title);
-
 						const iconImg = new Image();
 						iconImg.onload = () => {
-							console.log('loaded');
 							nodeWrapper.appendChild(iconImg);
 						};
 						iconImg.src = `/assets/icons/white/${iconPath}.svg`;

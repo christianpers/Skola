@@ -8,13 +8,7 @@ export default class ParamDriverNode extends GraphicNode{
 	constructor(renderer, backendData) {
 		super();
 
-		console.log('1', backendData);
-
 		this.initValues = backendData ? backendData.data.visualSettings : null;
-
-		// this.el.classList.add('no-height');
-		// this.el.classList.add('left-padding');
-		// this.el.classList.add('param-driver-node');
 
 		this.isParam = true;
 		this.returnsSingleNumber = true;
@@ -33,8 +27,6 @@ export default class ParamDriverNode extends GraphicNode{
 
 		this.onInputChangeBound = this.onInputChange.bind(this);
 
-		// bottomContainer.appendChild(this.toggleStartBtn);
-		// this.topPartEl.appendChild(bottomContainer);
 
 		this.modifier = {
 		};
@@ -46,10 +38,13 @@ export default class ParamDriverNode extends GraphicNode{
 
 		this.updateBound = this.update.bind(this);
 
+		this.getSettings();
+
 		this.update();
 	}
 
 	onInputChange(e) {
+		console.log('input change');
 		this.updateVisualSettings();
 		this.reset();
 	}
@@ -67,7 +62,6 @@ export default class ParamDriverNode extends GraphicNode{
 
 	getSettings() {
 		if (!this.settingsContainer) {
-			console.log('create new settings container');
 			const settingsContainer = document.createElement('div');
 			settingsContainer.className = 'node-settings param-driver-node';
 
@@ -159,9 +153,6 @@ export default class ParamDriverNode extends GraphicNode{
 	}
 
 	update() {
-
-		this.animateValues.reqAnimFrame = requestAnimationFrame(this.updateBound);
-
 		if (!this.animateValues.isRunning) {
 			return;
 		}

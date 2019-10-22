@@ -34,7 +34,6 @@ export default class Refs{
 
     addNodeRef(ref) {
         this.nodesRefs[ref.id] = ref;
-        console.log('add node ref, ', ref.id, this.nodesRefs);
     }
 
     removeNodeRef(id) {

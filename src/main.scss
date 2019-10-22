@@ -460,14 +460,22 @@ button:focus {
 		height: 44px;
 		justify-content: center;
 		align-items: center;
-		padding: 4px;
+		padding: 0px;
 
-		> svg {
-			fill: yellow;
+		> .node-inner {
+			position: relative;
+			transform-origin: 50% 50%;
+			> svg {
+				position: absolute;
+				fill: yellow;
+				width: 100%;
+			}
 		}
 
+		
+
 		&.selected {
-			> svg {
+			> .node-inner > svg {
 				stroke: white;
 				stroke-width: 2px;
 			}
@@ -482,7 +490,8 @@ button:focus {
 			> img {
 				width: 21px;
 				height: auto;
-				margin-top: 4px;
+				margin-top: 2px;
+				position: relative;
 			}
 		}
 	}
@@ -667,79 +676,6 @@ button:focus {
 			& .color-picker-parent {
 				margin-top: 40px;
 			}
-		}
-	}
-}
-
-.vertical-slider {
-	text-align: center;
-	margin-bottom: 16px;
-    background: rgb(24, 24, 24);
-    border-radius: 3px;
-    color: white;
-	padding: 5px;
-	position: relative;
-	max-width: 80px;
-	& .disabled-layer {
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		background: rgba(24,24,24,.94);
-		border-radius: 8px;
-		display: none;
-		z-index: 1;
-		&.visible{
-			display: block;
-		}
-	}
-	& .vertical-slider-label{
-		position: relative;
-		z-index: 1;
-	}
-	& .range-container {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		padding-left: 0 !important;
-		height: 80px !important;
-
-		& .range-inner-container {
-			width: 10px;
-			margin-left: 5%;
-			margin-right: 5%;
-			height: 60px;
-			background: black;
-			position: relative;
-
-			& .range-knob {
-				position: absolute;
-				top: -8px;
-				left: 50%;
-				width: 32px;
-				height: 16px;
-				background: yellow;
-				margin-left: -16px;
-			}
-		}
-	}
-
-	& .value-container{
-		display: inline-block;
-		text-align: center;
-
-		& > p{
-			color: yellow;
-			margin-bottom: 4px;
-			text-align: left;
-		}
-
-		& .value-display{
-			color: yellow;
-			padding: 5px 10px;
-			width: 70px;
-			font-family: Arial;
 		}
 	}
 }

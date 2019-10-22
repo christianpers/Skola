@@ -13,7 +13,6 @@ export default class AudioNodeManager{
 		addCallback,
 		initData,
 		onParameterChange,
-		onNodeActive,
 		onNodeRemove,
 	) {
 
@@ -23,7 +22,6 @@ export default class AudioNodeManager{
 		this.addCallback = addCallback;
 		this.initData = initData;
 		this.onParameterChange = onParameterChange;
-		this.onNodeActive = onNodeActive;
 		this.onNodeRemove = onNodeRemove;
 	}
 
@@ -36,7 +34,6 @@ export default class AudioNodeManager{
 					this.onInputConnectionCallback,
 					this.initData[i].type,
 					this.initData[i],
-					this.onNodeActive,
 					this.onParameterChange,
 					this.onNodeRemove,
 				);
@@ -54,7 +51,6 @@ export default class AudioNodeManager{
 			this.onInputConnectionCallback,
 			data.type,
 			undefined,
-			this.onNodeActive,
 			this.onParameterChange,
 			this.onNodeRemove,
 		);

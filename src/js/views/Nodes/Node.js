@@ -34,7 +34,6 @@ export default class Node{
 		onInputConnectionCallback,
 		type,
 		nodeConfig,
-		onNodeActive,
 		onNodeRemove,
 		isModifier,
 		onNodeDragStart,
@@ -49,7 +48,6 @@ export default class Node{
 		this.onInputConnectionCallback = onInputConnectionCallback;
 		this.hasActiveInput = false;
 		this.type = type;
-		this.onNodeActive = onNodeActive;
 		this.onNodeRemove = onNodeRemove;
 		this.isModifier = isModifier;
 		this.onNodeDragStart = onNodeDragStart;
@@ -66,11 +64,16 @@ export default class Node{
 		this.innerContainer = document.createElement('div');
 		this.innerContainer.className = 'node-inner';
 
-		this.upperContainer = document.createElement('div');
-		this.upperContainer.className = 'node-upper';
+		
 
 		this.el.appendChild(this.innerContainer);
-		this.el.appendChild(this.upperContainer);
+
+		if (!this.isModifier) {
+			this.upperContainer = document.createElement('div');
+			this.upperContainer.className = 'node-upper';
+			this.el.appendChild(this.upperContainer);
+		}
+		
 
 		this.lastDelta = {x: 0, y: 0};
 
@@ -81,22 +84,6 @@ export default class Node{
 		this.onRemoveClickBound = this.onRemoveClick.bind(this);
 
 		if (!this.isCanvasNode) {
-			// this.nodeType = this.isModifier
-			// 	? new TriangleType(this.el, this.params, this) : new NonagonType(this.innerContainer, this.params, this);
-			
-			const typeStr = this.type;
-
-			const title = this.isModifier ? `${typeStr}-modifier` : `${typeStr}-node`;
-
-			const iconPath = `${title.replace(' ', '-').toLowerCase()}-icon`;
-
-			// console.log(iconPath);
-
-			const iconImg = document.createElement('img');
-			iconImg.src = `/assets/icons/${iconPath}.svg`;
-
-			this.innerContainer.appendChild(iconImg);
-
 			if (this.isModifier) {
 				this.el.classList.add('modifier-node');
 			} else {
@@ -125,6 +112,7 @@ export default class Node{
 			const ref = getNodeRef(this.ID);
 			window.NS.singletons.refs.addNodeRef(ref);
 			window.NS.singletons.ConnectionsManager.addNode(this);
+			console.log('after add node');
 			this.nodeCreated(nodeConfig);
 		} else {
 			let nodeObj = {
@@ -172,7 +160,20 @@ export default class Node{
 	nodeCreated(nodeConfig) {
 		if (!this.isCanvasNode) {
 			this.nodeType = this.isModifier
-				? new TriangleType(this.el, this.params, this) : new NonagonType(this.innerContainer, this.params, this, nodeConfig);
+				? new TriangleType(this.el, this.innerContainer, this.params, this) : new NonagonType(this.innerContainer, this.params, this, nodeConfig);
+
+			const typeStr = this.type;
+
+			const title = this.isModifier ? `${typeStr}-modifier` : `${typeStr}-node`;
+
+			const iconPath = `${title.replace(' ', '-').toLowerCase()}-icon`;
+
+			// console.log(iconPath);
+
+			const iconImg = document.createElement('img');
+			iconImg.src = `/assets/icons/${iconPath}.svg`;
+
+			this.innerContainer.appendChild(iconImg);
 		}
 
 		if (this.nodeType.paramContainers.length > 0 && !this.initNodeConfig) {
@@ -193,7 +194,7 @@ export default class Node{
 
 			updateNode({
 				paramContainers: ids,
-			}, this.ID)
+			}, this.ID, true)
 			.then(() => {
 				console.log('paramcontainers updated');
 			})
@@ -238,40 +239,6 @@ export default class Node{
 
 	}
 
-	// onConnectionsUpdate(e) {
-	// 	const getDiff = (a1, a2) => {
-	// 		const diff = (a1, a2) => {
-	// 			const a2Set = new Set(a2);
-	// 			return a1.filter(function(x) { return !a2Set.has(x); });
-	// 		};
-
-	// 		return diff(a1, a2).concat(diff(a2, a1));
-	// 	}
-		
-
-	// 	const connections = e.detail;
-	// 	const keys = Object.keys(connections);
-	// 	const outNodesInConnections = [];
-	// 	for (let i = 0; i < keys.length; i++) {
-	// 		const connection = connections[keys[i]];
-	// 		outNodesInConnections.push(connection.outNodeID);
-	// 	}
-
-	// 	const allOutNodesWithConnections = [];
-	// 	const connectionManagerNodes = window.NS.singletons.ConnectionsManager.nodes
-	// 	const nodeKeys = Object.keys(connectionManagerNodes);
-	// 	for (let i = 0; i < nodeKeys.length; i++) {
-	// 		if (connectionManagerNodes[nodeKeys[i]].nodeType.isConnected) {
-	// 			allOutNodesWithConnections.push(nodeKeys[i]);
-	// 		}
-	// 	}
-
-	// 	const diff = getDiff(outNodesInConnections, allOutNodesWithConnections);
-
-
-
-	// }
-
 	syncVisualSettings(settings) {
 		this.visualSettings = Object.assign({}, this.visualSettings, settings);
 		updateNode({
@@ -287,7 +254,6 @@ export default class Node{
 
 	setAsChildToParamContainer(paramContainer, updateBackend) {
 		paramContainer.el.appendChild(this.el);
-		console.log('set initial transform');
 		this.el.style[window.NS.transform] = 'initial';
 		this.onInputConnectionCallback(this, paramContainer);
 
@@ -300,7 +266,7 @@ export default class Node{
 				paramContainer: paramContainer.ID,
 				node: paramContainer.node.ID,
 			}
-		}, this.ID)
+		}, this.ID, true)
 		.then(() => {
 
 		})
@@ -328,7 +294,6 @@ export default class Node{
 
 			const { x, y } = this.moveCoords.start;
 
-		
 			this.el.style[window.NS.transform] = `translate3d(${x}px, ${y}px, 0)`;
 		} else {
 			const offsetX = pos.x - nodeBoundingRect.x;
@@ -340,7 +305,7 @@ export default class Node{
 
 		updateNode({
 			connectionData: firebase.firestore.FieldValue.delete(),
-		}, this.ID)
+		}, this.ID, true)
 		.then(() => {
 
 		})
@@ -354,7 +319,6 @@ export default class Node{
 	}
 
 	enableOutput(param, connection) {
-		console.log('enable output');
 		// super.enableOutput();
 
 		this.currentOutConnections.push(connection);
@@ -423,25 +387,15 @@ export default class Node{
 		return pos;
 	}
 
-
-	// setAsDisabled() {
-	// 	this.el.style.opacity = .1;
-	// }
-
-	// setAsEnabled() {
-	// 	this.el.style.opacity = 1;
-	// }
-
-	// onOutputClick(clickPos) {
-	// 	this.onConnectingCallback(this, clickPos);
-	// }
-
-	// onInputClick(param) {
-	// 	this.onInputConnectionCallback(this, 'main', param);
-	// }
-
 	removeFromDom() {
 		this.innerContainer.removeEventListener('mousedown', this.onMouseDownBound);
+		if (this.isModifier) {
+			if (this.nodeType.isConnected) {
+				this.nodeType.removeNodeFromDom();
+				return;
+			}
+		}
+
 		this.parentEl.removeChild(this.el);
 	}
 
@@ -457,7 +411,6 @@ export default class Node{
 		e.stopPropagation();
 		e.preventDefault();
 
-		console.log('on mouse down', this);
 		const nodeSelectedEvent = new CustomEvent('node-selected', { detail: this });
         document.documentElement.dispatchEvent(nodeSelectedEvent);
 
@@ -490,7 +443,6 @@ export default class Node{
 		this.lastDelta.x = deltaX;
 		this.lastDelta.y = deltaY;
 
-		console.log('set translate node', this.lastDelta);
 		this.el.style[window.NS.transform] = `translate3d(${deltaX}px, ${deltaY}px, 0)`;
 	}
 
@@ -507,7 +459,7 @@ export default class Node{
 
 		updateNode({
 			pos: this.lastDelta,
-		}, this.ID)
+		}, this.ID, true)
 		.then(() => {
 			console.log('updated node');
 		})

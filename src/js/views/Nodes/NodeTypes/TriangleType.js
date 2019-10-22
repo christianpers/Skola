@@ -1,9 +1,10 @@
 export default class TriangleType {
-    constructor(parentEl, params, node) {
+    constructor(parentEl, containerEl, params, node) {
         this.parentEl = parentEl;
         this.paramContainers = [];
         this.triangleSvg = null;
         this.node = node;
+        this.containerEl = containerEl;
 
         this.isConnected = false;
         this.assignedParamContainer = null;
@@ -27,7 +28,7 @@ export default class TriangleType {
         
         this.triangleSvg = triangleSvg;
         
-        parentEl.appendChild(triangleSvg);
+        containerEl.appendChild(triangleSvg);
 
         this.latestAngle = 0;
     }
@@ -39,13 +40,14 @@ export default class TriangleType {
     }
 
     setAngle(angle) {
-        this.triangleSvg.style.transform = `rotate(${angle}deg)`;
+        this.containerEl.style.transform = `rotate(${angle}deg)`;
+        // this.triangleSvg.style.transform = `rotate(${angle}deg)`;
         this.latestAngle = angle;
     }
 
     activateAsChild(paramContainer, updateBackend) {
-        this.triangleSvg.style.transform = `rotate(0deg)`;
-        // this.setAngle(0);
+        this.containerEl.style.transform = `rotate(0deg)`;
+        // this.triangleSvg.style.transform = `rotate(0deg)`;
         this.isConnected = true;
         this.assignedParamContainer = paramContainer;
         paramContainer.addModifierAsChild(this);
@@ -58,14 +60,19 @@ export default class TriangleType {
         this.assignedParamContainer.removeModifierAsChild(this.node.ID);
         this.node.setAsNotChildToParamContainer(this.assignedParamContainer, e, fromNodeRemove);
         this.assignedParamContainer = null;
-
     }
 
     hide() {
-        this.triangleSvg.style.opacity = 0;
+        // this.triangleSvg.style.opacity = 0;
+        this.containerEl.style.opacity = 0;
     }
 
     show() {
-        this.triangleSvg.style.opacity = 1;
+        // this.triangleSvg.style.opacity = 1;
+        this.containerEl.style.opacity = 1;
+    }
+
+    removeNodeFromDom() {
+        this.assignedParamContainer.el.removeChild(this.node.el);
     }
 }
