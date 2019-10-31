@@ -46,8 +46,6 @@ const onBumpmapDisconnect = (inNode) => {
 };
 
 const isValidParamColorInput = (outNode) => {
-	console.log('valid color ', outNode);
-
 	return !!outNode.picker;
 };
 
@@ -74,13 +72,10 @@ const isValidParamPositionInput = (outNode, inNode, param) => {
 };
 
 const onPositionParamUpdate = (inNode, outNode, param) => {
-
 	inNode.mesh.position[param.param] = outNode.getValue(param);
 };
 
 const onPositionDisconnect = (inNode, param, outNode) => {
-
-	// param.defaultVal = outNode.getValue(param);
 	inNode.mesh.position[param.param] = param.defaultVal;
 };
 

@@ -74,6 +74,11 @@
 			> h5 {
 				color: black;
 			}
+
+			&.not-allowed {
+				opacity: 0.2;
+				cursor: default;
+			}
 		}
 	}
 

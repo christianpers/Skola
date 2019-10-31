@@ -41,6 +41,7 @@ export default class WindowManager{
     }
 
     onNodeSettingsWindowShow() {
+        this.nodeSettingsWindow.checkForUpdates(this.activeNode);
         this.connectionWindow.hide();
     }
 

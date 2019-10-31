@@ -7,8 +7,6 @@ export default class PointLightNode extends GraphicNode{
 		this.isLightNode = true;
 		this.isRendered = true;
 
-		// this.el.classList.add('no-height');
-
 		this.light = new THREE.PointLight( 0xffffff, 1, 100 );
 		this.light.position.set(0, 0, 0);
 
@@ -65,7 +63,7 @@ export default class PointLightNode extends GraphicNode{
 			paramHelpersType: 'light',
 			needsFrameUpdate: false,
 			minMax: {min: -10, max: 10},
-			defaultVal: 4,
+			defaultVal: 0,
 		};
 
 		const scaleParam = {

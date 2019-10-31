@@ -13,6 +13,9 @@ export default class ConnectionsManager{
 
     addNode(node) {
         this.nodes[node.ID] = node;
+
+        const nodeAddedEvent = new CustomEvent('node-added-event');
+        document.documentElement.dispatchEvent(nodeAddedEvent);
     }
 
     removeNode(node) {
@@ -62,6 +65,9 @@ export default class ConnectionsManager{
         }
 
         delete this.nodes[node.ID];
+
+        const nodeRemovedEvent = new CustomEvent('node-removed-event');
+        document.documentElement.dispatchEvent(nodeRemovedEvent);
 
         console.log('paramConnections: ', this.paramConnections);
         console.log('nodeConnections: ', this.nodeConnections);
@@ -138,7 +144,7 @@ export default class ConnectionsManager{
             inNodeID,
             connection: connectionObj,
         };
-        console.log('add param connection', this.paramConnections);
+        // console.log('add param connection', this.paramConnections);
         const paramConnectionsUpdateEvent = new CustomEvent('param-connections-add', { detail });
         document.documentElement.dispatchEvent(paramConnectionsUpdateEvent);
     }
@@ -146,7 +152,7 @@ export default class ConnectionsManager{
     removeParamConnection(param, outNode) {
         const inNodeID = param.paramContainer.node.ID;
 
-        console.log('remove param connection', this.paramConnections);
+        // console.log('remove param connection', this.paramConnections);
 
         if (!(inNodeID in this.paramConnections)) {
             return;
@@ -166,8 +172,6 @@ export default class ConnectionsManager{
                 paramID: param.ID,
             },
         };
-
-        console.log(this.paramConnections);
 
         const paramConnectionsUpdateEvent = new CustomEvent('param-connections-remove', { detail });
         document.documentElement.dispatchEvent(paramConnectionsUpdateEvent);

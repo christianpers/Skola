@@ -20,6 +20,7 @@ import CubeNode from '../graphicNodes/Shapes/CubeNode';
 import SphereNode from '../graphicNodes/Shapes/SphereNode';
 import ParamDriverNode from '../graphicNodes/ParamDriverNode';
 import OrbitDriverNode from '../graphicNodes/OrbitDriverNode';
+import RotationDriverNode from '../graphicNodes/RotationDriverNode';
 // import SceneNode from './graphicNodes/SceneNode';
 import ColorNode from '../graphicNodes/ColorNode';
 import DirectionalLightNode from '../graphicNodes/Lights/DirectionalLightNode';
@@ -57,6 +58,10 @@ const nodeMapping = {
   },
   'OrbitDriver': {
     obj: OrbitDriverNode,
+    isModifier: true,
+  },
+  'RotationDriver': {
+    obj: RotationDriverNode,
     isModifier: true,
   },
   'Color': {

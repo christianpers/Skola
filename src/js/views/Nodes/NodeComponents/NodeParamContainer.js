@@ -10,15 +10,6 @@ export default class NodeParamContainer{
 		this.pos = new THREE.Vector2();
 		this.ID = backendConfig ? backendConfig.paramContainerID : ID;
 
-		// createParamContainer({})
-		// .then((ref) => {
-		// 	window.NS.singletons.refs.addParamContainerRef(ref);
-		// 	this.ID = ref.id;
-		// })
-		// .catch((err) => {
-		// 	console.log(err, 'error creating param container');
-		// });
-
 		this.onConnectionUpdateBound = this.onConnectionUpdate.bind(this);
 
 		document.documentElement.addEventListener('node-connections-update', this.onConnectionUpdateBound);
@@ -55,6 +46,8 @@ export default class NodeParamContainer{
 
 		this.parentLabel = document.createElement('h5');
 		this.parentLabel.innerHTML = paramObj.parent;
+
+		this.parentTitle = paramObj.parent;
 
 		this.paramContainer.appendChild(this.parentLabel);
 

@@ -1,18 +1,38 @@
 import './index.scss';
 
 export default class Dropdown {
-    constructor(parentEl, items, title, onSelectedCallback, initValue) {
+    constructor(parentEl, items, title, onSelectedCallback, initValue, onResetCallback) {
         this.el = document.createElement('div');
         this.el.classList.add('dropdown');
 
         this.onSelectedCallback = onSelectedCallback;
 
-        const titleEl = document.createElement('h3');
+        const upperRowContainer = document.createElement('div');
+        upperRowContainer.classList.add('upper-row-container');
+
+        const titleEl = document.createElement('h4');
         titleEl.innerHTML = title;
 
         this.title = title;
 
-        this.el.appendChild(titleEl);
+        upperRowContainer.appendChild(titleEl);
+
+        // this.onResetBtnClickBound = this.onResetBtnClick.bind(this);
+        if (onResetCallback) {
+            this.resetBtn = document.createElement('div');
+            this.resetBtn.classList.add('reset-btn');
+            this.resetBtn.classList.add('button');
+            this.resetBtn.addEventListener('click', onResetCallback);
+
+            const resetBtnTitle = document.createElement('h5');
+            resetBtnTitle.innerHTML = 'Reset';
+
+            this.resetBtn.appendChild(resetBtnTitle);
+
+            upperRowContainer.appendChild(this.resetBtn);
+        }
+        
+        this.el.appendChild(upperRowContainer);
 
         this.arrowToggleContainer = document.createElement('div');
         this.arrowToggleContainer.classList.add('arrow-toggle-container');
@@ -26,8 +46,8 @@ export default class Dropdown {
 
         this.arrowToggleContainer.addEventListener('click', this.toggleBound);
 
-        const listContainer = document.createElement('div');
-        listContainer.classList.add('list-container');
+        this.listContainer = document.createElement('div');
+        this.listContainer.classList.add('list-container');
 
         this.selectedContainer = document.createElement('div');
         this.selectedContainer.classList.add('selected-container');
@@ -39,24 +59,35 @@ export default class Dropdown {
 
         this.el.appendChild(this.selectedContainer);
 
-        this.el.appendChild(listContainer);
+        this.el.appendChild(this.listContainer);
         this.el.appendChild(this.arrowToggleContainer);
 
         this.onItemSelectedBound = this.onItemSelected.bind(this);
 
         this.el.addEventListener('click', this.onItemSelectedBound);
 
+        // this.domItems = {};
+
+        this.createItems(items, initValue);
+
+        this.parentEl = parentEl;
+
+        this.parentEl.appendChild(this.el);
+    }
+
+    createItems(items, initValue, selectedId) {
         this.domItems = {};
 
         for (let i = 0; i < items.length; i++) {
             const itemEl = document.createElement('div');
             itemEl.classList.add('list-item');
+            itemEl.setAttribute('list-id', items[i].ID || 'no-id');
             
             const titleEl = document.createElement('h4');
             titleEl.innerHTML = items[i].title;
             itemEl.appendChild(titleEl);
 
-            listContainer.appendChild(itemEl);
+            this.listContainer.appendChild(itemEl);
 
             const touchEl = document.createElement('div');
             touchEl.classList.add('touch-layer');
@@ -70,12 +101,32 @@ export default class Dropdown {
                 this.selectedContainerTitle.innerHTML = initValue;
             }
 
-            this.domItems[items[i].title] = {el: itemEl, textureItem: items[i]};
+            if (selectedId) {
+                if (selectedId === items[i].id) {
+                    itemEl.classList.add('selected');
+                    this.selectedContainerTitle.innerHTML = items[i].title;
+                }
+            }
+
+            this.domItems[items[i].title] = {el: itemEl, item: items[i]};
         }
 
-        this.parentEl = parentEl;
+    }
 
-        this.parentEl.appendChild(this.el);
+    update(items, resetSelected) {
+        let selectedId = null;
+        while (this.listContainer.firstChild) {
+            const child = this.listContainer.firstChild;
+            if (child.classList.contains('selected')) {
+                selectedId = child.getAttribute('list-id');
+            }
+            this.listContainer.removeChild(this.listContainer.firstChild);
+        }
+
+        this.createItems(items, null, resetSelected ? null : selectedId);
+        if (resetSelected) {
+            this.selectedContainerTitle.innerHTML = 'Nothing selected';
+        }
     }
 
     toggle() {
@@ -112,6 +163,6 @@ export default class Dropdown {
 
         this.selectedContainerTitle.innerHTML = id;
 
-        this.onSelectedCallback(false, this.domItems[id].textureItem, this.title);
+        this.onSelectedCallback(false, this.domItems[id].item, this.title);
     }
 }

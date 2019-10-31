@@ -66,35 +66,6 @@
 			}
 		}
 
-		&.orbit-driver-node {
-			flex-direction: column;
-			.slider-row {
-				width: 100%;
-				display: flex;
-				justify-content: center;
-
-				.vertical-slider {
-					margin-right: 10px;
-
-					&:last-child {
-						margin-right: 0;
-					}
-				}
-			}
-
-			.toggle-start {
-				color: black;
-				display: block;
-				background: yellow;
-				padding: 6px 20px;
-				border-radius: 4px;
-
-				> h4 {
-					color: black;
-				}
-			}
-		}
-
 		&.param-driver-node {
 			flex-direction: column;
 

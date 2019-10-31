@@ -5,6 +5,8 @@ export default class ConnectionWindow{
     constructor(parentEl, enableParamCallback, disableParamCallback, onShowCallback) {
         this.parentEl = parentEl;
 
+        this.currentNode = null;
+
         this.enableParamCallback = enableParamCallback;
         this.disableParamCallback = disableParamCallback;
         this.onShowCallback = onShowCallback;
@@ -48,7 +50,6 @@ export default class ConnectionWindow{
     }
 
     onHideClick(e) {
-
         e.preventDefault();
         e.stopPropagation();
         this.hide();
@@ -56,23 +57,28 @@ export default class ConnectionWindow{
 
     setupForNode(node) {
         this.removeContent();
+        this.currentNode = node;
         const paramContainer = node.nodeType.assignedParamContainer;
 
         const inputParams = paramContainer ? Object.keys(paramContainer.inputParams) : [];
+        
         if (inputParams.length > 0) {
             this.hasParamsToShow = true;
             this.el.classList.add('has-params');
+            const outNode = paramContainer.connectedNodes[0];
+            if (outNode && outNode.updateAllowedInputParams) {
+                outNode.updateAllowedInputParams(paramContainer.inputParams);
+            }
         } else {
             this.hasParamsToShow = false;
             this.el.classList.remove('has-params');
             this.hide();
         }
-        // const inputParams = Object.keys(paramContainer.inputParams);
         inputParams.map(t => {
             const paramObj = paramContainer.inputParams[t];
             const paramItemContainer = document.createElement('div');
             paramItemContainer.className = 'param-item-container';
-
+            
             const paramLabelContainer = document.createElement('div');
             paramLabelContainer.className = 'label-container';
 
@@ -112,30 +118,51 @@ export default class ConnectionWindow{
             const connectBtn = document.createElement('div');
             connectBtn.className = 'connect-btn';
 
+            if (!paramObj.connectionAllowed) {
+                connectBtn.classList.add('not-allowed');
+            }
+
             const connectLabel = document.createElement('h5');
             connectLabel.innerHTML = paramObj.isConnected ? 'Disconnect' : 'Connect';
 
             connectBtn.appendChild(connectLabel);
 
-            connectBtn.addEventListener('click', () => {
-                /* TODO TAKE FROM CONNECTED NODES INSTEAD */
-                const outNode = paramContainer.connectedNodes[0];
-                const inNode = paramContainer.node;
-                if (connectLabel.innerHTML === 'Disconnect') {
-                    if (this.disableParamCallback(paramObj, outNode, inNode)) {
-                        connectLabel.innerHTML = 'Connect';
+            if (paramObj.connectionAllowed) {
+                connectBtn.addEventListener('click', () => {
+                    /* TODO TAKE FROM CONNECTED NODES INSTEAD */
+                    const outNode = paramContainer.connectedNodes[0];
+                    const inNode = paramContainer.node;
+                    if (connectLabel.innerHTML === 'Disconnect') {
+                        this.disableParam(paramObj, outNode, inNode);
+                        // if (this.disableParamCallback(paramObj, outNode, inNode)) {
+                        //     connectLabel.innerHTML = 'Connect';
+                        // }
+                    } else {
+                        this.enableParam(paramObj, outNode, inNode);
+                        // if (this.enableParamCallback(paramObj, outNode, inNode)) {
+                        //     connectLabel.innerHTML = 'Disconnect';
+                        // }
                     }
-                } else {
-                    if (this.enableParamCallback(paramObj, outNode, inNode)) {
-                        connectLabel.innerHTML = 'Disconnect';
-                    }
-                }
-                
-                // console.log('connect btn click', paramContainer);
-            });
-
+                });
+            }
             paramItemContainer.appendChild(connectBtn);
         });
+    }
+
+    enableParam(paramObj, outNode, inNode) {
+        const currentNode = this.currentNode;
+
+        this.enableParamCallback(paramObj, outNode, inNode);
+
+        this.setupForNode(currentNode);
+    }
+
+    disableParam(paramObj, outNode, inNode) {
+        const currentNode = this.currentNode;
+
+        this.disableParamCallback(paramObj, outNode, inNode);
+
+        this.setupForNode(currentNode);
     }
 
     show() {
@@ -143,7 +170,6 @@ export default class ConnectionWindow{
             this.onShowCallback();
             this.el.classList.add('visible');
         }
-        
     }
 
     removeContent() {
@@ -153,6 +179,8 @@ export default class ConnectionWindow{
         }
 
         this.el.classList.remove('has-params');
+
+        this.currentNode = null;
     }
 
     hide() {

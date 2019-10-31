@@ -97,7 +97,7 @@ export default class AvailableConnections{
 				for (let q = 0; q < params.length; q++) {
 					const param = params[q];
 					if (!param.param.helper.isValid(outputNode, inNode, param.param, nodeConnections)) {
-						param.activatePossible();
+						param.activateNotPossible();
 					}
 				}
 				// if (param && param.helper) {

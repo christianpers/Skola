@@ -67,7 +67,7 @@ export default class GraphicNode extends Node{
 	}
 
 	onConnectionAdd(e) {
-		console.log('graphic node on connection add graphic node: ', e.detail, e.type, this.ID);
+		// console.log('graphic node on connection add graphic node: ', e.detail, e.type, this.ID);
 		if (e.detail.inNodeID === this.ID) {
 			const connection = e.detail.connection;
 			const param = window.NS.singletons.ConnectionsManager.params[connection.paramID];
@@ -77,7 +77,7 @@ export default class GraphicNode extends Node{
 	}
 
 	onConnectionRemove(e) {
-		console.log('graphic node on connection remove: ', e.detail, e.type, this.ID);
+		// console.log('graphic node on connection remove: ', e.detail, e.type, this.ID);
 
 		if (e.detail.inNodeID === this.ID) {
 			const connection = e.detail.connection;

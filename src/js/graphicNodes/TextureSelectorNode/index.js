@@ -8,8 +8,6 @@ export default class TextureSelectorNode extends GraphicNode{
 
 		this.initValues = backendData ? backendData.data.visualSettings : null;
 
-		console.log('init: ', this.initValues);
-
 		this.isBackgroundNode = true;
 
 		this.isParam = true;
@@ -79,7 +77,7 @@ export default class TextureSelectorNode extends GraphicNode{
 	}
 
 	onConnectionAdd(e) {
-		console.log('texture node on connection add param: ', e.detail, e.type, this.ID);
+		// console.log('texture node on connection add param: ', e.detail, e.type, this.ID);
 
 		if (e.detail.connection.outNodeID === this.ID) {
 			this.currentOutConnections.push(e.detail);
@@ -95,7 +93,7 @@ export default class TextureSelectorNode extends GraphicNode{
 	}
 
 	onConnectionRemove(e) {
-		console.log('texture node on connection remove: ', e.detail, e.type, this.ID);
+		// console.log('texture node on connection remove: ', e.detail, e.type, this.ID);
 
 		if (e.detail.connection.outNodeID === this.ID) {
 			const connection = e.detail.connection;

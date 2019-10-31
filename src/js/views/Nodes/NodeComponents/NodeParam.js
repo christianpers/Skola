@@ -10,6 +10,8 @@ export default class NodeParam{
 
 		this.isConnected = false;
 
+		this.connectionAllowed = true;
+
 		this.paramContainer = paramContainer;
 
 		// const dotEl = document.createElement('div');
@@ -49,11 +51,15 @@ export default class NodeParam{
 		this.isConnected = false;
 	}
 
-	activatePossible() {
+	activateNotPossible() {
 		this.el.classList.add('not-possible');
 	}
 
-	deactivatePossible() {
+	deactivateNotPossible() {
 		this.el.classList.remove('not-possible');
+	}
+
+	setConnectionAllowed(isAllowed) {
+		this.connectionAllowed = isAllowed;
 	}
 }

@@ -138,4 +138,17 @@ export default class NonagonType {
 	setInactive() {
 		this.parentEl.style.transform = `scale(.6)`;
 	}
+
+	getEnabledParamsForType(type, initObj) {
+		const ret = initObj;
+		const paramContainer = this.paramContainers.find(t => t.parentTitle === type);
+		const keys = Object.keys(paramContainer.inputParams);
+		const keysLength = keys.length;
+		for (let i = 0; i < keysLength; i++) {
+			if (paramContainer.inputParams[keys[i]].isConnected) {
+				ret[paramContainer.inputParams[keys[i]].param.param] = {enabled: true, paramID: paramContainer.inputParams[keys[i]].ID};
+			}
+		}
+		return ret;
+	}
 }

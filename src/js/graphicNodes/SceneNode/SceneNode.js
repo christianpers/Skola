@@ -249,16 +249,14 @@ export default class SceneNode{
 	}
 
 
-	disableInput(outNode, inputType) {
-
-		if (inputType === 'background') {
+	disableInput(outNode) {
+		if (outNode.isBackgroundNode) {
 			this.inputs[inputType].disable();
 
 			this.mesh.material.uniforms.u_texture0.value = null;
 			this.mesh.material.uniforms.u_connection0.value = 0.0;
 			this.mesh.material.uniforms.u_multiConnection.value = 0.0;
-
-		} else if (inputType === 'foreground') {
+		} else if (outNode.isForegroundNode) {
 			this.foregroundRender.removeNode(outNode);
 
 			if (this.foregroundRender.connectedNodes.length === 0) {
@@ -267,12 +265,11 @@ export default class SceneNode{
 				this.mesh.material.uniforms.u_texture1.value = null;
 				this.mesh.material.uniforms.u_connection1.value = 0.0;
 			}
-		} else if (inputType === 'light') {
+		} else if (outNode.isLightNode) {
 			this.inputs[inputType].disable();
 
 			this.foregroundRender.removeLight(outNode);
 		}
-
 		
 		this.enabledInputs = this.enabledInputs.filter(t => t.out.ID !== outNode.ID);
 		const graphicInputs = this.enabledInputs.filter(t => !t.out.isLightNode);

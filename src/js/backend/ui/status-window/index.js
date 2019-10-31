@@ -30,10 +30,25 @@ export default class StatusWindow {
     // console.log('unsaved: ', this.unsavedChanges);
   }
 
+  onNodeRemove(node) {
+    delete this.unsavedChanges[node.ID];
+
+    const keys = Object.keys(this.unsavedChanges);
+    if (keys.length === 0) {
+      this.onSaved();
+    }
+  }
+
   onClick() {
     const getPromise = (id, saveData) => {
       const ref = window.NS.singletons.refs.getNodeRef(id);
-      return ref.update(saveData);
+      if (ref) {
+        return ref.update(saveData);
+      } else {
+        console.log('didnt find ref on update');
+        return Promise.resolve();
+      }
+      
     };
     const keys = Object.keys(this.unsavedChanges);
     const promises = keys.map(t => {

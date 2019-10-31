@@ -105,14 +105,12 @@ export default class Node{
 			}
 		};
 
-		console.log('set init transform', this.ID);
 		this.el.style[window.NS.transform] = `translate3d(${this.moveCoords.offset.x}px, ${this.moveCoords.offset.y}px, 0)`;
 
 		if (this.initNodeConfig) {
 			const ref = getNodeRef(this.ID);
 			window.NS.singletons.refs.addNodeRef(ref);
 			window.NS.singletons.ConnectionsManager.addNode(this);
-			console.log('after add node');
 			this.nodeCreated(nodeConfig);
 		} else {
 			let nodeObj = {
@@ -133,7 +131,6 @@ export default class Node{
 				}
 
 				this.nodeCreated();
-				console.log('node created in db');
 			})
 			.catch(() => {
 				console.log('err creating node in db');

@@ -77,13 +77,18 @@ export default {
                 isModifier: true,
             },
             {
-                type: 'ParamDriver',
-                isModifier: true,
-            },
-            {
                 type: 'OrbitDriver',
                 isModifier: true,
             },
+            {
+                type: 'RotationDriver',
+                isModifier: true,
+            },
+            {
+                type: 'ParamDriver',
+                isModifier: true,
+            },
+            
         ],
         'Ljus': [
             // {

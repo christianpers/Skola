@@ -259,7 +259,7 @@ export default class NodeManager{
 	}
 
 	onInputConnection(outNode, paramContainer) {
-		console.log('on input connection', outNode, paramContainer);
+		// console.log('on input connection', outNode, paramContainer);
 		
 		window.NS.singletons.ConnectionsManager.addNodeConnection(outNode, paramContainer);
 
@@ -307,12 +307,19 @@ export default class NodeManager{
 	}
 
 	remove(node) {
-		// window.NS.singletons.ConnectionsManager.removeParamListener(node);
+		// removes unsaved settings
+		window.NS.singletons.StatusWindow.onNodeRemove(node);
+
+
 		window.NS.singletons.ConnectionsManager.removeNode(node);
 		if (node.isGraphicsNode || node.needsUpdate) {
 			const tempNodes = this._graphicNodes.filter(t => t.ID !== node.ID);
 			this._graphicNodes = tempNodes;
 			this._graphicNodeLength = this._graphicNodes.length;
+		}
+
+		if (node.isRendered || node.isVisualHelper) {
+			window.NS.singletons.CanvasNode.disableInput(node, 'foreground');
 		}
 
 		if (!node.isModifier && !node.isCanvasNode) {

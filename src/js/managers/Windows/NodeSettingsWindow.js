@@ -78,8 +78,17 @@ export default class NodeSettingsWindow{
         this.el.classList.add('has-settings');
     }
 
+    checkForUpdates(node) {
+        if (node.refreshSettings) {
+            console.log('sss');
+            this.removeCurrent();
+            this.setupForNode(node);
+        }
+    }
+
     show() {
         this.onShowCallback();
+
         this.el.classList.add('visible');
 
         this.nodeRemove.show();

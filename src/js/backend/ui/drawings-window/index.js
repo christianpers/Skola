@@ -118,7 +118,6 @@ constructor(parentEl, username, onSelected) {
     const id = e.target.getAttribute('data-id');
     const drawing = this.drawings[id];
     
-    console.log('on existing click: ', id, drawing);
     window.NS.singletons.refs.setDrawingRef(getDrawingRef(id));
     this.onSelected(drawing);
     

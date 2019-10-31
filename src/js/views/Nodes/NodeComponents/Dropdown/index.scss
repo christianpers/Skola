@@ -1,16 +1,39 @@
 .dropdown {
     width: 140px;
-    height: 46px;
+    height: 70px;
     position: relative;
     overflow: hidden;
 
-    > h3 {
+    > h4 {
         padding-left: 3px;
         margin-bottom: 10px;
     }
 
+    > .upper-row-container {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0px;
+        border-bottom: 2px solid yellow;
+        padding-bottom: 6px;
+        align-items: flex-end;
+        padding-left: 3px;
+        padding-right: 3px;
+
+        > .reset-btn {
+            background: yellow;
+            padding: 4px;
+            border-radius: 3px;
+            cursor: pointer;
+
+            > h5 {
+                color: black;
+            }
+        }
+    }
+
     .selected-container {
-        margin-bottom: 6px;
+        margin-top: 10px;
+        margin-bottom: 13px;
 
         > h4 {
             padding: 3px 4px;
@@ -60,8 +83,8 @@
         width: 20px;
         height: 20px;
         position: absolute;
-        right: 0;
-        bottom: 0;
+        right: 9px;
+        bottom: 12px;
         background: black;
         cursor: pointer;
 
