@@ -47,6 +47,8 @@ export default class GraphicsNodeManager{
 		);
 		
 		node.onResize({w: 540, h: 538});
+
+		return node;
 	}
 
 	createCanvasNode() {

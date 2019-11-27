@@ -27,6 +27,7 @@ import DirectionalLightNode from '../graphicNodes/Lights/DirectionalLightNode';
 import PointLightNode from '../graphicNodes/Lights/PointLightNode';
 import TextureSelectorNode from '../graphicNodes/TextureSelectorNode';
 import ParticlesNode from '../graphicNodes/Shapes/ParticlesNode';
+import ShapeNode from '../graphicNodes/ShapeNode';
 
 const nodeMapping = {
   'Kick': {
@@ -66,6 +67,10 @@ const nodeMapping = {
   },
   'Color': {
     obj: ColorNode,
+    isModifier: true,
+  },
+  'Form': {
+    obj: ShapeNode,
     isModifier: true,
   },
   'Directional Light': {

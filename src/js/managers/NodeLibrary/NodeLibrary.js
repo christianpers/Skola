@@ -8,6 +8,9 @@ export default class NodeLibrary{
 
 		this.parentEl = parentEl;
 
+		this.hasDoneInitOnNodeCreation = false;
+		this.currentCreatedNode = null;
+
 		this.onNodeAddedCallback = onNodeAddedCallback;
 		this.onMouseMoveBound = this.onMouseMove.bind(this);
 		this.onMouseUpBound = this.onMouseUp.bind(this);
@@ -102,7 +105,7 @@ export default class NodeLibrary{
 						iconImg.onload = () => {
 							nodeWrapper.appendChild(iconImg);
 						};
-						iconImg.src = `/assets/icons/white/${iconPath}.svg`;
+						iconImg.src = `./assets/icons/white/${iconPath}.svg`;
 					}
 				
 					nodeWrapper.appendChild(type);
@@ -201,7 +204,6 @@ export default class NodeLibrary{
 
 		this.mouseIsDown = true;
 
-		// this.el.style.opacity = .1;
 		this.nodePlaceHelper = new NodePlaceHelper(
 			this.workspaceManager,
 			{x: e.clientX, y: e.clientY},
@@ -215,24 +217,33 @@ export default class NodeLibrary{
 	}
 
 	onMouseMove(e) {
-
 		this.nodePlaceHelper.onMouseMove(e);
-	}
-
-	onMouseUp() {
-
-		this.nodePlaceHelper.onMouseUp();
-
-		// this.el.style.opacity = 1;
-
-		window.removeEventListener('mouseup', this.onMouseUpBound);
-		window.removeEventListener('mousemove', this.onMouseMoveBound);
 
 		const nodePos = this.nodePlaceHelper.getPos();
 
-		if (Math.abs(this.nodePlaceHelper.deltaX) > 4) {
-			this.onNodeAddedCallback(this.nodeToPlaceData, nodePos);
+		if (Math.abs(this.nodePlaceHelper.deltaX) > 4 && !this.currentCreatedNode) {
+			const node = this.onNodeAddedCallback(this.nodeToPlaceData, nodePos);
+			this.currentCreatedNode = node;
+			node.onMouseDown(e, false);
+			return;
 		}
+
+		if (this.currentCreatedNode) {
+			this.currentCreatedNode.onMouseMove(e);
+		}
+	}
+
+	onMouseUp(e) {
+		this.nodePlaceHelper.onMouseUp();
+
+		if (this.currentCreatedNode) {
+			this.currentCreatedNode.onMouseUp(e, false);
+		}
+
+		this.currentCreatedNode = null;
+
+		window.removeEventListener('mouseup', this.onMouseUpBound);
+		window.removeEventListener('mousemove', this.onMouseMoveBound);
 
 		this.nodeToPlaceData = {
 			type: undefined,

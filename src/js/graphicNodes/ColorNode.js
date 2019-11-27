@@ -161,7 +161,7 @@ export default class ColorNode extends GraphicNode{
 	}
 
 	enableOutput(param, connection) {
-		console.log('enable output color');
+		// console.log('enable output color');
 		// super.enableOutput();
 
 		// this.currentOutConnections.push(connection);

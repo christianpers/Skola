@@ -222,6 +222,7 @@ export default class OrbitDriverNode extends GraphicNode{
 				this.initValues.targetNode &&
 				window.NS.singletons.ConnectionsManager.nodes[this.initValues.targetNode]
 			) ? window.NS.singletons.ConnectionsManager.nodes[this.initValues.targetNode].title : null;
+
 			this.centerPointSettings = new CenterPointSettings(
 				bottomContainer, this.onCenterPointSelectedBound, centerPointInitValue, this.onCenterPointListResetClickBound,
 			);
@@ -518,13 +519,15 @@ export default class OrbitDriverNode extends GraphicNode{
 		const yParamKey = keys.filter(t => inputParams[t].param.param === 'y');
 		const zParamKey = keys.filter(t => inputParams[t].param.param === 'z');
 
-		if (inputParams[yParamKey].isConnected) {
-			inputParams[zParamKey].setConnectionAllowed(false);
-		}
+		// CHECK IF INPUT HAS BOTH Y AND Z... OTHERWISE THIS ISNT NEEDED
+		if (inputParams[yParamKey] && inputParams[zParamKey]) {
+			if (inputParams[yParamKey].isConnected) {
+				inputParams[zParamKey].setConnectionAllowed(false);
+			}
 
-		if (inputParams[zParamKey].isConnected) {
-			inputParams[yParamKey].setConnectionAllowed(false);
+			if (inputParams[zParamKey].isConnected) {
+				inputParams[yParamKey].setConnectionAllowed(false);
+			}
 		}
 	}
-
 }

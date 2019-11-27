@@ -5,34 +5,26 @@ export default class CubeNode extends GraphicNode{
 		super();
 
 		this.isForegroundNode = true;
-
-		this.el.classList.add('no-height');
-
-		// this.shader = SHADERS.CIRCLE_SHAPE_MAIN;
-
-		const w = window.innerWidth;
-		const h = window.innerHeight;
-
-		// this.camera = new THREE.PerspectiveCamera( 75, w / h, 0.1, 1000 );
-
-		// this.camera.position.z = 3;
-
-		// this.texture = THREE.ImageUtils.loadTexture( 'assets/test/Image1.png', null );
-		// this.texture.magFilter = THREE.LinearFilter;
-		// this.texture.minFilter = THREE.LinearFilter;
+		this.isRendered = true;
+		this.needsUpdate = true;
 
 		this.geometry = new THREE.BoxGeometry( 3, 3, 3, 10, 10, 10 );
 		this.material = new THREE.MeshPhongMaterial( {  } );
-		this.mesh = new THREE.Mesh(this.geometry, this.material);
+		const mesh = new THREE.Mesh(this.geometry, this.material);
 
-		// const directionalLightBtm = new THREE.DirectionalLight( 0xffffff, 1 );
+		this.mesh = new THREE.Group();
+		this.mesh.add(mesh);
 
-		// directionalLightBtm.position.set(0, 0, 4);
-		// this.scene.add( directionalLightBtm );
+		// const nameTexture = new THREE.CanvasTexture();
 
-		// this.scene.add(this.mesh);
+		var planeGeometry = new THREE.PlaneBufferGeometry( 8, 2, 10, 10 );
+		var planeMaterial = new THREE.MeshBasicMaterial( {side: THREE.DoubleSide} );
 
-		// directionalLightBtm.target = this.mesh;
+		this.nameMesh = new THREE.Mesh(planeGeometry, planeMaterial);
+		this.nameMesh.position.y = 3;
+		this.nameMesh.scale.set(.2, .2, .2);
+
+		this.mesh.add(this.nameMesh);
 
 
 		const textureParam = {
@@ -49,20 +41,20 @@ export default class CubeNode extends GraphicNode{
 			param: 'color',
 			useAsInput: true,
 			defaultVal: new THREE.Color(1,1,1),
-			parent: 'Material',
+			parent: 'Color',
 			paramHelpersType: 'color',
 			needsFrameUpdate: false,
 		};
 
-		const bumpMapParam = {
-			title: 'Displacement',
-			// param: 'displacementMap',
-			param: 'normalMap',
-			useAsInput: true,
-			parent: 'Material',
-			paramHelpersType: 'normalMap',
-			needsFrameUpdate: false,
-		};
+		// const bumpMapParam = {
+		// 	title: 'Displacement',
+		// 	// param: 'displacementMap',
+		// 	param: 'normalMap',
+		// 	useAsInput: true,
+		// 	parent: 'Material',
+		// 	paramHelpersType: 'normalMap',
+		// 	needsFrameUpdate: false,
+		// };
 
 		const positionXParam = {
 			title: 'Position X',
@@ -133,7 +125,7 @@ export default class CubeNode extends GraphicNode{
 		this.params = {
 			textureParam,
 			colorParam,
-			bumpMapParam,
+			// bumpMapParam,
 			positionXParam,
 			positionYParam,
 			positionZParam,
@@ -145,40 +137,53 @@ export default class CubeNode extends GraphicNode{
 		this.paramVals = {};
 	}
 
+	init(
+		pos,
+		parentEl,
+		onDisconnectCallback,
+		onInputConnectionCallback,
+		type,
+		initData,
+		onNodeRemove,
+		isModifier,
+		onNodeDragStart,
+		onNodeDragMove,
+		onNodeDragRelease,
+		addCallback,
+	) {
+		super.init(
+			pos,
+			parentEl,
+			onDisconnectCallback,
+			onInputConnectionCallback,
+			type,
+			initData,
+			onNodeRemove,
+			isModifier,
+			onNodeDragStart,
+			onNodeDragMove,
+			onNodeDragRelease,
+			addCallback,
+		);
+
+		this.outputDataConnection = null;
+
+		const canvas = this.nodeTitle.canvas;
+		this.nameTexture = new THREE.CanvasTexture(canvas);
+		this.nameMesh.material.map = this.nameTexture;
+		this.nameTexture.needsUpdate = true;
+
+		this.enabledOutputs = [];
+	}
+
 	getMesh() {
 		return this.mesh;
 	}
 
-	enableOutput(param, connection) {
-		super.enableOutput();
-
-		this.currentOutConnections.push(connection);
-		this.currentOutConnectionsLength = this.currentOutConnections.length;
-	}
-
-	disableOutput(nodeIn, param) {
-		const tempOutConnections = this.currentOutConnections.map(t => t);
-
-		let paramConnections = tempOutConnections.filter(t => t.param);
-		let nodeConnections = tempOutConnections.filter(t => !t.param);
-
-		if (param) {
-			paramConnections = paramConnections.filter(t => t.param && (t.param.title !== param.title));
-		} else {
-			nodeConnections = nodeConnections.filter(t => t.in.ID !== nodeIn.ID);
-		}
-		
-		const finalConnections = paramConnections.concat(nodeConnections);
-		this.currentOutConnections = finalConnections;
-		this.currentOutConnectionsLength = this.currentOutConnections.length;
-
-		if (this.currentOutConnectionsLength <= 0) {
-			super.disableOutput();
-
-		}	
-	}
-
 	update() {
-		super.update();
+	}
+
+	render() {
+
 	}
 }

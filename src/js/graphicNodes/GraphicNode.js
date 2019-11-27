@@ -67,7 +67,6 @@ export default class GraphicNode extends Node{
 	}
 
 	onConnectionAdd(e) {
-		// console.log('graphic node on connection add graphic node: ', e.detail, e.type, this.ID);
 		if (e.detail.inNodeID === this.ID) {
 			const connection = e.detail.connection;
 			const param = window.NS.singletons.ConnectionsManager.params[connection.paramID];
@@ -77,8 +76,6 @@ export default class GraphicNode extends Node{
 	}
 
 	onConnectionRemove(e) {
-		// console.log('graphic node on connection remove: ', e.detail, e.type, this.ID);
-
 		if (e.detail.inNodeID === this.ID) {
 			const connection = e.detail.connection;
 			const param = window.NS.singletons.ConnectionsManager.params[connection.paramID];
@@ -94,12 +91,10 @@ export default class GraphicNode extends Node{
 	}
 
 	updateParam(paramObj, outNode) {
-		// console.log('update', paramObj.param);
 		ParamHelpers[paramObj.param.paramHelpersType].update(this, outNode, paramObj.param);
 	}
 
 	disableParam(paramObj, outNode) {
-		console.log('disable param');
 		paramObj.disable();
 
 		ParamHelpers[paramObj.param.paramHelpersType].disconnect(this, paramObj.param, outNode);

@@ -384,8 +384,8 @@ button:focus {
 
 .node{
 	position: absolute;
-	width: 260px;
-	height: 260px;
+	width: 200px;
+	height: 200px;
 	top: 0;
 	left: 0;
 	cursor: grab;
@@ -786,12 +786,12 @@ button:focus {
 
 .node-param-container {
 	width: 60px;
-    height: 160px;
+    height: 140px;
     position: absolute;
     // background: rgba(255,255,255,0.3);
     top: 50%;
     left: 50%;
-    margin-top: -160px;
+    margin-top: -140px;
     margin-left: -30px;
 	transform-origin: center bottom;
 	

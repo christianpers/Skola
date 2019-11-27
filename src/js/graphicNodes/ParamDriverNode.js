@@ -44,7 +44,6 @@ export default class ParamDriverNode extends GraphicNode{
 	}
 
 	onInputChange(e) {
-		console.log('input change');
 		this.updateVisualSettings();
 		this.reset();
 	}
@@ -197,7 +196,6 @@ export default class ParamDriverNode extends GraphicNode{
 	}
 
 	onConnectionAdd(e) {
-		console.log('graphic node on connection add param: ', e.detail, e.type, this.ID);
 
 		if (e.detail.connection.outNodeID === this.ID) {
 			// const connection = e.detail.connection;
@@ -211,7 +209,6 @@ export default class ParamDriverNode extends GraphicNode{
 	}
 
 	onConnectionRemove(e) {
-		console.log('graphic node on connection remove: ', e.detail, e.type, this.ID);
 
 		if (e.detail.connection.outNodeID === this.ID) {
 			const connection = e.detail.connection;

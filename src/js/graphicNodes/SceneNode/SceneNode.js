@@ -248,8 +248,7 @@ export default class SceneNode{
 		}
 	}
 
-
-	disableInput(outNode) {
+	disableInput(outNode, inputType) {
 		if (outNode.isBackgroundNode) {
 			this.inputs[inputType].disable();
 
@@ -260,14 +259,15 @@ export default class SceneNode{
 			this.foregroundRender.removeNode(outNode);
 
 			if (this.foregroundRender.connectedNodes.length === 0) {
-				this.inputs[inputType].disable();
-
+				if (this.inputs[inputType]) {
+					this.inputs[inputType].disable();
+				}
+				
 				this.mesh.material.uniforms.u_texture1.value = null;
 				this.mesh.material.uniforms.u_connection1.value = 0.0;
 			}
 		} else if (outNode.isLightNode) {
 			this.inputs[inputType].disable();
-
 			this.foregroundRender.removeLight(outNode);
 		}
 		

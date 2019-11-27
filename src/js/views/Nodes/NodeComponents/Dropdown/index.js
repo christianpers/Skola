@@ -38,7 +38,7 @@ export default class Dropdown {
         this.arrowToggleContainer.classList.add('arrow-toggle-container');
 
         const arrowEl = document.createElement('img');
-        arrowEl.src = '/assets/arrow-down-yellow.svg';
+        arrowEl.src = './assets/arrow-down-yellow.svg';
 
         this.arrowToggleContainer.appendChild(arrowEl);
 

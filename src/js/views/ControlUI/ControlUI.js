@@ -19,7 +19,7 @@ export default class ControlUI{
 		playBtn.className = 'control-play-btn control-btn';
 
 		const playImg = document.createElement('img');
-		playImg.src = '/assets/play-button.svg';
+		playImg.src = './assets/play-button.svg';
 
 		playBtn.appendChild(playImg);
 
@@ -29,7 +29,7 @@ export default class ControlUI{
 		pauseBtn.className = 'control-pause-btn control-btn';
 
 		const pauseImg = document.createElement('img');
-		pauseImg.src = '/assets/pause-button.svg';
+		pauseImg.src = './assets/pause-button.svg';
 
 		pauseBtn.appendChild(pauseImg);
 
@@ -37,7 +37,7 @@ export default class ControlUI{
 		refreshBtn.className = 'control-refresh-btn control-btn';
 
 		const refreshImg = document.createElement('img');
-		refreshImg.src = '/assets/refresh-button.svg';
+		refreshImg.src = './assets/refresh-button.svg';
 
 		const disabledOverlay = document.createElement('div');
 		disabledOverlay.className = 'control-disabled';

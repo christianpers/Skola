@@ -2,22 +2,22 @@ export default class NodePlaceHelper{
 	constructor(workspaceManager, pos, isModifier, shape) {
 
 		this.workspaceManager = workspaceManager;
-		this.parentEl = workspaceManager.el;
-		this.el = document.createElement('div');
-		this.el.style.width = isModifier ? '44px' : '260px';
-		this.el.style.height = isModifier ? '44px' : '260px';
-		this.el.style.position = 'absolute';
-		this.el.style.top = isModifier ? '-22px' : '-130px';
-		this.el.style.left = isModifier ? '-22px' : '-130px';
+		// this.parentEl = workspaceManager.el;
+		// this.el = document.createElement('div');
+		// this.el.style.width = isModifier ? '44px' : '260px';
+		// this.el.style.height = isModifier ? '44px' : '260px';
+		// this.el.style.position = 'absolute';
+		// this.el.style.top = isModifier ? '-22px' : '-130px';
+		// this.el.style.left = isModifier ? '-22px' : '-130px';
 		// this.el.style.background = 'rgba(50, 50, 50, .9)';
 		// this.el.style.borderRadius = '4px';
 		this.isModifier = isModifier;
 
 		// const shape = isModifier ? this.getTriangleShape() : this.getNonagonShape();
 
-		this.el.appendChild(shape);
+		// this.el.appendChild(shape);
 
-		this.parentEl.appendChild(this.el);
+		// this.parentEl.appendChild(this.el);
 
 		this.moveCoords = {
 			start: {
@@ -78,7 +78,7 @@ export default class NodePlaceHelper{
 		const workspaceOffsetX = Math.abs(this.workspaceManager.moveCoords.offset.x);
 		const workspaceOffsetY = Math.abs(this.workspaceManager.moveCoords.offset.y);
 
-		this.el.style[window.NS.transform] = `translate3d(${deltaX + workspaceOffsetX}px, ${deltaY + workspaceOffsetY}px, 0)`;
+		// this.el.style[window.NS.transform] = `translate3d(${deltaX + workspaceOffsetX}px, ${deltaY + workspaceOffsetY}px, 0)`;
 
 		this.deltaX = deltaX;
 		this.deltaY = deltaY;
@@ -86,6 +86,6 @@ export default class NodePlaceHelper{
 
 	onMouseUp(e) {
 
-		this.parentEl.removeChild(this.el);
+		// this.parentEl.removeChild(this.el);
 	}
 }

@@ -14,11 +14,6 @@ export default class NodeParam{
 
 		this.paramContainer = paramContainer;
 
-		// const dotEl = document.createElement('div');
-		// dotEl.className = 'dot';
-
-		// this.el.appendChild(dotEl);
-
 		this.labelEl = document.createElement('p');
 		
 		this.labelEl.className = 'label';
@@ -29,16 +24,6 @@ export default class NodeParam{
 		parentEl.appendChild(this.el);
 
 		window.NS.singletons.ConnectionsManager.addParam(this);
-
-		// this.el.addEventListener('click', (e) => {
-		// 	console.log('param click');
-		// 	e.preventDefault();
-		// 	e.stopPropagation();
-		// 	onClickCallback(param);
-		// });
-
-		// this.offsetLeft = undefined;
-		// this.offsetTop = undefined;
 	}
 
 	enable() {

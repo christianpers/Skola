@@ -1,5 +1,5 @@
 export default {
-    audio: {
+    // audio: {
         // audio: [
         //     {
         //         type: 'Oscillator',
@@ -14,14 +14,14 @@ export default {
         //         type: 'Speaker',
         //     },
         // ],
-        synthar: [
-            {
-                type: 'Kick',
-            },
-            {
-                type: 'FM Synth',
-            },
-        ],
+        // synthar: [
+        //     // {
+        //     //     type: 'Kick',
+        //     // },
+        //     // {
+        //     //     type: 'FM Synth',
+        //     // },
+        // ],
         // data: [
         //     {
         //         type: 'LFO',
@@ -30,17 +30,17 @@ export default {
         //         type: 'Envelope',
         //     }
         // ],
-        triggers: [
-            {
-                type: 'SequencerNode',
-            }
-        ],
-        'Ljud analys': [
-            {
-                type: 'Ljudvåg',
-            },
-        ]
-    },
+        // triggers: [
+        //     {
+        //         type: 'SequencerNode',
+        //     }
+        // ],
+        // 'Ljud analys': [
+        //     {
+        //         type: 'Ljudvåg',
+        //     },
+        // ]
+    // },
     graphics: {
         '3D - Shapes': [
             {
@@ -86,6 +86,10 @@ export default {
             },
             {
                 type: 'ParamDriver',
+                isModifier: true,
+            },
+            {
+                type: 'Form',
                 isModifier: true,
             },
             

@@ -60,6 +60,10 @@ const isValidParamPositionInput = (outNode, inNode, param) => {
 		return false;
 	}
 
+	if (outNode.isShapeNode) {
+		return false;
+	}
+
 	if (!param) {
 		return false;
 	}
@@ -130,7 +134,7 @@ const onTargetParamDisconnect = (inNode, param, outNode) => {
 const onParticleParamUpdate = () => {};
 
 const isValidParticleFormInput = (outNode) => {
-	return !!outNode.curve;
+	return outNode.isShapeNode;
 };
 
 const onParticleSizeParamUpdate = (inNode, outNode) => {

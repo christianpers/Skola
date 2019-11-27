@@ -29,8 +29,6 @@ export default class ModifierCollisionManager{
             
             if (dist < 160) {
                 this.nonagons[i].setSelected();
-                // const nodeSelectedEvent = new CustomEvent('node-selected', { detail: this.nonagons[i] });
-                // document.documentElement.dispatchEvent(nodeSelectedEvent);
             } else {
                 this.nonagons[i].setNotSelected();
             }
@@ -38,21 +36,21 @@ export default class ModifierCollisionManager{
     }
 
     onModifierDragStart(activeModifier, e) {
+        console.log('active modifier', activeModifier);
         this.activeModifier = activeModifier;
-        clearTimeout(this.disconnectTimer);
         this.overNonagonCheck();
-        if (this.activeModifier.isConnected) {
-            this.disconnectTimer = setTimeout(() => {
-                console.log('deactivate as child');
-                this.activeModifier.deactivateAsChild(e);
-            }, 300);
-            // this.showConnectionsWindow(this.activeModifier.assignedParamContainer);
-        }
     }
     
 
-    onModifierDragMove() {
+    onModifierDragMove(e, localDelta) {
         this.overNonagonCheck();
+
+        if (this.activeModifier.isConnected) {
+            if (Math.abs(localDelta.x) > 5 || Math.abs(localDelta.y) > 5) {
+                this.activeModifier.deactivateAsChild(e);
+            }
+            return;
+        }
 
         if (!this.currentCloseParamContainer) {
             for (let i=0; i < this.nonagons.length; i++) {
@@ -89,7 +87,6 @@ export default class ModifierCollisionManager{
     }
 
     onModifierDragRelease() {
-        clearTimeout(this.disconnectTimer);
         if (
             (this.currentCloseParamContainer && !this.currentCloseParamContainer.isDisabledForConnection)
             && this.activeModifier && !this.activeModifier.isConnected

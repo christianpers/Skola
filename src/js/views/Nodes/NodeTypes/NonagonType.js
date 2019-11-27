@@ -11,10 +11,12 @@ export default class NonagonType {
 
         this.parentEl.classList.add('nonagon-node');
 
+		this.size = 200;
+
         const nonagonSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-		nonagonSvg.setAttribute("width", "260px");
-		nonagonSvg.setAttribute("height", "260px");
-		nonagonSvg.setAttribute("viewBox", "0 0 260 260");
+		nonagonSvg.setAttribute("width", `${this.size}px`);
+		nonagonSvg.setAttribute("height", `${this.size}px`);
+		nonagonSvg.setAttribute("viewBox", `0 0 ${this.size} ${this.size}`);
 		
 		this.nonagonSvg = nonagonSvg;
         
@@ -65,7 +67,7 @@ export default class NonagonType {
 
 		const angle = 360 / paramParents.length;
 		const sides = paramParents.length;
-		const radius = 130;
+		const radius = this.size / 2;
 		const a = ((Math.PI * 2) / sides);
 		const points = [];
 		for (let i = 0; i < sides; i++) {
@@ -85,9 +87,9 @@ export default class NonagonType {
 		pathStr+= 'Z';
 
 		const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
-		g.setAttribute('transform', 'translate(130, 130) rotate(-90)');
-		g.setAttribute("width", "260");
-		g.setAttribute("height", "260");
+		g.setAttribute('transform', `translate(${this.size / 2}, ${this.size / 2}) rotate(-90)`);
+		g.setAttribute("width", `${this.size}`);
+		g.setAttribute("height", `${this.size}`);
 
 		const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
 		path.setAttribute("d", pathStr);

@@ -1,7 +1,5 @@
 import GraphicNode from '../GraphicNode';
 
-import NodeOutput from '../../views/Nodes/NodeComponents/NodeOutput';
-
 export default class SphereNode extends GraphicNode{
 	constructor() {
 		super();
@@ -36,6 +34,7 @@ export default class SphereNode extends GraphicNode{
 			parent: 'Texture',
 			paramHelpersType: 'texture',
 			needsFrameUpdate: false,
+			defaultConnect: true,
 		};
 
 		const colorParam = {
@@ -46,6 +45,7 @@ export default class SphereNode extends GraphicNode{
 			parent: 'Color',
 			paramHelpersType: 'color',
 			needsFrameUpdate: false,
+			defaultConnect: true,
 		};
 
 		// const bumpMapParam = {
@@ -67,6 +67,7 @@ export default class SphereNode extends GraphicNode{
 			needsFrameUpdate: false,
 			minMax: {min: -2, max: 2},
 			defaultVal: 0,
+			defaultConnect: true,
 		};
 
 		const positionYParam = {
@@ -78,6 +79,7 @@ export default class SphereNode extends GraphicNode{
 			needsFrameUpdate: false,
 			minMax: {min: -2, max: 2},
 			defaultVal: 0,
+			defaultConnect: false,
 		};
 
 		const positionZParam = {
@@ -89,6 +91,7 @@ export default class SphereNode extends GraphicNode{
 			needsFrameUpdate: false,
 			minMax: {min: -2, max: 2},
 			defaultVal: 0,
+			defaultConnect: true,
 		};
 
 		const rotationXParam = {
@@ -100,6 +103,7 @@ export default class SphereNode extends GraphicNode{
 			needsFrameUpdate: false,
 			minMax: {min: -6, max: 6},
 			defaultVal: 0,
+			defaultConnect: false,
 		};
 
 		const rotationYParam = {
@@ -111,6 +115,7 @@ export default class SphereNode extends GraphicNode{
 			needsFrameUpdate: false,
 			minMax: {min: -6, max: 6},
 			defaultVal: 0,
+			defaultConnect: true,
 		};
 
 		const scaleParam = {
@@ -122,6 +127,7 @@ export default class SphereNode extends GraphicNode{
 			needsFrameUpdate: false,
 			minMax: {min: .1, max: 6},
 			defaultVal: 1,
+			defaultConnect: true,
 		};
 
 		this.params = {
@@ -168,30 +174,7 @@ export default class SphereNode extends GraphicNode{
 			addCallback,
 		);
 
-		// this.onOutputClickGraphicsBound = this.onOutputClickGraphics.bind(this);
-		// this.onOutputClickTargetBound = this.onOutputClickTarget.bind(this);
-
-		// const outputContainer = document.createElement('div');
-		// outputContainer.className = 'multiple-outputs';
-
-		// this.bottomPartEl.appendChild(outputContainer);
-
-		// this.outputGraphics = new NodeOutput(outputContainer, this.onOutputClickGraphicsBound, false, false, false, true);
-		// this.outputTarget = new NodeOutput(outputContainer, this.onOutputClickTargetBound, true, false, false, true);
-
 		this.outputDataConnection = null;
-
-		
-
-		// this.outputs = {
-		// 	'sphere-graphics': this.outputGraphics,
-		// 	'sphere-target': this.outputTarget,
-		// };
-
-		// this.inDotPos = {
-		// 	'sphere-graphics': null,
-		// 	'sphere-target': null,
-		// };
 
 		const canvas = this.nodeTitle.canvas;
 		this.nameTexture = new THREE.CanvasTexture(canvas);
@@ -200,52 +183,6 @@ export default class SphereNode extends GraphicNode{
 
 		this.enabledOutputs = [];
 	}
-
-	// onOutputClickGraphics(pos) {
-
-	// 	this.onConnectingCallback(this, pos, 'sphere-graphics');
-	// }
-
-	// onOutputClickTarget(pos) {
-
-	// 	this.onConnectingCallback(this, pos, 'sphere-target');
-	// }
-
-	// getOutputPos(type) {
-	// 	const obj = {
-	// 		x: this.outputs[type].el.offsetLeft,
-	// 		y: this.outputs[type].el.offsetTop,
-	// 	};
-
-	// 	return obj;
-	// }
-
-	// getOutDotPos(el, outputType) {
-	// 	if (!this.inDotPos[outputType]) {
-	// 		this.inDotPos[outputType] = this.outputs[outputType].el.getBoundingClientRect();
-	// 	}
-
-	// 	return this.inDotPos[outputType];
-	// }
-
-	// getOutputEl(outputType) {
-	// 	return this.outputs[outputType];
-	// }
-
-	// enableOutput(param, connectionData) {
-	// 	const type = connectionData.outputType;
-
-	// 	this.outputs[type].enable();
-
-	// 	this.enabledOutputs.push(type);
-
-	// }
-
-	// disableOutput(inNode, param, outputType) {
-	// 	this.outputs[outputType].disable();
-
-	// 	this.enabledOutputs = this.enabledOutputs.filter(t => t !== outputType);
-	// }
 
 	getMesh() {
 		return this.mesh;

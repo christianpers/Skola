@@ -6,15 +6,14 @@ import GlobalAudioSettings from './managers/GlobalAudioSettings';
 import WorkspaceScaleManager from './managers/WorkspaceManager/WorkspaceScaleManager';
 
 import StatusWindow from './backend/ui/status-window';
+import DeleteView from './views/DeleteView';
 
 import ConnectionsManager from './managers/ConnectionsManager';
 
 import Tone from 'tone';
 
 export default class Main{
-
 	constructor(){
-
 		Tone.Transport.bpm.value = 140;
 		Tone.Transport.start();
 
@@ -23,7 +22,6 @@ export default class Main{
 		window.addEventListener('popstate', this.onPopStateChange.bind(this));
 
 		window.addEventListener('resize', () => {
-
 			this.onResize();
 		});
 
@@ -39,7 +37,7 @@ export default class Main{
 		// this.globalAudioSettings = new GlobalAudioSettings(this.workspaceManager.containerEl);
 
 		this.onResize();
-		
+
 		this.nodeLibrary = new NodeLibrary(
 			document.body,
 			this.onNodeAddedFromLibraryBound,
@@ -52,6 +50,8 @@ export default class Main{
 		window.NS.singletons.ConnectionsManager = new ConnectionsManager();
 
 		this.keyboardManager = new KeyboardManager();
+
+		window.NS.singletons.DeleteView = new DeleteView(this.workspaceManager.containerEl);
 	}
 
 	init(selectedDrawing) {
@@ -91,7 +91,8 @@ export default class Main{
 	// }
 
 	onNodeAddedFromLibrary(type, data, e) {
-		this.nodeManager.initNode(type, data, e);
+		const createdNode = this.nodeManager.initNode(type, data, e);
+		return createdNode;
 	}
 
 	onPopStateChange(e) {

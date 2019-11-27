@@ -162,8 +162,8 @@ export default class NodeManager{
 	}
 
 	// EVENT ONLY FOR MODIFIERS
-	onNodeDragMove() {
-		this.modifierCollisionManager.onModifierDragMove();
+	onNodeDragMove(e, localDelta) {
+		this.modifierCollisionManager.onModifierDragMove(e, localDelta);
 	}
 
 	// EVENT ONLY FOR MODIFIERS
@@ -173,27 +173,23 @@ export default class NodeManager{
 	}
 
 	initNode(nodeData, e, backendData) {
+		let createdNode = null;
 		if (nodeData.type === 'graphics') {
 			const hasSceneNode = this._graphicNodes.some(t => t.isCanvasNode);
 			if (hasSceneNode && nodeData.data.type === 'Canvas') {
 				return;
 			}
-			this.graphicsNodeManager.createNode(nodeData.data, e, backendData);
+			createdNode = this.graphicsNodeManager.createNode(nodeData.data, e, backendData);
 		} else {
-			this.audioNodeManager.createNode(nodeData.data, e, backendData);
+			createdNode = this.audioNodeManager.createNode(nodeData.data, e, backendData);
 		}
+
 		this.nodeLibrary.hide();
+		return createdNode;
+		
 	}
 
 	onNodeRemove(node) {
-		// const connections = this._nodeConnections.filter(t => t.out.ID === node.ID || t.in.ID === node.ID);
-
-		// for (let i = 0; i < connections.length; i++) {
-		// 	this.removeConnection(connections[i]);
-		// }
-
-		// window.NS.singletons.ConnectionsManager.removeNodeConnection
-
 		this.remove(node);
 	}
 
@@ -244,7 +240,6 @@ export default class NodeManager{
 	}
 
 	disableParamConnection(paramObj, outNode, inNode) {
-		console.log('remove param connection', paramObj.ID);
 		updateNode({
 			paramConnections: firebase.firestore.FieldValue.arrayRemove(paramObj.ID),
 		}, outNode.ID, true)
@@ -260,6 +255,12 @@ export default class NodeManager{
 
 	onInputConnection(outNode, paramContainer) {
 		// console.log('on input connection', outNode, paramContainer);
+
+		/* TODO Connect params that has prop defaultConnect  soooo maybe filter on that key */
+		const paramKeys = Object.keys(paramContainer.inputParams);
+		if (paramKeys.length === 1) {
+
+		}
 		
 		window.NS.singletons.ConnectionsManager.addNodeConnection(outNode, paramContainer);
 
@@ -267,7 +268,7 @@ export default class NodeManager{
 	};
 
 	onDisconnect(outNode, paramContainer) {
-		console.log('on disconnect');
+		// console.log('on disconnect');
 		const params = Object.keys(paramContainer.inputParams);
 		for (let i = 0; i < params.length; i++) {
 			const param = paramContainer.inputParams[params[i]];
@@ -309,7 +310,6 @@ export default class NodeManager{
 	remove(node) {
 		// removes unsaved settings
 		window.NS.singletons.StatusWindow.onNodeRemove(node);
-
 
 		window.NS.singletons.ConnectionsManager.removeNode(node);
 		if (node.isGraphicsNode || node.needsUpdate) {

@@ -5,7 +5,6 @@ import NodeTitle from './NodeComponents/NodeTitle/NodeTitle';
 import { createNode, updateNode } from '../../backend/set';
 import { getNodeRef } from '../../backend/get';
 
-
 export default class Node{
 	constructor() {
 		this.hasOutput = true;
@@ -15,6 +14,7 @@ export default class Node{
 		this.needsUpdate = false;
 		this.hasMultipleOutputs = false;
 		this.returnsSingleNumber = false;
+		this.isShapeNode = false;
 
 		this.title = 'Enter node title';
 
@@ -76,6 +76,7 @@ export default class Node{
 		
 
 		this.lastDelta = {x: 0, y: 0};
+		this.localDelta = {x: 0, y: 0};
 
 		this.parentEl.appendChild(this.el);
 
@@ -92,6 +93,10 @@ export default class Node{
 				}
 				this.nodeTitle = new NodeTitle(this.upperContainer, this);
 			}
+
+			this.nodeType = this.isModifier
+				? new TriangleType(this.el, this.innerContainer, this.params, this) : new NonagonType(this.innerContainer, this.params, this, nodeConfig);
+
 		}
 
 		this.moveCoords = {
@@ -136,17 +141,12 @@ export default class Node{
 				console.log('err creating node in db');
 			});
 		}
-		
-		// this.remove = new NodeRemove(optionWrapper, this.onRemoveClickBound);
 
 		this.onMouseDownBound = this.onMouseDown.bind(this);
 		this.onMouseMoveBound = this.onMouseMove.bind(this);
 		this.onMouseUpBound = this.onMouseUp.bind(this);
 
 		this.activateDrag();
-
-		
-		// this.setNotSelected();
 	}
 
 	// CALLED FROM CONNECTIONSMANAGER
@@ -156,8 +156,8 @@ export default class Node{
 
 	nodeCreated(nodeConfig) {
 		if (!this.isCanvasNode) {
-			this.nodeType = this.isModifier
-				? new TriangleType(this.el, this.innerContainer, this.params, this) : new NonagonType(this.innerContainer, this.params, this, nodeConfig);
+			// this.nodeType = this.isModifier
+			// 	? new TriangleType(this.el, this.innerContainer, this.params, this) : new NonagonType(this.innerContainer, this.params, this, nodeConfig);
 
 			const typeStr = this.type;
 
@@ -168,7 +168,7 @@ export default class Node{
 			// console.log(iconPath);
 
 			const iconImg = document.createElement('img');
-			iconImg.src = `/assets/icons/${iconPath}.svg`;
+			iconImg.src = `./assets/icons/${iconPath}.svg`;
 
 			this.innerContainer.appendChild(iconImg);
 		}
@@ -279,7 +279,6 @@ export default class Node{
 		const nodeBoundingRect = paramContainer.node.el.getBoundingClientRect();
 
 		if (fromNodeRemove) {
-		
 			const offsetX = pos.x - nodeBoundingRect.x;
 			const offsetY = pos.y - nodeBoundingRect.y;
 			// this.moveCoords.start.x = e.x - (paramContainer.node.moveCoords.offset.x + offsetX);
@@ -396,7 +395,7 @@ export default class Node{
 		this.parentEl.removeChild(this.el);
 	}
 
-	onMouseDown(e) {
+	onMouseDown(e, addListener = true) {
 		if (e.target.nodeName === 'INPUT' || e.target.classList.contains('prevent-drag')) {
 			return;
 		}
@@ -417,18 +416,32 @@ export default class Node{
 		this.lastDelta.x = 0;
 		this.lastDelta.y = 0;
 
+		this.localDelta.x = e.x;
+		this.localDelta.y = e.y;
+
 		if (this.isModifier) {
 			this.onNodeDragStart(this, e);
 		}
 
-		window.addEventListener('mouseup', this.onMouseUpBound);
-		window.addEventListener('mousemove', this.onMouseMoveBound);
+		window.NS.singletons.DeleteView.onNodeMoveStart();
+
+		if (addListener) {
+			console.log('added listerns');
+			window.addEventListener('mouseup', this.onMouseUpBound);
+			window.addEventListener('mousemove', this.onMouseMoveBound);
+		}
+		
 	}
 
 	onMouseMove(e) {
 
+		const localDelta = {
+			x: e.x - this.localDelta.x,
+			y: e.y - this.localDelta.y,
+		};
+
 		if (this.isModifier) {
-			this.onNodeDragMove();
+			this.onNodeDragMove(e, localDelta);
 		}
 
 		const deltaX = e.x - this.moveCoords.start.x;
@@ -440,15 +453,34 @@ export default class Node{
 		this.lastDelta.x = deltaX;
 		this.lastDelta.y = deltaY;
 
+		if (this.isModifier && this.nodeType.isConnected) {
+			return;
+		}
 		this.el.style[window.NS.transform] = `translate3d(${deltaX}px, ${deltaY}px, 0)`;
+
+		const pos = this.getPos();
+		window.NS.singletons.DeleteView.onNodeMove(pos.x, pos.y);
 	}
 
-	onMouseUp(e) {
+	onMouseUp(e, removeListener = true) {
+		if (window.NS.singletons.DeleteView.deleteOnNodeRelease()) {
+			if (this.isModifier) {
+				this.onNodeDragRelease();
+			}
+			window.removeEventListener('mouseup', this.onMouseUpBound);
+			window.removeEventListener('mousemove', this.onMouseMoveBound);
+
+			this.onRemoveClick();
+			return;
+		}
+
 		if (this.isModifier) {
 			this.onNodeDragRelease();
 		}
-		window.removeEventListener('mouseup', this.onMouseUpBound);
-		window.removeEventListener('mousemove', this.onMouseMoveBound);
+		if (removeListener) {
+			window.removeEventListener('mouseup', this.onMouseUpBound);
+			window.removeEventListener('mousemove', this.onMouseMoveBound);
+		}
 
 		if (this.lastDelta.x === 0 && this.lastDelta.y === 0) {
 			return;

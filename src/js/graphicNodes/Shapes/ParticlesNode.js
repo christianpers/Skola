@@ -8,13 +8,9 @@ export default class ParticlesNode extends GraphicNode{
 
 		this.isForegroundNode = true;
 		this.needsUpdate = true;
+		this.isRendered = true;
 
-		this.el.classList.add('no-height');
-
-		const w = window.innerWidth;
-        const h = window.innerHeight;
-        
-        this.particles = 600;
+		this.particles = 600;
 
         const uniforms = THREE.UniformsUtils.merge(
             [THREE.UniformsLib['lights'],
@@ -60,12 +56,21 @@ export default class ParticlesNode extends GraphicNode{
         this.geometry.addAttribute( 'position', new THREE.Float32BufferAttribute( positions, 3 ).setDynamic(true));
         this.geometry.addAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ).setDynamic(true) );
         this.geometry.addAttribute( 'size', new THREE.Float32BufferAttribute( sizes, 1 ).setDynamic( true ) );
-        this.mesh = new THREE.Points( this.geometry, this.material );
+        this.pointsMesh = new THREE.Points( this.geometry, this.material );
 
-		// this.geometry = new THREE.SphereGeometry(2, 32, 32);
-		// this.material = new THREE.MeshPhongMaterial( {  } );
-		// this.mesh = new THREE.Mesh(this.geometry, this.material);
+		this.mesh = new THREE.Group();
+		this.mesh.add(this.pointsMesh);
 
+		// const nameTexture = new THREE.CanvasTexture();
+
+		var planeGeometry = new THREE.PlaneBufferGeometry( 8, 2, 10, 10 );
+		var planeMaterial = new THREE.MeshBasicMaterial( {side: THREE.DoubleSide} );
+
+		this.nameMesh = new THREE.Mesh(planeGeometry, planeMaterial);
+		this.nameMesh.position.y = 3;
+		this.nameMesh.scale.set(.2, .2, .2);
+
+		this.mesh.add(this.nameMesh);
 		// const textureParam = {
 		// 	title: 'Texture',
 		// 	param: 'map',
@@ -83,6 +88,7 @@ export default class ParticlesNode extends GraphicNode{
 			paramHelpersType: 'particleColor',
 			needsFrameUpdate: false,
 			defaultVal: new THREE.Color(this.currentParticleColor[0], this.currentParticleColor[1], this.currentParticleColor[2]),
+			defaultConnect: true,
 		};
 
 		const positionXParam = {
@@ -94,6 +100,7 @@ export default class ParticlesNode extends GraphicNode{
 			needsFrameUpdate: false,
 			minMax: {min: -2, max: 2},
 			defaultVal: 0,
+			defaultConnect: true,
 		};
 
 		const positionYParam = {
@@ -105,6 +112,7 @@ export default class ParticlesNode extends GraphicNode{
 			needsFrameUpdate: false,
 			minMax: {min: -2, max: 2},
 			defaultVal: 0,
+			defaultConnect: false,
 		};
 
 		const positionZParam = {
@@ -116,6 +124,7 @@ export default class ParticlesNode extends GraphicNode{
 			needsFrameUpdate: false,
 			minMax: {min: -2, max: 2},
 			defaultVal: 0,
+			defaultConnect: true,
 		};
 
 		const rotationXParam = {
@@ -127,6 +136,7 @@ export default class ParticlesNode extends GraphicNode{
 			needsFrameUpdate: false,
 			minMax: {min: -6, max: 6},
 			defaultVal: 0,
+			defaultConnect: false,
 		};
 
 		const rotationYParam = {
@@ -138,6 +148,7 @@ export default class ParticlesNode extends GraphicNode{
 			needsFrameUpdate: false,
 			minMax: {min: -6, max: 6},
 			defaultVal: 0,
+			defaultConnect: true,
 		};
 
 		const formXParam = {
@@ -148,6 +159,7 @@ export default class ParticlesNode extends GraphicNode{
 			paramHelpersType: 'particleForm',
 			needsFrameUpdate: false,
 			defaultVal: Math.random() * 2 - 1,
+			defaultConnect: true,
 		};
 
 		const formYParam = {
@@ -158,6 +170,7 @@ export default class ParticlesNode extends GraphicNode{
 			paramHelpersType: 'particleForm',
 			needsFrameUpdate: false,
 			defaultVal: Math.random() * 2 - 1,
+			defaultConnect: false,
 		};
 
 		const formZParam = {
@@ -168,6 +181,7 @@ export default class ParticlesNode extends GraphicNode{
 			paramHelpersType: 'particleForm',
 			needsFrameUpdate: false,
 			defaultVal: Math.random() * 2 - 1,
+			defaultConnect: true,
 		};
 
 		const sizeParam = {
@@ -179,6 +193,7 @@ export default class ParticlesNode extends GraphicNode{
 			needsFrameUpdate: false,
 			defaultVal: this.currentParticleSize,
 			minMax: {min: 1, max: 10},
+			defaultConnect: true,
 		};
 
 		this.params = {
@@ -208,34 +223,69 @@ export default class ParticlesNode extends GraphicNode{
 		
 	}
 
+	init(
+		pos,
+		parentEl,
+		onDisconnectCallback,
+		onInputConnectionCallback,
+		type,
+		initData,
+		onNodeRemove,
+		isModifier,
+		onNodeDragStart,
+		onNodeDragMove,
+		onNodeDragRelease,
+		addCallback,
+	) {
+		super.init(
+			pos,
+			parentEl,
+			onDisconnectCallback,
+			onInputConnectionCallback,
+			type,
+			initData,
+			onNodeRemove,
+			isModifier,
+			onNodeDragStart,
+			onNodeDragMove,
+			onNodeDragRelease,
+			addCallback,
+		);
+
+		this.outputDataConnection = null;
+
+		const canvas = this.nodeTitle.canvas;
+		this.nameTexture = new THREE.CanvasTexture(canvas);
+		this.nameMesh.material.map = this.nameTexture;
+		this.nameTexture.needsUpdate = true;
+
+		this.enabledOutputs = [];
+	}
+
 	getMesh() {
 		return this.mesh;
 	}
 
-	enableParam(param, connectionData) {
-		const paramComponent = this.inputParams[param.title];
-		param.isConnected = true;
-		paramComponent.enable();
+	enableParam(paramObj, outNode) {
+		paramObj.enable();
 
-		if (param.parent === 'Form') {
-			this.connectedFormParams[param.param] = 1.0;
-			this.curve = connectionData.out.curve;
+		if (paramObj.param.parent === 'Form') {
+			this.connectedFormParams[paramObj.param.param] = 1.0;
+			this.curve = outNode.curve;
 		}
 
-		// ParamHelpers[param.paramHelpersType].update(this, connectionData.out, param);
+		ParamHelpers[paramObj.param.paramHelpersType].update(this, outNode, paramObj.param);
 	}
 
-	updateParam(param, outNode) {
-		ParamHelpers[param.paramHelpersType].update(this, outNode, param);
+	updateParam(paramObj, outNode) {
+		ParamHelpers[paramObj.param.paramHelpersType].update(this, outNode, paramObj.param);
 	}
 
-	disableParam(param, connectionData) {
-		const paramComponent = this.inputParams[param.title];
-		param.isConnected = false;
-		paramComponent.disable();
+	disableParam(paramObj, outNode) {
+		paramObj.disable();
 
-		if (param.parent === 'Form') {
-			this.connectedFormParams[param.param] = 0.0;
+		if (paramObj.param.parent === 'Form') {
+			this.connectedFormParams[paramObj.param.param] = 0.0;
 
 			const hasOtherFormParams = Object.keys(this.connectedFormParams).some(t => this.connectedFormParams[t] > 0.0);
 			if (!hasOtherFormParams) {
@@ -243,43 +293,13 @@ export default class ParticlesNode extends GraphicNode{
 			}
 		}
 
-		ParamHelpers[param.paramHelpersType].disconnect(this, param, connectionData.out);
-	}
-
-	enableOutput(param, connection) {
-		super.enableOutput();
-
-		this.currentOutConnections.push(connection);
-		this.currentOutConnectionsLength = this.currentOutConnections.length;
-	}
-
-	disableOutput(nodeIn, param) {
-		const tempOutConnections = this.currentOutConnections.map(t => t);
-
-		let paramConnections = tempOutConnections.filter(t => t.param);
-		let nodeConnections = tempOutConnections.filter(t => !t.param);
-
-		if (param) {
-			paramConnections = paramConnections.filter(t => t.param && (t.param.title !== param.title));
-		} else {
-			nodeConnections = nodeConnections.filter(t => t.in.ID !== nodeIn.ID);
-		}
-		
-		const finalConnections = paramConnections.concat(nodeConnections);
-		this.currentOutConnections = finalConnections;
-		this.currentOutConnectionsLength = this.currentOutConnections.length;
-
-		if (this.currentOutConnectionsLength <= 0) {
-			super.disableOutput();
-
-		}
+		ParamHelpers[paramObj.param.paramHelpersType].disconnect(this, paramObj.param, outNode);
 	}
 
 	update() {
 	}
 
 	render() {
-
 		const positions = this.geometry.attributes.position.array;
 		const sizes = this.geometry.attributes.size.array;
 		const color = this.geometry.attributes.color.array;
