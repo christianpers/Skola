@@ -7,6 +7,7 @@ import WorkspaceScaleManager from './managers/WorkspaceManager/WorkspaceScaleMan
 
 import StatusWindow from './backend/ui/status-window';
 import DeleteView from './views/DeleteView';
+import DialogManager from './dialogs/dialog-manager';
 
 import ConnectionsManager from './managers/ConnectionsManager';
 
@@ -48,6 +49,8 @@ export default class Main{
 
 		window.NS.singletons.StatusWindow = new StatusWindow(document.body)
 		window.NS.singletons.ConnectionsManager = new ConnectionsManager();
+		window.NS.singletons.DialogManager = new DialogManager(document.body);
+		
 
 		this.keyboardManager = new KeyboardManager();
 

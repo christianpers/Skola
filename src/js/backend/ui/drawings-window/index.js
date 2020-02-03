@@ -5,55 +5,61 @@ import { createDrawing } from '../../set';
 import './index.scss';
 
 export default class DrawingsWindow{
-constructor(parentEl, username, onSelected) {
+  constructor(parentEl, username, onSelected) {
 
-  this.username = username;
-  this.drawings = {};
-  this.onSelected = onSelected;
+    this.username = username;
+    this.drawings = {};
+    this.paths = {};
+    this.onSelected = onSelected;
 
-  this.el = document.createElement('div');
-  this.el.className = 'drawings-window';
+    this.el = document.createElement('div');
+    this.el.className = 'drawings-window';
 
-  this.onExistingDrawingClickBound = this.onExistingDrawingClick.bind(this);
-  // this.onNewDrawingClickBound = this.onNewDrawingClick.bind(this);
+    this.onExistingDrawingClickBound = this.onExistingDrawingClick.bind(this);
+    // this.onNewDrawingClickBound = this.onNewDrawingClick.bind(this);
+    this.onDeleteDrawingBound = this.onDeleteDrawing.bind(this);
 
-  parentEl.appendChild(this.el);
+    parentEl.appendChild(this.el);
 
-  checkUserExists(username)
-  .then((exists) => {
-    if (exists) {
-      return getDrawings(username);
-    } else {
-      return Promise.reject('user doesnt exist');
-    }
-      
-  }).then((drawings) => {
-    this.drawings = drawings;
-    return getAllNodesFromAllDrawings(drawings);
-  })
-  .then((resp) => {
-    for (let i = 0; i < resp.length; i++) {
-      const key = Object.keys(resp[i])[0];
-      this.drawings[key].nodes = resp[i][key];
-    }
+    this.getDrawingsData();
+  }
 
-    console.log('sdf', resp, this.drawings);
+  getDrawingsData() {
+    checkUserExists(this.username)
+      .then((exists) => {
+        if (exists) {
+          return getDrawings(this.username);
+        } else {
+          return Promise.reject('user doesnt exist');
+        }
+          
+      }).then((drawings) => {
+        this.drawings = drawings;
+        console.log(drawings);
+        return getAllNodesFromAllDrawings(drawings);
+      })
+      .then((resp) => {
+        for (let i = 0; i < resp.length; i++) {
+          const key = Object.keys(resp[i])[0];
+          this.drawings[key].nodes = resp[i][key];
+        }
 
-    this.populateView();
-  })
-  .catch((err) => {
-    console.log('err', err);
-  });        
-}
+        this.populateView();
+      })
+      .catch((err) => {
+        console.log('err', err);
+      });
+  }
 
   populateView() {
     const keys = Object.keys(this.drawings);
     const items = keys.map((t, i) => (`
       <div class="drawings-item">
-        <h4>${this.drawings[t].title}</h4>
+        <h4>${this.drawings[t].doc.title}</h4>
         <h5>Nodes: ${this.drawings[t].nodes.length}</h5>
-        <h5>Last saved: ${new Date(this.drawings[t].timestamp.seconds * 1000)}</h5>
+        <h5>Last saved: ${new Date(this.drawings[t].doc.timestamp.seconds * 1000)}</h5>
         <div class="click-cover" data-id="${t}"></div>
+        <h5 class="delete-btn" data-id="${t}">Delete</h5>
       </div>
     `)).join('');
     const html = `
@@ -81,6 +87,8 @@ constructor(parentEl, username, onSelected) {
 
     const existingDrawings = this.el.querySelectorAll('.drawings-item');
     existingDrawings.forEach((t) => {
+      const deleteBtn = t.querySelector('.delete-btn');
+      deleteBtn.addEventListener('click', this.onDeleteDrawingBound);
       t.addEventListener('click', this.onExistingDrawingClickBound);
     });
 
@@ -96,14 +104,13 @@ constructor(parentEl, username, onSelected) {
     const saveTitle = titleContainer.querySelector('.save-title');
     saveTitle.addEventListener('click', () => {
       createDrawing({ title: input.value })
-      .then((ref) => {
-        window.NS.singletons.refs.setDrawingRef(ref);
-        // console.log(ref.id, ref);
-        this.onSelected();
-      })
-      .catch(() => {
-        console.log('error');
-      });
+        .then((ref) => {
+          window.NS.singletons.refs.setDrawingRef(ref);
+          this.onSelected();
+        })
+        .catch(() => {
+          console.log('error');
+        });
     });
 
     const cancelTitle = titleContainer.querySelector('.cancel-title');
@@ -112,6 +119,33 @@ constructor(parentEl, username, onSelected) {
       titleContainer.classList.remove('visible');
       input.value = '';
     });
+  }
+
+  onDeleteDrawing(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    const id = e.target.getAttribute('data-id');
+    const path = this.drawings[id].path;
+
+    const onYes = () => {
+      window.NS.singletons.DialogManager.verificationDialog.hide();
+      const deleteFn = firebase.functions().httpsCallable('recursiveDelete');
+      deleteFn({ path: path })
+        .then((result) => {
+          console.log('Delete success: ' + JSON.stringify(result));
+          this.getDrawingsData();
+        })
+        .catch((err) => {
+          console.log('Delete failed, see console,');
+          console.warn(err);
+        });
+    };
+
+    const onNo = () => {
+      window.NS.singletons.DialogManager.verificationDialog.hide();
+    };
+    
+    window.NS.singletons.DialogManager.verificationDialog.show(onYes, onNo);
   }
 
   onExistingDrawingClick(e) {

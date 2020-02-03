@@ -1,0 +1,41 @@
+.verification-dialog {
+    position: fixed;
+    height: 100vh;
+    width: 100vw;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 4;
+    top: 0;
+    left: 0;
+    
+    &.hidden {
+        display: none;
+    }
+
+    .inner-content {
+        padding: 30px 60px;
+        background: black;
+
+        > h4 {
+            margin-bottom: 20px;
+        }
+
+        > button {
+            background: yellow;
+            border: 0;
+            padding: 10px 16px;
+            margin-right: 10px;
+            cursor: pointer;
+
+            &:last-child{
+                margin-right: 0;
+            }
+
+            > h5 {
+                color: black;
+            }
+        }
+    }
+}

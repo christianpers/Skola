@@ -54,8 +54,8 @@ export const getDrawings = (username) => {
         drawingsRef.get().then(function(querySnapshot) {
             const respArr = {};
             querySnapshot.forEach(function(doc) {
-                // respArr.push({ref: doc, data: doc.data()});
-                respArr[doc.id] = doc.data();
+                const path = doc.ref.path;
+                respArr[doc.id] = {doc: doc.data(), path};
             });
 
             resolve(respArr);
@@ -74,7 +74,7 @@ export const checkUserExists = (username) => {
         }
         userRef.get().then(function(doc) {
             if (doc.exists) {
-                console.log("Document data:", doc.data());
+                console.log("Document data:", doc, '  ', doc.data());
                 resolve(true);
             } else {
                 // doc.data() will be undefined in this case
