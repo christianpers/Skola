@@ -85,12 +85,10 @@ const onPositionDisconnect = (inNode, param, outNode) => {
 
 
 const onRotationParamUpdate = (inNode, outNode, param) => {
-
-	inNode.mesh.rotation[param.param] = outNode.getValue(param);
+	inNode.mainMesh.rotation[param.param] = outNode.getValue(param);
 };
 
 const onScaleParamUpdate = (inNode, outNode, param) => {
-
 	const val = outNode.getValue();
 	inNode.mesh.scale.set(val, val, val);
 };

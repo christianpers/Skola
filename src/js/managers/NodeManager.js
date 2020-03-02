@@ -11,6 +11,7 @@ import Helpers from '../musicHelpers/Helpers';
 // import SceneNode from '../graphicNodes/SceneNode';
 
 import ModifierCollisionManager from './ModiferCollisionManager';
+import NodeGroupManager from './NodeGroupManager';
 
 import AvailableConnections from './NodeManager/AvailableConnections';
 
@@ -26,6 +27,8 @@ export default class NodeManager{
 		this.nodeLibrary = nodeLibrary;
 
 		this.availableConnections = new AvailableConnections();
+
+		window.NS.singletons.NodeGroupManager = new NodeGroupManager();
 
 		this.constructorIsDone = false;
 
@@ -149,7 +152,7 @@ export default class NodeManager{
 
 		if (event && event.detail) {
 			event.detail.setSelected();
-			this.windowManager.setupForNode(event.detail);	
+			this.windowManager.setupForNode(event.detail);
 		}
 	}
 
@@ -300,6 +303,7 @@ export default class NodeManager{
 		// }
 		if (!node.isModifier && !node.isCanvasNode) {
 			this.modifierCollisionManager.addNonagon(node);
+			window.NS.singletons.NodeGroupManager.addNonagon(node);
 		}
 
 		if (!this.backendSync.isDone()) {
@@ -324,6 +328,7 @@ export default class NodeManager{
 
 		if (!node.isModifier && !node.isCanvasNode) {
 			this.modifierCollisionManager.removeNonagon(node);
+			window.NS.singletons.NodeGroupManager.removeNonagon(node);
 		}
 
 		node.removeFromDom();

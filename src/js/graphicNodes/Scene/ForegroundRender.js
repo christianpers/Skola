@@ -1,3 +1,5 @@
+import { SIMPLE_3D_VERTEX, ACTIVE_MESH_FRAGMENT } from '../../../shaders/SHADERS';
+
 export default class ForegroundRender{
 	constructor(mainRender, canvas) {
 
@@ -9,6 +11,9 @@ export default class ForegroundRender{
 
 		this.cameraControls = new THREE.OrbitControls( this.camera, canvas );
 		this.cameraControls.enabled = false;
+		
+		this.currentActiveKey;
+		this.activeHelperMeshes = {};
 
 		this.scene = new THREE.Scene();
 		this.renderer = mainRender.renderer;
@@ -59,6 +64,8 @@ export default class ForegroundRender{
 		this.scene.add(node.light);
 		this.scene.add(node.mesh);
 		this.hasConnectedLight = true;
+
+		this.createPlaneMesh(node, meshName);
 	}
 
 	removeLight(node) {
@@ -71,6 +78,11 @@ export default class ForegroundRender{
 		this.scene.remove(mesh);
 
 		this.hasConnectedLight = false;
+
+		const activeMeshKey = `${meshName}-active`;
+		if (this.activeHelperMeshes[activeMeshKey]) {
+			delete this.activeHelperMeshes[activeMeshKey];
+		}
 	}
 
 	addNode(node) {
@@ -79,7 +91,14 @@ export default class ForegroundRender{
 		const meshName = `${node.ID}-mesh`;
 		node.mesh.name = meshName;
 		this.scene.add(node.mesh);
+
+		if (!node.isRendered) {
+			return;
+		}
+
+		this.createPlaneMesh(node, meshName);
 	}
+	
 
 	removeNode(node) {
 		this.connectedNodes = this.connectedNodes.filter(t => t.ID !== node.ID);
@@ -87,10 +106,64 @@ export default class ForegroundRender{
 		const meshName = `${node.ID}-mesh`;
 		const mesh = this.scene.getObjectByName(meshName);
 		this.scene.remove(mesh);
+
+		const activeMeshKey = `${meshName}-active`;
+		if (this.activeHelperMeshes[activeMeshKey]) {
+			delete this.activeHelperMeshes[activeMeshKey];
+		}
+	}
+
+	createPlaneMesh(node, meshName) {
+		// Plane for showing when mesh selected
+		const planeGeometry = new THREE.PlaneBufferGeometry( 5, 5, 1, 1 );
+		// const planeMaterial = new THREE.MeshBasicMaterial( {color: 0xffff00} );
+
+		// const settingUniforms = {};
+        // settingUniforms.u_user_fgColor = {value: new THREE.Color(1.0,1.0,1.0)};
+        // settingUniforms.u_user_bgColor = {value: new THREE.Color(0.0,0.0,0.0)};
+
+        // const uniformsObj = Object.assign({}, settingUniforms);
+        const planeMaterial = new THREE.ShaderMaterial({
+            uniforms: {},
+            vertexShader: SIMPLE_3D_VERTEX,
+            fragmentShader: ACTIVE_MESH_FRAGMENT,
+        });
+
+		planeMaterial.transparent = true;
+		
+		const planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
+		planeMesh.position.y = 0;
+		planeMesh.scale.set(1.4, 1.4, 1);
+		planeMesh.visible = false;
+
+		node.mesh.add(planeMesh);
+
+		this.activeHelperMeshes[`${meshName}-active`] = planeMesh;
+	}
+
+	showActive(nodeID) {
+		const meshName = `${nodeID}-mesh-active`;
+		if (this.activeHelperMeshes[meshName]) {
+			this.currentActiveKey = meshName;
+			this.activeHelperMeshes[meshName].visible = true;
+		}
+		
+		// console.log('show active: ', nodeID, this.activeHelperMeshes)
+	}
+
+	hideActive(nodeID) {
+		const meshName = `${nodeID}-mesh-active`;
+		if (this.activeHelperMeshes[this.currentActiveKey] && this.currentActiveKey === meshName) {
+			this.activeHelperMeshes[this.currentActiveKey].visible = false;
+			this.currentActiveKey = null;
+		}
+		
 	}
 
 	update() {
-
+		if (this.currentActiveKey && this.activeHelperMeshes[this.currentActiveKey]) {
+			this.activeHelperMeshes[this.currentActiveKey].lookAt(this.camera.position);
+		}
 	}
 
 	render() {

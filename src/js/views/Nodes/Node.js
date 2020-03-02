@@ -55,6 +55,11 @@ export default class Node{
 		this.onNodeDragRelease = onNodeDragRelease;
 		this.addCallback = addCallback;
 
+		this.groupState = {
+			isInGroup: false,
+			isShowing: false,
+		};
+
 		this.parentEl = parentEl;
 
 		this.connectedNodes = [];
@@ -64,9 +69,13 @@ export default class Node{
 		this.innerContainer = document.createElement('div');
 		this.innerContainer.className = 'node-inner';
 
-		
-
 		this.el.appendChild(this.innerContainer);
+
+		// Layer used when node is in a group
+		this.groupHideLayer = document.createElement('div');
+		this.groupHideLayer.classList.add('group-hide-layer');
+
+		this.el.appendChild(this.groupHideLayer);
 
 		if (!this.isModifier) {
 			this.upperContainer = document.createElement('div');
@@ -74,7 +83,6 @@ export default class Node{
 			this.el.appendChild(this.upperContainer);
 		}
 		
-
 		this.lastDelta = {x: 0, y: 0};
 		this.localDelta = {x: 0, y: 0};
 
@@ -249,6 +257,52 @@ export default class Node{
 		});
 	}
 
+	addToGroup(groupEl, groupId) {
+		groupEl.appendChild(this.el);
+		this.el.style[window.NS.transform] = 'translate(-50%, -50%)';
+		this.el.classList.add('center-group');
+
+		this.groupState.isInGroup = true;
+
+		if (this.nodeType.setActive) {
+			this.nodeType.setActive();
+		}
+
+		updateNode({
+			group: {
+				Id: groupId,
+			}
+		}, this.ID, true)
+		.then(() => {
+
+		})
+		.catch(() => {
+
+		});
+	}
+
+	removeFromGroup(e, group) {
+		this.parentEl.appendChild(this.el);
+		this.el.classList.remove('center-group');
+
+		this.groupState.isInGroup = false;
+
+		const offsetX = 100;
+		const offsetY = 100;
+		this.moveCoords.start.x = e.x - (group.moveCoords.offset.x + offsetX);
+		this.moveCoords.start.y = e.y - (group.moveCoords.offset.y + offsetY);
+
+		updateNode({
+			group: firebase.firestore.FieldValue.delete(),
+		}, this.ID, true)
+		.then(() => {
+
+		})
+		.catch(() => {
+
+		});
+	}
+
 	setAsChildToParamContainer(paramContainer, updateBackend) {
 		paramContainer.el.appendChild(this.el);
 		this.el.style[window.NS.transform] = 'initial';
@@ -276,27 +330,52 @@ export default class Node{
 		this.onDisconnectCallback(this, paramContainer);
 		const pos = paramContainer.getCleanPos();
 		this.parentEl.appendChild(this.el);
-		const nodeBoundingRect = paramContainer.node.el.getBoundingClientRect();
+		// let nodeBoundingRect = paramContainer.node.el.getBoundingClientRect();
+		
+		const parentNode = paramContainer.node;
+
+		const getRect = () => {
+			if (parentNode.groupState.isInGroup) {
+				const group = window.NS.singletons.NodeGroupManager.getGroupFromNonagon(parentNode);
+				return group.el.getBoundingClientRect();
+			}
+
+			return paramContainer.node.el.getBoundingClientRect();
+		}
+
+		const getX = () => {
+			if (parentNode.groupState.isInGroup) {
+				const group = window.NS.singletons.NodeGroupManager.getGroupFromNonagon(parentNode);
+				return group.moveCoords.offset.x;
+			}
+			return parentNode.moveCoords.offset.x;
+		}
+
+		const getY = () => {
+			if (parentNode.groupState.isInGroup) {
+				const group = window.NS.singletons.NodeGroupManager.getGroupFromNonagon(parentNode);
+				return group.moveCoords.offset.y;
+			}
+			return parentNode.moveCoords.offset.y;
+		}
 
 		if (fromNodeRemove) {
-			const offsetX = pos.x - nodeBoundingRect.x;
-			const offsetY = pos.y - nodeBoundingRect.y;
-			// this.moveCoords.start.x = e.x - (paramContainer.node.moveCoords.offset.x + offsetX);
-			// this.moveCoords.start.y = e.y - (paramContainer.node.moveCoords.offset.y + offsetY);
-
+			const rect = getRect();
+			const offsetX = pos.x - rect.x;
+			const offsetY = pos.y - rect.y;
 			
-			this.moveCoords.start.x = paramContainer.node.moveCoords.offset.x + offsetX;
-			this.moveCoords.start.y = paramContainer.node.moveCoords.offset.y + offsetY;
+			this.moveCoords.start.x = getX() + offsetX;
+			this.moveCoords.start.y = getY() + offsetY;
 
 			const { x, y } = this.moveCoords.start;
 
 			this.el.style[window.NS.transform] = `translate3d(${x}px, ${y}px, 0)`;
 		} else {
-			const offsetX = pos.x - nodeBoundingRect.x;
-			const offsetY = pos.y - nodeBoundingRect.y;
-			this.moveCoords.start.x = e.x - (paramContainer.node.moveCoords.offset.x + offsetX);
-			this.moveCoords.start.y = e.y - (paramContainer.node.moveCoords.offset.y + offsetY);
-
+			const rect = getRect();
+			const offsetX = pos.x - rect.x;
+			const offsetY = pos.y - rect.y;
+			this.moveCoords.start.x = e.x - (getX() + offsetX);
+			this.moveCoords.start.y = e.y - (getY() + offsetY);
 		}
 
 		updateNode({
@@ -315,8 +394,6 @@ export default class Node{
 	}
 
 	enableOutput(param, connection) {
-		// super.enableOutput();
-
 		this.currentOutConnections.push(connection);
 		this.currentOutConnectionsLength = this.currentOutConnections.length;
 	}
@@ -336,11 +413,6 @@ export default class Node{
         const finalConnections = paramConnections.concat(nodeConnections);
         this.currentOutConnections = finalConnections;
         this.currentOutConnectionsLength = this.currentOutConnections.length;
-
-        // if (this.currentOutConnectionsLength <= 0) {
-        //     super.disableOutput();
-
-        // }
 	}
 
 	onRemoveClick() {
@@ -351,12 +423,15 @@ export default class Node{
 		this.innerContainer.addEventListener('mousedown', this.onMouseDownBound);
 	}
 
-
 	getConnectNode() {
 		return this;
 	}
 
 	setNotSelected() {
+		if (this.el.classList.contains('center-group')) {
+			return;
+		}
+
 		this.el.classList.remove('selected');
 		if (this.nodeTitle) {
 			this.nodeTitle.blurInput();
@@ -365,15 +440,23 @@ export default class Node{
 		if (this.nodeType.setInactive) {
 			this.nodeType.setInactive();
 		}
+
+		window.NS.singletons.CanvasNode.foregroundRender.hideActive(this.ID);
 	}
 
 	setSelected() {
 		this.el.classList.add('selected');
 
+		if (this.isRendered) {
+			window.NS.singletons.CanvasNode.foregroundRender.showActive(this.ID);
+		}
+		
 		if (this.nodeType.setActive) {
 			this.nodeType.setActive();
 		}
 	}
+
+
 
 	getPos() {
 		const pos = new THREE.Vector2();
@@ -393,6 +476,20 @@ export default class Node{
 		}
 
 		this.parentEl.removeChild(this.el);
+	}
+
+	groupShow() {
+		this.el.style.zIndex = '1';
+		this.groupHideLayer.classList.remove('visible');
+
+		this.groupState.isShowing = true;
+	}
+
+	groupHide() {
+		this.el.style.zIndex = '0';
+		this.groupHideLayer.classList.add('visible');
+
+		this.groupState.isShowing = false;
 	}
 
 	onMouseDown(e, addListener = true) {
@@ -421,12 +518,14 @@ export default class Node{
 
 		if (this.isModifier) {
 			this.onNodeDragStart(this, e);
+		} else {
+			window.NS.singletons.NodeGroupManager.onNodeDragStart(this);
 		}
 
 		window.NS.singletons.DeleteView.onNodeMoveStart();
+		
 
 		if (addListener) {
-			console.log('added listerns');
 			window.addEventListener('mouseup', this.onMouseUpBound);
 			window.addEventListener('mousemove', this.onMouseMoveBound);
 		}
@@ -434,7 +533,6 @@ export default class Node{
 	}
 
 	onMouseMove(e) {
-
 		const localDelta = {
 			x: e.x - this.localDelta.x,
 			y: e.y - this.localDelta.y,
@@ -442,6 +540,8 @@ export default class Node{
 
 		if (this.isModifier) {
 			this.onNodeDragMove(e, localDelta);
+		} else {
+			window.NS.singletons.NodeGroupManager.onNodeDragMove(e, this, localDelta);
 		}
 
 		const deltaX = e.x - this.moveCoords.start.x;
@@ -460,6 +560,7 @@ export default class Node{
 
 		const pos = this.getPos();
 		window.NS.singletons.DeleteView.onNodeMove(pos.x, pos.y);
+		
 	}
 
 	onMouseUp(e, removeListener = true) {
@@ -476,6 +577,8 @@ export default class Node{
 
 		if (this.isModifier) {
 			this.onNodeDragRelease();
+		} else {
+			window.NS.singletons.NodeGroupManager.onNodeDragEnd(this);
 		}
 		if (removeListener) {
 			window.removeEventListener('mouseup', this.onMouseUpBound);

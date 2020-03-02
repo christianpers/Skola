@@ -20,11 +20,11 @@ export default class CubeNode extends GraphicNode{
 		var planeGeometry = new THREE.PlaneBufferGeometry( 8, 2, 10, 10 );
 		var planeMaterial = new THREE.MeshBasicMaterial( {side: THREE.DoubleSide} );
 
-		this.nameMesh = new THREE.Mesh(planeGeometry, planeMaterial);
-		this.nameMesh.position.y = 3;
-		this.nameMesh.scale.set(.2, .2, .2);
+		// this.nameMesh = new THREE.Mesh(planeGeometry, planeMaterial);
+		// this.nameMesh.position.y = 3;
+		// this.nameMesh.scale.set(.2, .2, .2);
 
-		this.mesh.add(this.nameMesh);
+		// this.mesh.add(this.nameMesh);
 
 
 		const textureParam = {
@@ -168,10 +168,10 @@ export default class CubeNode extends GraphicNode{
 
 		this.outputDataConnection = null;
 
-		const canvas = this.nodeTitle.canvas;
-		this.nameTexture = new THREE.CanvasTexture(canvas);
-		this.nameMesh.material.map = this.nameTexture;
-		this.nameTexture.needsUpdate = true;
+		// const canvas = this.nodeTitle.canvas;
+		// this.nameTexture = new THREE.CanvasTexture(canvas);
+		// this.nameMesh.material.map = this.nameTexture;
+		// this.nameTexture.needsUpdate = true;
 
 		this.enabledOutputs = [];
 	}

@@ -58,19 +58,11 @@ export default class ParticlesNode extends GraphicNode{
         this.geometry.addAttribute( 'size', new THREE.Float32BufferAttribute( sizes, 1 ).setDynamic( true ) );
         this.pointsMesh = new THREE.Points( this.geometry, this.material );
 
+		this.mainMesh = this.pointsMesh;
+
 		this.mesh = new THREE.Group();
 		this.mesh.add(this.pointsMesh);
 
-		// const nameTexture = new THREE.CanvasTexture();
-
-		var planeGeometry = new THREE.PlaneBufferGeometry( 8, 2, 10, 10 );
-		var planeMaterial = new THREE.MeshBasicMaterial( {side: THREE.DoubleSide} );
-
-		this.nameMesh = new THREE.Mesh(planeGeometry, planeMaterial);
-		this.nameMesh.position.y = 3;
-		this.nameMesh.scale.set(.2, .2, .2);
-
-		this.mesh.add(this.nameMesh);
 		// const textureParam = {
 		// 	title: 'Texture',
 		// 	param: 'map',
@@ -254,10 +246,10 @@ export default class ParticlesNode extends GraphicNode{
 
 		this.outputDataConnection = null;
 
-		const canvas = this.nodeTitle.canvas;
-		this.nameTexture = new THREE.CanvasTexture(canvas);
-		this.nameMesh.material.map = this.nameTexture;
-		this.nameTexture.needsUpdate = true;
+		// const canvas = this.nodeTitle.canvas;
+		// this.nameTexture = new THREE.CanvasTexture(canvas);
+		// this.nameMesh.material.map = this.nameTexture;
+		// this.nameTexture.needsUpdate = true;
 
 		this.enabledOutputs = [];
 	}

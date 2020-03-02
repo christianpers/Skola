@@ -3,6 +3,8 @@ export default class ModifierCollisionManager{
         this.activeModifier = undefined;
         this.nonagons = [];
 
+        this.nonagonsToCheck = [];
+
         this.currentCloseParamContainer = undefined;
         this.currentClosestNode = undefined;
 
@@ -22,22 +24,26 @@ export default class ModifierCollisionManager{
     }
 
     overNonagonCheck() {
-        for (let i=0; i < this.nonagons.length; i++) {
-            const nonagonPos = this.nonagons[i].getPos();
+        const nonagons = this.nonagonsToCheck;
+        for (let i=0; i < nonagons.length; i++) {
+            const nonagonPos = nonagons[i].getPos();
             const modifierPos = this.activeModifier.getPos();
             const dist = nonagonPos.distanceTo(modifierPos);
             
             if (dist < 160) {
-                this.nonagons[i].setSelected();
+                nonagons[i].setSelected();
             } else {
-                this.nonagons[i].setNotSelected();
+                nonagons[i].setNotSelected();
             }
         }
     }
 
     onModifierDragStart(activeModifier, e) {
-        console.log('active modifier', activeModifier);
         this.activeModifier = activeModifier;
+        this.nonagonsToCheck = this.nonagons.filter(t => (t.groupState.isInGroup && t.groupState.isShowing) || !t.groupState.isInGroup);
+        for (let i = 0; i < this.nonagonsToCheck.length; i++) {
+            console.log('val: ', this.nonagonsToCheck[i].nodeTitle.el.value);
+        }
         this.overNonagonCheck();
     }
     
@@ -51,10 +57,11 @@ export default class ModifierCollisionManager{
             }
             return;
         }
-
+        
+        const nonagons = this.nonagonsToCheck;
         if (!this.currentCloseParamContainer) {
-            for (let i=0; i < this.nonagons.length; i++) {
-                const paramContainers = this.nonagons[i].getParamContainers();
+            for (let i=0; i < nonagons.length; i++) {
+                const paramContainers = nonagons[i].getParamContainers();
                 for (let q = 0; q < paramContainers.length; q++) {
                     const paramContainer = paramContainers[q];
                     const paramContainerPos = paramContainer.getPos();
@@ -81,7 +88,6 @@ export default class ModifierCollisionManager{
                 }
                 const angle = Math.min(((15 - dist) / 5), 1) * this.currentCloseParamContainer.rotation;
                 this.activeModifier.setAngle(angle);
-                // this.el.style.transform = `rotate(${(this.index) * 40}deg)`;
             }
         }
     }

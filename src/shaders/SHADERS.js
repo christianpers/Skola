@@ -1,3 +1,35 @@
+export const SIMPLE_3D_VERTEX = `
+    varying vec3 vUv; 
+
+    void main() {
+      vUv = position; 
+
+      vec4 modelViewPosition = modelViewMatrix * vec4(position, 1.0);
+      gl_Position = projectionMatrix * modelViewPosition; 
+    }
+`;
+
+export const ACTIVE_MESH_FRAGMENT = `
+    uniform vec3 colorA; 
+    uniform vec3 colorB; 
+    varying vec3 vUv;
+
+    float circle(vec2 _st, float _radius){
+        vec2 dist = _st-vec2(0.5);
+        return 1.-smoothstep(_radius-(_radius*0.01),
+                _radius+(_radius*0.01),
+                dot(dist,dist)*4.352);
+    }
+
+    void main() {
+        float x = (vUv.x + 2.0 - 1.0) / 2.0;
+        float y = (vUv.y + 2.0 - 1.0) / 2.0;
+        vec2 st = vec2(x, y);
+        vec3 color = vec3(circle(st, 4.8)) - vec3(circle(st, 4.0));
+        gl_FragColor = vec4(color, color.r);
+    }
+`;
+
 export const PARTICLES_VERTEX = `
     attribute float size;
     varying vec3 vColor;

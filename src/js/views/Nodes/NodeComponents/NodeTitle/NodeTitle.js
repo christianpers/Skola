@@ -25,23 +25,6 @@ export default class NodeTitle{
         this.el.addEventListener('change', this.onChangeBound);
         this.el.addEventListener('click', this.onMouseDownBound);
 
-        this.canvas = document.createElement('canvas');
-        this.canvas.className = "node-title-canvas";
-        this.canvas.width = 512;
-        this.canvas.height = 128;
-        this.ctx = this.canvas.getContext('2d');
-
-        this.ctx.fillStyle = 'white';
-        this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-
-        this.ctx.font = '100pt Arial';
-        this.ctx.fillStyle = 'black';
-        this.ctx.textAlign = 'center';
-        this.ctx.textBaseline = 'middle';
-        this.ctx.fillText(node.title, 256, 64);
-
-        container.appendChild(this.canvas);
-
 		innerContainer.appendChild(this.el);
 
 		parentEl.appendChild(container);
@@ -70,16 +53,8 @@ export default class NodeTitle{
         console.log('on change: ', value);
 
 		if (this.isValidInput(value)) {
-            // this.callback(value);
             this.node.setTitle(value);
-            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-            this.ctx.fillStyle = 'white';
-            this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-            this.ctx.font = '100pt Arial';
-            this.ctx.fillStyle = '#000000';
-            this.ctx.textAlign = 'center';
-            this.ctx.textBaseline = 'middle';
-            this.ctx.fillText(value, 256, 64);
+           
 
 		} else {
 			this.el.value = this.node.title;
