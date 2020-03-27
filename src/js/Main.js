@@ -40,7 +40,7 @@ export default class Main{
 		this.onResize();
 
 		this.nodeLibrary = new NodeLibrary(
-			document.body,
+			this.workspaceManager.containerEl,
 			this.onNodeAddedFromLibraryBound,
 			this.workspaceManager,
 		);

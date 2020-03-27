@@ -1,4 +1,4 @@
-export default {
+export const types = {
     // audio: {
         // audio: [
         //     {
@@ -112,3 +112,55 @@ export default {
         ]
     }
 };
+
+export const spaceTypes = {
+    graphics: {
+        '3d-shapes': [
+            {
+                type: 'Planet',
+                isModifier: false,
+            },
+            {
+                type: 'Particles',
+                isModifier: false,
+            },
+        ],
+        'Modifiers': [
+            {
+                type: 'Size Modifier',
+                isModifier: true,
+            },
+            {
+                type: 'Texture Selector',
+                isModifier: true,
+            },
+            {
+                type: 'Space Orbit',
+                isModifier: true,
+            },
+            {
+                type: 'Rotation Modifier',
+                isModifier: true,
+            },
+        ]
+    }
+}
+
+export const chemistryTypes = {
+    graphics: {
+        '3d-shapes': [
+            {
+                type: 'Cube',
+                isModifier: false,
+            },
+            {
+                type: 'Sphere',
+                isModifier: false,
+            },
+            {
+                type: 'Particles',
+                isModifier: false,
+            },
+        ]
+    }
+}

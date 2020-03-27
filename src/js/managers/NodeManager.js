@@ -3,12 +3,9 @@ import GraphicsNodeManager from './GraphicsNodeManager';
 import AudioNodeManager from './AudioNodeManager';
 
 import WindowManager from './Windows/WindowManager';
-// import ConnectionWindow from './Windows/ConnectionWindow';
-// import NodeSettingsWindow from './Windows/NodeSettingsWindow';
 
 import ParamHelpers from '../graphicNodes/Helpers/ParamHelpers';
 import Helpers from '../musicHelpers/Helpers';
-// import SceneNode from '../graphicNodes/SceneNode';
 
 import ModifierCollisionManager from './ModiferCollisionManager';
 import NodeGroupManager from './NodeGroupManager';

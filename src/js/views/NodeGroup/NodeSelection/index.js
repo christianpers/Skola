@@ -31,6 +31,10 @@ export default class NodeSelection{
         delete this.tabs[node.ID];
     }
 
+    setTabTitle(nodeID, title) {
+        this.tabs[nodeID].setTitle(title);
+    }
+
     addNode(node) {
         this.addTab(node);
     }

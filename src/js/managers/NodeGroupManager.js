@@ -14,6 +14,13 @@ export default class NodeGroupManager {
         this.overNonagon;
     }
 
+    updateGroupNodeTabTitle(nodeID, title) {
+        const group = this.getGroupFromNonagon(this.nonagons.find(t => t.ID === nodeID));
+        if (group) {
+            group.setNodeTabTitle(nodeID, title);
+        }
+    }
+
     setActiveNonagon(nonagon) {
         this.activeNonagon = nonagon;
 

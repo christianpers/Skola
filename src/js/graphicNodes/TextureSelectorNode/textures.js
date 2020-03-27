@@ -1,5 +1,5 @@
 const textures = {
-    Rymden: [
+    Planeter: [
         {
             title: 'Jorden',
             name: 'space/2k_earth_daymap.jpg',

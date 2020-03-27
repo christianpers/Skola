@@ -6,17 +6,19 @@ export default class NodeTab {
         this.el = document.createElement('div');
         this.el.classList.add('tab-item');
         
-        const tabTitle = document.createElement('h5');
-        tabTitle.innerHTML = node.title;
-        tabTitle.classList.add('tab-title');
+        this.tabTitle = document.createElement('h5');
+        this.setTitle(node.title);
+        this.tabTitle.classList.add('tab-title');
 
         const touchLayer = document.createElement('div');
         touchLayer.classList.add('touch-layer');
         touchLayer.setAttribute('data-node', node.ID);
 
+        this.node = node;
+
         
 
-        this.el.appendChild(tabTitle);
+        this.el.appendChild(this.tabTitle);
 
         this.el.appendChild(touchLayer);
 
@@ -28,6 +30,10 @@ export default class NodeTab {
         touchLayer.addEventListener('click', this.onTabClickBound);
     }
 
+    setTitle(title) {
+        this.tabTitle.innerHTML = title;
+    }
+
     onTabClick(e) {
         const id = e.target.getAttribute('data-node');
         this.onTabClickCallback(id);
@@ -35,10 +41,14 @@ export default class NodeTab {
 
     setActive() {
         this.el.classList.add('selected');
+
+        window.NS.singletons.CanvasNode.foregroundRender.showActive(this.node.ID);
     }
 
     setIdle() {
         this.el.classList.remove('selected');
+
+        window.NS.singletons.CanvasNode.foregroundRender.hideActive(this.node.ID);
     }
 
     remove() {

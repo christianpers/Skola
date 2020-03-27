@@ -7,9 +7,42 @@
 	padding-left: 20px;
 	padding-right: 10px;
 	background: rgb(10,10,10);
-	z-index: 2;
+	z-index: 3;
     transform: translateX(240px);
-    transition: transform .4s;
+	transition: transform .4s;
+	
+	.library-tab {
+		display: none;
+		margin-top: 40px;
+		position: relative;
+		z-index: 0;
+
+		&.visible {
+			display: block;
+		}
+	}
+
+	.tab-selector {
+		position: absolute;
+		left: 20px;
+		top: 10px;
+		display: flex;
+		z-index: 1;
+
+		.tab-item {
+			padding: 4px 10px;
+			opacity: .4;
+			cursor: pointer;
+			
+			> h5 {
+				color: rgb(10,10,10);
+			}
+
+			&.selected {
+				opacity: 1;
+			}
+		}
+	}
 
     & .outer-scroll {
         height: 100vh;

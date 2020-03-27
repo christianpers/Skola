@@ -36,6 +36,10 @@ export default class NodeGroup {
         parentEl.appendChild(this.el);
     }
 
+    setNodeTabTitle(nodeID, title) {
+        this.nodeSelectionTabs.setTabTitle(nodeID, title);
+    }
+
     hasNonagons() {
         return Object.keys(this.nonagons).length > 0;
     }

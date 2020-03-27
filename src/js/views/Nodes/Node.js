@@ -223,6 +223,8 @@ export default class Node{
 	setTitle(value) {
 		this.title = value;
 
+		window.NS.singletons.NodeGroupManager.updateGroupNodeTabTitle(this.ID, value);
+
 		updateNode({
 			title: this.title,
 		}, this.ID)
@@ -455,8 +457,6 @@ export default class Node{
 			this.nodeType.setActive();
 		}
 	}
-
-
 
 	getPos() {
 		const pos = new THREE.Vector2();

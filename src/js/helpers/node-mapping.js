@@ -28,6 +28,10 @@ import PointLightNode from '../graphicNodes/Lights/PointLightNode';
 import TextureSelectorNode from '../graphicNodes/TextureSelectorNode';
 import ParticlesNode from '../graphicNodes/Shapes/ParticlesNode';
 import ShapeNode from '../graphicNodes/ShapeNode';
+import PlanetNode from '../graphicNodes/SpaceNodes/PlanetNode';
+import SizeModifier from '../graphicNodes/SpaceNodes/SizeModifier';
+import PlanetTextureSelector from '../graphicNodes/SpaceNodes/PlanetTextureSelector';
+import SpaceOrbitNode from '../graphicNodes/SpaceNodes/SpaceOrbitNode';
 
 const nodeMapping = {
   'Kick': {
@@ -57,11 +61,11 @@ const nodeMapping = {
     obj: ParamDriverNode,
     isModifier: true,
   },
-  'OrbitDriver': {
+  'Orbit Modifier': {
     obj: OrbitDriverNode,
     isModifier: true,
   },
-  'RotationDriver': {
+  'Rotation Modifier': {
     obj: RotationDriverNode,
     isModifier: true,
   },
@@ -89,6 +93,22 @@ const nodeMapping = {
     obj: ParticlesNode,
     isModifier: false,
   },
+  'Planet': {
+    obj: PlanetNode,
+    isModifier: false,
+  },
+  'Size Modifier': {
+    obj: SizeModifier,
+    isModifier: true,
+  },
+  'Texture Selector': {
+    obj: PlanetTextureSelector,
+    isModifier: true,
+  },
+  'Space Orbit': {
+    obj: SpaceOrbitNode,
+    isModifier: true,
+  }
 };
 
 export const getNode = (nodeStr) => {

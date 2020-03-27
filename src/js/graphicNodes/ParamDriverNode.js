@@ -1,6 +1,6 @@
 import GraphicNode from './GraphicNode';
-import RangeSlider from '../views/Nodes/NodeComponents/RangeSlider';
-import HorizontalRangeSlider from '../views/Nodes/NodeComponents/HorizontalRangeSlider';
+// import RangeSlider from '../views/Nodes/NodeComponents/RangeSlider';
+// import HorizontalRangeSlider from '../views/Nodes/NodeComponents/HorizontalRangeSlider';
 import VerticalRangeSlider from '../views/Nodes/NodeComponents/VerticalRangeSlider';
 import Easing from './Helpers/Easing';
 
@@ -196,7 +196,6 @@ export default class ParamDriverNode extends GraphicNode{
 	}
 
 	onConnectionAdd(e) {
-
 		if (e.detail.connection.outNodeID === this.ID) {
 			// const connection = e.detail.connection;
 			// const paramContainer = window.NS.singletons.ConnectionsManager.params[connection.paramID];
