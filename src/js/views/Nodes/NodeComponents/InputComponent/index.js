@@ -96,6 +96,10 @@ export default class InputComponent{
 		this.el.value = val;
 	}
 
+	getValue() {
+		return this.el.value;
+	}
+
 	remove() {
 		this.el.removeEventListener('change', this.onChangeBound);
 	}

@@ -14,7 +14,7 @@ export default class SizeModifierNode extends GraphicNode{
 		this.title = 'Space size modifier';
 
 		this.sizeInput = null;
-		this.maxScale = 2;
+		this.maxScale = 8;
 		this.onInputChangeBound = this.onInputChange.bind(this);
 		this.currentConvertedValue = (this.initValues && this.initValues.size) ? this.getConvertedVal(this.initValues.size) : 0.01;
 		this.currentNormalizedVal = 0;

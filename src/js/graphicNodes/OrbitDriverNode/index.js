@@ -48,7 +48,28 @@ export default class OrbitDriverNode extends GraphicNode{
 		this.onOrbitYChangeBound = this.onOrbitYChange.bind(this);
 		this.onOrbitZChangeBound = this.onOrbitZChange.bind(this);
 
-        const xRadius = (this.initValues && this.initValues.orbitX) ? this.initValues.orbitX : 0;
+        this.initCurve();
+
+		this.onToggleStartClickBound = this.onToggleStartClick.bind(this);
+
+        this.onToggleVisualHelperVisibilityBound = this.onToggleVisualHelperVisibility.bind(this);
+		this.onCenterPointSelectedBound = this.onCenterPointSelected.bind(this);
+
+		this.onConnectionUpdateBound = this.onConnectionUpdate.bind(this);
+		document.documentElement.addEventListener('node-connections-update', this.onConnectionUpdateBound);
+
+		this.nodeConnectedID;
+
+		this.onCenterPointListResetClickBound = this.onCenterPointListResetClick.bind(this);
+
+		
+
+		this.updateAxes();
+		this.getSettings();
+	}
+
+	initCurve() {
+		const xRadius = (this.initValues && this.initValues.orbitX) ? this.initValues.orbitX : 0;
         const yRadius = (this.initValues && this.initValues.orbitY) ? this.initValues.orbitY : 0;
 		
 		this.curve = new THREE.EllipseCurve(
@@ -78,21 +99,6 @@ export default class OrbitDriverNode extends GraphicNode{
 
 		this.mesh = new THREE.Line( geometry, material );
 		this.mesh.visible = (this.initValues && this.initValues.visualHelperEnabled) ? this.initValues.visualHelperEnabled : false;
-
-		this.onToggleStartClickBound = this.onToggleStartClick.bind(this);
-
-        this.onToggleVisualHelperVisibilityBound = this.onToggleVisualHelperVisibility.bind(this);
-		this.onCenterPointSelectedBound = this.onCenterPointSelected.bind(this);
-
-		this.onConnectionUpdateBound = this.onConnectionUpdate.bind(this);
-		document.documentElement.addEventListener('node-connections-update', this.onConnectionUpdateBound);
-
-		this.nodeConnectedID;
-
-		this.onCenterPointListResetClickBound = this.onCenterPointListResetClick.bind(this);
-
-		this.updateAxes();
-		this.getSettings();
 	}
 
 	onCenterPointListResetClick() {
