@@ -1,5 +1,6 @@
 import ConnectionWindow from './ConnectionWindow';
 import NodeSettingsWindow from './NodeSettingsWindow';
+import SelectedNodeWindow from './SelectedNodeWindow';
 
 export default class WindowManager{
     constructor(parentEl, enableParamCallback, disableParamCallback) {
@@ -13,6 +14,7 @@ export default class WindowManager{
 
         this.connectionWindow = new ConnectionWindow(parentEl, enableParamCallback, disableParamCallback, this.onConnectionWindowShowBound);
         this.nodeSettingsWindow = new NodeSettingsWindow(parentEl, this.onNodeSettingsWindowShowBound, this.onNodeRemoveClickBound);
+        this.selectedNodeWindow = new SelectedNodeWindow(parentEl);
     }
 
     onNodeRemoveClick() {
@@ -24,12 +26,15 @@ export default class WindowManager{
     }
 
     setupForNode(node) {
+        console.log('setup for node: ', node.ID);
         this.activeNode = node;
         // if (node.nodeType.assignedParamContainer) {
         //     this.connectionWindow.setupForNode(node);
         // }
         this.connectionWindow.setupForNode(node);
         this.nodeSettingsWindow.setupForNode(node);
+
+        this.selectedNodeWindow.setNode(node.ID);
     }
 
     onNodeConnect(activeNode) {
@@ -52,5 +57,7 @@ export default class WindowManager{
     blur() {
         this.nodeSettingsWindow.blur();
         this.connectionWindow.blur();
+
+        this.selectedNodeWindow.blur();
     }
 }

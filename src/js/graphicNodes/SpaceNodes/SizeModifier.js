@@ -7,8 +7,6 @@ export default class SizeModifierNode extends GraphicNode{
 
 		this.initValues = backendData ? backendData.data.visualSettings : null;
 
-		console.log(this.initValues);
-
 		this.isParam = true;
 		this.returnsSingleNumber = true;
 		this.title = 'Space size modifier';
@@ -41,7 +39,6 @@ export default class SizeModifierNode extends GraphicNode{
 	onInputChange(value) {
 		
 		this.currentConvertedValue = this.getConvertedVal(value);
-		console.log('size: ', this.currentConvertedValue, value);
 		for (let i = 0; i < this.currentOutConnectionsLength; i++) {
 			const param = window.NS.singletons.ConnectionsManager.params[this.currentOutConnections[i].connection.paramID];
 			// const param = this.currentOutConnections[i].param;

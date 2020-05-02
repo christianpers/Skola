@@ -45,13 +45,13 @@ export default class TriangleType {
         this.latestAngle = angle;
     }
 
-    activateAsChild(paramContainer, updateBackend) {
+    activateAsChild(paramContainer, updateBackend, fromInit) {
         this.containerEl.style.transform = `rotate(0deg)`;
         // this.triangleSvg.style.transform = `rotate(0deg)`;
         this.isConnected = true;
         this.assignedParamContainer = paramContainer;
         paramContainer.addModifierAsChild(this);
-        this.node.setAsChildToParamContainer(paramContainer, updateBackend);
+        this.node.setAsChildToParamContainer(paramContainer, updateBackend, fromInit);
     }
 
     deactivateAsChild(e, fromNodeRemove) {

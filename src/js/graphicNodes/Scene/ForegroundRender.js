@@ -11,7 +11,10 @@ export default class ForegroundRender{
 
 		this.cameraControls = new THREE.OrbitControls( this.camera, canvas );
 		this.cameraControls.enabled = false;
-		
+
+		this.cameraControlsChangedBound = this.cameraControlsChanged.bind(this);
+		this.cameraControls.addEventListener('change', this.cameraControlsChangedBound);
+
 		this.currentActiveKey;
 		this.activeHelperMeshes = {};
 
@@ -33,6 +36,11 @@ export default class ForegroundRender{
 			600,
 			{minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter}
 		);
+	}
+
+	cameraControlsChanged(evt) {
+		const cameraChangedEvent = new CustomEvent('camera-pos-changed', { detail: evt.target.object.position });
+        document.documentElement.dispatchEvent(cameraChangedEvent);
 	}
 
 	toggleAxesHelper(enable) {
@@ -142,6 +150,14 @@ export default class ForegroundRender{
 	}
 
 	showActive(nodeID) {
+		const keys = Object.keys(window.NS.singletons.ConnectionsManager.nodes);
+		const isRenderedKeys = keys.filter(t => window.NS.singletons.ConnectionsManager.nodes[t].isRendered);
+		isRenderedKeys.forEach(t => {
+			const meshName = `${t}-mesh-active`;
+			this.activeHelperMeshes[meshName].visible = false;
+		});
+
+
 		const meshName = `${nodeID}-mesh-active`;
 		if (this.activeHelperMeshes[meshName]) {
 			this.currentActiveKey = meshName;

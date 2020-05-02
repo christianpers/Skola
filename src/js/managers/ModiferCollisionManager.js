@@ -31,9 +31,12 @@ export default class ModifierCollisionManager{
             const dist = nonagonPos.distanceTo(modifierPos);
             
             if (dist < 160) {
-                nonagons[i].setSelected();
+                console.log('over nonagon');
+                // nonagons[i].setSelected();
+                window.NS.singletons.SelectionManager.setSelected(nonagons[i]);
             } else {
-                nonagons[i].setNotSelected();
+                // nonagons[i].setNotSelected();
+                // window.NS
             }
         }
     }

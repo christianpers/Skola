@@ -25,7 +25,14 @@ export default class NodeTitle{
         this.el.addEventListener('change', this.onChangeBound);
         this.el.addEventListener('click', this.onMouseDownBound);
 
+        
+
 		innerContainer.appendChild(this.el);
+
+        const debugEl = document.createElement('h5');
+        debugEl.innerHTML = node.ID;
+
+        innerContainer.appendChild(debugEl);
 
 		parentEl.appendChild(container);
     }
@@ -54,6 +61,7 @@ export default class NodeTitle{
 
 		if (this.isValidInput(value)) {
             this.node.setTitle(value);
+            this.blurInput();
            
 
 		} else {

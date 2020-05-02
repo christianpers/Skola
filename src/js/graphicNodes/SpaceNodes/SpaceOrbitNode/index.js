@@ -10,7 +10,35 @@ export default class SpaceOrbitNode extends OrbitDriverNode{
 	constructor(renderer, backendData) {
 		super(renderer, backendData);
 
-		this.currentYInputVal = 0;
+		this.title = 'Space orbit modifier';
+
+		this.onCameraChangedBound = this.onCameraChanged.bind(this);
+
+		document.documentElement.addEventListener('camera-pos-changed', this.onCameraChangedBound);
+	}
+
+	onCameraChanged(e) {
+		if (this.targetNode) {
+			const keys = Object.keys(this.enabledAxes);
+			keys.forEach(t => {
+				if (t === 'x') {
+					this.curve.xRadius = this.getOrbitVal(this.currentXInputVal);
+				} else {
+					this.curve.yRadius = this.getOrbitVal(this.currentYInputVal);
+				}
+
+			});
+
+			const { speed } = this.getSpeedVal(this.speedInput.getValue());
+			this.currentSpeed = speed + 0.005;
+			// console.log(this.currentSpeed, speed);
+
+			// this.updateMesh();
+		}
+
+		// if (!this.targetNode) {
+		// 	this.updateMesh();
+		// }
 	}
 
 	initCurve() {
@@ -19,8 +47,25 @@ export default class SpaceOrbitNode extends OrbitDriverNode{
 
 		const xRadius = this.getOrbitVal(xInitRadius);
 		const yRadius = this.getOrbitVal(yInitRadius);
+
+		this.currentXInputVal = xInitRadius;
+		this.currentYInputVal = yInitRadius;
+
+		const speedInitVal = (this.initValues && this.initValues.speed) ? this.initValues.speed : 0;
+
+		const { speed } = this.getSpeedVal(speedInitVal);
+
+		this.currentSpeed = speed;
 		
 		this.curve = new THREE.EllipseCurve(
+			0,  0,            // ax, aY
+			xRadius, yRadius, // xRadius, yRadius
+			0,  2 * Math.PI,  // aStartAngle, aEndAngle
+			false,            // aClockwise
+			0                 // aRotation
+		);
+
+		this.relativeCurve = new THREE.EllipseCurve(
 			0,  0,            // ax, aY
 			xRadius, yRadius, // xRadius, yRadius
 			0,  2 * Math.PI,  // aStartAngle, aEndAngle
@@ -47,6 +92,18 @@ export default class SpaceOrbitNode extends OrbitDriverNode{
 
 		this.mesh = new THREE.Line( geometry, material );
 		this.mesh.visible = (this.initValues && this.initValues.visualHelperEnabled) ? this.initValues.visualHelperEnabled : false;
+
+		this.setDistanceToOrigin();
+	}
+
+	setDistanceToOrigin() {
+		const point = this.curve.getPoint(0);
+		// USE ENABLED AXES
+		const pointVector = new THREE.Vector3(point.x, 0, point.y);
+		const originPoint = new THREE.Vector3();
+		const distance = pointVector.distanceToSquared(originPoint);
+
+		this.currentDistanceToOrigin = distance;
 	}
 
 	getSettings() {
@@ -75,16 +132,19 @@ export default class SpaceOrbitNode extends OrbitDriverNode{
 			orbitInnerSliderGroup.className = 'orbit-inner-slider-group';
 
 			orbitSliderGroup.appendChild(orbitInnerSliderGroup);
+
+			const speedSliderRow = document.createElement('div');
+			speedSliderRow.className = 'slider-row';
 			
 			const speedSliderGroup = document.createElement('div');
 			speedSliderGroup.className = 'orbit-slider-group';
 
-			sliderContainer.appendChild(speedSliderGroup);
+			speedSliderRow.appendChild(speedSliderGroup);
 
 			const labelSpeedHTML = `
 				<div class="orbit-slider-label-group">
 					<h4>Hastighet</h4>
-					<h5>Dygn (24h)</h5>
+					<h5>1 = 24h</h5>
 				</div>
 			`;
 
@@ -97,7 +157,7 @@ export default class SpaceOrbitNode extends OrbitDriverNode{
 
 			const defaultSettings = {
 				value: 0,
-				step: 1,
+				step: 0.000001,
 				min: 0,
 				max: 4503,
 			};
@@ -109,6 +169,7 @@ export default class SpaceOrbitNode extends OrbitDriverNode{
 				this.onOrbitXChangeBound,
 				true,
 			);
+			
 
 			const orbitYInput = new InputComponent(
 				orbitInnerSliderGroup,
@@ -117,6 +178,7 @@ export default class SpaceOrbitNode extends OrbitDriverNode{
 				this.onOrbitYChangeBound,
 				true,
 			);
+			
 
 			const orbitZInput = new InputComponent(
 				orbitInnerSliderGroup,
@@ -126,18 +188,29 @@ export default class SpaceOrbitNode extends OrbitDriverNode{
 				true,
 			);
 
-			const speedDefaultSettings = {
-				value: this.initValues ? this.initValues['speed'] : 60230,
-				step: 1,
-				min: 1,
+			
+			if (this.initValues && this.initValues['orbitX']) {
+				this.currentXInputVal = this.initValues['orbitX'];
+			}
+
+			if (this.initValues && this.initValues['orbitY']) {
+				this.currentYInputVal = this.initValues['orbitY'];
+			}
+
+			this.speedDefaultSettings = {
+				value: this.initValues ? this.initValues['speed'] : 0,
+				step: 0.1,
+				min: 10,
 				max: 60230,
 			};
 
-			const speedInput = new InputComponent(
+			this.speedInput = new InputComponent(
 				speedInnerSliderGroup,
 				' ',
-				speedDefaultSettings,
+				this.speedDefaultSettings,
 				this.onSpeedChangeBound,
+				false,
+				true,
 			);
 
 			this.orbitSliders = {
@@ -181,9 +254,11 @@ export default class SpaceOrbitNode extends OrbitDriverNode{
 
 			this.toggleStartBtn.appendChild(this.toggleBtnText);
 
+			speedInnerSliderGroup.appendChild(this.toggleStartBtn);
+
 			settingsContainer.appendChild(sliderContainer);
+			settingsContainer.appendChild(speedSliderRow);
 			settingsContainer.appendChild(bottomContainer);
-			settingsContainer.appendChild(this.toggleStartBtn);
 
 			this.settingsContainer = settingsContainer;
 		}
@@ -197,7 +272,7 @@ export default class SpaceOrbitNode extends OrbitDriverNode{
 		this.syncVisualSettings({
 			orbitX: this.orbitSliders.Position.x.getValue(),
 			orbitY: this.currentYInputVal,
-			speed: this.currentSpeed * 1000.0,
+			speed: this.speedInput.getValue(),
 			isRunning: this.animateValues.isRunning,
             visualHelperEnabled: this.mesh.visible,
 			targetNode: this.targetNode ? this.targetNode.ID : null,
@@ -206,45 +281,141 @@ export default class SpaceOrbitNode extends OrbitDriverNode{
 		this.updateMesh();
 	}
 
-	getOrbitVal(value) {
+	onCenterPointSelected(fromInit, node) {
+		this.targetNode = node;
+		window.NS.singletons.LessonManager.space.addPlanetToCheckDistance(node);
+		if (!fromInit) {
+			this.updateVisualSettings();
+		}
+	}
+
+	onCenterPointListResetClick() {
+		this.targetNode = null;
+
+		window.NS.singletons.LessonManager.space.removePlanetToCheckDistance(node);
+
+		this.updateVisualSettings();
+
+		if (this.nodeConnectedID) {
+			const inNode = window.NS.singletons.ConnectionsManager.nodes[this.nodeConnectedID];
+
+			inNode.mesh.position.x = 0;
+			inNode.mesh.position.y = 0;
+			inNode.mesh.position.z = 0;
+		}
+
+		this.curve.aX = 0;
+		this.curve.aY = 0;
+
+		this.nodeConnectedID = null;
+
+		this.refreshSettings(true);
+
+		this.updateMesh();
+	}
+
+	getSpeedVal(value) {
+		/* 
+			EARTH EXAMPLE:
+			TIME FOR ONE LAP AROUND CIRCLE: 365 days
+			CIRCLE DISTANCE: 2 * 3.14 * 149.6(miljoner km) = 939.488
+			AVG SPEED = DIST/TIME (939.488 / 365) = 2,573939726
+			AVG SPEED (KM / H) = (939.488/(365*24)) * 1000000 = 107 247,488584475
+
+			MOON:
+			TIME FOR ONE LAP AROUND CIRCLE: 30.5 days
+			CIRCLE DISTANCE: 2 * 3.14 * 0.389(miljoner km) = 2.41152
+			AVG SPEED = DIST/TIME (2.41152 / 30.5) = 0.079
+			AVG SPEED (KM / H) = (2.41152/(30.5*24)) * 1000000 = 3 294,4262295082
+
+			Merkurius EXAMPLE:
+			TIME FOR ONE LAP AROUND CIRCLE: 88 days
+			CIRCLE DISTANCE: 2 * 3.14 * 58(miljoner km) = 364.24
+			AVG SPEED = DIST/TIME (364.24 / 88) = 4,1390909091
+			AVG SPEED (KM / H) = (364.24/(88*24)) * 1000000 = 172 462,121212121
+
+			Neptunus EXAMPLE:
+			TIME FOR ONE LAP AROUND CIRCLE: 60225 days
+			CIRCLE DISTANCE: 2 * 3.14 * 4503(miljoner km) = 28 278,84
+			AVG SPEED = DIST/TIME (28 278,84 / 60225) = 0,4695531756
+			AVG SPEED (KM / H) = (28 278,84/(60225*24)) * 1000000 = 19 564,7156496472
+		*/
+
+		if (!this.currentXInputVal || value <= 0) {
+			return { speed: 0, kmHSpeed: 0 };
+		}
+		const dist = 2 * Math.PI * this.currentXInputVal;
+		const speed = dist / value;
+
+		const kmHSpeed = (dist / (value * 24)) * 1000000;
+
+		return { speed: speed / 3000, kmHSpeed };
+	}
+
+	getOrbitVal(value, isRelative) {
 		const max = 4503;
 		const min = 0;
 
-		const maxScale = 400;
+		const maxScale = 800;
 
 		const val = (value - min) / (max - min);
 
-		console.log('val: ', val * maxScale);
+		// console.log('val: ', val * maxScale);
+		// console.log('get Orbit val :: distanceModifier: ', window.NS.singletons.lessons.space.distanceModifier);
+		if (isRelative) {
+			return val * maxScale;
+		}
 
-		return val * maxScale;
+
+		return val * maxScale + window.NS.singletons.lessons.space.distanceModifier * 3;
 	}
 
 	onOrbitXChange(val) {
-		this.curve.xRadius = this.getOrbitVal(val);
-		console.log('x change: ', this.curve.xRadius);
+		this.curve.xRadius = this.getOrbitVal(val, true);
+		this.relativeCurve.xRadius = this.getOrbitVal(val, true);
+		this.currentXInputVal = val;
 		this.updateVisualSettings();
+
+		this.setDistanceToOrigin();
 	}
 
 	onOrbitYChange(val) {
-		this.curve.yRadius = this.getOrbitVal(val);
+		this.curve.yRadius = this.getOrbitVal(val, true);
+		this.relativeCurve.yRadius = this.getOrbitVal(val, true);
 		this.currentYInputVal = val;
 		this.updateVisualSettings();
+
+		this.setDistanceToOrigin();
 	}
 
 	onOrbitZChange(val) {
-		this.curve.yRadius = this.getOrbitVal(val);
+		this.curve.yRadius = this.getOrbitVal(val, true);
+		this.relativeCurve.yRadius = this.getOrbitVal(val, true);
 		this.currentYInputVal = val;
 		this.updateVisualSettings();
+
+		this.setDistanceToOrigin();
 	}
 
 	onSpeedChange(val) {
-		const max = 60230;
-		const min = 0;
-
-		const speed = ((max - value) - min) / (max - min);
-
-		this.currentSpeed = speed * 0.01;
+		const { speed, kmHSpeed } = this.getSpeedVal(val);
+		this.currentSpeed = speed;
 		
 		this.updateVisualSettings();
+	}
+
+	update() {
+		super.update();
+
+		// const point = this.relativeCurve.getPoint(this.currentT);
+		// const vectorPoint = new THREE.Vector3(point.x, point.y, point.y);
+
+		// for (let i = 0; i < this.currentOutConnectionsLength; i++) {
+		// 	const connectionData = this.currentOutConnections[i];
+		// 	const inNode = window.NS.singletons.ConnectionsManager.nodes[connectionData.inNodeID];
+		// 	// const paramContainer = window.NS.singletons.ConnectionsManager.params[connectionData.connection.paramID];
+			
+		// 	inNode.distanceMeasurePosition = vectorPoint;
+		// }
 	}
 }

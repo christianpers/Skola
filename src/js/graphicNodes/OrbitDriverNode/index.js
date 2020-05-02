@@ -16,6 +16,8 @@ export default class OrbitDriverNode extends GraphicNode{
 		this.isVisualHelper = true;
 		this.isForegroundNode = true;
 
+		
+
 		this.isParam = true;
 
 		this.animateValues = {
@@ -62,8 +64,6 @@ export default class OrbitDriverNode extends GraphicNode{
 
 		this.onCenterPointListResetClickBound = this.onCenterPointListResetClick.bind(this);
 
-		
-
 		this.updateAxes();
 		this.getSettings();
 	}
@@ -102,7 +102,7 @@ export default class OrbitDriverNode extends GraphicNode{
 	}
 
 	onCenterPointListResetClick() {
-		this.refreshSettings(true);
+		
 		this.targetNode = null;
 
 		this.updateVisualSettings();
@@ -117,6 +117,10 @@ export default class OrbitDriverNode extends GraphicNode{
 
 		this.curve.aX = 0;
 		this.curve.aY = 0;
+
+		this.nodeConnectedID = null;
+
+		this.refreshSettings(true);
 
 		this.updateMesh();
 	}

@@ -32,6 +32,7 @@ import PlanetNode from '../graphicNodes/SpaceNodes/PlanetNode';
 import SizeModifier from '../graphicNodes/SpaceNodes/SizeModifier';
 import PlanetTextureSelector from '../graphicNodes/SpaceNodes/PlanetTextureSelector';
 import SpaceOrbitNode from '../graphicNodes/SpaceNodes/SpaceOrbitNode';
+import SunNode from '../graphicNodes/SpaceNodes/SunNode';
 
 const nodeMapping = {
   'Kick': {
@@ -95,6 +96,10 @@ const nodeMapping = {
   },
   'Planet': {
     obj: PlanetNode,
+    isModifier: false,
+  },
+  'Sun': {
+    obj: SunNode,
     isModifier: false,
   },
   'Size Modifier': {

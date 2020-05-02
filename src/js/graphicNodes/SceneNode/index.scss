@@ -12,6 +12,10 @@
 		padding: 0;
 		position: relative;
 		height: 84%;
+
+		> canvas {
+			background: black;
+		}
 	}
 
 	& .bottom-part{

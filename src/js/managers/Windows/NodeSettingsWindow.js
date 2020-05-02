@@ -11,6 +11,16 @@ export default class NodeSettingsWindow{
         this.el = document.createElement('div');
         this.el.className = 'node-settings-window window';
 
+        this.bgLayer = document.createElement('div');
+        this.bgLayer.className = 'bg-layer';
+        this.bgLayer.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            this.hide();
+        });
+
+        this.el.appendChild(this.bgLayer);
+
         const label = document.createElement('h5');
         label.innerHTML = 'NODE SETTINGS';
         label.className = 'title';
@@ -19,7 +29,7 @@ export default class NodeSettingsWindow{
 
         this.isOpen = false;
 
-        this.nodeRemove = new NodeRemove(this.el, this.onRemoveCallback);
+        // this.nodeRemove = new NodeRemove(this.el, this.onRemoveCallback);
 
         this.closeBtn = document.createElement('h5');
         this.closeBtn.innerHTML = 'Hide';
@@ -64,10 +74,11 @@ export default class NodeSettingsWindow{
 
     setupForNode(node) {
         this.removeCurrent();
-        const settings = node.getSettings();
-        if (!settings) {
+        if (!node.getSettings) {
             return;
         }
+        const settings = node.getSettings();
+        
         this.currentSettingsEl = settings;
         this.el.appendChild(settings);
 
@@ -91,13 +102,13 @@ export default class NodeSettingsWindow{
 
         this.el.classList.add('visible');
 
-        this.nodeRemove.show();
+        // this.nodeRemove.show();
     }
 
     hide() {
         this.el.classList.remove('visible');
 
-        this.nodeRemove.hide();
+        // this.nodeRemove.hide();
     }
 
     blur() {

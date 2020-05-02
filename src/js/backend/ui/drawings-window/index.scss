@@ -17,6 +17,16 @@
     .drawings-outer-content {
         padding-top: 40px;
         min-width: 400px;
+        display: flex;
+        width: 60vw;
+
+        .drawings-container {
+            flex: 1;
+
+            &:first-child {
+                margin-right: 40px;
+            }
+        }
 
         > h4 {
             margin-bottom: 4px;

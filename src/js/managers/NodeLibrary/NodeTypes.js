@@ -124,6 +124,10 @@ export const spaceTypes = {
                 type: 'Particles',
                 isModifier: false,
             },
+            {
+                type: 'Sun',
+                isModifier: false,
+            },
         ],
         'Modifiers': [
             {
@@ -140,6 +144,10 @@ export const spaceTypes = {
             },
             {
                 type: 'Rotation Modifier',
+                isModifier: true,
+            },
+            {
+                type: 'Form',
                 isModifier: true,
             },
         ]

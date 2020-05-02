@@ -1,21 +1,11 @@
 import VerificationDialog from './verification-dialog';
+import Loader from './loader';
 
 export default class DialogManager{
     constructor(parentEl) {
 
         this.verificationDialog = new VerificationDialog(parentEl);
+        this.loaderDialog = new Loader(parentEl);
 
     }
-
-    // onShow(type) {
-    //     switch (type) {
-    //         case 'VERIFICATION_SHOW':
-    //             this.verificationDialog.show();
-    //             return;
-    //         case 'VERIFICATION_HIDE':
-    //             this.verificationDialog.hide();
-    //         default:
-    //             break;
-    //     }
-    // }
 }

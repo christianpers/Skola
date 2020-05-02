@@ -2,10 +2,12 @@ export default class Refs{
     constructor() {
         this.userRef = null;
         this.drawingRef = null;
-        this.nodesRef = null;
+        // this.nodesRef = null;
+        // this.groupsRef = null;
         this.paramContainerRef = {};
 
         this.nodesRefs = {};
+        this.groupsRefs = {};
     }
 
     hasUserRef() {
@@ -48,17 +50,45 @@ export default class Refs{
         return !!this.nodesRefs[id];
     }
 
-    setNodesRef(ref) {
-        this.nodesRef = ref;
+    // setNodesRef(ref) {
+    //     this.nodesRef = ref;
+    // }
+
+    // hasNodesRef() {
+    //     return !!this.nodesRef;
+    // }
+
+    // getNodesRef() {
+    //     return this.nodesRef;
+    // }
+
+    addGroupRef(ref) {
+        this.groupsRefs[ref.id] = ref
     }
 
-    hasNodesRef() {
-        return !!this.nodesRef;
+    hasGroupRef(id) {
+        return !!this.groupsRefs[id];
     }
 
-    getNodesRef() {
-        return this.nodesRef;
+    getGroupRef(id) {
+        return this.groupsRefs[id];
     }
+
+    removeGroupRef(id) {
+        delete this.groupsRefs[id];
+    }
+
+    // setGroupsRef(ref) {
+    //     this.groupsRef = ref;
+    // }
+
+    // hasGroupsRef() {
+    //     return !!this.groupsRef;
+    // }
+
+    // getGroupsRef() {
+    //     return this.groupsRef;
+    // }
 
     // addParamContainerRef(ref) {
     //     this.paramContainerRef[ref.id] = ref;

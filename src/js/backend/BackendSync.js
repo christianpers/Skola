@@ -25,7 +25,7 @@ export default class BackendSync {
             const inNode = window.NS.singletons.ConnectionsManager.nodes[modifierNodeData.data.connectionData.node];
             const paramContainer = inNode.nodeType.paramContainers.find(t => t.ID === modifierNodeData.data.connectionData.paramContainer);
             if (paramContainer && outNode) {
-                outNode.nodeType.activateAsChild(paramContainer, false);
+                outNode.nodeType.activateAsChild(paramContainer, false, true);
             }
             
             const paramConnections = modifierNodeData.data.paramConnections ? modifierNodeData.data.paramConnections : [];
@@ -38,37 +38,13 @@ export default class BackendSync {
     }
 
     initGroups() {
-        const nodesWithGroups = this.selectedDrawing.nodes.filter(t => t.data.group);
-        const groups = {};
-
-        const getRootGroupNode = (nodes, id) => {
-            return nodes.find(t => t.ID === id);
-        }
-
-        const addNodesToGroup = (nodes, group) => {
-            nodes.forEach(t => {
-                group.addNonagon(t);
+        const groups = this.selectedDrawing.groups || [];
+        groups.forEach(t => {
+            const group = window.NS.singletons.NodeGroupManager.createGroup(null, t, null);
+            t.data.renderOrder.forEach(tN => {
+                const node = window.NS.singletons.ConnectionsManager.nodes[tN];
+                group.addNonagon(node, true);
             });
-        }
-
-        nodesWithGroups.forEach((t) => {
-            const node = window.NS.singletons.ConnectionsManager.nodes[t.id];
-
-            if (!groups[t.data.group.Id]) {
-                groups[t.data.group.Id] = [node];
-            } else {
-                groups[t.data.group.Id].push(node);
-            }
-        });
-
-        const keys = Object.keys(groups);
-        keys.forEach(t => {
-            const nodes = groups[t];
-            const rootNode = getRootGroupNode(nodes, t);
-            if (rootNode) {
-                const group = window.NS.singletons.NodeGroupManager.getNonagonGroup(rootNode);
-                addNodesToGroup(nodes, group);
-            }
         });
     }
 

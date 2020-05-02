@@ -39,7 +39,6 @@ export default class Starter {
 
 		this.reqFrameBound = this.reqFrame.bind(this);
 		this.reqFrame();
-		
 	}
 
 	onDrawingSelected(drawing) {
@@ -49,6 +48,7 @@ export default class Starter {
 	}
 
 	onLogout() {
+		this.drawingsWindow.hide();
 		this.main.onLogout();
 	}
 
@@ -57,7 +57,6 @@ export default class Starter {
 	}
 
 	reqFrame() {
-
 		window.requestAnimationFrame(this.reqFrameBound);
 		
 		this.main.update();

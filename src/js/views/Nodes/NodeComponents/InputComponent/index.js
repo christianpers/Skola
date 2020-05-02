@@ -1,7 +1,7 @@
 import './index.scss';
 
 export default class InputComponent{
-	constructor(parentEl, name, inputSettings, callback, disabled) {
+	constructor(parentEl, name, inputSettings, callback, disabled, hideMinMax) {
 		this.callback = callback;
 		const container = document.createElement('div');
 		container.className = `input-setting`;
@@ -21,8 +21,11 @@ export default class InputComponent{
 		this.regExp = /^((-)?(0|([1-9][0-9]*))(\.[0-9]+)?)$/;
 
 		container.appendChild(label);
-		container.appendChild(minLabel);
-		container.appendChild(maxLabel);
+		if (!hideMinMax) {
+			container.appendChild(minLabel);
+			container.appendChild(maxLabel);
+		}
+		
 
 		this.onChangeBound = this.onChange.bind(this);
 

@@ -1,10 +1,10 @@
-import SphereNode from '../Shapes/SphereNode';
+import PointLightNode from '../Lights/PointLightNode';
 
-export default class PlanetNode extends SphereNode{
-	constructor() {
-		super();
+export default class SunNode extends PointLightNode{
+    constructor() {
+        super();
 
-		const textureParam = {
+        const textureParam = {
 			title: 'Texture',
 			param: 'Planet',
 			useAsInput: true,
@@ -99,6 +99,5 @@ export default class PlanetNode extends SphereNode{
 		};
 
 		this.paramVals = {};
-	}
-
+    }
 }

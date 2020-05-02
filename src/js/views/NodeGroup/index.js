@@ -1,18 +1,27 @@
 import NodeSelection from './NodeSelection';
+import { createGroup, updateGroup } from '../../backend/set';
+import { getGroupRef } from '../../backend/get';
 
 import './index.scss';
 
 export default class NodeGroup {
-    constructor(parentEl, ID, pos) {
+    constructor(pos, initGroupConfig, tempID) {
         this.nonagons = {};
-        this.parentEl = parentEl;
-        this.ID = ID;
+        this.parentEl = window.NS.workspaceEl;
+        this.ID = initGroupConfig ? initGroupConfig.id : null;
+        this.tempID = tempID || undefined;
 
         this.el = document.createElement('div');
         this.el.classList.add('group-container');
 
+        this.onUpdatedRenderOrderBound = this.onUpdatedRenderOrder.bind(this);
+
         this.onNodeTabSelectedBound = this.onNodeTabSelected.bind(this);
-        this.nodeSelectionTabs = new NodeSelection(this.el, this.onNodeTabSelectedBound);
+        this.nodeSelectionTabs = new NodeSelection(this.el, this.onNodeTabSelectedBound, this.onUpdatedRenderOrderBound);
+
+        this.parentEl.appendChild(this.el);
+
+        const finalPos = pos ? pos : (initGroupConfig && initGroupConfig.data) ? initGroupConfig.data.pos : { x: window.innerWidth/2, y: window.innerHeight/ 2 };
 
         this.moveCoords = {
 			start: {
@@ -20,20 +29,80 @@ export default class NodeGroup {
 				y: 0
 			},
 			offset: {
-				x: pos.x - 100,
-				y: pos.y - 100,
+				x: finalPos.x - 100,
+				y: finalPos.y - 100,
 			}
 		};
 
-        this.el.style[window.NS.transform] = `translate3d(${pos.x - 100}px, ${pos.y - 100}px, 0)`;
+        this.lastDelta = {x: 0, y: 0};
+
+        this.el.style[window.NS.transform] = `translate3d(${finalPos.x - 100}px, ${finalPos.y - 100}px, 0)`;
 
         this.onMouseDownBound = this.onMouseDown.bind(this);
         this.onMouseMoveBound = this.onMouseMove.bind(this);
         this.onMouseUpBound = this.onMouseUp.bind(this);
 
         this.el.addEventListener('mousedown', this.onMouseDownBound);
+
+        if (initGroupConfig) {
+            const ref = getGroupRef(this.ID);
+		    window.NS.singletons.refs.addGroupRef(ref);
+        }
         
-        parentEl.appendChild(this.el);
+    }
+
+    /* TODO -- NOT BEING USED --- HAS TO BE USED WHEN NO INTERNET */
+    getCurrentID() {
+        if (this.ID) {
+            return this.ID;
+        }
+
+        return this.tempID;
+    }
+
+    onUpdatedRenderOrder(renderOrder) {
+        updateGroup({
+            renderOrder,
+        }, this.ID, true)
+        .then((ref) => {
+            console.log('render order in group updated');
+        })
+        .catch((err) => {
+            console.log('error updating group', err);
+        });
+    }
+
+    triggerAddEvent() {
+        const addGroupToBackendEvent = new CustomEvent('add-new-group', { detail: this.tempID });
+        document.documentElement.dispatchEvent(addGroupToBackendEvent);
+    }
+
+    syncBackend() {
+        return new Promise((resolve, reject) => {
+            const groupObj = {
+                pos: this.moveCoords.offset,
+                nodes: [...Object.keys(this.nonagons)],
+                renderOrder: [...Object.keys(this.nonagons)],
+            };
+            
+            createGroup(groupObj)
+                .then((ref) => {
+                    this.ID = ref.id;
+                    this.tempID = null;
+                    if (ref) {
+                        window.NS.singletons.refs.addGroupRef(ref);
+                    } else {
+                        const ref = getGroupRef(this.ID);
+                        window.NS.singletons.refs.addGroupRef(ref);
+                    }
+                    
+                    resolve(ref.id);
+                })
+                .catch((err) => {
+                    console.log('err creating group in db', err);
+                    reject();
+                });
+        })
     }
 
     setNodeTabTitle(nodeID, title) {
@@ -73,45 +142,101 @@ export default class NodeGroup {
         this.parentEl.removeChild(this.el);
     }
 
-    addNonagon(nonagon) {
-        this.nonagons[nonagon.ID] = nonagon;
-        nonagon.addToGroup(this.el, this.ID);
+    hasNonagon(ID) {
+        return !!this.nonagons[ID];
+    }
 
-        this.nodeSelectionTabs.addNode(nonagon);
+    addNonagon(nonagon, initFromBackend) {
+        const onSuccess = () => {
+            this.nonagons[nonagon.ID] = nonagon;
+            nonagon.addToGroup(this.el);
 
-        const keys = Object.keys(this.nonagons);
-        if (keys.length === 1) {
-            nonagon.groupShow();
-        } else {
-            keys.forEach(t => {
-                this.nonagons[t].groupHide();
-            });
-            nonagon.groupShow();
-            
+            this.nodeSelectionTabs.addNode(nonagon);
+
+            const keys = Object.keys(this.nonagons);
+            if (keys.length === 1) {
+                nonagon.groupShow();
+            } else {
+                keys.forEach(t => {
+                    this.nonagons[t].groupHide();
+                });
+                nonagon.groupShow();
+                
+            }
+
+            this.nodeSelectionTabs.setTabSelected(nonagon.ID);
+        };
+
+        const onError = () => {
+
         }
 
-        this.nodeSelectionTabs.setTabSelected(nonagon.ID);
+        onSuccess();
+
+        if (initFromBackend) {
+            return;
+        }
+
+        // if (this.tempID) {
+        //     return;
+        // }
+        
+        const ids = [...Object.keys(this.nonagons)];
+
+        updateGroup({
+            nodes: ids,
+            renderOrder: ids,
+        }, this.ID, true)
+        .then((ref) => {
+            // console.log('update group ref: ', ref, 'id: ', ref.id);
+            console.log('nodes in group updated');
+            
+        })
+        .catch(() => {
+            console.log('error updating group add nonagon');
+        });
     }
 
     removeNonagon(e, nonagon) {
-        nonagon.groupShow();
-        this.nodeSelectionTabs.removeNode(nonagon);
-        nonagon.removeFromGroup(e, this);
-        delete this.nonagons[nonagon.ID];
+        const onSuccess = () => {
+            nonagon.groupShow();
+            this.nodeSelectionTabs.removeNode(nonagon);
+            nonagon.removeFromGroup(e, this);
+            delete this.nonagons[nonagon.ID];
 
-        if (this.hasNonagons()) {
-            console.log('has nonagons', this.nonagons);
-            const keys = Object.keys(this.nonagons);
-            const activeNonagon = this.nonagons[keys[0]];
-            activeNonagon.groupShow();
+            if (this.hasNonagons()) {
+                console.log('has nonagons', this.nonagons);
+                const keys = Object.keys(this.nonagons);
+                const activeNonagon = this.nonagons[keys[0]];
+                activeNonagon.groupShow();
 
-            this.nodeSelectionTabs.setTabSelected(activeNonagon.ID);
+                this.nodeSelectionTabs.setTabSelected(activeNonagon.ID);
+            }
         }
+        
+        onSuccess();
+
+        const ids = Object.keys(this.nonagons);
+        
+        updateGroup({
+            nodes: ids,
+            renderOrder: ids,
+        }, this.ID, true)
+        .then((ref) => {
+            console.log('node removed from group');
+            // onSuccess();
+        })
+        .catch(() => {
+            console.log('error updating group nonagon remove');
+        });
     }
 
     onMouseDown(e) {
         e.preventDefault;
         e.stopPropagation();
+
+        this.lastDelta.x = 0;
+		this.lastDelta.y = 0;
 
         this.moveCoords.start.x = e.x - this.moveCoords.offset.x;
 		this.moveCoords.start.y = e.y - this.moveCoords.offset.y;
@@ -129,11 +254,28 @@ export default class NodeGroup {
 		this.moveCoords.offset.x = deltaX;
 		this.moveCoords.offset.y = deltaY;
 
+        this.lastDelta.x = deltaX;
+		this.lastDelta.y = deltaY;
+
 		this.el.style[window.NS.transform] = `translate3d(${deltaX}px, ${deltaY}px, 0)`;
     }
 
     onMouseUp() {
         window.removeEventListener('mouseup', this.onMouseUpBound);
 		window.removeEventListener('mousemove', this.onMouseMoveBound);
+
+        if (this.lastDelta.x === 0 && this.lastDelta.y === 0) {
+			return;
+		}
+
+        updateGroup({
+			pos: this.lastDelta,
+		}, this.ID, true)
+		.then(() => {
+			console.log('updated group');
+		})
+		.catch(() => {
+			console.log('error updating group');
+		});
     }
 }

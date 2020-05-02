@@ -5,6 +5,8 @@ import WorkspaceManager from './managers/WorkspaceManager';
 import GlobalAudioSettings from './managers/GlobalAudioSettings';
 import WorkspaceScaleManager from './managers/WorkspaceManager/WorkspaceScaleManager';
 
+import LessonManager from './managers/LessonManager';
+
 import StatusWindow from './backend/ui/status-window';
 import DeleteView from './views/DeleteView';
 import DialogManager from './dialogs/dialog-manager';
@@ -30,7 +32,14 @@ export default class Main{
 
 		this.onWorkspaceClickBound = this.onWorkspaceClick.bind(this);
 
+		window.NS.singletons.lessons = {};
+
+		window.NS.singletons.LessonManager = new LessonManager();
+
+
+
 		this.workspaceManager = new WorkspaceManager(document.body, this.onWorkspaceClickBound);
+		window.NS.workspaceEl = this.workspaceManager.el;
 
 		this.onScaleChangeBound = this.onScaleChange.bind(this);
 		// this.scaleManager = new WorkspaceScaleManager(document.body, this.onScaleChangeBound);
@@ -50,7 +59,6 @@ export default class Main{
 		window.NS.singletons.StatusWindow = new StatusWindow(document.body)
 		window.NS.singletons.ConnectionsManager = new ConnectionsManager();
 		window.NS.singletons.DialogManager = new DialogManager(document.body);
-		
 
 		this.keyboardManager = new KeyboardManager();
 
@@ -62,14 +70,17 @@ export default class Main{
 	}
 
 	onLogout() {
-		this.nodeLibrary.hide();
-		this.workspaceManager.disable();
-		this.keyboardManager.disable();
+		// this.nodeLibrary.hide();
+		// this.workspaceManager.disable();
+		// this.keyboardManager.disable();
+		window.location.reload();
 
-		const nodes = this.nodeManager._nodes;
-		for (let i = 0; i < nodes.length; i++) {
-			this.nodeManager.onNodeRemove(nodes[i]);
-		}
+
+		// const nodes = window.NS.singletons.ConnectionsManager.nodes;
+		// const keys = Object.keys(nodes);
+		// for (let i = 0; i < keys.length; i++) {
+		// 	this.nodeManager.onNodeRemove(nodes[keys[i]]);
+		// }
 	}
 
 	onLogin() {

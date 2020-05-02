@@ -1,4 +1,5 @@
 import NodeGroup from '../views/NodeGroup';
+import { deleteGroup } from '../backend/set';
 
 export default class NodeGroupManager {
     constructor() {
@@ -12,6 +13,23 @@ export default class NodeGroupManager {
 
         this.activeNonagon;
         this.overNonagon;
+
+        this.onAddGroupToBackendBound = this.onAddGroupToBackend.bind(this);
+        document.documentElement.addEventListener('add-new-group', this.onAddGroupToBackendBound);
+    }
+
+    onAddGroupToBackend(e) {
+        console.log('e: ', e, this.groups);
+        const group = this.groups[e.detail];
+        group.syncBackend()
+            .then((ID) => {
+                this.groups[ID] = group;
+                delete this.groups[e.detail]; 
+                console.log('success', this.groups);
+            })
+            .catch(() => {
+                console.log('err');
+            })
     }
 
     updateGroupNodeTabTitle(nodeID, title) {
@@ -45,22 +63,43 @@ export default class NodeGroupManager {
         return key ? this.groups[key] : null;
     }
 
+    createGroup(pos, initGroupConfig, tempID) {
+        if (initGroupConfig) {
+            const group = new NodeGroup(null, initGroupConfig, null);
+            this.groups[group.ID] = group;
+            return group;
+        }
+        const group = new NodeGroup(pos, initGroupConfig, tempID);
+        if (tempID) {
+            this.groups[tempID] = group;    
+        }
+
+        
+        return group;
+    }
+
     getNonagonGroup(overNonagon) {
+        // alert('get nonagon group fix !!');
         const existingGroup = this.getGroupFromNonagon(overNonagon);
         if (existingGroup) {
-            console.log('return group', existingGroup.ID)
+            console.log('return group', existingGroup.ID);
             return existingGroup;
         }
 
         console.log('create new group');
-        const group = new NodeGroup(overNonagon.parentEl, overNonagon.ID, overNonagon.moveCoords.offset);
-        this.groups[overNonagon.ID] = group;
+        const group = this.createGroup(overNonagon.moveCoords.offset, null, overNonagon.ID);
+        // const group = new NodeGroup(overNonagon.parentEl, overNonagon.ID, overNonagon.moveCoords.offset);
+        // this.groups[overNonagon.ID] = group;
+
 
         return group;
     }
 
     onOverNonagon(overNonagon) {
-        overNonagon.setSelected();
+        // overNonagon.setSelected();
+        window.NS.singletons.SelectionManager.setSelected(overNonagon);
+        // const nodeSelectedEvent = new CustomEvent('node-selected', { detail: overNonagon });
+        // document.documentElement.dispatchEvent(nodeSelectedEvent);
         if (!this.currentActiveGroup) {
             this.currentActiveGroup = this.getNonagonGroup(overNonagon);
         }
@@ -88,20 +127,18 @@ export default class NodeGroupManager {
         if (overNonagon) {
             this.onOverNonagon(overNonagon);
         } else {
-            for (let i = 0; i < this.nonagonsToCheckLength; i++) {
-                this.nonagonsToCheck[i].setNotSelected();
-            }
+            // for (let i = 0; i < this.nonagonsToCheckLength; i++) {
+            //     this.nonagonsToCheck[i].setNotSelected();
+            // }
+            window.NS.singletons.SelectionManager.deselectAllNonagons(this.nonagonsToCheck);
             if (this.currentActiveGroup) {
                 if (!this.currentActiveGroup.hasNonagons()) {
                     this.currentActiveGroup.delete();
                     delete this.groups[this.overNonagon.ID];
                     this.currentActiveGroup = null;
                 }
-                
-                
-                
-            }
 
+            }
             this.overNonagon = null;
         }
     }
@@ -109,8 +146,18 @@ export default class NodeGroupManager {
     removeFromGroup(e, group, nonagon) {
         group.removeNonagon(e, nonagon);
         if (!group.hasNonagons()) {
+            const ID = group.ID;
+            deleteGroup(ID)
+                .then(() => {
+                    console.log('group deleted', ID);
+                    window.NS.singletons.refs.removeGroupRef(ID);
+                })
+                .catch((err) => {
+                    console.log('error deleting', err);
+                });
+            
             group.delete();
-            delete this.groups[group.ID];   
+            delete this.groups[group.ID];  
         }
     }
 
@@ -138,8 +185,12 @@ export default class NodeGroupManager {
             if (keys.length === 0) {
                 this.currentActiveGroup.addNonagon(this.overNonagon);
                 this.currentActiveGroup.addNonagon(this.activeNonagon);
+                this.currentActiveGroup.triggerAddEvent();
             } else {
-                this.currentActiveGroup.addNonagon(this.activeNonagon);
+                if (!this.currentActiveGroup.hasNonagon(this.activeNonagon.ID)) {
+                    this.currentActiveGroup.addNonagon(this.activeNonagon);
+                }
+                
             }
         }
 

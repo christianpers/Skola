@@ -7,6 +7,16 @@
 	opacity: .2;
 	z-index: 2;
 
+	.bg-layer {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100vw;
+		height: 100vh;
+		background: rgba(27,28,30,0.95);
+		display: none;
+	}
+
     &.has-settings {
         opacity: 1;
     }
@@ -20,6 +30,10 @@
 		}
 
 		.close-btn {
+			display: block;
+		}
+
+		.bg-layer {
 			display: block;
 		}
 	}

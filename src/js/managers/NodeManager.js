@@ -9,6 +9,7 @@ import Helpers from '../musicHelpers/Helpers';
 
 import ModifierCollisionManager from './ModiferCollisionManager';
 import NodeGroupManager from './NodeGroupManager';
+import SelectionManager from './SelectionManager';
 
 import AvailableConnections from './NodeManager/AvailableConnections';
 
@@ -26,6 +27,7 @@ export default class NodeManager{
 		this.availableConnections = new AvailableConnections();
 
 		window.NS.singletons.NodeGroupManager = new NodeGroupManager();
+		window.NS.singletons.SelectionManager = new SelectionManager();
 
 		this.constructorIsDone = false;
 
@@ -128,7 +130,7 @@ export default class NodeManager{
 	}
 
 	init(selectedDrawing) {
-		const drawing = selectedDrawing.nodes ? selectedDrawing : { nodes: [] };
+		const drawing = selectedDrawing ? selectedDrawing : { nodes: [], groups: [] };
 
 		this.backendSync.setSelectedDrawing(drawing);
 
@@ -148,7 +150,8 @@ export default class NodeManager{
 		}
 
 		if (event && event.detail) {
-			event.detail.setSelected();
+			// event.detail.setSelected();
+			window.NS.singletons.SelectionManager.setSelected(event.detail);
 			this.windowManager.setupForNode(event.detail);
 		}
 	}
@@ -253,18 +256,20 @@ export default class NodeManager{
 		return true;
 	}
 
-	onInputConnection(outNode, paramContainer) {
+	onInputConnection(outNode, paramContainer, fromInit) {
 		// console.log('on input connection', outNode, paramContainer);
 
 		/* TODO Connect params that has prop defaultConnect  soooo maybe filter on that key */
 		const paramKeys = Object.keys(paramContainer.inputParams);
 		if (paramKeys.length === 1) {
-
 		}
 		
 		window.NS.singletons.ConnectionsManager.addNodeConnection(outNode, paramContainer);
 
-		this.windowManager.onNodeConnect(outNode);
+		if (!fromInit) {
+			this.windowManager.onNodeConnect(outNode);
+		}
+		
 	};
 
 	onDisconnect(outNode, paramContainer) {
@@ -301,6 +306,7 @@ export default class NodeManager{
 		if (!node.isModifier && !node.isCanvasNode) {
 			this.modifierCollisionManager.addNonagon(node);
 			window.NS.singletons.NodeGroupManager.addNonagon(node);
+			window.NS.singletons.SelectionManager.addNonagon(node);
 		}
 
 		if (!this.backendSync.isDone()) {
@@ -326,6 +332,7 @@ export default class NodeManager{
 		if (!node.isModifier && !node.isCanvasNode) {
 			this.modifierCollisionManager.removeNonagon(node);
 			window.NS.singletons.NodeGroupManager.removeNonagon(node);
+			window.NS.singletons.SelectionManager.removeNonagon(node);
 		}
 
 		node.removeFromDom();

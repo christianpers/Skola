@@ -5,6 +5,8 @@ import textures from './textures';
 export default class PlanetTextureSelector extends TextureSelectorNode {
     constructor(renderer, backendData) {
         super(renderer, backendData);
+
+		this.title = 'Planet texture';
     }
 
     getSettings() {

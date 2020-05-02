@@ -104,7 +104,6 @@ export default class Node{
 
 			this.nodeType = this.isModifier
 				? new TriangleType(this.el, this.innerContainer, this.params, this) : new NonagonType(this.innerContainer, this.params, this, nodeConfig);
-
 		}
 
 		this.moveCoords = {
@@ -211,14 +210,14 @@ export default class Node{
 		this.addCallback(this);
 	}
 
-	getSettings() {
-		if (!this.settingsContainer) {
-			this.settingsContainer = document.createElement('div');
-			this.settingsContainer.className = 'node-settings';
-		}
+	// getSettings() {
+	// 	if (!this.settingsContainer) {
+	// 		this.settingsContainer = document.createElement('div');
+	// 		this.settingsContainer.className = 'node-settings';
+	// 	}
 
-		return this.settingsContainer;
-	}
+	// 	return this.settingsContainer;
+	// }
 
 	setTitle(value) {
 		this.title = value;
@@ -259,7 +258,7 @@ export default class Node{
 		});
 	}
 
-	addToGroup(groupEl, groupId) {
+	addToGroup(groupEl) {
 		groupEl.appendChild(this.el);
 		this.el.style[window.NS.transform] = 'translate(-50%, -50%)';
 		this.el.classList.add('center-group');
@@ -269,18 +268,6 @@ export default class Node{
 		if (this.nodeType.setActive) {
 			this.nodeType.setActive();
 		}
-
-		updateNode({
-			group: {
-				Id: groupId,
-			}
-		}, this.ID, true)
-		.then(() => {
-
-		})
-		.catch(() => {
-
-		});
 	}
 
 	removeFromGroup(e, group) {
@@ -294,21 +281,15 @@ export default class Node{
 		this.moveCoords.start.x = e.x - (group.moveCoords.offset.x + offsetX);
 		this.moveCoords.start.y = e.y - (group.moveCoords.offset.y + offsetY);
 
-		updateNode({
-			group: firebase.firestore.FieldValue.delete(),
-		}, this.ID, true)
-		.then(() => {
-
-		})
-		.catch(() => {
-
-		});
+		// if (this.nodeType.setInactive) {
+		// 	this.nodeType.setInactive();
+		// }
 	}
 
-	setAsChildToParamContainer(paramContainer, updateBackend) {
+	setAsChildToParamContainer(paramContainer, updateBackend, fromInit) {
 		paramContainer.el.appendChild(this.el);
 		this.el.style[window.NS.transform] = 'initial';
-		this.onInputConnectionCallback(this, paramContainer);
+		this.onInputConnectionCallback(this, paramContainer, fromInit);
 
 		if (!updateBackend) {
 			return;
@@ -430,16 +411,12 @@ export default class Node{
 	}
 
 	setNotSelected() {
-		if (this.el.classList.contains('center-group')) {
-			return;
-		}
-
 		this.el.classList.remove('selected');
 		if (this.nodeTitle) {
 			this.nodeTitle.blurInput();
 		}
 
-		if (this.nodeType.setInactive) {
+		if (this.nodeType.setInactive && !this.groupState.isInGroup) {
 			this.nodeType.setInactive();
 		}
 
@@ -453,7 +430,7 @@ export default class Node{
 			window.NS.singletons.CanvasNode.foregroundRender.showActive(this.ID);
 		}
 		
-		if (this.nodeType.setActive) {
+		if (this.nodeType.setActive && !this.groupState.isInGroup) {
 			this.nodeType.setActive();
 		}
 	}
@@ -503,6 +480,8 @@ export default class Node{
 
 		e.stopPropagation();
 		e.preventDefault();
+
+		console.log('mouse down');
 
 		const nodeSelectedEvent = new CustomEvent('node-selected', { detail: this });
         document.documentElement.dispatchEvent(nodeSelectedEvent);

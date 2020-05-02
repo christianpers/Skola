@@ -1,14 +1,24 @@
-import { checkUserExists, getDrawings, getDrawingRef, getAllNodesFromAllDrawings } from '../../get';
-// import { formatDate } from '../../helpers';
-import { createDrawing } from '../../set';
+import {
+  getFromArr,
+  getDate,
+  getDrawingsData,
+  getGenericDrawingsData,
+  getViewHTML,
+} from './helpers';
+
+import {
+  getDrawingRef,
+} from '../../get';
+
+import { createDrawing, createDrawingFromGeneric } from '../../set';
 
 import './index.scss';
 
 export default class DrawingsWindow{
   constructor(parentEl, username, onSelected) {
-
     this.username = username;
     this.drawings = {};
+    this.genericDrawings = {};
     this.paths = {};
     this.onSelected = onSelected;
 
@@ -21,74 +31,35 @@ export default class DrawingsWindow{
 
     parentEl.appendChild(this.el);
 
-    this.getDrawingsData();
-  }
+    const getData = () => {
+      const promises = [getDrawingsData(username), getGenericDrawingsData()];
+      return Promise.all(promises);
+    }
 
-  getDrawingsData() {
-    checkUserExists(this.username)
-      .then((exists) => {
-        if (exists) {
-          return getDrawings(this.username);
-        } else {
-          return Promise.reject('user doesnt exist');
-        }
-          
-      }).then((drawings) => {
-        this.drawings = drawings;
-        console.log(drawings);
-        return getAllNodesFromAllDrawings(drawings);
-      })
+    getData()
       .then((resp) => {
-        for (let i = 0; i < resp.length; i++) {
-          const key = Object.keys(resp[i])[0];
-          this.drawings[key].nodes = resp[i][key];
-        }
-
-        this.populateView();
+        const [drawings, genericDrawings] = resp;
+        console.log('sdfsd: ', drawings);
+        this.drawings = drawings;
+        this.genericDrawings = genericDrawings;
+        this.el.innerHTML = getViewHTML(drawings, genericDrawings);
+        this.makeInteractive();
       })
       .catch((err) => {
-        console.log('err', err);
+        console.log('sdfsdf', err);
       });
+    
   }
 
-  populateView() {
-    const keys = Object.keys(this.drawings);
-    const items = keys.map((t, i) => (`
-      <div class="drawings-item">
-        <h4>${this.drawings[t].doc.title}</h4>
-        <h5>Nodes: ${this.drawings[t].nodes.length}</h5>
-        <h5>Last saved: ${new Date(this.drawings[t].doc.timestamp.seconds * 1000)}</h5>
-        <div class="click-cover" data-id="${t}"></div>
-        <h5 class="delete-btn" data-id="${t}">Delete</h5>
-      </div>
-    `)).join('');
-    const html = `
-      <div class="drawings-outer-content">
-        <h4>YOUR DRAWINGS</h4>
-        <div class="drawings-window-content-wrapper">
-          ${keys.length > 0 ? items : '<h4>NO SAVED DRAWINGS</h4>'}
-        </div>
-        <div class="new-drawing">
-          <div class="init-container">
-            <h4>CREATE NEW DRAWING</h4>
-          </div>
-          <div class="data-container">
-            <div class="input-title-container">
-              <input type="text" placeholder="Title" />
-              <button class="save-title" type="button">Spara</button>
-              <button class="cancel-title" type="button">Bakåt</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
-
-    this.el.innerHTML = html;
-
+  makeInteractive() {
     const existingDrawings = this.el.querySelectorAll('.drawings-item');
+    console.log('existingDrawings', existingDrawings);
     existingDrawings.forEach((t) => {
       const deleteBtn = t.querySelector('.delete-btn');
-      deleteBtn.addEventListener('click', this.onDeleteDrawingBound);
+      if (deleteBtn) {
+        deleteBtn.addEventListener('click', this.onDeleteDrawingBound);
+      }
+      
       t.addEventListener('click', this.onExistingDrawingClickBound);
     });
 
@@ -105,11 +76,12 @@ export default class DrawingsWindow{
     saveTitle.addEventListener('click', () => {
       createDrawing({ title: input.value })
         .then((ref) => {
+          console.log('created drawing ref: ', ref);
           window.NS.singletons.refs.setDrawingRef(ref);
           this.onSelected();
         })
-        .catch(() => {
-          console.log('error');
+        .catch((e) => {
+          console.log('error', e);
         });
     });
 
@@ -125,17 +97,28 @@ export default class DrawingsWindow{
     e.preventDefault();
     e.stopPropagation();
     const id = e.target.getAttribute('data-id');
-    const path = this.drawings[id].path;
+    const path = this.drawings[id].drawing.path;
 
     const onYes = () => {
       window.NS.singletons.DialogManager.verificationDialog.hide();
+      window.NS.singletons.DialogManager.loaderDialog.show();
       const deleteFn = firebase.functions().httpsCallable('recursiveDelete');
       deleteFn({ path: path })
         .then((result) => {
           console.log('Delete success: ' + JSON.stringify(result));
-          this.getDrawingsData();
+          window.NS.singletons.DialogManager.loaderDialog.hide();
+          // this.getDrawingsData();
+          getDrawingsData(this.username)
+            .then((drawingsData) => {
+              this.drawings = drawingsData;
+
+              this.el.innerHTML = getViewHTML(this.drawings, this.genericDrawings);
+              this.makeInteractive();
+              // this.populateView(finalData);
+            });
         })
         .catch((err) => {
+          window.NS.singletons.DialogManager.loaderDialog.hide();
           console.log('Delete failed, see console,');
           console.warn(err);
         });
@@ -149,12 +132,33 @@ export default class DrawingsWindow{
   }
 
   onExistingDrawingClick(e) {
+    const handleGenericDrawing = (id) => {
+      window.NS.singletons.DialogManager.loaderDialog.show();
+      const drawing = this.genericDrawings[id];
+      createDrawingFromGeneric(drawing)
+        .then((drawingRef) => {
+          window.NS.singletons.refs.setDrawingRef(drawingRef);
+          window.NS.singletons.DialogManager.loaderDialog.hide();
+          this.onSelected(drawing);
+        })
+        .catch((err) => {
+          console.log('err', err);
+        });
+
+    }
     const id = e.target.getAttribute('data-id');
+    const type = e.target.getAttribute('data-drawing-type');
+    if (type && type === 'generic') {
+      /*
+        This creates a new personal drawing if drawing is generic with the generic one as boilerplate
+     */
+      handleGenericDrawing(id);
+      return false;
+    }
     const drawing = this.drawings[id];
-    
+
     window.NS.singletons.refs.setDrawingRef(getDrawingRef(id));
     this.onSelected(drawing);
-    
   }
 
 	show() {

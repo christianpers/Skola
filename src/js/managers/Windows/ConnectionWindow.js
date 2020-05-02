@@ -14,6 +14,16 @@ export default class ConnectionWindow{
         this.el = document.createElement('div');
         this.el.className = 'connection-window window';
 
+        this.bgLayer = document.createElement('div');
+        this.bgLayer.className = 'bg-layer';
+        this.bgLayer.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            this.hide();
+        });
+
+        this.el.appendChild(this.bgLayer);
+
         this.contentContainer = document.createElement('div');
         this.contentContainer.className = 'content-container';
 

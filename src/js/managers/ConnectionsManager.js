@@ -176,4 +176,17 @@ export default class ConnectionsManager{
         const paramConnectionsUpdateEvent = new CustomEvent('param-connections-remove', { detail });
         document.documentElement.dispatchEvent(paramConnectionsUpdateEvent);
     }
+
+    getConnectedNodeWithType(nodeID, type) {
+        const nodeConnections = this.nodeConnections[nodeID];
+        const connection = nodeConnections.find(t => {
+            return this.nodes[t.outNodeID].type === type;
+        });
+
+        if (connection) {
+            return this.nodes[connection.outNodeID];
+        }
+
+        return null;
+    }
 }

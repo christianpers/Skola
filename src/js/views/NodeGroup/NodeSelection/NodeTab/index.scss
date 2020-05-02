@@ -2,12 +2,15 @@
     background: yellow;
     margin-right: 2px;
     padding: 4px 10px;
-    position: relative;
+    position: absolute;
+    top: 0;
+    left: 0;
 
     &.selected {
         .touch-layer {
             background: transparent;
         }
+        z-index: 1;
     }
 
     .tab-title {
