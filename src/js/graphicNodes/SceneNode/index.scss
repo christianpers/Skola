@@ -10,28 +10,16 @@
 
 	& .top-part{
 		padding: 0;
-		position: relative;
-		height: 84%;
+		position: absolute;
+		top: 0;
+		left: 0;
+		height: 100%;
+		width: 100%;
 
 		> canvas {
 			background: black;
 		}
 	}
-
-	& .bottom-part{
-        height: 16%;
-        background: rgba(0,0,0,.7);
-
-		& .bottom-part-settings {
-			position: absolute;
-			left: 16%;
-			z-index: 1;
-			display: flex;
-			justify-content: space-between;
-			padding: 10px 5px;
-
-		}
-    }
 
     &.visible {
         transform: translateY(0);
@@ -55,53 +43,4 @@
             color: yellow;
         }
     }
-
-	& .camera-control-setting{
-		margin-right: 40px;
-	    color: white;
-	    align-items: center;
-	    justify-content: center;
-	    position: relative;
-	    width: 148px;
-	    text-align: center;
-		& .toggle-el {
-			width: 20px;
-			height: 20px;
-			background: rgba(50,50,50,1.0);
-			cursor: pointer;
-			border-radius: 3px;
-			margin-top: 8px;
-			position: absolute;
-			left: 50%;
-			margin-left: -10px;
-
-			&.enabled{
-				background: rgba(255,255,0,1.0);
-			}
-		}
-	}
-
-	& .axes-helper-setting{
-		margin-left: 40px;
-	    color: white;
-	    align-items: center;
-	    justify-content: center;
-	    position: relative;
-	    width: 148px;
-		& .toggle-el {
-			width: 20px;
-			height: 20px;
-			background: rgba(50,50,50,1.0);
-			cursor: pointer;
-			border-radius: 3px;
-			margin-top: 8px;
-			position: absolute;
-			left: 50%;
-			margin-left: -10px;
-
-			&.enabled{
-				background: rgba(255,255,0,1.0);
-			}
-		}
-	}
 }

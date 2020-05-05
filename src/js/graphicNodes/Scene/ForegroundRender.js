@@ -1,4 +1,5 @@
 import { SIMPLE_3D_VERTEX, ACTIVE_MESH_FRAGMENT } from '../../../shaders/SHADERS';
+import Stars from './lessons/space/Stars';
 
 export default class ForegroundRender{
 	constructor(mainRender, canvas) {
@@ -27,6 +28,8 @@ export default class ForegroundRender{
 		this.ambientLight = new THREE.AmbientLight( );
 
 		this.scene.add(this.ambientLight);
+
+		this.stars = new Stars(this.scene);
 
 		this.connectedNodes = [];
 		this.hasConnectedLight = false;
