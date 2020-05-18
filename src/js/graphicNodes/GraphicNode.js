@@ -31,6 +31,9 @@ export default class GraphicNode extends Node{
 		this.isCanvasNode = false;
 
 		this.dotPos = undefined;
+
+		this.onCanvasResizeBound = this.onCanvasResize.bind(this);
+		document.documentElement.addEventListener('canvas-resize-event', this.onCanvasResizeBound);
 	}
 
 	init(
@@ -64,6 +67,9 @@ export default class GraphicNode extends Node{
 
 		// this.postInit();
 
+	}
+
+	onCanvasResize(e) {
 	}
 
 	onConnectionAdd(e) {
@@ -101,6 +107,5 @@ export default class GraphicNode extends Node{
 	}
 
 	onResize() {
-
 	}
 }

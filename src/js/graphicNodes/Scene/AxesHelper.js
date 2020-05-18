@@ -1,7 +1,7 @@
 export default class AxesHelper{
 	constructor(parentEl, foregroundController) {
 		this.el = document.createElement('div');
-		this.el.className = 'axes-helper-setting';
+		this.el.className = 'axes-helper-setting settings-item';
 		this.foregroundController = foregroundController;
 
 		this.label = document.createElement('h4');
@@ -14,11 +14,11 @@ export default class AxesHelper{
 
 		this.isEnabled = false;
 
-		this.el.appendChild(this.toggleEl);
+		// this.el.appendChild(this.toggleEl);
 
 		this.onClickBound = this.onClick.bind(this);
 
-		this.toggleEl.addEventListener('click', this.onClickBound);
+		this.el.addEventListener('click', this.onClickBound);
 
 		parentEl.appendChild(this.el);
 	}
@@ -30,10 +30,10 @@ export default class AxesHelper{
 		this.isEnabled = !this.isEnabled;
 
 		if (this.isEnabled) {
-			this.toggleEl.classList.add('enabled');
+			this.el.classList.add('enabled');
 			this.label.innerHTML = 'Visa x y z axlar (aktiv)';
 		} else {
-			this.toggleEl.classList.remove('enabled');
+			this.el.classList.remove('enabled');
 			this.label.innerHTML = 'Visa x y z axlar (inaktiv)';
 		}
 

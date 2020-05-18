@@ -44,13 +44,22 @@ export default class VisualHelperSettings{
         }
     }
 
-    enableVisibility() {
+    enableVisibility(doCallback = false, syncBackend = true) {
         this.visibilityEnabled = true;
         this.toggleVisibilityEl.classList.add('enabled');
+
+        if (doCallback) {
+            this.toggleVisibilityCallback(this.visibilityEnabled, syncBackend);
+        }
     }
 
-    disableVisibility() {
+    disableVisibility(doCallback = false, syncBackend = true) {
         this.visibilityEnabled = false;
         this.toggleVisibilityEl.classList.remove('enabled');
+
+        if (doCallback) {
+            this.toggleVisibilityCallback(this.visibilityEnabled, syncBackend);
+        }
+        
     }
 }

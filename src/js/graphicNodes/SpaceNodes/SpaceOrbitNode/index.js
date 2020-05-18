@@ -11,7 +11,6 @@ export default class SpaceOrbitNode extends OrbitDriverNode{
 		super(renderer, backendData);
 
 		this.title = 'Space orbit modifier';
-
 		this.onCameraChangedBound = this.onCameraChanged.bind(this);
 
 		document.documentElement.addEventListener('camera-pos-changed', this.onCameraChangedBound);
@@ -360,12 +359,9 @@ export default class SpaceOrbitNode extends OrbitDriverNode{
 
 		const val = (value - min) / (max - min);
 
-		// console.log('val: ', val * maxScale);
-		// console.log('get Orbit val :: distanceModifier: ', window.NS.singletons.lessons.space.distanceModifier);
 		if (isRelative) {
 			return val * maxScale;
 		}
-
 
 		return val * maxScale + window.NS.singletons.lessons.space.distanceModifier * 3;
 	}

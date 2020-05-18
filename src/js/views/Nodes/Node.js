@@ -428,6 +428,8 @@ export default class Node{
 
 		if (this.isRendered) {
 			window.NS.singletons.CanvasNode.foregroundRender.showActive(this.ID);
+			// console.log('set active camera id: ', this.ID);
+			// window.NS.singletons.CanvasNode.foregroundRender.setActiveCamera(this.camera);
 		}
 		
 		if (this.nodeType.setActive && !this.groupState.isInGroup) {
@@ -480,8 +482,6 @@ export default class Node{
 
 		e.stopPropagation();
 		e.preventDefault();
-
-		console.log('mouse down');
 
 		const nodeSelectedEvent = new CustomEvent('node-selected', { detail: this });
         document.documentElement.dispatchEvent(nodeSelectedEvent);

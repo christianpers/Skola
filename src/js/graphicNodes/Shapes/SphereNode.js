@@ -18,6 +18,13 @@ export default class SphereNode extends GraphicNode{
 		this.mesh = new THREE.Group();
 		this.mesh.add(mesh);
 
+		const w = window.innerWidth;
+		const h = window.innerHeight;
+
+		this.camera = new THREE.PerspectiveCamera( 70, w / h, 0.1, 100 );
+		this.camera.position.set( -1, 1, -10 );
+		this.mesh.add(this.camera);
+
 		const textureParam = {
 			title: 'Texture',
 			param: 'map',
@@ -175,12 +182,41 @@ export default class SphereNode extends GraphicNode{
 		this.enabledOutputs = [];
 	}
 
+	onCanvasResize(e) {
+		const [w, h] = e.detail;
+
+		console.log('canvas resize', w, h );
+
+		if (this.camera.aspect) {
+			this.camera.aspect = w / h;
+		} else {
+			this.camera.left = w / - 2;
+			this.camera.right = w / 2;
+			this.camera.top = h / -2;
+			this.camera.bottom = h / 2;
+		}
+		this.camera.updateProjectionMatrix();
+	}
+
 	getMesh() {
 		return this.mesh;
 	}
 
 	update() {
-		// this.nameTexture.needsUpdate = true;
+		/* TODO THIS SHOULD Only BE DONE WHEN CAMERA ACTIVE */
+
+		// this.camera.lookAt(this.mesh.position);
+
+		// const relativeCameraOffset = new THREE.Vector3(0, 2, 20);
+
+		// const cameraOffset = relativeCameraOffset.applyMatrix4( this.mesh.matrixWorld );
+
+		// // this.camera.position.x = cameraOffset.x;
+		// // this.camera.position.y = cameraOffset.y;
+		// // this.camera.position.z = cameraOffset.z;
+		// this.camera.position.copy(cameraOffset);
+		// this.camera.lookAt( this.mesh.position );
+		// this.mesh.lookAt(this.mesh.position);
 	}
 
 	render() {

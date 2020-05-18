@@ -33,6 +33,7 @@ import SizeModifier from '../graphicNodes/SpaceNodes/SizeModifier';
 import PlanetTextureSelector from '../graphicNodes/SpaceNodes/PlanetTextureSelector';
 import SpaceOrbitNode from '../graphicNodes/SpaceNodes/SpaceOrbitNode';
 import SunNode from '../graphicNodes/SpaceNodes/SunNode';
+import PlanetRotationModifier from '../graphicNodes/SpaceNodes/PlanetRotationModifier';
 
 const nodeMapping = {
   'Kick': {
@@ -113,7 +114,11 @@ const nodeMapping = {
   'Space Orbit': {
     obj: SpaceOrbitNode,
     isModifier: true,
-  }
+  },
+  'Planet Rotation': {
+    obj: PlanetRotationModifier,
+    isModifier: true,
+  },
 };
 
 export const getNode = (nodeStr) => {

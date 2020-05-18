@@ -16,7 +16,8 @@ export default class OrbitDriverNode extends GraphicNode{
 		this.isVisualHelper = true;
 		this.isForegroundNode = true;
 
-		
+		// USED IN CANVAS SETTINGS TO TOGGLE ON/OFF VISIBILITY
+		this.hasHelperMeshToHide = true;
 
 		this.isParam = true;
 
@@ -278,9 +279,12 @@ export default class OrbitDriverNode extends GraphicNode{
 		this.updateVisualSettings();
 	}
 
-    onToggleVisualHelperVisibility(enabled) {
+    onToggleVisualHelperVisibility(enabled, syncBackend = true) {
         this.mesh.visible = enabled;
-        this.updateVisualSettings();
+		if (syncBackend) {
+			this.updateVisualSettings();
+		}
+        
     }
 
 	onCenterPointSelected(fromInit, node) {
@@ -383,10 +387,19 @@ export default class OrbitDriverNode extends GraphicNode{
 			this.outValues['Position'].y = point.y;
 			this.outValues['Position'].z = point.y;
 
+			
+			/* LOOKAT has to be done before setting position */
+			for (let i = 0; i < this.currentOutConnectionsLength; i++) {
+				const connectionData = this.currentOutConnections[i];
+				const inNode = window.NS.singletons.ConnectionsManager.nodes[connectionData.inNodeID];
+				inNode.mesh.lookAt(new THREE.Vector3(point.x, 0, point.y));
+			}
+
 			for (let i = 0; i < this.currentOutConnectionsLength; i++) {
 				const connectionData = this.currentOutConnections[i];
 				const inNode = window.NS.singletons.ConnectionsManager.nodes[connectionData.inNodeID];
 				const paramContainer = window.NS.singletons.ConnectionsManager.params[connectionData.connection.paramID];
+				
 				
 				inNode.updateParam(paramContainer, this);
 			}
@@ -396,7 +409,7 @@ export default class OrbitDriverNode extends GraphicNode{
 			return;
 		}
 
-		this.currentT += this.currentSpeed;
+		this.currentT += this.currentSpeed * window.NS.settings.speedModifier;
 		if (this.currentT > 1) {
 			this.currentT = 0;
 		}

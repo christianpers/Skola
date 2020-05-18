@@ -143,7 +143,7 @@ export const spaceTypes = {
                 isModifier: true,
             },
             {
-                type: 'Rotation Modifier',
+                type: 'Planet Rotation',
                 isModifier: true,
             },
             {

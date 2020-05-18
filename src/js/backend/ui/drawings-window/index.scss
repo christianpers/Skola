@@ -119,12 +119,38 @@
                 margin-bottom: 0;
             }
 
-            > h4 {
+            .top-row {
+                display: flex;
                 margin-bottom: 6px;
-                background: black;
-                padding: 2px 4px;
-                display: inline-block;
+
+                .block-with-pre {
+                    margin-left: 10px;
+                    
+                    &:first-child {
+                        margin-left: 0;
+                    }
+
+                    > h5 {
+                        color: black;
+                        margin-bottom: 2px;
+                    }
+
+                    > h4 {
+                        background: black;
+                        padding: 2px 4px;
+                        display: inline-block;
+                    }
+
+                    &.type {
+                        > h4 {
+                            background: yellow;
+                            color: black;
+                        }
+                    }
+                }
             }
+
+            
 
             > h5 {
                 color: black;

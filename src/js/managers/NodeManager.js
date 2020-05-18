@@ -145,8 +145,12 @@ export default class NodeManager{
 	}
 
 	onNodeSelectedEvent(event) {
+		console.log('node selected', event);
+		window.NS.singletons.SelectionManager.deselectAllNonagons();
+		
 		for (let i = 0; i < this._nodes.length; i++) {
 			this._nodes[i].setNotSelected();
+			
 		}
 
 		if (event && event.detail) {
@@ -154,6 +158,8 @@ export default class NodeManager{
 			window.NS.singletons.SelectionManager.setSelected(event.detail);
 			this.windowManager.setupForNode(event.detail);
 		}
+
+		window.NS.singletons.CanvasNode.onNodeDeselect();
 	}
 
 	// EVENT ONLY FOR MODIFIERS

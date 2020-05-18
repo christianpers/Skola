@@ -8,6 +8,8 @@ import SettingsWindow from '../Scene/settings-window';
 import Resizer from '../Scene/resizer';
 import Fullscreen from '../Scene/fullscreen';
 
+import Raycaster from '../Scene/Raycaster';
+
 import './index.scss';
 
 export default class SceneNode{
@@ -71,6 +73,8 @@ export default class SceneNode{
 		this.onAmbientLightSettingChangeBound = this.onAmbientLightSettingChange.bind(this);
 		this.settingsWindow = new SettingsWindow(this.el, this.onAmbientLightSettingChangeBound, this.foregroundRender, this.onFullscreenClickBound)
 		
+		this.raycaster = new Raycaster(this.topPartEl, this.foregroundRender);
+		
 		this.scene = new THREE.Scene();
 		this.renderer = this.mainRender.renderer;
 		this.renderer.setSize(this.topPartEl.clientWidth, this.topPartEl.clientHeight);
@@ -106,30 +110,12 @@ export default class SceneNode{
 	}
 
 	init(parentEl) {
-		// super.init(pos, parentEl, onConnectingCallback, onInputConnectionCallback, type, initData, onNodeActive, onRemoveCallback);
-
 		const w = window.innerWidth;
 		const h = window.innerHeight;
 
 		this.parentEl = parentEl;
 		
 		this.orthoCamera = new THREE.OrthographicCamera( w / - 2, w / 2, h / 2, h / - 2, 1, 1000 );
-
-		// this.bottomPartEl.classList.add('multiple-inputs');
-
-		// this.onInputClickBackgroundBound = this.onInputClickBackground.bind(this);
-		// this.onInputClickForegroundBound = this.onInputClickForeground.bind(this);
-		// this.onInputClickLightBound = this.onInputClickLight.bind(this);
-
-		// this.inputBackground = new NodeInput(this.bottomPartEl, this.onInputClickBackgroundBound, this.isGraphicsNode, 'Bakgrund In', 'background');
-		// this.inputForeground = new NodeInput(this.bottomPartEl, this.onInputClickForegroundBound, this.isGraphicsNode, 'Förgrund In', 'foreground');
-		// this.inputLight = new NodeInput(this.bottomPartEl, this.onInputClickLightBound, this.isGraphicsNode, 'Ljus In', 'light');
-
-		// this.inputs = {
-		// 	'background': this.inputBackground,
-		// 	'foreground': this.inputForeground,
-		// 	'light': this.inputLight,
-		// };
 		
 		setTimeout(() => {
 			this.onResize();
@@ -140,9 +126,12 @@ export default class SceneNode{
 		this.onFullscreenChangeBound = this.onFullscreenChange.bind(this);
 		document.addEventListener('fullscreenchange', this.onFullscreenChangeBound);
 		this.parentEl.appendChild(this.el);
-
-		// this.activateDrag();
     }
+
+	/* CALLED WHEN ON NODE SELECTION (USED FOR BOTH IF NODE SELECTED OR NONE SELECTED) */
+	onNodeDeselect() {
+		this.settingsWindow.followNodeSetting.checkActive();
+	}
 
 	onFullscreenChange() {
 		if (this.isFullscreen) {
@@ -157,7 +146,6 @@ export default class SceneNode{
 	}
 
 	onKeyPress(e) {
-		// console.log(e.keyCode);
 		if (e.keyCode === 27) {
 			this.onFullscreenClick();
 		}
@@ -200,6 +188,8 @@ export default class SceneNode{
 			this.resizer.show();
 			this.fullscreen.show();
 
+			this.onResize();
+
 			document.removeEventListener('keypress', this.onKeyPressBound);
         }
     }
@@ -212,6 +202,38 @@ export default class SceneNode{
 		return [this.topPartEl.clientWidth, this.topPartEl.clientHeight];
 	}
 
+	setForegroundCamera(camera) {
+		if (camera) {
+			this.foregroundRender.setActiveCamera(camera);
+			return;
+		}
+
+		const selectedNode = window.NS.singletons.SelectionManager.currentSelectedNode;
+
+		// if (selectedNode.camera) {
+		// 	this.foregroundRender.setActiveCamera(selectedNode.camera);
+		// }
+
+		if (selectedNode.mesh) {
+			const { position } = selectedNode.mesh;
+			selectedNode.mainMesh.geometry.computeBoundingBox();
+			// console.log(selectedNode.mainMesh.geometry.boundingBox);
+			// console.log(selectedNode.mesh.scale);
+			const { boundingBox } = selectedNode.mainMesh.geometry;
+			const size = selectedNode.mesh.scale.z * boundingBox.max.z;
+			
+			const distance = -size*8;
+			console.log('dist: ', distance);
+			const obj = { mesh: selectedNode.mesh, distance };
+			this.foregroundRender.setMeshToFollow(obj);
+		}
+	}
+
+	resetForegroundCamera() {
+		// this.foregroundRender.setActiveCamera(this.foregroundRender.camera);
+		this.foregroundRender.resetMeshToFollow();
+	}
+
 	setCanvasSize(size) {
 		if (size.w < 100 || size.h < 100) {
 			return;
@@ -221,26 +243,6 @@ export default class SceneNode{
 
 		this.onResize(size);
 	}
-
-	// onNodeResizerDown() {
-
-	// 	this.nodeResizer.currentDims.w = this.topPartEl.clientWidth;
-	// 	this.nodeResizer.currentDims.h = this.topPartEl.clientHeight;
-
-	// 	this.nodeResizer.currentNodeDims.w = this.el.clientWidth;
-	// 	this.nodeResizer.currentNodeDims.h = this.el.clientHeight;
-	// }
-
-	// onResizeFromNodeResizer(delta) {
-
-	// 	this.el.style.width = this.nodeResizer.currentNodeDims.w + delta.x + 'px';
-	// 	this.el.style.height = this.nodeResizer.currentNodeDims.h + delta.y + 'px';
-
-	// 	this.topPartEl.style.width = this.nodeResizer.currentDims.w + delta.x + 'px';
-	// 	this.topPartEl.style.height = this.nodeResizer.currentDims.h + delta.y + 'px';
-
-	// 	this.onResize();
-	// }
 
 	setBackgroundTexture(texture) {
 		this.mesh.material.uniforms.u_texture0.value = texture;
@@ -328,16 +330,15 @@ export default class SceneNode{
 			if (dims) {
 				return [dims.w, dims.h];
 			}
-
-			// return [this.topPartEl.clientWidth, this.topPartEl.clientHeight];
 			return this.getCurrentCanvasDims();
 		}
-		// const w = this.topPartEl.clientWidth;
-		// const h = this.topPartEl.clientHeight;
 
 		const [w, h] = getDims();
 
 		this.foregroundRender.onResize({w, h});
+
+		const canvasResizeEvent = new CustomEvent('canvas-resize-event', { detail: [w, h] });
+        document.documentElement.dispatchEvent(canvasResizeEvent);
 
 		this.mesh.material.uniforms.u_res.value = new THREE.Vector2(w, h);
 

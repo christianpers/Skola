@@ -32,11 +32,13 @@ export default class Main{
 
 		this.onWorkspaceClickBound = this.onWorkspaceClick.bind(this);
 
+		window.NS.settings = {
+			speedModifier: 1,
+		};
+
 		window.NS.singletons.lessons = {};
 
 		window.NS.singletons.LessonManager = new LessonManager();
-
-
 
 		this.workspaceManager = new WorkspaceManager(document.body, this.onWorkspaceClickBound);
 		window.NS.workspaceEl = this.workspaceManager.el;
@@ -90,7 +92,6 @@ export default class Main{
 	}
 
 	onScaleChange(val) {
-		console.log(val);
 
 		// this.workspaceManager.setScale(val);
 	}

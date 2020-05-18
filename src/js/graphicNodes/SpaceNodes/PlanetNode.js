@@ -4,6 +4,8 @@ export default class PlanetNode extends SphereNode{
 	constructor() {
 		super();
 
+		
+
 		const textureParam = {
 			title: 'Texture',
 			param: 'Planet',
@@ -93,7 +95,7 @@ export default class PlanetNode extends SphereNode{
 			positionXParam,
 			positionYParam,
 			positionZParam,
-			rotationXParam,
+			// rotationXParam,
 			rotationYParam,
 			sizeParam,
 		};

@@ -1,8 +1,27 @@
 .settings-window {
     position: absolute;
     top: 0;
-    right: 20px;
-    background: rgba(0,0,0,.7);
+    left: 0;
+    background: white;
+    transform: translateY(-100%);
+    transition: transform 0.4s;
+
+    .label-btn {
+        position: absolute;
+        bottom: -27px;
+        left: 0;
+        background: white;
+        padding: 8px;
+        cursor: pointer;
+
+        > h5 {
+            color: black;
+        }
+    }
+
+    &.visible {
+        transform: translateY(0);
+    }
 
     .close-fullscreen-btn {
         position: absolute;
@@ -45,56 +64,101 @@
     & .bottom-part-settings {
         z-index: 1;
         display: flex;
-        justify-content: space-between;
-        padding: 10px 5px;
+        padding: 10px;
+
+        .settings-col {
+            &:first-child {
+                margin-right: 10px;
+            }
+        }
+    }
+
+    .settings-item {
+        background: rgba(0,0,0,.1);
+        padding: 10px;
+        margin-bottom: 10px;
+
+        > h4 {
+            color: black;
+        }
+        
+        &:last-child {
+            margin-bottom: 0;
+        }
+
+        &:hover {
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        &.enabled {
+            background: rgba(0, 0, 0, 0.3);
+        }
+    }
+
+    & .follow-node-setting {
+        opacity: 0.2;
+
+        &:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        &.active {
+            opacity: 1;
+            cursor: pointer;
+
+            &:hover {
+                background: rgba(0, 0, 0, 0.3);
+            }
+        }
     }
 
     & .camera-control-setting{
-		margin-right: 40px;
 		color: white;
 		align-items: center;
-		justify-content: center;
-		position: relative;
-		width: 148px;
-		text-align: center;
-		& .toggle-el {
-			width: 20px;
-			height: 20px;
-			background: rgba(50,50,50,1.0);
-			cursor: pointer;
-			border-radius: 3px;
-			margin-top: 8px;
-			position: absolute;
-			left: 50%;
-			margin-left: -10px;
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+		cursor: pointer;
+    }
 
-			&.enabled{
-				background: rgba(255,255,0,1.0);
-			}
-		}
-	}
+    .toggle-orbit-helper {
+        cursor: pointer;
+    }
+
+    .speed-settings {
+        .range-container .range-inner-container .range-knob {
+            background: black;
+        }
+
+        .value-display {
+            color: black;
+        }
+
+        &:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+    }
+    
+    .ambient-light {
+        .range-container .range-inner-container .range-knob {
+            background: black;
+        }
+
+        .value-display {
+            color: black;
+        }
+
+        &:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+    }
 
 	& .axes-helper-setting{
-		margin-left: 40px;
 		color: white;
 		align-items: center;
-		justify-content: center;
-		position: relative;
-		width: 148px;
-		& .toggle-el {
-			width: 20px;
-			height: 20px;
-			background: rgba(50,50,50,1.0);
-			cursor: pointer;
-			border-radius: 3px;
-			margin-top: 8px;
-			position: absolute;
-			left: 50%;
-			margin-left: -10px;
-
-			&.enabled{
-				background: rgba(255,255,0,1.0);
-			}
-		}
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+		cursor: pointer;
 	}
 }

@@ -10,6 +10,11 @@ import {
   getGenericDrawingsCollectionRef,
 } from '../../get';
 
+const TypeMapping = Object.freeze({
+    'space': 'Rymden',
+    'chemistry': 'Kemi',
+});
+
 export const getFromArr = (arr) => {
     const ret = {};
     for (let i = 0; i < arr.length; i++) {
@@ -120,7 +125,17 @@ export const getViewHTML = (drawings, genericDrawings) => {
     const getDrawingHTML = (item, t) => {
         return `
             <div class="drawings-item">
-                <h4>${item.drawing.doc.title}</h4>
+                <div class="top-row">
+                    <div class="title block-with-pre">
+                        <h5>Namn:</h5>
+                        <h4>${item.drawing.doc.title}</h4>
+                    </div>
+                    <div class="type block-with-pre">
+                        <h5>Typ:</h5>
+                        <h4>${TypeMapping[item.drawing.doc.type]}</h4>
+                    </div>
+                </div>
+                
                 <h5>Noder: ${item.nodes.length}</h5>
                 <h5>Skapat: ${getDate(item.drawing.doc.timestamp)}</h5>
                 <div class="click-cover" data-id="${t}"></div>
@@ -132,7 +147,16 @@ export const getViewHTML = (drawings, genericDrawings) => {
     const getGenericDrawingHTML = (item, t) => {
         return `
             <div class="drawings-item">
-                <h4>${item.drawing.doc.title}</h4>
+                <div class="top-row">
+                    <div class="title block-with-pre">
+                        <h5>Namn:</h5>
+                        <h4>${item.drawing.doc.title}</h4>
+                    </div>
+                    <div class="type block-with-pre">
+                        <h5>Typ:</h5>
+                        <h4>${TypeMapping[item.drawing.doc.type]}</h4>
+                    </div>
+                </div>
                 <h5>Noder: ${item.nodes.length}</h5>
                 <h5>Skapat: ${getDate(item.drawing.doc.timestamp)}</h5>
                 <div class="click-cover" data-id="${t}" data-drawing-type="generic"></div>

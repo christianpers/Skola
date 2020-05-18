@@ -97,7 +97,7 @@ export default class NodeGroupManager {
 
     onOverNonagon(overNonagon) {
         // overNonagon.setSelected();
-        window.NS.singletons.SelectionManager.setSelected(overNonagon);
+        // window.NS.singletons.SelectionManager.setSelected(overNonagon);
         // const nodeSelectedEvent = new CustomEvent('node-selected', { detail: overNonagon });
         // document.documentElement.dispatchEvent(nodeSelectedEvent);
         if (!this.currentActiveGroup) {

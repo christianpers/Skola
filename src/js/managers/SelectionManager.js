@@ -1,6 +1,8 @@
 export default class SelectionManager {
     constructor() {
         this.nonagons = {};
+
+        this.currentSelectedNode = null;
     }
 
     addNonagon(nonagon) {
@@ -11,13 +13,21 @@ export default class SelectionManager {
         delete this.nonagons[nonagon.ID];
     }
 
-    setSelected(nonagon) {
+    setSelected(node) {
         this.deselectAllNonagons();
 
-        nonagon.setSelected();
+        node.setSelected();
+        if (this.nonagons[node.ID]) {
+            console.log('current selected node: ', node.ID);
+            this.currentSelectedNode = node;
+        }
+
+        window.NS.singletons.CanvasNode.onNodeDeselect();
+        
     }
 
     deselectAllNonagons(filteredNonagons) {
+        this.currentSelectedNode = null;
         if (filteredNonagons) {
             for (let i = 0; i < filteredNonagons.length; i++) {
                 filteredNonagons[i].setNotSelected();

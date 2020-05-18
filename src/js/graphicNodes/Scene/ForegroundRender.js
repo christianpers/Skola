@@ -1,17 +1,33 @@
 import { SIMPLE_3D_VERTEX, ACTIVE_MESH_FRAGMENT } from '../../../shaders/SHADERS';
 import Stars from './lessons/space/Stars';
+import CameraKeyboardBindings from './CameraKeyboardBindings';
+
+import CameraControls from 'camera-controls';
+
 
 export default class ForegroundRender{
 	constructor(mainRender, canvas) {
 
+		this.activeCamera = null;
+
 		const w = window.innerWidth;
 		const h = window.innerHeight;
 
-		this.camera = new THREE.PerspectiveCamera( 75, w / h, 0.1, 1000 );
+		this.clock = new THREE.Clock();
+
+		// CameraControls.install( { THREE: THREE } );
+
+		this.camera = new THREE.PerspectiveCamera( 60, w / h, 0.01, 10000 );
 		this.camera.position.z = 10;
 
+		// this.cameraControls = new CameraControls( this.camera, mainRender.renderer.domElement );
+
+		// this.cameraKeyboardBindings = new CameraKeyboardBindings(this.cameraControls);
+
+		this.activeCamera = this.camera;
+
 		this.cameraControls = new THREE.OrbitControls( this.camera, canvas );
-		this.cameraControls.enabled = false;
+		this.cameraControls.enabled = true;
 
 		this.cameraControlsChangedBound = this.cameraControlsChanged.bind(this);
 		this.cameraControls.addEventListener('change', this.cameraControlsChangedBound);
@@ -25,20 +41,43 @@ export default class ForegroundRender{
 		this.axesHelper = new THREE.AxesHelper( 5 );
 		this.axesHelper.name = 'AxesHelper';
 
+		/* TODO MAYBE LOOK INTO THIS GRID THING A BIT MORE */
+		// this.gridHelper = new THREE.GridHelper(4, 10);
+		// this.scene.add(this.gridHelper);
+
 		this.ambientLight = new THREE.AmbientLight( );
 
 		this.scene.add(this.ambientLight);
-
+		
 		this.stars = new Stars(this.scene);
 
 		this.connectedNodes = [];
 		this.hasConnectedLight = false;
+
+		this.meshToFollow = null;
 
 		this.framebuffer = new THREE.WebGLRenderTarget(
 			640,
 			600,
 			{minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter}
 		);
+	}
+
+	setMeshToFollow(mesh) {
+		this.meshToFollow = mesh;
+	}
+
+	resetMeshToFollow() {
+		this.meshToFollow = null;
+		this.cameraControls.target = new THREE.Vector3();
+	}
+
+	setActiveCamera(camera) {
+		this.activeCamera = camera;
+	}
+
+	resetActiveCamera() {
+		this.activeCamera = this.camera;
 	}
 
 	cameraControlsChanged(evt) {
@@ -102,6 +141,11 @@ export default class ForegroundRender{
 		const meshName = `${node.ID}-mesh`;
 		node.mesh.name = meshName;
 		this.scene.add(node.mesh);
+
+		if (node.camera) {
+			node.camera.lookAt(this.scene.position);
+		}
+		
 
 		if (!node.isRendered) {
 			return;
@@ -176,18 +220,43 @@ export default class ForegroundRender{
 			this.activeHelperMeshes[this.currentActiveKey].visible = false;
 			this.currentActiveKey = null;
 		}
-		
 	}
 
 	update() {
 		if (this.currentActiveKey && this.activeHelperMeshes[this.currentActiveKey]) {
-			this.activeHelperMeshes[this.currentActiveKey].lookAt(this.camera.position);
+			this.activeHelperMeshes[this.currentActiveKey].lookAt(this.activeCamera.position);
 		}
+
+		if (this.meshToFollow) {
+			const { mesh: { position }, distance } = this.meshToFollow;
+			// const distance = -8;
+
+			const pointOnSphere = new THREE.Vector3(position.x, position.y, position.z);
+
+			// const direction = new THREE.Vector3();
+			// const result = new THREE.Vector3();
+
+			// const sphereCenter = new THREE.Vector3(0, 0, 0);
+
+			// direction.subVectors( pointOnSphere, sphereCenter ).normalize();
+			// result.copy( pointOnSphere ).addScaledVector( direction, distance );
+
+			this.cameraControls.target = pointOnSphere;
+
+			// console.log( result );
+			// this.cameraControls.setPosition(position.x-1, position.y+1, position.z-10, false);
+			// this.cameraControls.setLookAt(result.x, result.y, result.z, position.x, position.y, position.z, false);
+			// this.cameraControls.fitTo(this.meshToFollow, false, { paddingTop: 0, paddingBottom: 0, paddingRight: 3, paddingLeft: 3 });
+
+		}
+
+		const delta = this.clock.getDelta();
+		const hasControlsUpdated = this.cameraControls.update( delta );
 	}
 
 	render() {
 		this.renderer.setRenderTarget(this.framebuffer);
-		this.renderer.render(this.scene, this.camera);
+		this.renderer.render(this.scene, this.activeCamera);
 		// this.renderer.clear();
 	}
 

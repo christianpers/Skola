@@ -4,6 +4,8 @@ export default class SunNode extends PointLightNode{
     constructor() {
         super();
 
+		this.light.distance = 0;
+
         const textureParam = {
 			title: 'Texture',
 			param: 'Planet',
