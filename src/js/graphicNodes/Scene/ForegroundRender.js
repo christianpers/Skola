@@ -4,7 +4,6 @@ import CameraKeyboardBindings from './CameraKeyboardBindings';
 
 import CameraControls from 'camera-controls';
 
-
 export default class ForegroundRender{
 	constructor(mainRender, canvas) {
 
@@ -49,7 +48,14 @@ export default class ForegroundRender{
 
 		this.scene.add(this.ambientLight);
 		
-		this.stars = new Stars(this.scene);
+		if (window.NS.singletons.PROJECT_TYPE === window.NS.singletons.TYPES.space.id) {
+			this.stars = new Stars(this.scene);
+		}
+
+		this.showActiveHelperMeshes = true;
+		if (window.NS.singletons.PROJECT_TYPE === window.NS.singletons.TYPES.chemistry.id) {
+			this.showActiveHelperMeshes = false;
+		}
 
 		this.connectedNodes = [];
 		this.hasConnectedLight = false;
@@ -129,6 +135,10 @@ export default class ForegroundRender{
 
 		this.hasConnectedLight = false;
 
+		if (!this.showActiveHelperMeshes) {
+			return;
+		}
+
 		const activeMeshKey = `${meshName}-active`;
 		if (this.activeHelperMeshes[activeMeshKey]) {
 			delete this.activeHelperMeshes[activeMeshKey];
@@ -142,11 +152,16 @@ export default class ForegroundRender{
 		node.mesh.name = meshName;
 		this.scene.add(node.mesh);
 
+		if (node.mesh.userData) {
+			if (node.mesh.userData.getForegroundRender) {
+				node.setForegroundRender(this);
+			}
+		}
+
 		if (node.camera) {
 			node.camera.lookAt(this.scene.position);
 		}
 		
-
 		if (!node.isRendered) {
 			return;
 		}
@@ -162,23 +177,41 @@ export default class ForegroundRender{
 		const mesh = this.scene.getObjectByName(meshName);
 		this.scene.remove(mesh);
 
+		if (!this.showActiveHelperMeshes) {
+			return;
+		}
+
 		const activeMeshKey = `${meshName}-active`;
 		if (this.activeHelperMeshes[activeMeshKey]) {
 			delete this.activeHelperMeshes[activeMeshKey];
 		}
 	}
 
+	getCamera() {
+		return this.camera;
+	}
+
+	getDomNode() {
+		return this.renderer.domElement;
+	}
+
+	disableCameraControls() {
+		this.cameraControls.enabled = false;
+	}
+
+	enableCameraControls() {
+		this.cameraControls.enabled = true;
+	}
+
 	createPlaneMesh(node, meshName) {
 		// Plane for showing when mesh selected
+		if (!this.showActiveHelperMeshes) {
+			return;
+		}
+
+		console.log('create plane mesh', this.showActiveHelperMeshes);
 		const planeGeometry = new THREE.PlaneBufferGeometry( 5, 5, 1, 1 );
-		// const planeMaterial = new THREE.MeshBasicMaterial( {color: 0xffff00} );
-
-		// const settingUniforms = {};
-        // settingUniforms.u_user_fgColor = {value: new THREE.Color(1.0,1.0,1.0)};
-        // settingUniforms.u_user_bgColor = {value: new THREE.Color(0.0,0.0,0.0)};
-
-        // const uniformsObj = Object.assign({}, settingUniforms);
-        const planeMaterial = new THREE.ShaderMaterial({
+		const planeMaterial = new THREE.ShaderMaterial({
             uniforms: {},
             vertexShader: SIMPLE_3D_VERTEX,
             fragmentShader: ACTIVE_MESH_FRAGMENT,
@@ -197,6 +230,9 @@ export default class ForegroundRender{
 	}
 
 	showActive(nodeID) {
+		if (!this.showActiveHelperMeshes) {
+			return;
+		}
 		const keys = Object.keys(window.NS.singletons.ConnectionsManager.nodes);
 		const isRenderedKeys = keys.filter(t => window.NS.singletons.ConnectionsManager.nodes[t].isRendered);
 		isRenderedKeys.forEach(t => {
@@ -215,6 +251,9 @@ export default class ForegroundRender{
 	}
 
 	hideActive(nodeID) {
+		if (!this.showActiveHelperMeshes) {
+			return;
+		}
 		const meshName = `${nodeID}-mesh-active`;
 		if (this.activeHelperMeshes[this.currentActiveKey] && this.currentActiveKey === meshName) {
 			this.activeHelperMeshes[this.currentActiveKey].visible = false;
@@ -223,7 +262,7 @@ export default class ForegroundRender{
 	}
 
 	update() {
-		if (this.currentActiveKey && this.activeHelperMeshes[this.currentActiveKey]) {
+		if (this.showActiveHelperMeshes && this.currentActiveKey && this.activeHelperMeshes[this.currentActiveKey]) {
 			this.activeHelperMeshes[this.currentActiveKey].lookAt(this.activeCamera.position);
 		}
 

@@ -10,10 +10,10 @@ import {
   getGenericDrawingsCollectionRef,
 } from '../../get';
 
-const TypeMapping = Object.freeze({
-    'space': 'Rymden',
-    'chemistry': 'Kemi',
-});
+// const TypeMapping = Object.freeze({
+//     'space': 'Rymden',
+//     'chemistry': 'Kemi',
+// });
 
 export const getFromArr = (arr) => {
     const ret = {};
@@ -121,6 +121,11 @@ export const getGenericDrawingsData = () => {
     });
 }
 
+const getType = (type) => {
+    const types = window.NS.singletons.TYPES;
+    return types[type] ? types[type].title : 'Not set';
+}
+
 export const getViewHTML = (drawings, genericDrawings) => {
     const getDrawingHTML = (item, t) => {
         return `
@@ -130,9 +135,9 @@ export const getViewHTML = (drawings, genericDrawings) => {
                         <h5>Namn:</h5>
                         <h4>${item.drawing.doc.title}</h4>
                     </div>
-                    <div class="type block-with-pre">
+                    <div class="type block-with-pre border">
                         <h5>Typ:</h5>
-                        <h4>${TypeMapping[item.drawing.doc.type]}</h4>
+                        <h4>${getType(item.drawing.doc.type)}</h4>
                     </div>
                 </div>
                 
@@ -152,9 +157,9 @@ export const getViewHTML = (drawings, genericDrawings) => {
                         <h5>Namn:</h5>
                         <h4>${item.drawing.doc.title}</h4>
                     </div>
-                    <div class="type block-with-pre">
+                    <div class="type block-with-pre border">
                         <h5>Typ:</h5>
-                        <h4>${TypeMapping[item.drawing.doc.type]}</h4>
+                        <h4>${getType(item.drawing.doc.type)}</h4>
                     </div>
                 </div>
                 <h5>Noder: ${item.nodes.length}</h5>
@@ -191,13 +196,7 @@ export const getViewHTML = (drawings, genericDrawings) => {
             <div class="new-drawing">
                 <div class="init-container">
                     <h4>SKAPA NYTT PROJEKT</h4>
-                </div>
-                <div class="data-container">
-                    <div class="input-title-container">
-                    <input type="text" placeholder="Title" />
-                    <button class="save-title" type="button">Spara</button>
-                    <button class="cancel-title" type="button">Bakåt</button>
-                    </div>
+                    <div class="touch-el"></div>
                 </div>
             </div>
         </div>

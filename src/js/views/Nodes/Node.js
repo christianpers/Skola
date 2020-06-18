@@ -245,11 +245,11 @@ export default class Node{
 
 	}
 
-	syncVisualSettings(settings) {
+	syncVisualSettings(settings, directSync = false) {
 		this.visualSettings = Object.assign({}, this.visualSettings, settings);
 		updateNode({
 			visualSettings: settings,
-		}, this.ID)
+		}, this.ID, directSync)
 		.then(() => {
 
 		})

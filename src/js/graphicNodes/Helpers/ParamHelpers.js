@@ -113,7 +113,6 @@ const onLightParamUpdate = (inNode, outNode, param) => {
 
 
 const onShaderParamUpdate = (inNode, outNode, param) => {
-
 	inNode.mesh.material.uniforms[param.param].value = outNode.getValue();
 };
 
@@ -162,6 +161,34 @@ const isValidParamSingleNumberInput = (outNode, inNode, param) => {
 	}
 
 	return (outNode.returnsSingleNumber && !param.isConnected) || (outNode.isAnalyser && !param.isConnected);
+};
+
+const onAtomParamUpdate = (inNode, outNode, param) => {
+	const meshGroup = outNode.getMeshGroup();
+	inNode.updateMeshType(
+		meshGroup, 
+		param.param,
+		outNode.enableDragging,
+		outNode.controlsAmountAtomRings,
+		outNode.addToGroup,
+	);
+};
+
+const isValidAtomParamInput = (outNode, inNode, param) => {
+	if (!param) {
+		return false;
+	}
+	if (!(outNode.isParam && !param.isConnected)) {
+		return false;
+	}
+
+	if (outNode.type.toLowerCase() === param.param) {
+		return true;
+	}
+};
+
+const onAtomParamDisconnect = (inNode, param) => {
+
 };
 
 const paramHelpers = {
@@ -234,7 +261,12 @@ const paramHelpers = {
 		update: onLightParamUpdate,
 		isValid: isValidParamPositionInput,
 		disconnect: onPositionDisconnect,
-	}
+	},
+	atom: {
+		update: onAtomParamUpdate,
+		isValid: isValidAtomParamInput,
+		disconnect: onAtomParamDisconnect,
+	},
 }
 
 export default paramHelpers;

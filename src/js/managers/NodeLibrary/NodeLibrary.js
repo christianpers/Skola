@@ -39,8 +39,14 @@ export default class NodeLibrary{
 			onNodeAddedCallback,
 		);
 
-		this.tabSelector = new TabSelector(this.el, [this.spaceTab, this.chemistryTab]);
-		this.tabSelector.setTabSelected('Rymden');
+		const tabs = {
+			'space': this.spaceTab,
+			'chemistry': this.chemistryTab,
+		};
+
+		this.tabSelector = new TabSelector(this.el, [tabs[window.NS.singletons.PROJECT_TYPE]]);
+		const activeTab = window.NS.singletons.TYPES[window.NS.singletons.PROJECT_TYPE].title;
+		this.tabSelector.setTabSelected(activeTab || 'Rymden');
 
 		this.isShowing = false;
 

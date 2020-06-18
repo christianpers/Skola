@@ -29,6 +29,9 @@ export default class DrawingsWindow{
     // this.onNewDrawingClickBound = this.onNewDrawingClick.bind(this);
     this.onDeleteDrawingBound = this.onDeleteDrawing.bind(this);
 
+    this.onNewProjectSaveBound = this.onNewProjectSave.bind(this);
+    this.onNewProjectCancelBound = this.onNewProjectCancel.bind(this);
+
     parentEl.appendChild(this.el);
 
     const getData = () => {
@@ -53,7 +56,6 @@ export default class DrawingsWindow{
 
   makeInteractive() {
     const existingDrawings = this.el.querySelectorAll('.drawings-item');
-    console.log('existingDrawings', existingDrawings);
     existingDrawings.forEach((t) => {
       const deleteBtn = t.querySelector('.delete-btn');
       if (deleteBtn) {
@@ -63,33 +65,9 @@ export default class DrawingsWindow{
       t.addEventListener('click', this.onExistingDrawingClickBound);
     });
 
-    const titleContainer = this.el.querySelector('.data-container');
-
-    const newDrawing = this.el.querySelector('.init-container');
+    const newDrawing = this.el.querySelector('.init-container .touch-el');
     newDrawing.addEventListener('click', () => {
-      titleContainer.classList.add('visible');
-    });
-
-    const input = titleContainer.querySelector('input');
-
-    const saveTitle = titleContainer.querySelector('.save-title');
-    saveTitle.addEventListener('click', () => {
-      createDrawing({ title: input.value })
-        .then((ref) => {
-          console.log('created drawing ref: ', ref);
-          window.NS.singletons.refs.setDrawingRef(ref);
-          this.onSelected();
-        })
-        .catch((e) => {
-          console.log('error', e);
-        });
-    });
-
-    const cancelTitle = titleContainer.querySelector('.cancel-title');
-    cancelTitle.addEventListener('click', () => {
-      console.log('cancel click', this);
-      titleContainer.classList.remove('visible');
-      input.value = '';
+      window.NS.singletons.DialogManager.newProjectDialog.show(this.onNewProjectSaveBound, this.onNewProjectCancelBound);
     });
   }
 
@@ -107,14 +85,12 @@ export default class DrawingsWindow{
         .then((result) => {
           console.log('Delete success: ' + JSON.stringify(result));
           window.NS.singletons.DialogManager.loaderDialog.hide();
-          // this.getDrawingsData();
           getDrawingsData(this.username)
             .then((drawingsData) => {
               this.drawings = drawingsData;
 
               this.el.innerHTML = getViewHTML(this.drawings, this.genericDrawings);
               this.makeInteractive();
-              // this.populateView(finalData);
             });
         })
         .catch((err) => {
@@ -168,4 +144,24 @@ export default class DrawingsWindow{
 	hide() {
 		this.el.classList.add('hide');
 	}
+
+  onNewProjectSave(title, type) {
+    console.log('title: ', title, ' type: ', type);
+    
+    createDrawing({ title, type })
+      .then((ref) => {
+        console.log('created drawing ref: ', ref);
+        window.NS.singletons.DialogManager.newProjectDialog.hide();
+        window.NS.singletons.refs.setDrawingRef(ref);
+        this.onSelected();
+      })
+      .catch((e) => {
+        window.NS.singletons.DialogManager.newProjectDialog.onError();
+        console.log('error', e);
+      });
+  }
+
+  onNewProjectCancel() {
+    window.NS.singletons.DialogManager.newProjectDialog.hide();
+  }
 }

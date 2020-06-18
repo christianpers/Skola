@@ -243,7 +243,6 @@ export default class NodeManager{
 		.catch(() => {
 			console.log('error updating node');
 		});
-
 		window.NS.singletons.ConnectionsManager.addParamConnection(paramObj, outNode);
 		return true;
 	}
@@ -292,7 +291,7 @@ export default class NodeManager{
 	}
 
 	add(node) {
-		if (node.isRendered || node.isVisualHelper) {
+		if (node.isRendered || node.hasMesh) {
 			window.NS.singletons.CanvasNode.enableInput(node, 'foreground');
 			this._nodes.push(node);
 		} else {
@@ -331,7 +330,7 @@ export default class NodeManager{
 			this._graphicNodeLength = this._graphicNodes.length;
 		}
 
-		if (node.isRendered || node.isVisualHelper) {
+		if (node.isRendered || node.hasMesh) {
 			window.NS.singletons.CanvasNode.disableInput(node, 'foreground');
 		}
 

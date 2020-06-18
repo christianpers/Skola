@@ -8,7 +8,7 @@ import SettingsWindow from '../Scene/settings-window';
 import Resizer from '../Scene/resizer';
 import Fullscreen from '../Scene/fullscreen';
 
-import Raycaster from '../Scene/Raycaster';
+// import Raycaster from '../Scene/Raycaster';
 
 import './index.scss';
 
@@ -73,7 +73,7 @@ export default class SceneNode{
 		this.onAmbientLightSettingChangeBound = this.onAmbientLightSettingChange.bind(this);
 		this.settingsWindow = new SettingsWindow(this.el, this.onAmbientLightSettingChangeBound, this.foregroundRender, this.onFullscreenClickBound)
 		
-		this.raycaster = new Raycaster(this.topPartEl, this.foregroundRender);
+		// this.raycaster = new Raycaster(this.topPartEl, this.foregroundRender);
 		
 		this.scene = new THREE.Scene();
 		this.renderer = this.mainRender.renderer;

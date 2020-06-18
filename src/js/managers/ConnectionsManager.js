@@ -132,21 +132,26 @@ export default class ConnectionsManager{
     };
 
     addParamConnection(param, outNode) {
-        const connectionObj = this.getNewParamConnectionObj(outNode, param);
+        try {
+            const connectionObj = this.getNewParamConnectionObj(outNode, param);
         
-        const inNodeID = param.paramContainer.node.ID;
-        if (!(inNodeID in this.paramConnections)) {
-            this.paramConnections[inNodeID] = [];
-        }
+            const inNodeID = param.paramContainer.node.ID;
+            if (!(inNodeID in this.paramConnections)) {
+                this.paramConnections[inNodeID] = [];
+            }
 
-        this.paramConnections[inNodeID].push(connectionObj);
-        const detail = {
-            inNodeID,
-            connection: connectionObj,
-        };
-        // console.log('add param connection', this.paramConnections);
-        const paramConnectionsUpdateEvent = new CustomEvent('param-connections-add', { detail });
-        document.documentElement.dispatchEvent(paramConnectionsUpdateEvent);
+            this.paramConnections[inNodeID].push(connectionObj);
+            const detail = {
+                inNodeID,
+                connection: connectionObj,
+            };
+            // console.log('add param connection', this.paramConnections);
+            const paramConnectionsUpdateEvent = new CustomEvent('param-connections-add', { detail });
+            document.documentElement.dispatchEvent(paramConnectionsUpdateEvent);
+        } catch(err) {
+            console.error('add param connection error: ', err);
+        } 
+        
     }
 
     removeParamConnection(param, outNode) {
@@ -180,7 +185,7 @@ export default class ConnectionsManager{
     getConnectedNodeWithType(nodeID, type) {
         const nodeConnections = this.nodeConnections[nodeID];
         const connection = nodeConnections.find(t => {
-            return this.nodes[t.outNodeID].type === type;
+            return this.nodes[t.outNodeID].type.toLowerCase() === type;
         });
 
         if (connection) {

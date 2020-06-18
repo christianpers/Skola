@@ -10,12 +10,12 @@ export default class VerificationDialog{
 
         const html = `
             <div class="inner-content">
-                <h4>ARE YOU SURE?</h4>
+                <h4>ÄR DU SÄKER ?</h4>
                 <button type="button" class="yes-btn">
-                    <h5>Yes</h5>
+                    <h5>Ja</h5>
                 </button>
                 <button type="button" class="no-btn">
-                    <h5>No</h5>
+                    <h5>Nej</h5>
                 </button>
             </div>
         `;

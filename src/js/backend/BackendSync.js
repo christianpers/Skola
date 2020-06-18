@@ -27,12 +27,13 @@ export default class BackendSync {
             if (paramContainer && outNode) {
                 outNode.nodeType.activateAsChild(paramContainer, false, true);
             }
-            
             const paramConnections = modifierNodeData.data.paramConnections ? modifierNodeData.data.paramConnections : [];
             for (let q = 0; q < paramConnections.length; q++) {
                 const paramObj = window.NS.singletons.ConnectionsManager.params[modifierNodeData.data.paramConnections[q]];
+                if (paramObj) {
+                    window.NS.singletons.ConnectionsManager.addParamConnection(paramObj, outNode);
+                }
                 
-                window.NS.singletons.ConnectionsManager.addParamConnection(paramObj, outNode);
             }
         }
     }

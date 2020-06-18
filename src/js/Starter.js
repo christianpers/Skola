@@ -4,6 +4,23 @@ import Main from "./Main";
 import DrawingsWindow from './backend/ui/drawings-window';
 import Refs from './backend/refs';
 
+const TYPES = Object.freeze({
+	space: {
+		title: 'Rymden',
+		id: 'space',
+		settings: {
+			showActiveMeshHelper: true,
+		}
+	},
+	chemistry: {
+		title: 'Kemi',
+		id: 'chemistry',
+		settings: {
+			showActiveMeshHelper: false,
+		}
+	},
+});
+
 function transformProp() {
 	var testEl = document.createElement('div');
 	if(testEl.style.transform == null) {
@@ -24,6 +41,8 @@ export default class Starter {
 		window.NS.iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 		window.NS.singletons = {};
 
+		window.NS.singletons.TYPES = TYPES;
+
 		this.onDrawingSelectedBound = this.onDrawingSelected.bind(this);
 
 		const refs = new Refs();
@@ -37,14 +56,18 @@ export default class Starter {
 			this.onResize();
 		});
 
-		this.reqFrameBound = this.reqFrame.bind(this);
-		this.reqFrame();
+		
 	}
 
 	onDrawingSelected(drawing) {
 		this.drawingsWindow.hide();
 
+		window.NS.singletons.PROJECT_TYPE = drawing.drawing.doc.type;
+
 		this.main.init(drawing);
+
+		this.reqFrameBound = this.reqFrame.bind(this);
+		this.reqFrame();
 	}
 
 	onLogout() {

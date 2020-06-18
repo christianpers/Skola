@@ -35,6 +35,11 @@ import SpaceOrbitNode from '../graphicNodes/SpaceNodes/SpaceOrbitNode';
 import SunNode from '../graphicNodes/SpaceNodes/SunNode';
 import PlanetRotationModifier from '../graphicNodes/SpaceNodes/PlanetRotationModifier';
 
+import AtomNode from '../graphicNodes/ChemistryNodes/AtomNode';
+import ProtonsModifier from '../graphicNodes/ChemistryNodes/ProtonsModifier';
+import NeutronsModifier from '../graphicNodes/ChemistryNodes/NeutronsModifier';
+import ElectronsModifier from '../graphicNodes/ChemistryNodes/ElectronsModifier';
+
 const nodeMapping = {
   'Kick': {
     obj: KickSynth,
@@ -117,6 +122,22 @@ const nodeMapping = {
   },
   'Planet Rotation': {
     obj: PlanetRotationModifier,
+    isModifier: true,
+  },
+  'Atom': {
+    obj: AtomNode,
+    isModifier: false,
+  },
+  'Protons': {
+    obj: ProtonsModifier,
+    isModifier: true,
+  },
+  'Neutrons': {
+    obj: NeutronsModifier,
+    isModifier: true,
+  },
+  'Electrons': {
+    obj: ElectronsModifier,
     isModifier: true,
   },
 };

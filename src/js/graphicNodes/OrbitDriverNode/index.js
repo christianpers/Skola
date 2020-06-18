@@ -13,7 +13,7 @@ export default class OrbitDriverNode extends GraphicNode{
 
 		this.needsUpdate = true;
 		this.title = 'Orbit modifier';
-		this.isVisualHelper = true;
+		this.hasMesh = true;
 		this.isForegroundNode = true;
 
 		// USED IN CANVAS SETTINGS TO TOGGLE ON/OFF VISIBILITY

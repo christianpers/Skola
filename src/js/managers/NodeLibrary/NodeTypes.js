@@ -158,16 +158,22 @@ export const chemistryTypes = {
     graphics: {
         '3d-shapes': [
             {
-                type: 'Cube',
+                type: 'Atom',
                 isModifier: false,
             },
+        ],
+        'Modifiers': [
             {
-                type: 'Sphere',
-                isModifier: false,
+                type: 'Protons',
+                isModifier: true,
             },
             {
-                type: 'Particles',
-                isModifier: false,
+                type: 'Neutrons',
+                isModifier: true,
+            },
+            {
+                type: 'Electrons',
+                isModifier: true,
             },
         ]
     }

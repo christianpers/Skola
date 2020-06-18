@@ -38,8 +38,6 @@ export default class Main{
 
 		window.NS.singletons.lessons = {};
 
-		window.NS.singletons.LessonManager = new LessonManager();
-
 		this.workspaceManager = new WorkspaceManager(document.body, this.onWorkspaceClickBound);
 		window.NS.workspaceEl = this.workspaceManager.el;
 
@@ -50,13 +48,7 @@ export default class Main{
 
 		this.onResize();
 
-		this.nodeLibrary = new NodeLibrary(
-			this.workspaceManager.containerEl,
-			this.onNodeAddedFromLibraryBound,
-			this.workspaceManager,
-		);
-
-		this.nodeManager = new NodeManager(null, this.keyboardManager, this.workspaceManager.el, this.nodeLibrary);
+		
 
 		window.NS.singletons.StatusWindow = new StatusWindow(document.body)
 		window.NS.singletons.ConnectionsManager = new ConnectionsManager();
@@ -68,6 +60,14 @@ export default class Main{
 	}
 
 	init(selectedDrawing) {
+		this.nodeLibrary = new NodeLibrary(
+			this.workspaceManager.containerEl,
+			this.onNodeAddedFromLibraryBound,
+			this.workspaceManager,
+		);
+
+		window.NS.singletons.LessonManager = new LessonManager();
+		this.nodeManager = new NodeManager(null, this.keyboardManager, this.workspaceManager.el, this.nodeLibrary);
 		this.nodeManager.init(selectedDrawing);
 	}
 

@@ -70,6 +70,7 @@ export default class GraphicNode extends Node{
 	}
 
 	onCanvasResize(e) {
+		const [w, h] = e.detail;
 	}
 
 	onConnectionAdd(e) {

@@ -74,8 +74,6 @@ export default class Resizer {
             w: this.currentCanvasSize.w + deltaX,
             h: this.currentCanvasSize.h + deltaY,
         });
-
-        console.log('x: ', deltaX, ' y: ', deltaY);
     }
 
     onMouseUp(e) {

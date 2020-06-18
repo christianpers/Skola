@@ -5,6 +5,8 @@ import './main.scss';
 import SignIn from './js/SignIn';
 import UserWindow from './js/UserWindow';
 
+// import { DragControls } from './DragControls';
+
 class Index {
 	constructor() {
 

@@ -1,0 +1,64 @@
+.new-project-dialog {
+    position: fixed;
+    height: 100vh;
+    width: 100vw;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 4;
+    top: 0;
+    left: 0;
+    
+    &.hidden {
+        display: none;
+    }
+
+    .inner-content {
+        padding: 20px 20px;
+        background: black;
+
+        .title-container {
+            margin-bottom: 20px;
+            > h4 {
+                color: white;
+                margin-bottom: 6px;
+            }
+
+            > input {
+                width: 100%;
+                border: 0;
+                padding: 4px 4px;
+                color: black;
+                background: yellow;
+                font-family: Arial;
+                font-weight: 700;
+
+                &::placeholder {
+                    color: black;
+                    font-family: Arial;
+                }
+            }
+        }
+
+        .dropdown-container {
+            margin-bottom: 30px;
+        }
+
+        > button {
+            background: yellow;
+            border: 0;
+            padding: 10px 16px;
+            margin-right: 10px;
+            cursor: pointer;
+
+            &:last-child{
+                margin-right: 0;
+            }
+
+            > h5 {
+                color: black;
+            }
+        }
+    }
+}
