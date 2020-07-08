@@ -5,7 +5,7 @@ export default class Render{
 
 		this.renderer = new THREE.WebGLRenderer({alpha: true});
 		if (window.NS.singletons.PROJECT_TYPE === window.NS.singletons.TYPES.chemistry.id) {
-			this.renderer.setClearColor(0xffffff, 1);
+			this.renderer.setClearColor(0x000000, 1);
 		}
 	}
 }

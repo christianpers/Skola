@@ -7,7 +7,7 @@ export default class AtomCircle{
         this.radius = radius;
 		// SHOULD BE OBJECTS WITH REF TO OBJ AND ANGLE
 		this.connectedElectrons = new Map();
-        this.highlightColor = new THREE.Color(0, 0, 0).getHex();
+        this.highlightColor = new THREE.Color(1, 1, 1).getHex();
         this.defaultColor = new THREE.Color(1, 0, 0).getHex();
         this.initCurve(radius);
 	}
@@ -47,7 +47,7 @@ export default class AtomCircle{
 		this.material = new THREE.LineBasicMaterial( { color : this.defaultColor } );
 
 		this.mesh = new THREE.Line( this.geometry, this.material );
-		this.mesh.visible = true;
+		this.mesh.visible = false;
 	}
 
     setHighlighted() {

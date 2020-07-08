@@ -15,7 +15,7 @@
 
 const { Plane, EventDispatcher, Matrix4, Raycaster, Vector2, Vector3 } = THREE;
 
-var DragControls = function ( _objects, _camera, _domElement, _getObjToMove ) {
+var DragControls = function ( _camera, _domElement, _getObjToMove ) {
 
 	var _plane = new Plane();
 	var _raycaster = new Raycaster();
@@ -28,8 +28,6 @@ var DragControls = function ( _objects, _camera, _domElement, _getObjToMove ) {
 	var _intersections = [];
 
 	var _selected = null, _hovered = null;
-
-	//
 
 	var scope = this;
 
@@ -63,10 +61,14 @@ var DragControls = function ( _objects, _camera, _domElement, _getObjToMove ) {
 
 	}
 
+	function setObjects(objects, ID) {
+		const newScopeObjectsArr = scope._objects.filter(t => t.userData.parentID && t.userData.parentID !== ID);
+		objects.forEach(t => t.userData.parentID = ID);
+		scope._objects = [...newScopeObjectsArr, ...objects];
+	}
+
 	function getObjects() {
-
-		return _objects;
-
+		return scope._objects;
 	}
 
 	function onDocumentMouseMove( event ) {
@@ -97,7 +99,7 @@ var DragControls = function ( _objects, _camera, _domElement, _getObjToMove ) {
 		_intersections.length = 0;
 
 		_raycaster.setFromCamera( _mouse, _camera );
-		_raycaster.intersectObjects( _objects, true, _intersections );
+		_raycaster.intersectObjects( scope._objects, true, _intersections );
 
 		if ( _intersections.length > 0 ) {
 
@@ -137,13 +139,14 @@ var DragControls = function ( _objects, _camera, _domElement, _getObjToMove ) {
 		_intersections.length = 0;
 
 		_raycaster.setFromCamera( _mouse, _camera );
-		_raycaster.intersectObjects( _objects, true, _intersections );
+		_raycaster.intersectObjects( scope._objects, true, _intersections );
 
 		if ( _intersections.length > 0 ) {
 
 			const intersects = _intersections.map(t => Object.assign({}, t));
 			
 			const objToMove = _getObjToMove(intersects);
+			
 			if (!objToMove) {
 				return;
 			}
@@ -225,11 +228,11 @@ var DragControls = function ( _objects, _camera, _domElement, _getObjToMove ) {
 		_intersections.length = 0;
 
 		_raycaster.setFromCamera( _mouse, _camera );
-		 _raycaster.intersectObjects( _objects, true, _intersections );
+		_raycaster.intersectObjects( scope._objects, true, _intersections );
 
 		if ( _intersections.length > 0 ) {
 
-			_selected = ( scope.transformGroup === true ) ? _objects[ 0 ] : _intersections[ 0 ].object;
+			_selected = ( scope.transformGroup === true ) ? scope._objects[ 0 ] : _intersections[ 0 ].object;
 
 			_plane.setFromNormalAndCoplanarPoint( _camera.getWorldDirection( _plane.normal ), _worldPosition.setFromMatrixPosition( _selected.matrixWorld ) );
 
@@ -276,6 +279,9 @@ var DragControls = function ( _objects, _camera, _domElement, _getObjToMove ) {
 	this.deactivate = deactivate;
 	this.dispose = dispose;
 	this.getObjects = getObjects;
+	this.setObjects = setObjects;
+
+	this._objects = [];
 
 };
 

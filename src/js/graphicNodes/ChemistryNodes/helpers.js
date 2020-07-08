@@ -8,7 +8,41 @@ export const isMainAtom = (object) => {
     return object.name === 'mainAtomGroup';
 }
 
-export const createGridSpheres = (parentMesh, nrRows = 3, amountItems, negX = false, color, offsetPos = new THREE.Vector3(), type = '') => {
+export const isNodeIDAtom = (object, nodeID) => {
+    return object.userData && object.userData.nodeID === nodeID;
+}
+
+export const isDragEvtAtom = (obj, nodeID, isNodeIDChild) => {
+    if (obj.parent && !isNodeIDChild) {
+        if (isNodeIDAtom(obj.parent, nodeID)) {
+            return isDragEvtAtom(obj, nodeID, true);
+        } else {
+            return isDragEvtAtom(obj.parent, nodeID, false);
+        }
+    }
+    return isNodeIDChild;
+}
+
+const getObj = (obj, selectedObj) => {
+    if (obj.parent && !selectedObj) {
+        if (isMainAtom(obj.parent)) {
+            return getObj(obj, obj.parent);
+        } else if (isElectron(obj)) {
+            return getObj(obj, obj);
+        } else {
+            return getObj(obj.parent, null);
+        }
+    }
+
+    return selectedObj;
+}
+export const getObjToMove = (intersections) => {
+    if (intersections.length > 0) {
+        return getObj(intersections[0].object, null);
+    }
+}
+
+export const createGridSpheres = (parentMesh, nrRows = 3, amountItems, negX = false, color, offsetPos = new THREE.Vector3(), type = '', material) => {
     const amountPerRow = nrRows;
     const rows = Math.ceil(amountItems/amountPerRow);
     for (let row = 0; row < rows; row++) {
@@ -21,7 +55,7 @@ export const createGridSpheres = (parentMesh, nrRows = 3, amountItems, negX = fa
             const x = negX ? -col * 1.3 : col * 1.3;
 
             const geometry = new THREE.SphereGeometry(0.5, 10, 10);
-            const material = new THREE.MeshBasicMaterial( { color } );
+            // const material = new THREE.MeshBasicMaterial( { color } );
             const mesh = new THREE.Mesh(geometry, material);
             mesh.name = type;
 
@@ -141,4 +175,17 @@ export const updateConnectedElectrons = (nodeID, connectedElectrons) => {
     .catch(() => {
         console.log('error updating node');
     });
+}
+
+export class DragObjectsSync{
+    contructor() {
+        this.objects = [];
+    }
+
+    setObjects(objects, meshGroupName) {
+        const currentObjects = this.objects.filter(t => t.userData.groupName !== meshGroupName);
+        objects.forEach(t => t.userData.groupName = meshGroupName);
+
+        this.objects = [...currentObjects, ...objects];
+    }
 }

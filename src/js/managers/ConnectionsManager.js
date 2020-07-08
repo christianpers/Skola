@@ -182,14 +182,26 @@ export default class ConnectionsManager{
         document.documentElement.dispatchEvent(paramConnectionsUpdateEvent);
     }
 
+    /* GETTERS */
+
+    /* GET NODES WITH TYPE EXCEPT THE ONE WITH ID PARAM */
+    getNodesWithType(type, ID) {
+        const keys = Object.keys(this.nodes);
+        return keys
+            .filter(t => this.nodes[t].type && this.nodes[t].type === type && this.nodes[t].ID !== ID)
+            .map(t => this.nodes[t]);
+    }
+
     getConnectedNodeWithType(nodeID, type) {
         const nodeConnections = this.nodeConnections[nodeID];
-        const connection = nodeConnections.find(t => {
-            return this.nodes[t.outNodeID].type.toLowerCase() === type;
-        });
+        if (nodeConnections) {
+            const connection = nodeConnections.find(t => {
+                return this.nodes[t.outNodeID].type.toLowerCase() === type;
+            });
 
-        if (connection) {
-            return this.nodes[connection.outNodeID];
+            if (connection) {
+                return this.nodes[connection.outNodeID];
+            }
         }
 
         return null;

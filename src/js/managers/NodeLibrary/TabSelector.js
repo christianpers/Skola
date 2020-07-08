@@ -15,6 +15,7 @@ export default class TabSelector {
             });
             
             const title = document.createElement('h5');
+            // console.log('t', t);
             title.innerHTML = t.type;
 
             tabEl.appendChild(title);

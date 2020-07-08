@@ -145,7 +145,6 @@ export default class NodeManager{
 	}
 
 	onNodeSelectedEvent(event) {
-		console.log('node selected', event);
 		window.NS.singletons.SelectionManager.deselectAllNonagons();
 		
 		for (let i = 0; i < this._nodes.length; i++) {

@@ -1,6 +1,10 @@
 import { SIMPLE_3D_VERTEX, ACTIVE_MESH_FRAGMENT } from '../../../shaders/SHADERS';
 import Stars from './lessons/space/Stars';
 import CameraKeyboardBindings from './CameraKeyboardBindings';
+import {
+	getObjToMove,
+} from '../ChemistryNodes/helpers';
+import { DragControls } from '../../../DragControls';
 
 import CameraControls from 'camera-controls';
 
@@ -55,6 +59,17 @@ export default class ForegroundRender{
 		this.showActiveHelperMeshes = true;
 		if (window.NS.singletons.PROJECT_TYPE === window.NS.singletons.TYPES.chemistry.id) {
 			this.showActiveHelperMeshes = false;
+
+			this.camera.position.z = 40;
+
+			const light = new THREE.PointLight( 0xffffff, 1, 100 );
+			light.position.set( -10, 10, 50 );
+			this.scene.add( light );
+
+			const camera = this.getCamera();
+			const domEl = this.getDomNode();
+
+			this.dragControls = new DragControls(camera, domEl, getObjToMove);
 		}
 
 		this.connectedNodes = [];

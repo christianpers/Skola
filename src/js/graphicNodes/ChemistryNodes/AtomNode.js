@@ -1,14 +1,16 @@
 import GraphicNode from '../GraphicNode';
-import { DragControls } from '../../../DragControls';
 import AtomCircle from './AtomCircle';
 import {
 	getAmountRings,
 	updateConnectedElectrons,
 	isElectron,
 	isMainAtom,
-	updateMeshTypeMapper
+	updateMeshTypeMapper,
+	DragObjectsSync,
+	isDragEvtAtom,
 } from './helpers';
 import AnimateObject from './AnimateObject';
+import { SIMPLE_3D_VERTEX, ATOM_CENTER_FRAGMENT } from '../../../shaders/SHADERS';
 
 const RING_DEF = Object.freeze({
 	0: {
@@ -23,12 +25,13 @@ const RING_DEF = Object.freeze({
 })
 
 export default class AtomNode extends GraphicNode{
+	static get tag() { return 'AtomNode' };
 	constructor(renderer, backendData) {
 		super();
 
-		console.log('b: ', backendData);
+		this.initRingConnections = (backendData && backendData.data.ringConnections) ? backendData.data.ringConnections : {};
 
-		this.initRingConnections = backendData.data.ringConnections;
+		this.dragObjectsSync = new DragObjectsSync();
 
 		this.isForegroundNode = true;
 		this.isRendered = true;
@@ -43,6 +46,7 @@ export default class AtomNode extends GraphicNode{
 			ringToReleaseOn: null,
 			releasePoint: null,
 			electronObj: null,
+			atoms: [],
 		};
 
 		this.mainAtomDragData = {
@@ -74,14 +78,22 @@ export default class AtomNode extends GraphicNode{
 
 		const circleDragColor = new THREE.Color(1, .5, .5).getHex();
 		const circleDragGeometry = new THREE.CircleGeometry( 6, 10 );
-		const circleDragMaterial = new THREE.MeshBasicMaterial( { color: circleDragColor } );
+		const circleDragMaterial = new THREE.ShaderMaterial({
+            uniforms: {},
+            vertexShader: SIMPLE_3D_VERTEX,
+            fragmentShader: ATOM_CENTER_FRAGMENT,
+        });
+		// const circleDragMaterial = new THREE.MeshBasicMaterial( { color: circleDragColor } );
 		const circleDragMesh = new THREE.Mesh( circleDragGeometry, circleDragMaterial );
 		this.mainAtomGroup.add(circleDragMesh);
 
-		const debugGeometry = new THREE.BoxGeometry( 1, 1, 1 );
-		const debugMaterial = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
-		this.debugMesh = new THREE.Mesh( debugGeometry, debugMaterial );
-		this.mainAtomGroup.add( this.debugMesh );
+		// const debugGeometry = new THREE.BoxGeometry( 1, 1, 1 );
+		// const debugMaterial = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
+		// this.debugMesh = new THREE.Mesh( debugGeometry, debugMaterial );
+		// this.debugMesh.position.x = 50;
+		// this.debugMesh.position.y = 50;
+		// this.debugMesh.position.z = 50;
+		// this.mainAtomGroup.add( this.debugMesh );
 
 		this.rings = {};
 
@@ -182,6 +194,12 @@ export default class AtomNode extends GraphicNode{
 
 	setForegroundRender(foregroundRender) {
 		this.foregroundRender = foregroundRender;
+
+		// THIS IS USED TO KNOW WHICH ATOMNODE SHOULD GET THE DRAG EVT
+		this.mesh.userData.nodeID = this.ID;
+
+		this.foregroundRender.dragControls.addEventListener('dragstart', this.onDragStartBound);
+		this.foregroundRender.dragControls.setObjects(this.mainAtomGroup.children, `${this.ID}-mainAtomGroup`);
 	}
 
 	getCartesianForRing(angle, ringIndex) {
@@ -208,6 +226,15 @@ export default class AtomNode extends GraphicNode{
 
 		const group = this.groupMapping[groupToModify] || this.mainAtomGroup;
 
+		if (enableDragging) {
+			this.foregroundRender.dragControls.setObjects(meshGroup.children, `${this.ID}-${paramKey}`);
+		}
+
+		if (controlsAmountAtomRings) {
+			syncAtomRings(meshGroup.children.length);
+		}
+
+		// BACKEND SYNC
 		if (paramKey === 'electrons') {
 			const node = window.NS.singletons.ConnectionsManager.getConnectedNodeWithType(this.ID, 'electrons');
 			updateMeshTypeMapper[paramKey](
@@ -215,57 +242,6 @@ export default class AtomNode extends GraphicNode{
 			);
 		} else {
 			updateMeshTypeMapper[paramKey](group, paramKey, meshGroup);
-		}
-		
-
-		if (enableDragging) {
-			this.disableDragControls();
-			if (meshGroup.children.length > 0) {
-				this.enableDragControls(meshGroup.children);
-			}
-		}
-
-		if (controlsAmountAtomRings) {
-			syncAtomRings(meshGroup.children.length);
-		}
-	}
-
-	enableDragControls(objects) {
-		const getObj = (obj, selectedObj) => {
-			if (obj.parent && !selectedObj) {
-				if (isMainAtom(obj.parent)) {
-					return getObj(obj, obj.parent);
-				} else if (isElectron(obj)) {
-					return getObj(obj, obj);
-				} else {
-					return getObj(obj.parent, null);
-				}
-			}
-
-			return selectedObj;
-		}
-		const getObjToMove = (intersections) => {
-			if (intersections.length > 0) {
-				return getObj(intersections[0].object, null);
-			}
-		}
-		const camera = this.foregroundRender.getCamera();
-		const domEl = this.foregroundRender.getDomNode();
-		// const finalObjects = [...objects, this.mesh];
-		this.dragControls = new DragControls(this.mesh.children, camera, domEl, getObjToMove);
-		// this.dragControls.transformGroup = true;
-		this.dragControls.addEventListener('dragstart', this.onDragStartBound);
-		this.dragControls.addEventListener('drag', this.onDragBound);
-		this.dragControls.addEventListener('dragend', this.onDragEndBound);
-	}
-	
-	disableDragControls() {
-		if (this.dragControls) {
-			this.dragControls.removeEventListener('dragstart', this.onDragStartBound);
-			this.dragControls.removeEventListener('drag', this.onDragBound);
-			this.dragControls.removeEventListener('dragend', this.onDragEndBound);
-			this.dragControls.dispose();
-			this.dragControls = null;
 		}
 	}
 
@@ -313,7 +289,20 @@ export default class AtomNode extends GraphicNode{
 	}
 
 	onMainAtomGroupDrag(object) {
-		// console.log('drag', object, this.mainAtomDragData);
+
+		/* CHECk FOR DISTANCE FROM OTHER ATOMS.. */
+		const atomsLength = this.dragData.atoms.length;
+		const dragAtomPos = this.position;
+		for (let i = 0; i < atomsLength; i++) {
+			const atom = this.dragData.atoms[i];
+			const atomPos = atom.position;
+
+			const distance = dragAtomPos.distanceTo(atomPos);
+
+			console.log('dist: ', distance);
+		}
+
+		
 		this.mainAtomDragData.connectedElectrons.forEach(t => {
 			const ring = this.rings[t.getRingIndex()];
 			const x = object.position.x + ring.radius * Math.cos(t.currentAngle);
@@ -322,25 +311,43 @@ export default class AtomNode extends GraphicNode{
 			t.mesh.position.x = x;
 			t.mesh.position.y = y;
 		});
+
+
 	}
 
 	onDragStart({object}) {
 		this.foregroundRender.disableCameraControls();
 
-		const node = window.NS.singletons.ConnectionsManager.getConnectedNodeWithType(this.ID, 'electrons');
+		/* TODO -- CHECK IF OBJECT IS PARENT OF THIS ATOMNODE.. OR PASS IN ATOMNODE SCOPE TO DRAGCONTROLS   DONT KNOW */
 
-		if (isMainAtom(object)) {
-			const connectedElectrons = node.getConnectedElectrons();
-			this.mainAtomDragData.connectedElectrons = connectedElectrons;
+		if (isDragEvtAtom(object, this.ID, false)) {
+			this.foregroundRender.dragControls.addEventListener('drag', this.onDragBound);
+			this.foregroundRender.dragControls.addEventListener('dragend', this.onDragEndBound);
+		} else {
+			return;
 		}
 
-		if (isElectron(object)) {
+		const electronsModifierNode = window.NS.singletons.ConnectionsManager.getConnectedNodeWithType(this.ID, 'electrons');
+		
+		if (isMainAtom(object)) {
+			if (electronsModifierNode) {
+				const connectedElectrons = electronsModifierNode.getConnectedElectrons();
+				this.mainAtomDragData.connectedElectrons = connectedElectrons;
+			}
 			
-			const electronObj = node.getElectron(object.userData.ID);
-			this.dragData.electronObj = electronObj;
-			
-			this.dragData.centerPoint.x = this.mainAtomGroup.position.x;
-			this.dragData.centerPoint.y = this.mainAtomGroup.position.y;
+			const atomNodes = window.NS.singletons.ConnectionsManager.getNodesWithType(this.type, this.ID);
+			this.dragData.atoms = atomNodes || [];
+			console.log('atom nodes: ', atomNodes, AtomNode.Tag);
+		}
+
+		if (electronsModifierNode) {
+			if (isElectron(object)) {
+				const electronObj = electronsModifierNode.getElectron(object.userData.ID);
+				this.dragData.electronObj = electronObj;
+				
+				this.dragData.centerPoint.x = this.mainAtomGroup.position.x;
+				this.dragData.centerPoint.y = this.mainAtomGroup.position.y;
+			}
 		}
 	}
 
@@ -381,7 +388,28 @@ export default class AtomNode extends GraphicNode{
 			this.dragData.electronObj = null;
 		}
 
+		this.mainAtomDragData.connectedElectrons = [];
+
 		this.foregroundRender.enableCameraControls();
+
+		this.foregroundRender.dragControls.removeEventListener('drag', this.onDragBound);
+		this.foregroundRender.dragControls.removeEventListener('dragend', this.onDragEndBound);
+	}
+
+	removeFromDom() {
+		super.removeFromDom();
+
+		this.foregroundRender.dragControls.removeEventListener('dragstart', this.onDragStartBound);
+		this.foregroundRender.dragControls.removeEventListener('drag', this.onDragBound);
+		this.foregroundRender.dragControls.removeEventListener('dragend', this.onDragEndBound);
+
+	}
+
+	get position() {
+		const pos = new THREE.Vector2();
+		pos.x = this.mainAtomGroup.position.x;
+		pos.y = this.mainAtomGroup.position.y;
+		return pos;
 	}
 
 }

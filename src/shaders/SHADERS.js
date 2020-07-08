@@ -9,6 +9,157 @@ export const SIMPLE_3D_VERTEX = `
     }
 `;
 
+const ATOM_HELPERS = `
+    float box(in vec2 _st, in vec2 _size){
+        _size = vec2(0.5) - _size*0.5;
+        vec2 uv = smoothstep(_size,
+                            _size+vec2(0.0001),
+                            _st);
+        uv *= smoothstep(_size,
+                        _size+vec2(0.0001),
+                        vec2(1.0)-_st);
+        return uv.x*uv.y;
+    }
+
+    float cross(in vec2 _st, float _size){
+        return  box(_st, vec2(_size,_size/4.)) +
+                box(_st, vec2(_size/4.,_size));
+    }
+
+    float line(in vec2 _st, float _size){
+        return  box(_st, vec2(_size,_size/4.));
+    }
+
+    float circle(in vec2 _st, in float _radius){
+        vec2 dist = _st-vec2(0.5);
+        return 1.-smoothstep(_radius-(_radius*0.01),
+                            _radius+(_radius*0.01),
+                            dot(dist,dist)*4.0);
+    }
+
+    float blurredCircle(in vec2 _st, in float _radius){
+        vec2 dist = _st-vec2(0.5);
+        return 1.-smoothstep(_radius-(_radius*0.3),
+                            _radius+(_radius*0.3),
+                            dot(dist,dist)*4.0);
+    }
+`;
+
+export const SIMPLE_3D_VERTEX_LIGHT = `
+    varying vec2 vPos;
+    varying vec3 vecPos;
+    varying vec3 vecNormal;
+    
+    void main() {
+        vPos = vec2(position.x, position.y);
+        // Since the light is in camera coordinates,
+        // I'll need the vertex position in camera coords too
+        vecPos = (modelViewMatrix * vec4(position, 1.0)).xyz;
+        // That's NOT exacly how you should transform your
+        // normals but this will work fine, since my model
+        // matrix is pretty basic
+        vecNormal = (modelViewMatrix * vec4(normal, 0.0)).xyz;
+        gl_Position = projectionMatrix * vec4(vecPos, 1.0);
+    }
+`;
+
+const ATOM_FRAGMENT_LIGHTING = `
+    precision highp float;
+    varying vec2 vPos;
+    varying vec2 vUv;
+    varying vec3 vecPos;
+    varying vec3 vecNormal;
+    
+    uniform float lightIntensity;
+    
+    struct PointLight {
+        vec3 color;
+        vec3 position; // light position, in camera coordinates
+        float distance; // used for attenuation purposes. Since
+                        // we're writing our own shader, it can
+                        // really be anything we want (as long as
+                        // we assign it to our light in its
+                        // "distance" field
+    };
+    
+    uniform PointLight pointLights[NUM_POINT_LIGHTS];
+`;
+
+const FRAGMENT_MAIN_LIGHT = `
+    // Pretty basic lambertian lighting...
+    vec4 addedLights = vec4(0.0,
+                            0.0,
+                            0.0,
+                            1.0);
+    for(int l = 0; l < NUM_POINT_LIGHTS; l++) {
+        vec3 lightDirection = normalize(vecPos
+                                - pointLights[l].position);
+        addedLights.rgb += clamp(dot(-lightDirection,
+                                vecNormal), 0.0, 1.0)
+                            * pointLights[l].color
+                            * lightIntensity;
+    }
+`;
+
+export const ATOM_CENTER_FRAGMENT = `
+    varying vec3 vUv;
+    ${ATOM_HELPERS}
+
+    void main() {
+        float x = (vUv.x + 2.0 - 1.0) / 2.0;
+        float y = (vUv.y + 2.0 - 1.0) / 2.0;
+        vec2 st = vec2(x, y);
+        vec3 color = vec3(blurredCircle(st, 27.2));
+        gl_FragColor = vec4(color, 1.0);
+    }
+`;
+
+export const NEUTRON_FRAGMENT = `
+    ${ATOM_FRAGMENT_LIGHTING}
+    ${ATOM_HELPERS}
+
+    void main() {
+        float x = (vPos.x + 2.0 - 1.0) / 2.0;
+        float y = (vPos.y + 2.0 - 1.0) / 2.0;
+        vec2 st = vec2(x, y);
+        vec3 color = vec3(circle(st, 0.1));
+        ${FRAGMENT_MAIN_LIGHT}
+        
+        gl_FragColor = vec4(color, 1.0) * addedLights;
+    }
+`;
+
+export const PROTON_FRAGMENT = `
+    ${ATOM_FRAGMENT_LIGHTING}
+    ${ATOM_HELPERS}
+
+    void main() {
+        vec3 color = vec3(1.0);
+        float x = (vPos.x + 2.0 - 1.0) / 2.0;
+        float y = (vPos.y + 2.0 - 1.0) / 2.0;
+        vec2 st = vec2(x, y);
+        color -= vec3(cross(st, 0.3));
+        ${FRAGMENT_MAIN_LIGHT}
+        
+        gl_FragColor = vec4(color, 1.0) * addedLights;
+    }
+`;
+
+export const ELECTRON_FRAGMENT = `
+    ${ATOM_FRAGMENT_LIGHTING}
+    ${ATOM_HELPERS}
+
+    void main() {
+        vec3 color = vec3(1.0);
+        float x = (vPos.x + 2.0 - 1.0) / 2.0;
+        float y = (vPos.y + 2.0 - 1.0) / 2.0;
+        vec2 st = vec2(x, y);
+        color -= vec3(line(st, 0.3));
+        ${FRAGMENT_MAIN_LIGHT}
+        gl_FragColor = vec4(color, 1.0) * addedLights;
+    }
+`;
+
 export const ACTIVE_MESH_FRAGMENT = `
     uniform vec3 colorA; 
     uniform vec3 colorB; 

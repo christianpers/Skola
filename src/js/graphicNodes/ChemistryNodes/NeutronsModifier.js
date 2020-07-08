@@ -1,6 +1,7 @@
 import GraphicNode from '../GraphicNode';
 import InputComponent from '../../views/Nodes/NodeComponents/InputComponent';
 import { createGridSpheres } from './helpers';
+import { SIMPLE_3D_VERTEX_LIGHT, NEUTRON_FRAGMENT } from '../../../shaders/SHADERS';
 
 export default class NeutronsModifer extends GraphicNode {
     constructor(renderer, backendData) {
@@ -20,6 +21,18 @@ export default class NeutronsModifer extends GraphicNode {
 		this.mesh.name = 'neutrons';
 
 		this.addToGroup = 'mainAtomGroup';
+
+		this.material = new THREE.ShaderMaterial({
+            uniforms: THREE.UniformsUtils.merge([
+				THREE.UniformsLib['lights'],
+				{
+					lightIntensity: {type: 'f', value: 1.0}
+				}
+			]),
+            vertexShader: SIMPLE_3D_VERTEX_LIGHT,
+            fragmentShader: NEUTRON_FRAGMENT,
+			lights: true
+        });
 		
 		this.getSettings();
 	}
@@ -47,7 +60,7 @@ export default class NeutronsModifer extends GraphicNode {
 			this.mesh.remove(this.mesh.children[i]);
 		}
 
-		createGridSpheres(this.mesh, 3, amountNeutrons, true, 0x000000);
+		createGridSpheres(this.mesh, 3, amountNeutrons, true, 0x000000, new THREE.Vector3(0, 0, 0), '', this.material);
 
 		return this.mesh;
 	}
