@@ -18,7 +18,13 @@ export default class BackendSync {
     }
 
     initNodeSettings() {
-        const connectedModifierNodes = this.selectedDrawing.nodes.filter(t => !!t.data.connectionData);
+        const connectedModifierNodes = this.selectedDrawing.nodes.filter(t => !!t.data.connectionData)
+            .sort((a, b) => {
+                const aNode = window.NS.singletons.ConnectionsManager.nodes[a.id];
+                const bNode = window.NS.singletons.ConnectionsManager.nodes[b.id];
+                return bNode.nodeSortIndex - aNode.nodeSortIndex 
+            });
+        
         for (let i = 0; i < connectedModifierNodes.length; i++) {
             const modifierNodeData = connectedModifierNodes[i];
             const outNode = window.NS.singletons.ConnectionsManager.nodes[modifierNodeData.id];

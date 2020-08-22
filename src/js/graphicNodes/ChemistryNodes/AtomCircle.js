@@ -1,44 +1,49 @@
+import { getCircle, getDoubleCircle } from './helpers';
+
 export default class AtomCircle{
 	constructor(radius, ringDef, index) {
-
         this.title = 'AtomCircle';
         this.index = index;
+		// RINGDEF CONTAINS AMOUNT ELECTRONS ALLOWED IN RING
         this.ringDef = ringDef;
         this.radius = radius;
 		// SHOULD BE OBJECTS WITH REF TO OBJ AND ANGLE
-		this.connectedElectrons = new Map();
+		this.connectedElectrons = new Set();
         this.highlightColor = new THREE.Color(1, 1, 1).getHex();
         this.defaultColor = new THREE.Color(1, 0, 0).getHex();
         this.initCurve(radius);
 	}
 
-	addConnectedElectron(key, value) {
-		this.connectedElectrons.set(key, value);
+	addConnectedElectron(key) {
+		this.connectedElectrons.add(key);
 	}
 
 	removeConnectedElectron(key) {
 		this.connectedElectrons.delete(key);
 	}
 
-	initCurve(radius) {
-		this.curve = new THREE.EllipseCurve(
-			0,  0,            // ax, aY
-			radius, radius, // xRadius, yRadius
-			0,  2 * Math.PI,  // aStartAngle, aEndAngle
-			false,            // aClockwise
-			0                 // aRotation
-		);
+	getElectronRingIndex(electronID) {
+		return [...this.connectedElectrons].findIndex(t => t === electronID);
+	}
 
-		const points = this.curve.getPoints( 50 );
-		const arrLength = 51;
-		const positions = new Float32Array( 51 * 3 );
+	initCurve(radius) {
+		const detailPerPartCurve = 10;
+		// const rotateOrigin = { x: 0, y: 0 };
+		// const rotateAngle = 120;
+		// const points = getDoubleCircle(rotateOrigin, rotateAngle, detailPerPartCurve, 0, 0, radius, radius);
+		const points = getCircle(detailPerPartCurve, 0, 0, radius, radius);
+		
 		let index = 0;
 
-		for (let i = 0; i < arrLength; i++) {
+		const length = points.length;
+		const positions = new Float32Array( length * 3 );
+
+		for (let i = 0; i < length; i++) {
 			positions[index++] = points[i].x;
 			positions[index++] = points[i].y;
 			positions[index++] = 0;
 		}
+
 		this.geometry = new THREE.BufferGeometry();
 		this.bufferAttr = new THREE.BufferAttribute( positions, 3 );
 		// this.bufferAttr.setDynamic(true);
@@ -48,6 +53,8 @@ export default class AtomCircle{
 
 		this.mesh = new THREE.Line( this.geometry, this.material );
 		this.mesh.visible = false;
+
+		// this.mesh.rotation.z = - (3.14 / 2);
 	}
 
     setHighlighted() {
@@ -58,13 +65,21 @@ export default class AtomCircle{
         this.material.color.setHex(this.defaultColor);
     }
 
-	addElectron(obj, angle) {
-		const electronObj = { obj, angle };
-		this.connectedElectrons.push(electronObj);
-	}
+	// USE TO GET ELECTRON POSITION --- NEW FUNCTION TO USE
+	getElectronPosition(offset, electronRingIndex) {
+		const getAngle = (ringIndex, orbPositions, orbDistance) => {
+			const pairOffset = ringIndex >= orbPositions ? 5 : -5;
+			return ((ringIndex % orbPositions) * orbDistance + 90) - pairOffset;
+		};
+		const { orbitalPositions } = this.ringDef;
+		const orbitalDistance = 360 / orbitalPositions;
+		const electronAngle = getAngle(electronRingIndex, orbitalPositions, orbitalDistance);
 
-	removeElectron() {
+		const radians = electronAngle * (Math.PI / 180);
+		const x = offset.x + this.radius * Math.cos(radians);
+		const y = offset.y + this.radius * Math.sin(radians);
 
+		return new THREE.Vector2(x, y);
 	}
 
     remove() {
@@ -82,20 +97,20 @@ export default class AtomCircle{
 		// }
 	}
 
-	updateMesh(curvePointsForHelperMesh = {}) {
-		const points = this.curve.getPoints( 50 );
-		const arrLength = 51;
-		const positions = new Float32Array( 51 * 3 );
-		let index = 0;
+	// updateMesh(curvePointsForHelperMesh = {}) {
+	// 	const points = this.curve.getPoints( 50 );
+	// 	const arrLength = 51;
+	// 	const positions = new Float32Array( 51 * 3 );
+	// 	let index = 0;
 
-		for (let i = 0; i < arrLength; i++) {
-			positions[index++] = this.enabledAxes['x'] ? points[i].x : curvePointsForHelperMesh['x'] || 0;
-			positions[index++] = this.enabledAxes['y'] ? points[i].y : curvePointsForHelperMesh['y'] || 0;
-			positions[index++] = this.enabledAxes['z'] ? points[i].y : curvePointsForHelperMesh['z'] || 0;
-		}
-		this.bufferAttr.set(positions);
-		this.mesh.geometry.attributes.position.needsUpdate = true;
-	}
+	// 	for (let i = 0; i < arrLength; i++) {
+	// 		positions[index++] = this.enabledAxes['x'] ? points[i].x : curvePointsForHelperMesh['x'] || 0;
+	// 		positions[index++] = this.enabledAxes['y'] ? points[i].y : curvePointsForHelperMesh['y'] || 0;
+	// 		positions[index++] = this.enabledAxes['z'] ? points[i].y : curvePointsForHelperMesh['z'] || 0;
+	// 	}
+	// 	this.bufferAttr.set(positions);
+	// 	this.mesh.geometry.attributes.position.needsUpdate = true;
+	// }
 
 	render() {
 

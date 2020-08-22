@@ -16,6 +16,9 @@ export default class Node{
 		this.returnsSingleNumber = false;
 		this.isShapeNode = false;
 
+		this._nodeIndex = -1;
+		this._nodeSortIndex = 0;
+
 		this.title = 'Enter node title';
 
 		this.onConnectionAddBound = this.onConnectionAdd.bind(this);
@@ -577,5 +580,21 @@ export default class Node{
 		.catch(() => {
 			console.log('error updating node');
 		});
+	}
+
+	set nodeIndex(val) {
+		this._nodeIndex = val;
+	}
+
+	get nodeIndex() {
+		return this._nodeIndex;
+	}
+
+	set nodeSortIndex(val) {
+		this._nodeSortIndex = val;
+	}
+
+	get nodeSortIndex() {
+		return this._nodeSortIndex;
 	}
 }

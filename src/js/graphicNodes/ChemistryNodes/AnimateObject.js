@@ -1,8 +1,10 @@
 export default class AnimateObject{
-    constructor(object, finalPosition) {
+    constructor(object, finalPosition, finishedCallback) {
         this.object = object;
         this.finalPosition = finalPosition;
         this.startPosition = new THREE.Vector2(object.position.x, object.position.y);
+
+        this.finishedCallback = finishedCallback;
 
         this.currentPosition = this.startPosition.clone();
         this.targetPosition = finalPosition.clone();
@@ -21,6 +23,10 @@ export default class AnimateObject{
 
         if (Math.abs(xDiff) > 0.05 || Math.abs(yDiff) > 0.05) {
             this.reqframe = window.requestAnimationFrame(this.updateBound);
+        } else {
+            if (this.finishedCallback) {
+                this.finishedCallback();
+            }
         }
 
         this.currentPosition.x += xDiff * 0.1;

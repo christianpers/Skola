@@ -51,7 +51,7 @@ export default class NeutronsModifer extends GraphicNode {
 				return this.initValues.amountNeutrons;
 			}
 
-			return 1;
+			return 0;
 		}
 
 		const amountNeutrons = getAmountNeutrons();

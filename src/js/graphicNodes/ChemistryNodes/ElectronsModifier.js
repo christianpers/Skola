@@ -1,7 +1,8 @@
 import GraphicNode from '../GraphicNode';
 import InputComponent from '../../views/Nodes/NodeComponents/InputComponent';
-import { getGridPositions } from './helpers';
+import { getGridPositions, updateConnectedElectrons } from './helpers';
 import Electron from './Electron';
+import { RING_DEF } from './AtomNode';
 
 export default class ElectronsModifer extends GraphicNode {
     constructor(renderer, backendData) {
@@ -37,6 +38,32 @@ export default class ElectronsModifer extends GraphicNode {
         return this.electrons[ID];
     }
 
+	// THIS IS NOT TESTED ---- FIX !!!!
+	// getElectronIndexInRing(ID) {
+	// 	const connectedElectrons = this.getConnectedElectrons();
+	// 	const electronsWithRingIndex = Object.keys(connectedElectrons).map(t => {
+	// 		const ringIndex = this.electrons[t].getRingIndex();
+	// 		return { ID: t, ringIndex };
+	// 	}).sort((a, b) => a.ringIndex - b.ringIndex);
+
+	// 	const electronIndexInArr = electronsWithRingIndex.findIndex(t => t.ID === ID);
+
+	// 	// const ringDefKeys = Object.keys(RING_DEF);
+
+
+	// 	if (electronIndexInArr < RING_DEF[0].amountElectrons) {
+	// 		return electronIndexInArr;
+	// 	} else if (electronsIndexInArr < RING_DEF[1].amountElectrons) {
+	// 		return electronIndexInArr - RING_DEF[0].amountElectrons;
+	// 	} else if (electronIndexInArr < RING_DEF[2].amountElectrons) {
+	// 		return electronIndexInArr - (RING_DEF[1].amountElectrons + RING_DEF[0].amountElectrons);
+	// 	}
+
+
+
+
+	// }
+
     getConnectedElectrons() {
         const keys = Object.keys(this.electrons);
         return keys
@@ -44,7 +71,7 @@ export default class ElectronsModifer extends GraphicNode {
             .map(key => this.electrons[key]);
     }
 
-	getMeshGroup(inNodeID) {
+	getMeshGroup(atomNode) {
         /* CALLED FROM PARAMHELPERS WHEN AMOUNT ELECTRONS INPUT CHANGES IN UI */
 		const getAmountElectrons = () => {
 			if (this.visualSettings) {
@@ -55,12 +82,13 @@ export default class ElectronsModifer extends GraphicNode {
 				return this.initValues.amountElectrons;
 			}
 
-			return 1;
-		}
+			return 0;
+		};
 
 		const amountElectrons = getAmountElectrons();
 
-        const positions = getGridPositions(3, amountElectrons, false, new THREE.Vector3(6, 6, 0));
+        const atomPosIndex = atomNode.nodeIndex;
+        const positions = getGridPositions(3, amountElectrons, false, new THREE.Vector3(atomPosIndex * 8 + 6, 20, 0));
 
         const keys = Object.keys(this.electrons);
         const diff = amountElectrons - keys.length;

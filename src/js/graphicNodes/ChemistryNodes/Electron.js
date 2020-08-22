@@ -29,6 +29,7 @@ export default class Electron {
             ID: this.ID,
         };
 
+        this._orbitalIndex;
         this.currentAngle = 0;
 
         // const z = 0;
@@ -61,5 +62,13 @@ export default class Electron {
         this.mesh.geometry.dispose();
         this.mesh.material.dispose();
         this.parentMesh.remove(this.mesh);
+    }
+
+    set orbitalIndex(val) {
+        this._orbitalIndex = val;
+    }
+
+    get orbitalIndex() {
+        return this._orbitalIndex;
     }
 }

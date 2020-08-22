@@ -14,6 +14,14 @@ export default class ConnectionsManager{
     addNode(node) {
         this.nodes[node.ID] = node;
 
+        if (!node.isModifier) {
+            const mainNodesIndex = Object.keys(this.nodes)
+                .filter(t => !this.nodes[t].isModifier)
+                .indexOf(node.ID);
+
+            node.nodeIndex = mainNodesIndex;
+        }
+        
         const nodeAddedEvent = new CustomEvent('node-added-event');
         document.documentElement.dispatchEvent(nodeAddedEvent);
     }

@@ -19,6 +19,8 @@ export default class ProtonsModifer extends GraphicNode {
 
 		this.outValues = {};
 
+		this.nodeSortIndex = 1;
+
 		this.mesh = new THREE.Group();
 		this.mesh.name = 'protons';
 
@@ -43,20 +45,20 @@ export default class ProtonsModifer extends GraphicNode {
 		
 	}
 
-	getMeshGroup() {
-		const getAmountProtons = () => {
-			if (this.visualSettings) {
-				return this.visualSettings.amountProtons;
-			}
-
-			if (this.initValues && this.initValues.amountProtons) {
-				return this.initValues.amountProtons;
-			}
-
-			return 1;
+	getAmountProtons() {
+		if (this.visualSettings) {
+			return this.visualSettings.amountProtons;
 		}
 
-		const amountProtons = getAmountProtons();
+		if (this.initValues && this.initValues.amountProtons) {
+			return this.initValues.amountProtons;
+		}
+
+		return 0;
+	}
+
+	getMeshGroup() {
+		const amountProtons = this.getAmountProtons();
 
 		for (let i = this.mesh.children.length - 1; i >= 0; i--) {
 			this.mesh.remove(this.mesh.children[i]);

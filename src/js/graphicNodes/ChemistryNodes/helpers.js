@@ -103,12 +103,15 @@ export const getAmountRings = (amount, ringsDef) => {
 
     Object.keys(ringsDef).forEach((t) => {
         const amountInRing = ringsDef[t].amountElectrons;
-        currentAmountRemaining -= amountInRing;
         if (currentAmountRemaining >= 0) {
             amountRings++;
         }
-        
+        currentAmountRemaining -= amountInRing;
     });
+
+    if (amount > 0 && amountRings === 0) {
+        amountRings = 1;
+    }
 
     return amountRings;
 }
@@ -122,7 +125,7 @@ const updateProtonsNeuronsMeshType = (group, paramKey, meshGroup) => {
     group.add(meshGroup);
 };
 
-const updateElectronsMeshType = (group, paramKey, meshGroup, initRingConnections, electrons, getCartesianPos) => {
+const updateElectronsMeshType = (group, paramKey, meshGroup, initRingConnections, electrons, visibleRings, atomPosition) => {
     const meshExists = group.getObjectByName(paramKey);
     if (!meshExists) {
         group.add(meshGroup);
@@ -133,13 +136,17 @@ const updateElectronsMeshType = (group, paramKey, meshGroup, initRingConnections
             for (let q = 0; q < amountElectronsInRing; q++) {
                 const childToConnect = meshGroup.children[q + meshChildOffset];
                 if (childToConnect) {
-                    const angle = (q + meshChildOffset) * .3;
-                    const pos = getCartesianPos(angle, ringIndex);
+                    const electronObj = electrons[childToConnect.userData.ID];
+                    const ringObj = visibleRings[ringIndex];
+                    ringObj.addConnectedElectron(electronObj.ID);
+                    const indexInRing = ringObj.getElectronRingIndex(electronObj.ID);
+                    const pos = ringObj.getElectronPosition(atomPosition, indexInRing);
+
                     childToConnect.position.x = pos.x;
                     childToConnect.position.y = pos.y;
-                    const electronObj = electrons[childToConnect.userData.ID];
+                    
                     electronObj.setConnectionStatus(ringIndex);
-                    electronObj.currentAngle = angle;
+                    // electronObj.currentAngle = angle;
 
                 }
             }
@@ -177,15 +184,143 @@ export const updateConnectedElectrons = (nodeID, connectedElectrons) => {
     });
 }
 
-export class DragObjectsSync{
-    contructor() {
-        this.objects = [];
-    }
-
-    setObjects(objects, meshGroupName) {
-        const currentObjects = this.objects.filter(t => t.userData.groupName !== meshGroupName);
-        objects.forEach(t => t.userData.groupName = meshGroupName);
-
-        this.objects = [...currentObjects, ...objects];
-    }
+export const updateAtomPos = (nodeID, pos) => {
+    updateNode({
+        visualPos: pos,
+    }, nodeID, true)
+    .then(() => {
+        console.log('atom pos updated');
+    })
+    .catch(() => {
+        console.log('error updating node');
+    });
 }
+
+// export class DragObjectsSync{
+//     contructor() {
+//         this.objects = [];
+//     }
+
+//     setObjects(objects, meshGroupName) {
+//         const currentObjects = this.objects.filter(t => t.userData.groupName !== meshGroupName);
+//         objects.forEach(t => t.userData.groupName = meshGroupName);
+
+//         this.objects = [...currentObjects, ...objects];
+//     }
+// }
+
+export const rotatePoint = (cx, cy, x, y, angle) => {
+    const radians = (Math.PI / 180) * angle;
+    const cos = Math.cos(radians);
+    const sin = Math.sin(radians);
+    const nx = (cos * (x - cx)) - (sin * (y - cy)) + cx;
+    const ny = (cos * (y - cy)) + (sin * (x - cx)) + cy;
+    return { x: nx, y: ny };
+}
+
+export const getAngle = (pos1, pos2) => {
+    const diffX = pos1.x - pos2.x;
+    const diffY = pos1.y - pos2.y;
+    return Math.atan2(diffY, diffX);
+};
+
+export const invertAngle = (radian) => {
+  return (radian + Math.PI) % (2 * Math.PI);
+};
+
+export const getPointOnRing = (centerPoint, ring, angle) => {
+    const x = centerPoint.x + ring.mesh.position.x + ring.radius * Math.cos(angle);
+    const y = centerPoint.y + ring.mesh.position.y + ring.radius * Math.sin(angle);
+
+    return new THREE.Vector2(x, y);
+};
+
+export const getDebugPointOnRing = (objectPos, ring, angle) => {
+    const x = ring.mesh.position.x + ring.radius * Math.cos(angle);
+    const y = ring.mesh.position.y + ring.radius * Math.sin(angle);
+
+    return new THREE.Vector2(x, y);
+};
+
+
+/* BEZIER HELPERS */
+
+const cubicBezier = (p1, p2, p3, p4, t) => {
+    const x1 = Math.pow(1-t, 3) * p1.x;
+    const x2 = 3 * Math.pow(1-t, 2) * t * p2.x;
+    const x3 = 3 * (1-t) * Math.pow(t, 2) * p3.x;
+    const x4 = Math.pow(t, 3) * p4.x;
+
+    const y1 = Math.pow(1-t, 3) * p1.y;
+    const y2 = 3 * Math.pow(1-t, 2) * t * p2.y;
+    const y3 = 3 * (1-t) * Math.pow(t, 2) * p3.y;
+    const y4 = Math.pow(t, 3) * p4.y;
+
+    const x = x1 + x2 + x3 + x4;
+    const y = y1 + y2 + y3 + y4;
+    return { x, y };
+}
+
+const getPoints = (detail, centerX, centerY, sizeX, sizeY, reverse) => {
+    const points= [];
+    const p1 = {x: centerX - sizeX, y: centerY - 0};
+    const p2 = {x: centerX - sizeX, y: centerY - (0.552 * sizeY) };
+    const p3 = {x: centerX - (0.552 * sizeX), y: centerY - sizeY};
+    const p4 = {x: centerX - 0, y: centerY - sizeY};
+    if (reverse) {
+        for (let i = detail; i >= 0; i--) {
+            const t = i / detail;
+            const point = cubicBezier(p1, p2, p3, p4, t);
+            points.push(point);
+        }
+    } else {
+        for (let i = 0; i <= detail; i++) {
+            const t = i / detail;
+            const point = cubicBezier(p1, p2, p3, p4, t);
+            points.push(point);
+        }
+    }
+
+    return points;
+}
+
+export const getCircle = (detail, centerX, centerY, sizeX, sizeY) => {
+    const points0 = getPoints(detail, centerX, centerY, -sizeX, sizeY);
+    const points1 = getPoints(detail, centerX, centerY, sizeX, sizeY, true);
+    const points2 = getPoints(detail, centerX, centerY, sizeX, -sizeY);
+    const points3 = getPoints(detail, centerX, centerY, -sizeX, -sizeY, true);
+
+    return [
+        ...points1, ...points2, ...points3, ...points0,
+    ];
+}
+
+export const getDoubleCircle = (rotateOrigin, rotateAngle, detail, centerX, centerY, sizeX, sizeY) => {
+    const offset = 0;
+    const secOffset = sizeX * 2 + offset;
+
+    const points0 = getPoints(detail, centerX + secOffset, centerY, sizeX, sizeY); //top left right
+    const points1 = getPoints(detail, centerX + offset, centerY, sizeX, sizeY, true); //top left left
+    const points2 = getPoints(detail, centerX + offset, centerY, sizeX, -sizeY); //bottm left left
+    const points3 = getPoints(detail, centerX + offset, centerY, -sizeX, -sizeY, true); // bottom left right
+
+    const points4 = getPoints(detail, centerX + secOffset, centerY, -sizeX, sizeY, true); // top right right
+    const points5 = getPoints(detail, centerX + offset, centerY, -sizeX, sizeY); // top right left
+    const points6 = getPoints(detail, centerX + secOffset, centerY, sizeX, -sizeY, true); // bottom right left
+    const points7 = getPoints(detail, centerX + secOffset, centerY, -sizeX, -sizeY); 
+
+    const points = [
+        ...points1, ...points2, ...points3, ...points0,
+        ...points4, ...points7, ...points6,  ...points5,
+    ];
+
+    const ret = [];
+    points.forEach(t => {
+        const rpoint = rotatePoint(rotateOrigin.x, rotateOrigin.y, t.x, t.y, rotateAngle);
+        ret.push(rpoint);
+    });
+
+    return ret;
+}
+
+

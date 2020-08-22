@@ -164,7 +164,7 @@ const isValidParamSingleNumberInput = (outNode, inNode, param) => {
 };
 
 const onAtomParamUpdate = (inNode, outNode, param) => {
-	const meshGroup = outNode.getMeshGroup();
+	const meshGroup = outNode.getMeshGroup(inNode);
 	inNode.updateMeshType(
 		meshGroup, 
 		param.param,
