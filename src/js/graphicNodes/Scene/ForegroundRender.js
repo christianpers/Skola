@@ -62,6 +62,13 @@ export default class ForegroundRender{
 
 			this.camera.position.z = 40;
 
+			// this.cameraControls.maxDistance = 41;
+			// this.cameraControls.minDistance = 41;
+			// this.cameraControls.enableZoom = false;
+			// this.cameraControls.minPolarAngle = -10;
+
+			this.cameraControls.screenSpacePanning = true;
+
 			const light = new THREE.PointLight( 0xffffff, 1, 100 );
 			light.position.set( -10, 10, 50 );
 			this.scene.add( light );

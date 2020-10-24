@@ -10,6 +10,7 @@ import Helpers from '../musicHelpers/Helpers';
 import ModifierCollisionManager from './ModiferCollisionManager';
 import NodeGroupManager from './NodeGroupManager';
 import SelectionManager from './SelectionManager';
+import ChemistrySelectionManager from './SelectionManagers/ChemistrySelectionManager';
 
 import AvailableConnections from './NodeManager/AvailableConnections';
 
@@ -27,8 +28,12 @@ export default class NodeManager{
 		this.availableConnections = new AvailableConnections();
 
 		window.NS.singletons.NodeGroupManager = new NodeGroupManager();
-		window.NS.singletons.SelectionManager = new SelectionManager();
-
+		if (window.NS.singletons.PROJECT_TYPE === window.NS.singletons.TYPES.chemistry.id) {
+            window.NS.singletons.SelectionManager = new ChemistrySelectionManager();
+        } else {
+			window.NS.singletons.SelectionManager = new SelectionManager();
+		}
+		
 		this.constructorIsDone = false;
 
 		this.keyboardManager = keyboardManager;
@@ -147,18 +152,24 @@ export default class NodeManager{
 	onNodeSelectedEvent(event) {
 		window.NS.singletons.SelectionManager.deselectAllNonagons();
 		
-		for (let i = 0; i < this._nodes.length; i++) {
-			this._nodes[i].setNotSelected();
-			
+		const selectionNonagons = Object.keys(window.NS.singletons.SelectionManager.nonagons);
+		const triangleNodes = this._nodes.filter(t => !selectionNonagons.some(tS => tS === t.ID));
+		
+		for (let i = 0; i < triangleNodes.length; i++) {
+			triangleNodes[i].setNotSelected();
 		}
 
 		if (event && event.detail) {
-			// event.detail.setSelected();
 			window.NS.singletons.SelectionManager.setSelected(event.detail);
 			this.windowManager.setupForNode(event.detail);
+		} else {
+			// ADDED FOR CHEMISTRY
+			window.NS.singletons.SelectionManager.setSelected();
 		}
 
-		window.NS.singletons.CanvasNode.onNodeDeselect();
+		if (window.NS.singletons.PROJECT_TYPE === window.NS.singletons.TYPES.space.id) {
+            window.NS.singletons.CanvasNode.onNodeDeselect();
+        }
 	}
 
 	// EVENT ONLY FOR MODIFIERS

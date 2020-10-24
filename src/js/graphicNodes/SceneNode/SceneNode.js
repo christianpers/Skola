@@ -202,6 +202,7 @@ export default class SceneNode{
 		return [this.topPartEl.clientWidth, this.topPartEl.clientHeight];
 	}
 
+	// ONLY BEING CALLED IF SPACE LESSONS ACTIVE
 	setForegroundCamera(camera) {
 		if (camera) {
 			this.foregroundRender.setActiveCamera(camera);
@@ -223,7 +224,6 @@ export default class SceneNode{
 			const size = selectedNode.mesh.scale.z * boundingBox.max.z;
 			
 			const distance = -size*8;
-			console.log('dist: ', distance);
 			const obj = { mesh: selectedNode.mesh, distance };
 			this.foregroundRender.setMeshToFollow(obj);
 		}

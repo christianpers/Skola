@@ -13,6 +13,11 @@ export default class NonagonType {
 
 		this.size = 200;
 
+		// Set css class for triangle.. needs some spec css props
+		if (Object.keys(this.params).length === 3) {
+			parentEl.classList.add('triangle-shape');
+		}
+
         const nonagonSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
 		nonagonSvg.setAttribute("width", `${this.size}px`);
 		nonagonSvg.setAttribute("height", `${this.size}px`);

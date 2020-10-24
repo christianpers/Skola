@@ -11,6 +11,10 @@ export default class ConnectionsManager{
         this.paramConnectionsUpdateEvent = new CustomEvent('param-connections-update');
     }
 
+    getNode(ID) {
+        return this.nodes[ID];
+    }
+
     addNode(node) {
         this.nodes[node.ID] = node;
 

@@ -1,6 +1,6 @@
 import GraphicNode from '../GraphicNode';
 import InputComponent from '../../views/Nodes/NodeComponents/InputComponent';
-import { createGridSpheres } from './helpers';
+import { createGridSpheres, createProtonsNeutronsMesh } from './helpers';
 import { SIMPLE_3D_VERTEX_LIGHT, NEUTRON_FRAGMENT } from '../../../shaders/SHADERS';
 
 export default class NeutronsModifer extends GraphicNode {
@@ -22,17 +22,22 @@ export default class NeutronsModifer extends GraphicNode {
 
 		this.addToGroup = 'mainAtomGroup';
 
-		this.material = new THREE.ShaderMaterial({
-            uniforms: THREE.UniformsUtils.merge([
-				THREE.UniformsLib['lights'],
-				{
-					lightIntensity: {type: 'f', value: 1.0}
-				}
-			]),
-            vertexShader: SIMPLE_3D_VERTEX_LIGHT,
-            fragmentShader: NEUTRON_FRAGMENT,
-			lights: true
-        });
+		const color = new THREE.Color(1.0, 0.6, 0.6).getHex();
+		// this.material = new THREE.MeshLambertMaterial({ color });
+		this.material = new THREE.MeshBasicMaterial( { transparent: true, opacity: 1, color, side: THREE.DoubleSide } );
+		this.material.userData.toggleSelected = true;
+
+		// this.material = new THREE.ShaderMaterial({
+        //     uniforms: THREE.UniformsUtils.merge([
+		// 		THREE.UniformsLib['lights'],
+		// 		{
+		// 			lightIntensity: {type: 'f', value: 1.0}
+		// 		}
+		// 	]),
+        //     vertexShader: SIMPLE_3D_VERTEX_LIGHT,
+        //     fragmentShader: NEUTRON_FRAGMENT,
+		// 	lights: true
+        // });
 		
 		this.getSettings();
 	}
@@ -41,29 +46,51 @@ export default class NeutronsModifer extends GraphicNode {
 		
 	}
 
-	getMeshGroup() {
-		const getAmountNeutrons = () => {
-			if (this.visualSettings) {
-				return this.visualSettings.amountNeutrons;
-			}
-
-			if (this.initValues && this.initValues.amountNeutrons) {
-				return this.initValues.amountNeutrons;
-			}
-
-			return 0;
+	getAmountPositions() {
+		if (this.visualSettings) {
+			return this.visualSettings.amountNeutrons;
 		}
 
-		const amountNeutrons = getAmountNeutrons();
+		if (this.initValues && this.initValues.amountNeutrons) {
+			return this.initValues.amountNeutrons;
+		}
 
+		return 0;
+	}
+
+	getMeshGroup(positions) {
 		for (let i = this.mesh.children.length - 1; i >= 0; i--) {
 			this.mesh.remove(this.mesh.children[i]);
 		}
 
-		createGridSpheres(this.mesh, 3, amountNeutrons, true, 0x000000, new THREE.Vector3(0, 0, 0), '', this.material);
+		positions.forEach(t => createProtonsNeutronsMesh(this.mesh, this.material, t));
 
 		return this.mesh;
 	}
+
+	// getMeshGroup() {
+	// 	const getAmountNeutrons = () => {
+	// 		if (this.visualSettings) {
+	// 			return this.visualSettings.amountNeutrons;
+	// 		}
+
+	// 		if (this.initValues && this.initValues.amountNeutrons) {
+	// 			return this.initValues.amountNeutrons;
+	// 		}
+
+	// 		return 0;
+	// 	}
+
+	// 	const amountNeutrons = getAmountNeutrons();
+
+	// 	for (let i = this.mesh.children.length - 1; i >= 0; i--) {
+	// 		this.mesh.remove(this.mesh.children[i]);
+	// 	}
+
+	// 	createGridSpheres(this.mesh, 3, amountNeutrons, true, 0x000000, new THREE.Vector3(0, 0, 0), '', this.material);
+
+	// 	return this.mesh;
+	// }
 
 	onInputChange(value) {
 		this.updateVisualSettings(value);

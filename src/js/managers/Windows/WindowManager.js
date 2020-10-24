@@ -26,7 +26,6 @@ export default class WindowManager{
     }
 
     setupForNode(node) {
-        console.log('setup for node: ', node.ID);
         this.activeNode = node;
         // if (node.nodeType.assignedParamContainer) {
         //     this.connectionWindow.setupForNode(node);

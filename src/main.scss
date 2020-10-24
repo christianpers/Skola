@@ -453,6 +453,63 @@ button:focus {
 				margin-top: -25px;
 			}
 		}
+
+		& .node-param-container {
+			width: 60px;
+			height: 140px;
+			position: absolute;
+			// background: rgba(255,255,255,0.3);
+			top: 50%;
+			left: 50%;
+			margin-top: -140px;
+			margin-left: -30px;
+			transform-origin: center bottom;
+			
+			> svg {
+				fill: rgba(255, 255, 255, 0.05);
+				position: absolute;
+				top: 10px;
+				left: 10px;
+			}
+		
+			.modifier-node {
+				position: absolute;
+				top: 10px;
+				left: 10px;
+			}
+		
+			.inner-param-container {
+				text-align: center;
+				position: absolute;
+				bottom: 0;
+				height: 70px;
+				width: 100%;
+		
+				> h5 {
+					color: yellow;
+					margin-top: 10px;
+				}
+			}
+		
+			.detail-param-container {
+				position: absolute;
+				top: -10px;
+				display: flex;
+				justify-content: center;
+				width: 100%;
+			}
+		}
+
+		&.triangle-shape {
+			& .node-param-container {
+				height: 120px;
+				margin-top: -120px;
+
+				.inner-param-container {
+					height: 56px;
+				}
+			}
+		}
 	}
 
 	&.selected {
@@ -804,52 +861,6 @@ button:focus {
 
 			}
 		}
-	}
-}
-
-.node-param-container {
-	width: 60px;
-    height: 140px;
-    position: absolute;
-    // background: rgba(255,255,255,0.3);
-    top: 50%;
-    left: 50%;
-    margin-top: -140px;
-    margin-left: -30px;
-	transform-origin: center bottom;
-	
-	> svg {
-		fill: rgba(255, 255, 255, 0.05);
-		position: absolute;
-		top: 10px;
-		left: 10px;
-	}
-
-	.modifier-node {
-		position: absolute;
-		top: 10px;
-		left: 10px;
-	}
-
-	.inner-param-container {
-		text-align: center;
-		position: absolute;
-		bottom: 0;
-		height: 70px;
-		width: 100%;
-
-		> h5 {
-			color: yellow;
-			margin-top: 10px;
-		}
-	}
-
-	.detail-param-container {
-		position: absolute;
-		top: -10px;
-		display: flex;
-		justify-content: center;
-		width: 100%;
 	}
 }
 

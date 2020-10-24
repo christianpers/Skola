@@ -127,9 +127,6 @@ export default class NodeGroupManager {
         if (overNonagon) {
             this.onOverNonagon(overNonagon);
         } else {
-            // for (let i = 0; i < this.nonagonsToCheckLength; i++) {
-            //     this.nonagonsToCheck[i].setNotSelected();
-            // }
             window.NS.singletons.SelectionManager.deselectAllNonagons(this.nonagonsToCheck);
             if (this.currentActiveGroup) {
                 if (!this.currentActiveGroup.hasNonagons()) {

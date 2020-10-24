@@ -42,6 +42,49 @@ export const getObjToMove = (intersections) => {
     }
 }
 
+// USE TO GET INITIAL POSITIONS FOR NEUTRONS AND PROTONS
+export const getProtonsNeutronsPositions = () => {
+    const ret = {};
+    let index = 0;
+
+    const rings = [4, 10, 16, 24];
+    const startRadius = 0.8;
+    const radiusIncrease = 1.1;
+
+    for (let i = 0; i < rings.length; i++) {
+        const radius = startRadius + radiusIncrease * i;
+        const angleIncrease = 360 / rings[i];
+        for (let q = 0; q < rings[i]; q++) {
+            const angle = angleIncrease * q;
+            const x = radius * Math.cos(angle * Math.PI / 180);
+            const y = radius * Math.sin(angle * Math.PI / 180);
+
+            const pos = new THREE.Vector2(x, y);
+            const obj = {
+                pos,
+                type: index % 2 === 0 ? 'protons' : 'neutrons',
+            };
+            const id = `${i}-${q}`;
+            ret[id] = obj;
+            index++;
+        }
+    }
+    return ret;
+}
+
+export const createProtonsNeutronsMesh = (parentMesh, material, pos) => {
+    const geometry = new THREE.SphereGeometry(0.5, 10, 10);
+    // const material = new THREE.MeshBasicMaterial( { color } );
+    const mesh = new THREE.Mesh(geometry, material);
+    // mesh.name = type;
+
+    const z = 0;
+
+    mesh.position.set(pos.x, pos.y, z);
+
+    parentMesh.add(mesh);
+}
+
 export const createGridSpheres = (parentMesh, nrRows = 3, amountItems, negX = false, color, offsetPos = new THREE.Vector3(), type = '', material) => {
     const amountPerRow = nrRows;
     const rows = Math.ceil(amountItems/amountPerRow);
@@ -138,21 +181,18 @@ const updateElectronsMeshType = (group, paramKey, meshGroup, initRingConnections
                 if (childToConnect) {
                     const electronObj = electrons[childToConnect.userData.ID];
                     const ringObj = visibleRings[ringIndex];
-                    ringObj.addConnectedElectron(electronObj.ID);
-                    const indexInRing = ringObj.getElectronRingIndex(electronObj.ID);
-                    const pos = ringObj.getElectronPosition(atomPosition, indexInRing);
+                    const { key, pos, orbitalAngle } = ringObj.getAvailableElectronPosition(atomPosition);
+                    electronObj.ringPositionKey = key;
+                    electronObj.orbitalAngle = orbitalAngle;
 
                     childToConnect.position.x = pos.x;
                     childToConnect.position.y = pos.y;
                     
-                    electronObj.setConnectionStatus(ringIndex);
-                    // electronObj.currentAngle = angle;
-
+                    electronObj.setConnectionStatus(ringIndex, key);
                 }
             }
             meshChildOffset += amountElectronsInRing;
         });
-        // meshGroup.children.forEach(t => console.log(t.userData));
     }
 };
 
@@ -162,16 +202,20 @@ export const updateMeshTypeMapper = {
     'neutrons': updateProtonsNeuronsMeshType,
 };
 
-export const updateConnectedElectrons = (nodeID, connectedElectrons) => {
-    const connections = {};
-    connectedElectrons.forEach(t => {
+export const getCurrentElectronConnections = (connectedElectrons) => {
+    return connectedElectrons.reduce((connections, t) => {
         const ringIndex = t.getRingIndex();
         if (connections[ringIndex]) {
             connections[ringIndex]++;
         } else {
             connections[ringIndex] = 1;
         }
-    });
+        return connections;
+    }, {});
+}
+
+export const syncConnectedElectrons = (nodeID, connectedElectrons) => {
+    const connections = getCurrentElectronConnections(connectedElectrons);
     
     updateNode({
         ringConnections: connections,
@@ -184,12 +228,11 @@ export const updateConnectedElectrons = (nodeID, connectedElectrons) => {
     });
 }
 
-export const updateAtomPos = (nodeID, pos) => {
+export const syncAtomPos = (nodeID, pos) => {
     updateNode({
         visualPos: pos,
     }, nodeID, true)
     .then(() => {
-        console.log('atom pos updated');
     })
     .catch(() => {
         console.log('error updating node');
@@ -226,6 +269,13 @@ export const getAngle = (pos1, pos2) => {
 
 export const invertAngle = (radian) => {
   return (radian + Math.PI) % (2 * Math.PI);
+};
+
+export const getPointOnRingRadius = (centerPoint, angle, radius) => {
+    const x = centerPoint.x + radius * Math.cos(angle);
+    const y = centerPoint.y + radius * Math.sin(angle);
+
+    return new THREE.Vector2(x, y);
 };
 
 export const getPointOnRing = (centerPoint, ring, angle) => {

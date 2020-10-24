@@ -1,6 +1,6 @@
 import GraphicNode from '../GraphicNode';
 import InputComponent from '../../views/Nodes/NodeComponents/InputComponent';
-import { createGridSpheres } from './helpers';
+import { createGridSpheres, createProtonsNeutronsMesh } from './helpers';
 import { SIMPLE_3D_VERTEX_LIGHT, PROTON_FRAGMENT } from '../../../shaders/SHADERS';
 
 export default class ProtonsModifer extends GraphicNode {
@@ -15,28 +15,21 @@ export default class ProtonsModifer extends GraphicNode {
 
 		this.isParam = true;
 
-		this.controlsAmountAtomRings = true;
+		// THIS SHOULD BE MOVED TO BE ELECTRONS INSTEAD OF PROTONS..
+		
 
 		this.outValues = {};
-
-		this.nodeSortIndex = 1;
 
 		this.mesh = new THREE.Group();
 		this.mesh.name = 'protons';
 
 		this.addToGroup = 'mainAtomGroup';
 
-		this.material = new THREE.ShaderMaterial({
-            uniforms: THREE.UniformsUtils.merge([
-				THREE.UniformsLib['lights'],
-				{
-					lightIntensity: {type: 'f', value: 1.0}
-				}
-			]),
-            vertexShader: SIMPLE_3D_VERTEX_LIGHT,
-            fragmentShader: PROTON_FRAGMENT,
-			lights: true,
-        });
+		const color = new THREE.Color(1, 0.1, 0.0).getHex();
+		// this.material = new THREE.MeshLambertMaterial({ color });
+		this.material = new THREE.MeshBasicMaterial( { transparent: true, opacity: 1, color, side: THREE.DoubleSide } );
+		this.material.userData.toggleSelected = true;
+		// this.material = window.NS.singletons.LessonManager.shared.getProtonsMaterial();
 		
 		this.getSettings();
 	}
@@ -45,7 +38,7 @@ export default class ProtonsModifer extends GraphicNode {
 		
 	}
 
-	getAmountProtons() {
+	getAmountPositions() {
 		if (this.visualSettings) {
 			return this.visualSettings.amountProtons;
 		}
@@ -57,14 +50,15 @@ export default class ProtonsModifer extends GraphicNode {
 		return 0;
 	}
 
-	getMeshGroup() {
-		const amountProtons = this.getAmountProtons();
+	getMeshGroup(positions) {
+		// const amountProtons = this.getAmountProtons();
 
 		for (let i = this.mesh.children.length - 1; i >= 0; i--) {
 			this.mesh.remove(this.mesh.children[i]);
 		}
 
-		createGridSpheres(this.mesh, 3, amountProtons, false, 0xffff00, new THREE.Vector3(0, 0, 0), '', this.material);
+		// createGridSpheres(this.mesh, 3, amountProtons, false, 0xffff00, new THREE.Vector3(0, 0, 0), '', this.material);
+		positions.forEach(t => createProtonsNeutronsMesh(this.mesh, this.material, t));
 
 		return this.mesh;
 	}

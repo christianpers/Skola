@@ -38,5 +38,6 @@ export default class AnimateObject{
     render() {
         this.object.position.x = this.currentPosition.x;
         this.object.position.y = this.currentPosition.y;
+        this.object.position.z = 0;
     }
 }

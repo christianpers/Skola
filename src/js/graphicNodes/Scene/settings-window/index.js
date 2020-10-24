@@ -40,18 +40,22 @@ export default class SettingsWindow{
 
         this.isVisible = false;
 
-        this.onSpeedSettingChangeBound = this.onSpeedSettingChange.bind(this);
+        if (window.NS.singletons.PROJECT_TYPE === window.NS.singletons.TYPES.chemistry.id) {
+            // TODO -- DO SOMETHING HERE FOR CHEMISTRY
+        }
 
+        if (window.NS.singletons.PROJECT_TYPE === window.NS.singletons.TYPES.space.id) {
+			this.followNodeSetting = new FollowNodeSetting(col1BottomPartSettings);
+            this.ambientLightSetting = new HorizontalSlider(col2BottomPartSettings, 1, onAmbientLightSettingChange, 2, {min: 0, max: 1}, 'ambient-light settings-item', 'Ambient light');
 
-        this.followNodeSetting = new FollowNodeSetting(col1BottomPartSettings);
-        // this.cameraControlSetting = new CameraControlSetting(col1BottomPartSettings, foregroundRender);
-		this.ambientLightSetting = new HorizontalSlider(col2BottomPartSettings, 1, onAmbientLightSettingChange, 2, {min: 0, max: 1}, 'ambient-light settings-item', 'Ambient light');
+            this.axesHelper = new AxesHelper(col1BottomPartSettings, foregroundRender);
 
-		this.axesHelper = new AxesHelper(col1BottomPartSettings, foregroundRender);
+            this.toggleOrbitHelper = new ToggleOrbitHelper(col1BottomPartSettings);
 
-        this.toggleOrbitHelper = new ToggleOrbitHelper(col1BottomPartSettings);
+            this.onSpeedSettingChangeBound = this.onSpeedSettingChange.bind(this);
 
-        this.speedSetting = new HorizontalSlider(col2BottomPartSettings, 1, this.onSpeedSettingChangeBound, 2, { min: 0, max: 1 }, 'speed-settings settings-item', 'Speed modifier');
+            this.speedSetting = new HorizontalSlider(col2BottomPartSettings, 1, this.onSpeedSettingChangeBound, 2, { min: 0, max: 1 }, 'speed-settings settings-item', 'Speed modifier');
+		}
 
         this.closeFullscreenBtn = document.createElement('div');
         this.closeFullscreenBtn.classList.add('close-fullscreen-btn');

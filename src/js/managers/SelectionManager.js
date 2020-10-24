@@ -14,16 +14,20 @@ export default class SelectionManager {
     }
 
     setSelected(node) {
-        this.deselectAllNonagons();
+        this.deselectAllNonagons(undefined);
 
-        node.setSelected();
-        if (this.nonagons[node.ID]) {
-            console.log('current selected node: ', node.ID);
-            this.currentSelectedNode = node;
+        if (node) {
+            node.setSelected();
+            if (this.nonagons[node.ID]) {
+                this.currentSelectedNode = node;
+            }
         }
-
-        window.NS.singletons.CanvasNode.onNodeDeselect();
         
+
+        if (window.NS.singletons.PROJECT_TYPE === window.NS.singletons.TYPES.space.id) {
+            // MAYBE CREATE A CanvasSpaceNode extending CanvasNode to put special space things in...
+            window.NS.singletons.CanvasNode.onNodeDeselect();
+        }
     }
 
     deselectAllNonagons(filteredNonagons) {

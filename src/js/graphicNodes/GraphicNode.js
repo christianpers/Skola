@@ -64,9 +64,6 @@ export default class GraphicNode extends Node{
 			onNodeDragRelease,
 			addCallback,
 		);
-
-		// this.postInit();
-
 	}
 
 	onCanvasResize(e) {

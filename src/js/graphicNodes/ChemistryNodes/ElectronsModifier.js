@@ -1,12 +1,15 @@
 import GraphicNode from '../GraphicNode';
 import InputComponent from '../../views/Nodes/NodeComponents/InputComponent';
-import { getGridPositions, updateConnectedElectrons } from './helpers';
+import { getGridPositions, syncConnectedElectrons } from './helpers';
 import Electron from './Electron';
 import { RING_DEF } from './AtomNode';
 
 export default class ElectronsModifer extends GraphicNode {
     constructor(renderer, backendData) {
 		super();
+
+		// UGLY WAY TO SET INIT CONNECTIONS FROM BACKEND..
+		this.atomBackendSynced = false;
 
 		this.initValues = backendData ? backendData.data.visualSettings : null;
 		this.onInputChangeBound = this.onInputChange.bind(this);
@@ -17,6 +20,11 @@ export default class ElectronsModifer extends GraphicNode {
 		this.isParam = true;
 
         this.electrons = {};
+
+		this.controlsAmountAtomRings = true;
+
+		// USED WHEN BEING CREATED INITIALLY
+		this.nodeSortIndex = 1;
 
         this.enableDragging = true;
 
@@ -37,32 +45,6 @@ export default class ElectronsModifer extends GraphicNode {
     getElectron(ID) {
         return this.electrons[ID];
     }
-
-	// THIS IS NOT TESTED ---- FIX !!!!
-	// getElectronIndexInRing(ID) {
-	// 	const connectedElectrons = this.getConnectedElectrons();
-	// 	const electronsWithRingIndex = Object.keys(connectedElectrons).map(t => {
-	// 		const ringIndex = this.electrons[t].getRingIndex();
-	// 		return { ID: t, ringIndex };
-	// 	}).sort((a, b) => a.ringIndex - b.ringIndex);
-
-	// 	const electronIndexInArr = electronsWithRingIndex.findIndex(t => t.ID === ID);
-
-	// 	// const ringDefKeys = Object.keys(RING_DEF);
-
-
-	// 	if (electronIndexInArr < RING_DEF[0].amountElectrons) {
-	// 		return electronIndexInArr;
-	// 	} else if (electronsIndexInArr < RING_DEF[1].amountElectrons) {
-	// 		return electronIndexInArr - RING_DEF[0].amountElectrons;
-	// 	} else if (electronIndexInArr < RING_DEF[2].amountElectrons) {
-	// 		return electronIndexInArr - (RING_DEF[1].amountElectrons + RING_DEF[0].amountElectrons);
-	// 	}
-
-
-
-
-	// }
 
     getConnectedElectrons() {
         const keys = Object.keys(this.electrons);
@@ -99,7 +81,9 @@ export default class ElectronsModifer extends GraphicNode {
             
             let electronsToRemove = [];
             const notConnectedElectronKeys = keys.filter(key => !this.electrons[key].isConnected());
-            const connectedElectronKeys = keys.filter(key => this.electrons[key].isConnected());
+            const connectedElectronKeys = keys
+				.filter(key => this.electrons[key].isConnected())
+				.sort((a, b) => this.electrons[b].getRingIndex() - this.electrons[a].getRingIndex());
             if (notConnectedElectronKeys.length < amountToRemove) {
                 const remaining = amountToRemove - notConnectedElectronKeys.length;
                 for (let i = 0; i < remaining; i++) {
@@ -112,11 +96,16 @@ export default class ElectronsModifer extends GraphicNode {
 
             for (let i = 0; i < electronsToRemove.length; i++) {
                 const electron = this.electrons[electronsToRemove[i]];
+				if (electron.isConnected()) {
+					const ring = atomNode.visibleRings[electron.getRingIndex()];
+					// ring.removeConnectedElectron(electron.ID);
+					ring.markPositionAsAvailable(electron.ringPositionKey);
+				}
                 electron.remove();
                 delete this.electrons[electronsToRemove[i]];
             }
 
-            updateConnectedElectrons(this.ID, this.getConnectedElectrons());
+            syncConnectedElectrons(this.ID, this.getConnectedElectrons());
         } else {
             const amountToAdd = diff;
             for (let i = 0; i < amountToAdd; i++) {
