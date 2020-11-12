@@ -12,6 +12,26 @@ export const isNodeIDAtom = (object, nodeID) => {
     return object.userData && object.userData.nodeID === nodeID;
 }
 
+export const resetElectronAndRing = (atomId, posKey) => {
+    const modifierNode = window.NS.singletons.ConnectionsManager.getConnectedNodeWithType(atomId, 'electrons');
+
+    const atom = window.NS.singletons.ConnectionsManager.getNode(atomId);
+    const orbital = atom.outerRing.getOrbitalFromPositionKey(posKey);
+    orbital.positions.forEach(t => {
+        const electronToReset = modifierNode.getElectronByPositionKey(t);
+        if (electronToReset) {
+            electronToReset.overrideConnectionAngle = undefined;
+
+            const ring = atom.rings[electronToReset.getRingIndex()];
+            const electronPos = ring.getConnectedElectronPosition(atom.position, electronToReset.ringPositionKey, electronToReset.overrideConnectionAngle);
+
+            electronToReset.mesh.position.set(electronPos.x, electronPos.y, 0);
+        }
+    });
+
+    atom.outerRing.markPositionAsAvailable(posKey);
+};
+
 export const isDragEvtAtom = (obj, nodeID, isNodeIDChild) => {
     if (obj.parent && !isNodeIDChild) {
         if (isNodeIDAtom(obj.parent, nodeID)) {
@@ -238,19 +258,6 @@ export const syncAtomPos = (nodeID, pos) => {
         console.log('error updating node');
     });
 }
-
-// export class DragObjectsSync{
-//     contructor() {
-//         this.objects = [];
-//     }
-
-//     setObjects(objects, meshGroupName) {
-//         const currentObjects = this.objects.filter(t => t.userData.groupName !== meshGroupName);
-//         objects.forEach(t => t.userData.groupName = meshGroupName);
-
-//         this.objects = [...currentObjects, ...objects];
-//     }
-// }
 
 export const rotatePoint = (cx, cy, x, y, angle) => {
     const radians = (Math.PI / 180) * angle;

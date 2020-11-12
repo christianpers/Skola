@@ -42,6 +42,12 @@ export default class ElectronsModifer extends GraphicNode {
 		
 	}
 
+	getElectronByPositionKey(posKey) {
+		const keys = Object.keys(this.electrons);
+        const electronKey = keys.find(key => this.electrons[key].ringPositionKey === posKey);
+		return this.electrons[electronKey];
+	}
+
     getElectron(ID) {
         return this.electrons[ID];
     }

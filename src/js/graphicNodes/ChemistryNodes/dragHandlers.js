@@ -7,6 +7,8 @@ import {
     getPointOnRingRadius,
 } from './helpers';
 
+import { getFormattedConnectionObj, getNotCompleteOrbitals } from './connectionHelpers';
+
 import AnimateObject from './AnimateObject';
 import AnimateAlongCircle from './AnimateAlongCircle';
 
@@ -60,13 +62,12 @@ export const onAtomDragEnd = (draggingAtomInstance, connectedElectrons) => {
             });
         });
 
-        if (currentObj.dist < 1) {
+        if (currentObj.dist < 2) {
             return currentObj;
         }
 
         return undefined;
     }
-
     
     const closestOrbital = getClosestOrbital();
 
@@ -77,11 +78,7 @@ export const onAtomDragEnd = (draggingAtomInstance, connectedElectrons) => {
     const dragAtomPos = position;
     const { notCompleteOrbitals } = dragData.draggingAtomData;
 
-    console.log('dragdata: ', dragData);
-
     const draggingAtomOrbital = draggingAtomHasOrbitalWithCorrectAngle(notCompleteOrbitals, closestOrbital.orbital.angle);
-
-    console.log('dragging orbital: ', draggingAtomOrbital, ' closest orbital: ', closestOrbital);
 
     if (draggingAtomOrbital) {
         const closestObj = {
@@ -97,9 +94,10 @@ export const onAtomDragEnd = (draggingAtomInstance, connectedElectrons) => {
         // do connection
         const connectionRadian = invertAngle(closestOrbital.orbital.angleRadian);
         const connectionAngle = connectionRadian * (180 / Math.PI);
+        const electronToConnect = connectedElectrons.find(t => Number(t.getRingIndex()) === outerRing.index && t.orbitalAngle === draggingAtomOrbital.orbital.angle);
         if (draggingAtomOrbital.orbital.angle !== connectionAngle) {
-            const electronToMove = connectedElectrons.find(t => Number(t.getRingIndex()) === outerRing.index && t.orbitalAngle === draggingAtomOrbital.orbital.angle);
-            const animateObj = new AnimateAlongCircle(electronToMove.mesh, draggingAtomOrbital.orbital.angle, connectionAngle, outerRing.radius, position);
+            const animateObj = new AnimateAlongCircle(electronToConnect.mesh, draggingAtomOrbital.orbital.angle, connectionAngle, outerRing.radius, position);
+            electronToConnect.overrideConnectionAngle = connectionAngle;
         }
         // send in position key to connection to be able set as available on disconnect
         window.NS.singletons.LessonManager.atomConnectionsManager.addConnection(
@@ -108,7 +106,7 @@ export const onAtomDragEnd = (draggingAtomInstance, connectedElectrons) => {
             draggingAtomOrbital.orbital.angle,
             closestOrbital.orbital.angle,
             draggingAtomOrbital.availablePositionKey,
-            closestObj.positionKey
+            closestObj.positionKey,
         );
     }
 };
@@ -172,72 +170,34 @@ export const getDraggingAtomDragData = (object, draggingAtomInstance) => {
             const dockingPoint = getPointOnRingRadius(centerPos, targetRadian, dockingRadius);
             const dist = dockingPoint.distanceTo(dragAtomPos);
             orbital.setDistance(dist);
-
-            atom.debugMesh.position.x = dockingPoint.x;
-            atom.debugMesh.position.y = dockingPoint.y;
         });
     });
 
     draggingAtomData.connectedElectrons.forEach(t => {
         const ring = rings[t.getRingIndex()];
-        const pos = ring.getConnectedElectronPosition(object.position, t.ringPositionKey);
+        const pos = ring.getConnectedElectronPosition(object.position, t.ringPositionKey, t.overrideConnectionAngle);
 
         t.mesh.position.x = pos.x;
         t.mesh.position.y = pos.y;
     });
 
     draggingAtomData.connectedAtoms.forEach(t => {
-        const getConnObj = (connectionObj) => {
-            const ret = {};
-            if (connectionObj.dragAtom.id !== ID) {
-                ret.connectingAngleObj = {
-                    ...connectionObj.connectingAtom,
-                };
-                ret.radiusObj = {
-                    ...connectionObj.dragAtom,
-                };
-                return ret;
-            }
+        const atom = window.NS.singletons.ConnectionsManager.getNode(t.id);
+        const pos = object.position.clone().add(t.baseOffset);
+        atom.position = pos;
 
-            ret.connectingAngleObj = {
-                ...connectionObj.dragAtom,
-            };
-            ret.radiusObj = {
-                ...connectionObj.connectingAtom,
-            };
-            return ret;
-        };
-        const connObj = getConnObj(t);
+        t.connectedElectrons.forEach(electron => {
+            const ring = atom.rings[electron.getRingIndex()];
+            const electronPos = ring.getConnectedElectronPosition(pos, electron.ringPositionKey, electron.overrideConnectionAngle);
 
-        const connectingAngleAtom = window.NS.singletons.ConnectionsManager.getNode(connObj.connectingAngleObj.id);
-        const connectingAngleOrbital = connectingAngleAtom.outerRing.getOrbitalForAngle(connObj.connectingAngleObj.orbitalAngle);
-        const targetRadian = connectingAngleOrbital.angleRadian;
-
-        const radiusAtom = window.NS.singletons.ConnectionsManager.getNode(connObj.radiusObj.id);
-        const radiusOrbital = radiusAtom.outerRing.getOrbitalForAngle(connObj.radiusObj.orbitalAngle);
-
-        const dockingRadius = radiusOrbital.radius + dragAtomOuterRing.radius;
-        const dockingPoint = getPointOnRingRadius(object.position, targetRadian, dockingRadius);
-        
-        // const atom = window.NS.singletons.ConnectionsManager.getNode(connObj.id);
-        // const orbital = atom.outerRing.getOrbitalForAngle(connObj.connectingAngle);
-        // const centerPos = object.position;
-
-        console.log('angle: ', connObj);
-
-        // const targetRadian = orbital.angleRadian; // not gonna work if connecting angle moved
-        // const dockingRadius = orbital.radius + dragAtomOuterRing.radius;
-        // const dockingPoint = getPointOnRingRadius(centerPos, targetRadian, dockingRadius);
-        radiusAtom.position = dockingPoint;
-
-
+            electron.mesh.position.set(electronPos.x, electronPos.y, 0);
+        });
     });
-
     return ret;
 }
 
 
-export const getStartDragDataAtom = (object, ID, type, atomPosition, outerRing) => {
+export const getStartDragDataAtom = (ID, type, atomPosition, outerRing) => {
     const { atomRulesManager } = window.NS.singletons.LessonManager;
 
     const ret = {
@@ -245,23 +205,16 @@ export const getStartDragDataAtom = (object, ID, type, atomPosition, outerRing) 
     };
 
     const getAtomInitData = (ID) => {
-        const { notCompleteOrbitals, connectedElectrons } = atomRulesManager.getNotCompleteOrbitals(ID);
+        const { notCompleteOrbitals, connectedElectrons } = getNotCompleteOrbitals(ID);
         
         return {
             notCompleteOrbitals,
             connectedElectrons, // electrons connected to the rings of the atom
         };
-    }
+    };
     
-
     const draggingAtomInfo = getAtomInitData(ID);
-    const connectedAtoms = window.NS.singletons.LessonManager.atomConnectionsManager.findConnections(ID).map(t => window.NS.singletons.LessonManager.atomConnectionsManager.getConnection(t));
-    draggingAtomInfo.connectedAtoms = connectedAtoms;
-
-    /* have to add the electrons on the connected atoms aswell.. but have to adjust with connecting angle if electron moved angle on connection 
-        filter out ID from connected atoms and loop and get the connected electrons.. but have to adjust somewhere to get correct angle
-    
-    */
+    draggingAtomInfo.connectedAtoms = getFormattedConnectionObj(ID);
 
     ret.connectedElectrons = draggingAtomInfo.connectedElectrons;
     if (draggingAtomInfo.notCompleteOrbitals && draggingAtomInfo.notCompleteOrbitals.length > 0) {

@@ -68,6 +68,7 @@ export default class ForegroundRender{
 			// this.cameraControls.minPolarAngle = -10;
 
 			this.cameraControls.screenSpacePanning = true;
+			this.cameraControls.enableRotate = false;
 
 			const light = new THREE.PointLight( 0xffffff, 1, 100 );
 			light.position.set( -10, 10, 50 );

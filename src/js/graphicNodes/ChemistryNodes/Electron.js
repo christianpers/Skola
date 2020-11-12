@@ -13,6 +13,8 @@ export default class Electron {
 
         this._ringPositionKey;
 
+        this._overrideConnectionAngle = undefined;
+
         this.parentMesh = parentMesh;
 
         // const color = new THREE.Color(1, 0.5, 1).getHex();
@@ -114,5 +116,13 @@ export default class Electron {
 
     get orbitalAngle() {
         return this._orbitalAngle;
+    }
+
+    get overrideConnectionAngle() {
+        return this._overrideConnectionAngle;
+    }
+
+    set overrideConnectionAngle(value) {
+        this._overrideConnectionAngle = value;
     }
 }

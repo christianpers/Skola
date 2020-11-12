@@ -66,9 +66,10 @@ export default class Main{
 			this.workspaceManager,
 		);
 
-		window.NS.singletons.LessonManager = new LessonManager(selectedDrawing.drawing);
 		this.nodeManager = new NodeManager(null, this.keyboardManager, this.workspaceManager.el, this.nodeLibrary);
 		this.nodeManager.init(selectedDrawing);
+
+		window.NS.singletons.LessonManager = new LessonManager(selectedDrawing.drawing);
 	}
 
 	onLogout() {

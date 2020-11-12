@@ -117,7 +117,14 @@ export default class AtomCircle{
 		return { key: availablePositionKey, pos, orbitalAngle };
 	}
 
-	getConnectedElectronPosition(offset, key) {
+	getConnectedElectronPosition(offset, key, overrideAngle = undefined) {
+		if (overrideAngle !== undefined) {
+			const radians = overrideAngle * (Math.PI / 180);
+			const x = offset.x + this.radius * Math.cos(radians);
+			const y = offset.y + this.radius * Math.sin(radians);
+
+			return new THREE.Vector2(x, y);
+		}
 		return this.getElectronPosition(offset, key);
 	}
 
@@ -166,6 +173,10 @@ export default class AtomCircle{
 		});
 
 		return ret;
+	}
+
+	getOrbitalFromPositionKey(posKey) {
+		return this.orbitals.find(t => t.positions.some(tP => tP === posKey));
 	}
 
     remove() {

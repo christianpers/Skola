@@ -1,5 +1,11 @@
 import { updateDrawing } from '../../backend/set';
 
+import AnimateAlongCircle from '../../graphicNodes/ChemistryNodes/AnimateAlongCircle';
+
+import {
+	invertAngle,
+} from '../../graphicNodes/ChemistryNodes/helpers';
+
 const getPossConnectionIds = (ids) => {
     return [`${ids[0]}-${ids[1]}`, `${ids[1]}-${ids[0]}`];
 };
@@ -26,13 +32,32 @@ export default class AtomConnectionsManager{
     constructor(backendData) {
         this.connections = new Map();
 
-        // const { atomConnections } = backendData;
-        // if (atomConnections) {
-        //     Object.keys(atomConnections).forEach(t => {
-        //         const conn = atomConnections[t];
-        //         this.connections[t] = [conn[0], conn[1]];
-        //     });
-        // }
+        const { atomConnections } = backendData;
+        if (atomConnections) {
+            Object.keys(atomConnections).forEach(key => {
+                const conn = atomConnections[key];
+                this.connections.set(key, conn);
+
+                const { id: connectingId, orbitalAngle: connectingAngle } = conn.connectingAtom;
+                const { id: draggingId, orbitalAngle: draggingAngle } = conn.dragAtom;
+
+                const draggingAtom = window.NS.singletons.ConnectionsManager.getNode(draggingId);
+                    
+                const outerRing = draggingAtom.outerRing;
+
+                const electronsModifierNode = window.NS.singletons.ConnectionsManager.getConnectedNodeWithType(draggingId, 'electrons');
+			    const connectedElectrons = electronsModifierNode.getConnectedElectrons();
+
+                // USE THIS TO SET CORRECT ELECTRON CONNECTED POSITION IE ANGLE
+                const connectionRadian = invertAngle(connectingAngle * (Math.PI / 180));
+                const connectionAngle = connectionRadian * (180 / Math.PI);
+                const electronToConnect = connectedElectrons.find(t => Number(t.getRingIndex()) === outerRing.index && t.orbitalAngle === draggingAngle);
+                if (draggingAngle !== connectionAngle) {
+                    const animateObj = new AnimateAlongCircle(electronToConnect.mesh, draggingAngle, connectionAngle, outerRing.radius, draggingAtom.position);
+                    electronToConnect.overrideConnectionAngle = connectionAngle;
+                }
+            });
+        }
     }
 
     getConnection(id) {
@@ -62,19 +87,24 @@ export default class AtomConnectionsManager{
             connectingAtom: { id: connectingAtomID, orbitalAngle: connectingOrbitalAngle, positionKey: connectingAtomConnectionPositionKey },
         };
         const possIds = getPossConnectionIds([dragAtomID, connectingAtomID]);
-        this.connections.set(possIds[0], connectionObj);
+        if (!this.connections.has(possIds[0]) && !this.connections.has(possIds[1])) {
+            this.connections.set(possIds[0], connectionObj);
+        }
 
         console.log(this.connections);
-
-        // updateAtomConnections(this.connections);
     }
 
     removeConnection(connectionId) {
-
         this.connections.delete(connectionId);
 
         console.log(this.connections);
-      
-        // updateAtomConnections(this.connections);
+    }
+
+    syncConnections() {
+        const syncObj = {};
+        for (let [key, value] of this.connections.entries()) {
+            syncObj[key] = value;
+        }
+        updateAtomConnections(syncObj);
     }
 }
