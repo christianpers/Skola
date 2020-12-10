@@ -44,7 +44,15 @@ export default class ElectronsModifer extends GraphicNode {
 
 	getElectronByPositionKey(posKey) {
 		const keys = Object.keys(this.electrons);
-        const electronKey = keys.find(key => this.electrons[key].ringPositionKey === posKey);
+        const electronKey = keys.find(key => parseInt(this.electrons[key].ringPositionKey) === posKey);
+		return this.electrons[electronKey];
+	}
+
+	getElectronByPositionKeyAndRingIndex(posKey, ringIndex) {
+		const keys = Object.keys(this.electrons).filter(key => Number.isFinite(this.electrons[key].ringPositionKey));
+        const electronKey = keys.find(key => {
+			return this.electrons[key].ringPositionKey === posKey && this.electrons[key].getRingIndex() === ringIndex;
+		});
 		return this.electrons[electronKey];
 	}
 
@@ -144,7 +152,7 @@ export default class ElectronsModifer extends GraphicNode {
 			settingsContainer.className = 'node-settings electrons-modifier-node';
 
 			const defaultSettings = {
-				value: (this.initValues && this.initValues.amountElectrons) ? this.initValues.amountElectrons : 1,
+				value: (this.initValues && this.initValues.amountElectrons) ? this.initValues.amountElectrons : 0,
 				step: 1,
 				min: 0,
 				max: 50,
@@ -170,8 +178,15 @@ export default class ElectronsModifer extends GraphicNode {
 	}
 
     reset() {
-
+		this.amountInput.setValue(0);
+		this.updateVisualSettings(0);
+		this.initValues = null;
     }
+
+	resetConnection(inNode, connection) {
+		const param = window.NS.singletons.ConnectionsManager.params[connection.paramID];
+		inNode.updateParam(param, this);
+	}
 
 
 	onConnectionAdd(e) {
@@ -186,13 +201,15 @@ export default class ElectronsModifer extends GraphicNode {
 
 	onConnectionRemove(e) {
 		if (e.detail.connection.outNodeID === this.ID) {
+
 			const connection = e.detail.connection;
 			const paramIDToRemove = connection.paramID;
 			const outIDToRemove = connection.outNodeID;
 			const inIDToRemove = e.detail.inNodeID;
 			const paramContainer = window.NS.singletons.ConnectionsManager.params[connection.paramID];
+
+			const inNode = window.NS.singletons.ConnectionsManager.getNode(inIDToRemove);
 			
-			this.rotationSliders[paramContainer.param.parent][paramContainer.param.param].hide();
 
 			const tempOutConnections = this.currentOutConnections.map(t => t);
 
@@ -205,6 +222,9 @@ export default class ElectronsModifer extends GraphicNode {
 
 			if (this.currentOutConnectionsLength <= 0) {
 				this.reset();
+				this.resetConnection(inNode, connection);
+
+				inNode.onModifierDisconnect(outIDToRemove);
 			}
 		}
 	}

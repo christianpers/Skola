@@ -1,0 +1,52 @@
+.atom-html-label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 60px;
+    height: 60px;
+    background: rgba(255, 255, 255, 0.80);
+    align-items: center;
+    border-radius: 31px;
+    pointer-events: none;
+
+    & .atom-charge {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 22px;
+        color: black;
+        font-weight: 700;
+    }
+
+    & .atom-type {
+        color: white;
+        font-size: 12px;
+        position: absolute;
+        top: -16px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    & > .detail-container {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        left: -12px;
+        display: flex;
+
+        &.electrons {
+            left: auto;
+            right: -12px;
+        }
+
+        & > .detail-number {
+            font-weight: 700;
+        }
+
+        & p {
+            color: white;
+            font-size: 14px;
+        }
+    }
+}

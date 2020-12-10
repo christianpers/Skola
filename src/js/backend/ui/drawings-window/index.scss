@@ -17,15 +17,19 @@
     .drawings-outer-content {
         padding-top: 40px;
         min-width: 400px;
-        display: flex;
-        width: 60vw;
+        width: 90vw;
+        display: grid;
+        width: 90vw;
+        grid-template-columns: fit-content(280px) auto;
 
         .drawings-container {
-            flex: 1;
-
             &:first-child {
                 margin-right: 40px;
             }
+        }
+
+        > .generic-drawings .drawings-window-content-wrapper {
+            grid-template-columns: auto;
         }
 
         > h4 {
@@ -48,7 +52,6 @@
             }
 
             .init-container {
-                position: relative;
                 > h4 {
                     text-align: center;
                     color: black;
@@ -106,8 +109,11 @@
     }
 
     .drawings-window-content-wrapper {
-        padding: 20px;
+        padding: 8px;
         background: white;
+        display: grid;
+        grid-template-columns: auto auto auto;
+        grid-gap: 12px;
 
         > h4 {
             color: black;
@@ -116,7 +122,6 @@
 
         .drawings-item {
             padding: 20px;
-            margin-bottom: 10px;
             background: rgba(0,0,0,.03);
             cursor: pointer;
             position: relative;

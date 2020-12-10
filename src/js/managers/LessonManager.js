@@ -1,21 +1,24 @@
 import SpaceManager from './LessonManagers/SpaceManager';
 import AtomConnectionsManager from './LessonManagers/AtomConnectionsManager';
-import AtomRulesManager, { ATOM_STATUS } from './LessonManagers/AtomRulesManager';
 import { default as ChemistryShared } from '../graphicNodes/ChemistryNodes/shared';  
 
 export default class LessonManager{
-    constructor(drawing) {
+    constructor() {
         this.space = null;
         if (window.NS.singletons.PROJECT_TYPE === window.NS.singletons.TYPES.space.id) {
 		    this.space = new SpaceManager();
 		}
 
         if (window.NS.singletons.PROJECT_TYPE === window.NS.singletons.TYPES.chemistry.id) {
-            this.atomConnectionsManager = new AtomConnectionsManager(drawing.doc);
-            this.atomRulesManager = new AtomRulesManager();
-            this.ATOM_STATUS = ATOM_STATUS;
+            this.atomConnectionsManager = new AtomConnectionsManager();
 
             this.shared = new ChemistryShared();
+        }
+    }
+
+    init(drawing) {
+        if (window.NS.singletons.PROJECT_TYPE === window.NS.singletons.TYPES.chemistry.id) {
+            this.atomConnectionsManager.init(drawing.doc);
         }
     }
 }

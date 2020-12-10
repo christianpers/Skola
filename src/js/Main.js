@@ -66,10 +66,19 @@ export default class Main{
 			this.workspaceManager,
 		);
 
-		this.nodeManager = new NodeManager(null, this.keyboardManager, this.workspaceManager.el, this.nodeLibrary);
-		this.nodeManager.init(selectedDrawing);
+		if (window.NS.singletons.PROJECT_TYPE === window.NS.singletons.TYPES.space.id) {
+			window.NS.singletons.LessonManager = new LessonManager();
+			window.NS.singletons.LessonManager.init(selectedDrawing.drawing);
 
-		window.NS.singletons.LessonManager = new LessonManager(selectedDrawing.drawing);
+			this.nodeManager = new NodeManager(null, this.keyboardManager, this.workspaceManager.el, this.nodeLibrary);
+			this.nodeManager.init(selectedDrawing);
+		} else {
+			this.nodeManager = new NodeManager(null, this.keyboardManager, this.workspaceManager.el, this.nodeLibrary);
+			this.nodeManager.init(selectedDrawing);
+
+			window.NS.singletons.LessonManager = new LessonManager();
+			window.NS.singletons.LessonManager.init(selectedDrawing.drawing);
+		}
 	}
 
 	onLogout() {

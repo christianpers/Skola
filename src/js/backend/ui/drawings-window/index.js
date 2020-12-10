@@ -146,14 +146,16 @@ export default class DrawingsWindow{
 	}
 
   onNewProjectSave(title, type) {
-    console.log('title: ', title, ' type: ', type);
-    
     createDrawing({ title, type })
       .then((ref) => {
-        console.log('created drawing ref: ', ref);
         window.NS.singletons.DialogManager.newProjectDialog.hide();
         window.NS.singletons.refs.setDrawingRef(ref);
-        this.onSelected();
+        getDrawingsData(this.username)
+            .then((drawingsData) => {
+              const drawing = drawingsData[ref.id];
+              this.onSelected(drawing);
+            });
+        
       })
       .catch((e) => {
         window.NS.singletons.DialogManager.newProjectDialog.onError();

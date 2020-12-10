@@ -248,6 +248,8 @@ export default class Node{
 
 	}
 
+	onModifierDisconnect() {}
+
 	syncVisualSettings(settings, directSync = false) {
 		this.visualSettings = Object.assign({}, this.visualSettings, settings);
 		updateNode({

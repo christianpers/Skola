@@ -17,9 +17,10 @@ export const onElectronDragEnd = (ringToReleaseOn, electronObj, visibleRings, po
         // getAvailableElectronPosition sets position as taken if it returns key
         const { key, pos, orbitalAngle } = ringToReleaseOn.getAvailableElectronPosition(position);
         if (key) {
-            electronObj.setConnectionStatus(ringToReleaseOn.index, key);
+            electronObj.setConnectionStatus(ringToReleaseOn.index);
             electronObj.ringPositionKey = key;
             electronObj.orbitalAngle = orbitalAngle;
+            ringToReleaseOn.markPositionAsTaken(key);
 
             const animateObj = new AnimateObject(object, pos);
 
@@ -30,7 +31,7 @@ export const onElectronDragEnd = (ringToReleaseOn, electronObj, visibleRings, po
         if (ring) {
             ring.markPositionAsAvailable(electronObj.ringPositionKey);
         }
-        electronObj.ringPositionKey = null;
+        electronObj.ringPositionKey = undefined;
         electronObj.orbitalAngle = undefined;
         electronObj.setConnectionStatus(-1);
     }
@@ -91,12 +92,26 @@ export const onAtomDragEnd = (draggingAtomInstance, connectedElectrons) => {
         //set dragging atom position as taken
         outerRing.markPositionAsTaken(draggingAtomOrbital.availablePositionKey);
 
+        // get docking point
+        const targetRadian = closestOrbital.orbital.angleRadian;
+        const dockingRadius = closestOrbital.orbital.radius + outerRing.radius;
+        const dockingPoint = getPointOnRingRadius(closestOrbital.atom.position, targetRadian, dockingRadius);
+        draggingAtomInstance.position = dockingPoint;
+
+        dragData.draggingAtomData.connectedElectrons.forEach(t => {
+            const ring = rings[t.getRingIndex()];
+            const pos = ring.getConnectedElectronPosition(dockingPoint, t.ringPositionKey, t.overrideConnectionAngle);
+
+            t.position = pos;
+        });
+
         // do connection
         const connectionRadian = invertAngle(closestOrbital.orbital.angleRadian);
         const connectionAngle = connectionRadian * (180 / Math.PI);
         const electronToConnect = connectedElectrons.find(t => Number(t.getRingIndex()) === outerRing.index && t.orbitalAngle === draggingAtomOrbital.orbital.angle);
         if (draggingAtomOrbital.orbital.angle !== connectionAngle) {
-            const animateObj = new AnimateAlongCircle(electronToConnect.mesh, draggingAtomOrbital.orbital.angle, connectionAngle, outerRing.radius, position);
+            
+            const animateObj = new AnimateAlongCircle(electronToConnect.mesh, draggingAtomOrbital.orbital.angle, connectionAngle, outerRing.radius, dockingPoint);
             electronToConnect.overrideConnectionAngle = connectionAngle;
         }
         // send in position key to connection to be able set as available on disconnect
@@ -177,8 +192,7 @@ export const getDraggingAtomDragData = (object, draggingAtomInstance) => {
         const ring = rings[t.getRingIndex()];
         const pos = ring.getConnectedElectronPosition(object.position, t.ringPositionKey, t.overrideConnectionAngle);
 
-        t.mesh.position.x = pos.x;
-        t.mesh.position.y = pos.y;
+        t.position = pos;
     });
 
     draggingAtomData.connectedAtoms.forEach(t => {
@@ -205,7 +219,7 @@ export const getStartDragDataAtom = (ID, type, atomPosition, outerRing) => {
     };
 
     const getAtomInitData = (ID) => {
-        const { notCompleteOrbitals, connectedElectrons } = getNotCompleteOrbitals(ID);
+        const { notCompleteOrbitals, connectedElectrons = [] } = getNotCompleteOrbitals(ID);
         
         return {
             notCompleteOrbitals,

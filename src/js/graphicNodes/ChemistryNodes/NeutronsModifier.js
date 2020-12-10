@@ -68,38 +68,12 @@ export default class NeutronsModifer extends GraphicNode {
 		return this.mesh;
 	}
 
-	// getMeshGroup() {
-	// 	const getAmountNeutrons = () => {
-	// 		if (this.visualSettings) {
-	// 			return this.visualSettings.amountNeutrons;
-	// 		}
-
-	// 		if (this.initValues && this.initValues.amountNeutrons) {
-	// 			return this.initValues.amountNeutrons;
-	// 		}
-
-	// 		return 0;
-	// 	}
-
-	// 	const amountNeutrons = getAmountNeutrons();
-
-	// 	for (let i = this.mesh.children.length - 1; i >= 0; i--) {
-	// 		this.mesh.remove(this.mesh.children[i]);
-	// 	}
-
-	// 	createGridSpheres(this.mesh, 3, amountNeutrons, true, 0x000000, new THREE.Vector3(0, 0, 0), '', this.material);
-
-	// 	return this.mesh;
-	// }
-
 	onInputChange(value) {
 		this.updateVisualSettings(value);
 
 		if (value !== this.mesh.children.length) {
-			// this.updateMeshGroup();
 			for (let i = 0; i < this.currentOutConnectionsLength; i++) {
 				const param = window.NS.singletons.ConnectionsManager.params[this.currentOutConnections[i].connection.paramID];
-				// const param = this.currentOutConnections[i].param;
 				const inNode = window.NS.singletons.ConnectionsManager.nodes[this.currentOutConnections[i].inNodeID];
 				inNode.updateParam(param, this);
 			}
@@ -112,7 +86,7 @@ export default class NeutronsModifer extends GraphicNode {
 			settingsContainer.className = 'node-settings neutrons-modifier-node';
 
 			const defaultSettings = {
-				value: (this.initValues && this.initValues.amountNeutrons) ? this.initValues.amountNeutrons : 1,
+				value: (this.initValues && this.initValues.amountNeutrons) ? this.initValues.amountNeutrons : 0,
 				step: 1,
 				min: 0,
 				max: 50,
@@ -138,8 +112,16 @@ export default class NeutronsModifer extends GraphicNode {
 	}
 
     reset() {
-
+		this.amountInput.setValue(0);
+		this.updateVisualSettings(0);
+		this.initValues = null;
     }
+
+	resetConnection(inNodeID, connection) {
+		const inNode = window.NS.singletons.ConnectionsManager.getNode(inNodeID);
+		const param = window.NS.singletons.ConnectionsManager.params[connection.paramID];
+		inNode.updateParam(param, this);
+	}
 
 
 	onConnectionAdd(e) {
@@ -159,8 +141,6 @@ export default class NeutronsModifer extends GraphicNode {
 			const outIDToRemove = connection.outNodeID;
 			const inIDToRemove = e.detail.inNodeID;
 			const paramContainer = window.NS.singletons.ConnectionsManager.params[connection.paramID];
-			
-			this.rotationSliders[paramContainer.param.parent][paramContainer.param.param].hide();
 
 			const tempOutConnections = this.currentOutConnections.map(t => t);
 
@@ -173,6 +153,7 @@ export default class NeutronsModifer extends GraphicNode {
 
 			if (this.currentOutConnectionsLength <= 0) {
 				this.reset();
+				this.resetConnection(inIDToRemove, connection);
 			}
 		}
 	}

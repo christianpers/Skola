@@ -31,8 +31,8 @@ export default class Electron {
         //     fragmentShader: ELECTRON_FRAGMENT,
         //     lights: true,
         // });
-
-        this.selectedColor = new THREE.Color(0.2, 0.2, 1.0).getHex();
+        this.orbitalConnectedColor = new THREE.Color(152/255, 235/255, 169/255).getHex();
+        this.selectedColor = new THREE.Color(75/255, 133/255, 250/255).getHex();
         this.deselectedColor = new THREE.Color(0.8, 0.8, 1.0).getHex();
 		// const material = new THREE.MeshLambertMaterial({ color });
         const material = new THREE.MeshBasicMaterial( { transparent: true, opacity: 1, color: this.deselectedColor, side: THREE.DoubleSide } );
@@ -56,14 +56,7 @@ export default class Electron {
     }
 
     setConnectionStatus(ringIndex) {
-        this.connectionStatus.connectedToRingIndex = ringIndex;
-        // if (key) {
-        //     this.ringPositionKey = key;
-        // }
-
-        // if (ringIndex === -1) {
-        //     this.ringPositionKey = null;
-        // }
+        this.connectionStatus.connectedToRingIndex = parseInt(ringIndex);
     }
 
     getConnectionStatus() {
@@ -80,18 +73,10 @@ export default class Electron {
         this.parentMesh.remove(this.mesh);
     }
 
-    // set orbitalIndex(val) {
-    //     this._orbitalIndex = val;
-    // }
-
-    // get orbitalIndex() {
-    //     return this._orbitalIndex;
-    // }
-
     set ringPositionKey(value) {
         const color = value ? this.selectedColor : this.deselectedColor;
         this.mesh.material.color.set(color);
-        this._ringPositionKey = value;
+        this._ringPositionKey = value ? parseInt(value) : value;
     }
 
     get ringPositionKey() {
@@ -107,7 +92,7 @@ export default class Electron {
     }
 
     set position(pos) {
-        this.mesh.position.set(pos.x, pos.y, pos.z);
+        this.mesh.position.set(pos.x, pos.y, 0);
     }
 
     set orbitalAngle(value) {
@@ -124,5 +109,12 @@ export default class Electron {
 
     set overrideConnectionAngle(value) {
         this._overrideConnectionAngle = value;
+    }
+
+    set orbitalConnected(value) {
+        this._orbitalConnected = value;
+
+        const color = value === false ? this.selectedColor : this.orbitalConnectedColor;
+        this.mesh.material.color.set(color);
     }
 }

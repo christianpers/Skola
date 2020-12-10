@@ -62,6 +62,8 @@ export default class SceneNode{
 			this.onToggleVisibleClickBound();
 		});
 
+		this.meshLabels = new Map();
+
 		this.foregroundRender = new ForegroundRender(this.mainRender, this.topPartEl);
 		this.getCurrentCanvasDimsBound = this.getCurrentCanvasDims.bind(this);
 		this.setCanvasSizeBound = this.setCanvasSize.bind(this);
@@ -131,6 +133,19 @@ export default class SceneNode{
 	/* CALLED WHEN ON NODE SELECTION (USED FOR BOTH IF NODE SELECTED OR NONE SELECTED) */
 	onNodeDeselect() {
 		this.settingsWindow.followNodeSetting.checkActive();
+	}
+
+	addMeshLabel(obj, ID, htmlLabelObj) {
+		
+		this.el.appendChild(htmlLabelObj.domEl);
+		
+		this.meshLabels.set(ID, { obj, htmlLabelObj });
+	}
+
+	removeMeshLabel(ID) {
+		const obj = this.meshLabels.get(ID);
+		this.el.removeChild(obj.htmlLabelObj.domEl);
+		this.meshLabels.delete(ID);
 	}
 
 	onFullscreenChange() {
@@ -308,13 +323,36 @@ export default class SceneNode{
 
 		if (graphicInputs.length === 0) {
 			this.mesh.material.uniforms.u_finalConnection.value = 0.0;
-		} else if (!this.inputs['foreground'].isActive) {
+		} else if (this.inputs && !this.inputs['foreground'].isActive) {
 			this.mesh.material.uniforms.u_multiConnection.value = 0.0;
 		}
 	}
 
+	
+
 	update() {
+		const tempV = new THREE.Vector3;
+		const camera = this.foregroundRender.getCamera();
+		const [w, h] = this.getCurrentCanvasDims();
 		this.foregroundRender.update();
+
+		for (let value of this.meshLabels.values()) {
+			const { obj, htmlLabelObj } = value;
+			obj.updateWorldMatrix(true, false);
+			obj.getWorldPosition(tempV);
+
+			// get the normalized screen coordinate of that position
+			// x and y will be in the -1 to +1 range with x = -1 being
+			// on the left and y = -1 being on the bottom
+			tempV.project(camera);
+
+			// convert the normalized position to CSS coordinates
+			const x = (tempV.x *  .5 + .5) * w;
+			const y = (tempV.y * -.5 + .5) * h;
+
+			// move the elem to that position
+			htmlLabelObj.position = { x, y };
+		}
 	}
 
 	render() {

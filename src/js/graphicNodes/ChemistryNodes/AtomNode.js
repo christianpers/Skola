@@ -1,28 +1,19 @@
 import GraphicNode from '../GraphicNode';
 import AtomCircle from './AtomCircle';
-import AtomDisconnectHandler from './AtomDisconnectHandler';
+import * as Events from './events';
+import { mixins } from './mixins';
 import {
 	getAmountRings,
-	syncConnectedElectrons,
 	syncAtomPos,
-	isElectron,
-	isMainAtom,
 	updateMeshTypeMapper,
-	isDragEvtAtom,
 	getProtonsNeutronsPositions,
 	getCurrentElectronConnections,
 	resetElectronAndRing,
 } from './helpers';
-import {
-	getStartDragDataAtom,
-	getStartDragDataElectron,
-	onElectronDragEnd,
-	getDraggingElectronDragData,
-	getDraggingAtomDragData,
-	onAtomDragEnd,
-} from './dragHandlers';
+
 import AnimateObject from './AnimateObject';
 import { SIMPLE_3D_VERTEX, ATOM_CENTER_FRAGMENT } from '../../../shaders/SHADERS';
+import AtomHTMLLabel from './AtomHTMLLabel';
 
 export const RING_DEF = Object.freeze({
 	0: {
@@ -51,7 +42,7 @@ export const RING_DEF = Object.freeze({
 	}
 });
 
-export default class AtomNode extends GraphicNode{
+export default class AtomNode extends mixins.AtomEventHandler(mixins.AtomDragEvents(GraphicNode)){
 	static get tag() { return 'AtomNode' };
 	constructor(renderer, backendData) {
 		super();
@@ -107,6 +98,8 @@ export default class AtomNode extends GraphicNode{
 			'electronsGroup': this.electronsGroup,
 		};
 
+		
+
 		const circleDragColor = new THREE.Color(0, 0, 0).getHex();
 		const circleDragGeometry = new THREE.CircleGeometry( 5, 32 );
 		const circleDragMaterial = new THREE.MeshBasicMaterial( { color: circleDragColor, transparent: true, opacity: 1 } );
@@ -141,6 +134,12 @@ export default class AtomNode extends GraphicNode{
 
 		this.ringMeshGroup = new THREE.Group();
 
+		this.onAtomConnectionUpdateEvent = this.onAtomConnectionUpdateEvent.bind(this);
+		document.documentElement.addEventListener(Events.ON_ATOM_CONNECTION_UPDATE, this.onAtomConnectionUpdateEvent);
+
+		this.onOrbitalChangeEvent = this.onOrbitalChange.bind(this);
+		this.el.addEventListener(Events.ON_ORBITAL_POSITIONS_UPDATE, this.onOrbitalChangeEvent);
+
 		const startRadius = 6;
 		const margin = 3;
 		const ringDefKeys = Object.keys(RING_DEF);
@@ -148,7 +147,8 @@ export default class AtomNode extends GraphicNode{
 			const key = ringDefKeys[i];
 			const ringDef = RING_DEF[key];
 			const radius = startRadius + i * 2;
-			const ring = new AtomCircle(radius, ringDef, i);
+			const ring = new AtomCircle(radius, ringDef, i, this.el);
+			
 			this.ringMeshGroup.add(ring.mesh);
 			this.rings[i] = ring;
 		}
@@ -222,6 +222,10 @@ export default class AtomNode extends GraphicNode{
 
 		this.foregroundRender.scene.add(this.debugMesh);
 
+		this._atomHTMLLabel = new AtomHTMLLabel();
+		
+		window.NS.singletons.CanvasNode.addMeshLabel(this.mainAtomGroup, this.ID, this._atomHTMLLabel);
+
 		// THIS IS USED TO KNOW WHICH ATOMNODE SHOULD GET THE DRAG EVT
 		this.mesh.userData.nodeID = this.ID;
 
@@ -258,6 +262,32 @@ export default class AtomNode extends GraphicNode{
 		}
 	}
 
+	onModifierDisconnect(modifierID) {
+		const modifierNode = window.NS.singletons.ConnectionsManager.getNode(modifierID);
+		if (modifierNode.controlsAmountAtomRings) {
+			const connectionIds = window.NS.singletons.LessonManager.atomConnectionsManager.findConnections(this.ID);
+			connectionIds.forEach(connectionId => {
+				const connection = window.NS.singletons.LessonManager.atomConnectionsManager.getConnection(connectionId);
+				const { positionKey: dragAtomPosKey, id: dragAtomId } = connection.dragAtom;
+				const { positionKey: connectingAtomPosKey, id: connectingAtomId } = connection.connectingAtom;
+
+				resetElectronAndRing(dragAtomId, dragAtomPosKey);
+				resetElectronAndRing(connectingAtomId, connectingAtomPosKey);
+
+				window.NS.singletons.LessonManager.atomConnectionsManager.removeConnection(connectionId)
+			});
+
+			//SYNC BACKEND
+			window.NS.singletons.LessonManager.atomConnectionsManager.syncConnections();
+
+			this.visibleRings = [];
+			const ringsLength = Object.keys(this.rings).length;
+			for (let i = 0; i < ringsLength; i++) {
+				this.rings[i].mesh.visible = false;
+			}
+		}
+	}
+
 	updateMeshType(meshGroup, paramKey, enableDragging, controlsAmountAtomRings, groupToModify) {
 		const group = this.groupMapping[groupToModify] || this.mainAtomGroup;
 
@@ -268,23 +298,30 @@ export default class AtomNode extends GraphicNode{
 		const electronsModifierNode = window.NS.singletons.ConnectionsManager.getConnectedNodeWithType(this.ID, 'electrons');
 
 		// ONLY RUNNED ONCE INITIALLY --- UGLY BUT IT WORKS..
-		if (!electronsModifierNode.atomBackendSynced && paramKey === 'electrons') {
+		if (electronsModifierNode && !electronsModifierNode.atomBackendSynced && paramKey === 'electrons') {
 			const electrons = electronsModifierNode.electrons;
 			const electronKeys = Object.keys(electrons);
-			let index = 0;
-			Object.keys(this.initRingConnections).forEach(t => {
-				const amount = this.initRingConnections[t];
-				for (let i = 0; i < amount; i++) {
-					electrons[electronKeys[index]].setConnectionStatus(t);
-					index++;
-				}
-			});
+			if (electronKeys.length > 0) {
+				let index = 0;
+				Object.keys(this.initRingConnections).forEach(t => {
+					const amount = this.initRingConnections[t];
+					for (let i = 0; i < amount; i++) {
+						electrons[electronKeys[index]].setConnectionStatus(t);
+						index++;
+					}
+				});
+			}
+			
 			electronsModifierNode.atomBackendSynced = true;
 		}
 
-		const connectedElectrons = electronsModifierNode.getConnectedElectrons();
+		if (electronsModifierNode) {
+			const connectedElectrons = electronsModifierNode.getConnectedElectrons();
+			console.log('sdfsdf: ', connectedElectrons.length);
 
-		this.syncAtomRings(connectedElectrons.length);
+			this.syncAtomRings(connectedElectrons.length);
+		}
+		
 
 		if (paramKey === 'electrons') {
 			updateMeshTypeMapper[paramKey](
@@ -293,142 +330,34 @@ export default class AtomNode extends GraphicNode{
 		} else {
 			updateMeshTypeMapper[paramKey](group, paramKey, meshGroup);
 		}
+
+		this.updateAtomHTML();
 	}
 
-	onAtomDisconnect() {
+	updateAtomHTML() {
+		const protonsModifierNode = window.NS.singletons.ConnectionsManager.getConnectedNodeWithType(this.ID, 'protons');
+		if (protonsModifierNode) {
+			const amountProtons = protonsModifierNode.getAmount();
+			this._atomHTMLLabel.amountProtons = amountProtons;
+		}
+
+		const amountElectrons = this.visibleRings.reduce((amount, ring) => {
+			const amountPositions = ring.totalAmountPositions();
+			const amountAvailPositions = ring.getAvailablePositionKeys();
+			return amount + (amountPositions - amountAvailPositions.length);
+		}, 0);
 		
-		/* 
-
-		 LOOK HERE
-		 CHECK WHY IT SHOWS CONNECTION ALTERNATIVE SOMETIMES WHEN IT SHOULDNT... TEST BY REMOVING AND ADDING ELECTRONS TO TRIGGER THE BUG
-
-		*/
-
-		const connectionIds = window.NS.singletons.LessonManager.atomConnectionsManager.findConnections(this.ID);
-		connectionIds.forEach(connectionId => {
-			const connection = window.NS.singletons.LessonManager.atomConnectionsManager.getConnection(connectionId);
-			const { positionKey: dragAtomPosKey, id: dragAtomId } = connection.dragAtom;
-			const { positionKey: connectingAtomPosKey, id: connectingAtomId } = connection.connectingAtom;
-
-			resetElectronAndRing(dragAtomId, dragAtomPosKey);
-			resetElectronAndRing(connectingAtomId, connectingAtomPosKey);
-
-			window.NS.singletons.LessonManager.atomConnectionsManager.removeConnection(connectionId)
-		});
-
-		//SYNC BACKEND
-		window.NS.singletons.LessonManager.atomConnectionsManager.syncConnections();
-
-		this.dragData = Object.assign({}, this.dragData, getStartDragDataAtom(this.ID, this.type, this.position, this.outerRing));
-	}
-
-	onDragStart({object}) {
-		this.foregroundRender.disableCameraControls();
-
-		if (isDragEvtAtom(object, this.ID, false)) {
-			this.foregroundRender.dragControls.addEventListener('drag', this.onDragBound);
-			this.foregroundRender.dragControls.addEventListener('dragend', this.onDragEndBound);
-		} else {
-			return;
-		}
-
-		if (isElectron(object)) {
-			this.dragData = Object.assign({}, this.dragData, getStartDragDataElectron(this.ID, this.position, object));
-		}
-
-		if (isMainAtom(object)) {
-			this.dragData = Object.assign({}, this.dragData, getStartDragDataAtom(this.ID, this.type, this.position, this.outerRing));
-			if (this.dragData.isConnected) {
-				console.log('create disconnect handler');
-				this.disconnectHandler = new AtomDisconnectHandler(this.atomDisconnectCallback, object.position, this.circleDragMesh, this.disconnectProgressMesh);
-			}
-		}
-	}
-
-	onDrag({ object }) {
-		if (isElectron(object)) {
-			this.dragData = Object.assign({}, this.dragData, getDraggingElectronDragData(object, this.visibleRings, this.dragData));
-		}
-
-		if (isMainAtom(object)) {
-			this.dragData = Object.assign({}, this.dragData, getDraggingAtomDragData(object, this));
-
-			if (this.dragData.isConnected) {
-				this.disconnectHandler.onMove(object.position);
-			}
-		}
-
-		object.position.z = 0;
-	}
-
-	onDragEnd({object}) {
-		const { releasePoint, ringToReleaseOn, atomToConnect, electronObj } = this.dragData;
-
-		if (isElectron(object)) {
-			onElectronDragEnd(ringToReleaseOn, electronObj, this.visibleRings, this.position, object);
-
-			// BACKEND SYNC
-			const electronsModifierNode = window.NS.singletons.ConnectionsManager.getConnectedNodeWithType(this.ID, 'electrons');
-			const connectedElectrons = electronsModifierNode.getConnectedElectrons();
-			syncConnectedElectrons(this.ID, connectedElectrons);
-			this.syncAtomRings(connectedElectrons.length);
-
-			this.dragData.releasePoint = null;
-			this.dragData.ringToReleaseOn = null;
-			this.dragData.electronObj = null;
-		}
-
-		if (isMainAtom(object)) {
-			if (this.dragData.isConnected) {
-				this.disconnectHandler.onEnd();
-				if (this.disconnectHandler.hasDisconnected) {
-					return;
-				}
-			}
-
-			this.disconnectHandler = undefined;
-			const electronsModifierNode = window.NS.singletons.ConnectionsManager.getConnectedNodeWithType(this.ID, 'electrons');
-			const connectedElectrons = electronsModifierNode.getConnectedElectrons();
-			onAtomDragEnd(this, connectedElectrons);
-
-			//SYNC BACKEND
-			window.NS.singletons.LessonManager.atomConnectionsManager.syncConnections();
-
-			this.dragData.draggingAtomData.connectedAtoms.forEach(t => {
-				const atom = window.NS.singletons.ConnectionsManager.getNode(t.id);
-				const pos = atom.position;
-				syncAtomPos(t.id, { x: pos.x, y: pos.y });
-			});
-			
-			const position = this.position;
-			syncAtomPos(this.ID, { x: position.x, y: position.y });
-		}
-
-		this.dragData.connectedElectrons = [];
-
-		this.foregroundRender.enableCameraControls();
-
-		this.foregroundRender.dragControls.removeEventListener('drag', this.onDragBound);
-		this.foregroundRender.dragControls.removeEventListener('dragend', this.onDragEndBound);
+		this._atomHTMLLabel.amountElectrons = amountElectrons;
 	}
 
 	removeFromDom() {
+		window.NS.singletons.CanvasNode.removeMeshLabel(this.ID);
 		super.removeFromDom();
 
 		this.foregroundRender.dragControls.removeEventListener('dragstart', this.onDragStartBound);
 		this.foregroundRender.dragControls.removeEventListener('drag', this.onDragBound);
 		this.foregroundRender.dragControls.removeEventListener('dragend', this.onDragEndBound);
 
-	}
-	
-	// THIS IS USED TO CHECK FOR CONNECTIONS BETWEEN ATOMS
-	getNotCompleteElectronPairs() {
-		const outerRing = this.outerRing;
-		if (!outerRing) {
-			return [];
-		}
-
-		return outerRing.getNotCompletePairs();
 	}
 
 	get position() {
@@ -439,8 +368,6 @@ export default class AtomNode extends GraphicNode{
 	}
 
 	set position(value) {
-		// this.mainAtomGroup.position.x = value.x;
-		// this.mainAtomGroup.position.y = value.y;
 		this.mainAtomGroup.position.set(value.x, value.y, 0);
 	}
 
@@ -451,5 +378,4 @@ export default class AtomNode extends GraphicNode{
 
 		return undefined;
 	}
-
 }

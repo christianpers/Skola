@@ -1,5 +1,6 @@
 import { getCircle, getDoubleCircle } from './helpers';
 import Orbital from './Orbital';
+import * as Events from './events';
 
 const getOrbitalAngle = (ringIndex, orbPositions) => {
 	const orbDistance = 360 / orbPositions;
@@ -7,9 +8,11 @@ const getOrbitalAngle = (ringIndex, orbPositions) => {
 };
 
 export default class AtomCircle{
-	constructor(radius, ringDef, index) {
+	constructor(radius, ringDef, index, atomEl) {
         this.title = 'AtomCircle';
         this.index = index;
+
+		this.atomEl = atomEl;
 
 		this.positions = {};
         this.ringDef = ringDef;
@@ -34,8 +37,9 @@ export default class AtomCircle{
 			this.orbitals.push(orbitalItem);
 		}
 
-        this.highlightColor = new THREE.Color(1, 1, 1).getHex();
-        this.defaultColor = new THREE.Color(1, 0, 0).getHex();
+        this.highlightColor = new THREE.Color(245/255, 244/255, 225/255).getHex();
+        this.defaultColor = new THREE.Color(250/255, 75/255, 75/255).getHex();
+		this.connectedColor = new THREE.Color(152/255, 235/255, 169/255).getHex();
         this.initCurve(radius);
 	}
 
@@ -77,6 +81,10 @@ export default class AtomCircle{
 		this.mesh.visible = false;
 	}
 
+	totalAmountPositions() {
+		return this.ringDef.amountElectrons;
+	}
+
 	getOrbitalForAngle(angle) {
 		return this.orbitals.find(t => t.angle === angle);
 	}
@@ -91,10 +99,20 @@ export default class AtomCircle{
 
 	markPositionAsTaken(key) {
 		this.positions[key] = Object.assign({}, this.positions[key], { available: false });
+		const orbital = this.getOrbitalFromPositionKey(key);
+		const orbitalIsFull = !orbital.positions.some(posKey => this.positions[posKey].available);
+
+		const orbitalUpdateEvent = new CustomEvent(Events.ON_ORBITAL_POSITIONS_UPDATE, { detail: { isFull: orbitalIsFull, orbital, ringIndex: this.index }});
+        this.atomEl.dispatchEvent(orbitalUpdateEvent);
 	}
 
 	markPositionAsAvailable(key) {
 		this.positions[key] = Object.assign({}, this.positions[key], { available: true });
+		const orbital = this.getOrbitalFromPositionKey(key);
+		const orbitalIsFull = !orbital.positions.some(posKey => this.positions[posKey].available);
+
+		const orbitalUpdateEvent = new CustomEvent(Events.ON_ORBITAL_POSITIONS_UPDATE, { detail: { isFull: orbitalIsFull, orbital, ringIndex: this.index }});
+        this.atomEl.dispatchEvent(orbitalUpdateEvent);
 	}
 
 	getAvailableElectronPosition(offset) {
@@ -128,8 +146,6 @@ export default class AtomCircle{
 		return this.getElectronPosition(offset, key);
 	}
 
-	/* TODO USE THIS FUNCTION TO KNOW THE POSITION OF THE CONNECTION ATOM ELECTRON */
-
 	getElectronPosition(offset, electronRingIndex) {
 		const getAngle = (ringIndex, orbPositions) => {
 			const pairOffset = ringIndex >= orbPositions ? 5 : -5;
@@ -145,24 +161,6 @@ export default class AtomCircle{
 		return new THREE.Vector2(x, y);
 	}
 
-	getNotCompletePairs() {
-		const { orbitalPositions } = this.ringDef;
-		const positionCounter = {};
-		for (let i = 0; i < orbitalPositions; i++) {
-			positionCounter[i] = [];
-		}
-		const keys = this.getAvailablePositionKeys();
-		keys.forEach((t, i) => {
-			const orbPosition = Number(t) % orbitalPositions;
-			positionCounter[orbPosition].push(t);
-		});
-
-		const notCompleteOrbitals = Object.keys(positionCounter).filter(t => positionCounter[t].length === 1);
-		return notCompleteOrbitals.map(t => {
-			return positionCounter[t];
-		});
-	}
-
 	getNotCompleteOrbitals() {
 		const ret = [];
 		this.orbitals.forEach(t => {
@@ -176,7 +174,7 @@ export default class AtomCircle{
 	}
 
 	getOrbitalFromPositionKey(posKey) {
-		return this.orbitals.find(t => t.positions.some(tP => tP === posKey));
+		return this.orbitals.find(t => t.positions.some(tP => tP === posKey.toString()));
 	}
 
     remove() {
@@ -210,30 +208,6 @@ export default class AtomCircle{
 	getAvailablePositionKeys() {
 		return Object.keys(this.positions)
 			.filter(t => this.positions[t].available);
-	}
-
-	// USE THIS TO GET THE AVAILABLE POSITIONS TO CONNECT TO ON DRAGGING ATOMS
-	getIncompleteOrbitals() {
-		const { orbitalPositions } = this.ringDef;
-		const positionCounter = {};
-		for (let i = 0; i < orbitalPositions; i++) {
-			positionCounter[i] = { count: 0, keyIndexes: [] };
-		}
-		const keys = this.getAvailablePositionKeys();
-		keys.forEach((t, i) => {
-			const orbPosition = t % orbitalPositions;
-			positionCounter[orbPosition].count++;
-			positionCounter[orbPosition].keyIndexes.push(t);
-		});
-
-		const availableOrbitals = Object.keys(positionCounter).filter(t => positionCounter[t].count === 1);
-		
-		const ret = [];
-		availableOrbitals.forEach(t => {
-			ret.push(...positionCounter[t].keyIndexes);
-		});
-
-		return ret;
 	}
 
 	getPositionsForOrbital(angle) {

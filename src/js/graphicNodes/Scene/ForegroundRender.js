@@ -60,7 +60,7 @@ export default class ForegroundRender{
 		if (window.NS.singletons.PROJECT_TYPE === window.NS.singletons.TYPES.chemistry.id) {
 			this.showActiveHelperMeshes = false;
 
-			this.camera.position.z = 40;
+			this.camera.position.z = 50;
 
 			// this.cameraControls.maxDistance = 41;
 			// this.cameraControls.minDistance = 41;

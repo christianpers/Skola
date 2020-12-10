@@ -77,10 +77,10 @@ export default class SignIn{
 			return;
 		}
 
-		if (!/(?=.*[0-9])/.test(passwordInputValue)) {
-			this.errorMessage.innerHTML = 'Wrong password';
-			return;
-		}
+		// if (!/(?=.*[0-9])/.test(passwordInputValue)) {
+		// 	this.errorMessage.innerHTML = 'Wrong password';
+		// 	return;
+		// }
 
 		firebase.auth().signInWithEmailAndPassword(usernameInputValue, passwordInputValue).catch((error) => {
 			// // Handle Errors here.

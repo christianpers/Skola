@@ -67,10 +67,8 @@ export default class ProtonsModifer extends GraphicNode {
 		this.updateVisualSettings(value);
 
 		if (value !== this.mesh.children.length) {
-			// this.updateMeshGroup();
 			for (let i = 0; i < this.currentOutConnectionsLength; i++) {
 				const param = window.NS.singletons.ConnectionsManager.params[this.currentOutConnections[i].connection.paramID];
-				// const param = this.currentOutConnections[i].param;
 				const inNode = window.NS.singletons.ConnectionsManager.nodes[this.currentOutConnections[i].inNodeID];
 				inNode.updateParam(param, this);
 			}
@@ -83,7 +81,7 @@ export default class ProtonsModifer extends GraphicNode {
 			settingsContainer.className = 'node-settings protons-modifier-node';
 
 			const defaultSettings = {
-				value: (this.initValues && this.initValues.amountProtons) ? this.initValues.amountProtons : 1,
+				value: (this.initValues && this.initValues.amountProtons) ? this.initValues.amountProtons : 0,
 				step: 1,
 				min: 0,
 				max: 50,
@@ -109,8 +107,21 @@ export default class ProtonsModifer extends GraphicNode {
 	}
 
     reset() {
-
+		console.log('node reset');
+		this.amountInput.setValue(0);
+		this.updateVisualSettings(0);
+		this.initValues = null;
     }
+
+	resetConnection(inNodeID, connection) {
+		const inNode = window.NS.singletons.ConnectionsManager.getNode(inNodeID);
+		const param = window.NS.singletons.ConnectionsManager.params[connection.paramID];
+		inNode.updateParam(param, this);
+	}
+
+	getAmount() {
+		return this.mesh.children.length;
+	}
 
 
 	onConnectionAdd(e) {
@@ -125,13 +136,12 @@ export default class ProtonsModifer extends GraphicNode {
 
 	onConnectionRemove(e) {
 		if (e.detail.connection.outNodeID === this.ID) {
+			console.log('connection remove');
 			const connection = e.detail.connection;
 			const paramIDToRemove = connection.paramID;
 			const outIDToRemove = connection.outNodeID;
 			const inIDToRemove = e.detail.inNodeID;
 			const paramContainer = window.NS.singletons.ConnectionsManager.params[connection.paramID];
-			
-			this.rotationSliders[paramContainer.param.parent][paramContainer.param.param].hide();
 
 			const tempOutConnections = this.currentOutConnections.map(t => t);
 
@@ -144,6 +154,7 @@ export default class ProtonsModifer extends GraphicNode {
 
 			if (this.currentOutConnectionsLength <= 0) {
 				this.reset();
+				this.resetConnection(inIDToRemove, connection);
 			}
 		}
 	}

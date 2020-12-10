@@ -1,4 +1,5 @@
 import { updateDrawing } from '../../backend/set';
+import * as Events from '../../graphicNodes/ChemistryNodes/events';
 
 import AnimateAlongCircle from '../../graphicNodes/ChemistryNodes/AnimateAlongCircle';
 
@@ -32,18 +33,27 @@ export default class AtomConnectionsManager{
     constructor(backendData) {
         this.connections = new Map();
 
+        
+    }
+
+    init(backendData) {
         const { atomConnections } = backendData;
         if (atomConnections) {
             Object.keys(atomConnections).forEach(key => {
                 const conn = atomConnections[key];
                 this.connections.set(key, conn);
 
-                const { id: connectingId, orbitalAngle: connectingAngle } = conn.connectingAtom;
-                const { id: draggingId, orbitalAngle: draggingAngle } = conn.dragAtom;
+                const { id: connectingId, orbitalAngle: connectingAngle, positionKey: connectingPositionKey } = conn.connectingAtom;
+                const { id: draggingId, orbitalAngle: draggingAngle, positionKey: draggingPositionKey } = conn.dragAtom;
 
                 const draggingAtom = window.NS.singletons.ConnectionsManager.getNode(draggingId);
+                const connectingAtom = window.NS.singletons.ConnectionsManager.getNode(connectingId);
                     
                 const outerRing = draggingAtom.outerRing;
+                outerRing.markPositionAsTaken(draggingPositionKey);
+
+                const connectingAtomOuterRing = connectingAtom.outerRing;
+                connectingAtomOuterRing.markPositionAsTaken(connectingPositionKey);
 
                 const electronsModifierNode = window.NS.singletons.ConnectionsManager.getConnectedNodeWithType(draggingId, 'electrons');
 			    const connectedElectrons = electronsModifierNode.getConnectedElectrons();
@@ -57,6 +67,9 @@ export default class AtomConnectionsManager{
                     electronToConnect.overrideConnectionAngle = connectionAngle;
                 }
             });
+
+            const connectionUpdateEvent = new CustomEvent(Events.ON_ATOM_CONNECTION_UPDATE);
+            document.documentElement.dispatchEvent(connectionUpdateEvent);
         }
     }
 
@@ -81,6 +94,14 @@ export default class AtomConnectionsManager{
         return foundConnections;
     }
 
+    getConnectionPart(atomID, connection) {
+        if (connection.dragAtom.id === atomID) {
+            return connection.dragAtom;
+        }
+
+        return connection.connectingAtom;
+    }
+
     addConnection(dragAtomID, connectingAtomID, dragOrbitalAngle, connectingOrbitalAngle, dragAtomOrbitConnectionPositionKey, connectingAtomConnectionPositionKey) {
         const connectionObj = {
             dragAtom: { id: dragAtomID, orbitalAngle: dragOrbitalAngle, positionKey: dragAtomOrbitConnectionPositionKey },
@@ -91,13 +112,12 @@ export default class AtomConnectionsManager{
             this.connections.set(possIds[0], connectionObj);
         }
 
-        console.log(this.connections);
+        this.syncConnections();
+
     }
 
     removeConnection(connectionId) {
         this.connections.delete(connectionId);
-
-        console.log(this.connections);
     }
 
     syncConnections() {
@@ -106,5 +126,8 @@ export default class AtomConnectionsManager{
             syncObj[key] = value;
         }
         updateAtomConnections(syncObj);
+
+        const connectionUpdateEvent = new CustomEvent(Events.ON_ATOM_CONNECTION_UPDATE);
+        document.documentElement.dispatchEvent(connectionUpdateEvent);
     }
 }
