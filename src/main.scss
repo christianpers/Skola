@@ -405,9 +405,10 @@ button:focus {
 			left: -100px;
 			width: 400px;
 			height: 400px;
-			background: black;
+			background: #1b1c1e;
 			display: none;
 			z-index: 2;
+			border: 1px dashed black;
 
 			&.visible {
 				display: block;

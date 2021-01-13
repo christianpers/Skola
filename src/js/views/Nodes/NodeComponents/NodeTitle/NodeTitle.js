@@ -38,8 +38,6 @@ export default class NodeTitle{
     }
 
     mouseDown(e) {
-        console.log('sdfsdf');
-
         e.stopPropagation();
     }
 

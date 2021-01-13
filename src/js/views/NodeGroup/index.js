@@ -1,4 +1,7 @@
 import NodeSelection from './NodeSelection';
+import ExpandCollapseController from './ExpandCollapseController';
+import CollapsedView from './CollapsedView';
+import AddRemoveVisualHelp, { TYPES } from './AddRemoveVisualHelp';
 import { createGroup, updateGroup } from '../../backend/set';
 import { getGroupRef } from '../../backend/get';
 
@@ -13,6 +16,15 @@ export default class NodeGroup {
 
         this.el = document.createElement('div');
         this.el.classList.add('group-container');
+
+        this._nodesContainerEl = document.createElement('div');
+        this._nodesContainerEl.classList.add('nodes-container');
+        this.el.appendChild(this._nodesContainerEl);
+
+        this._expandCollapseController = new ExpandCollapseController(this.el);
+        this._collapsedView = new CollapsedView(this.el);
+
+        this._addRemoveVisualHelp = new AddRemoveVisualHelp(this.el);
 
         this.onUpdatedRenderOrderBound = this.onUpdatedRenderOrder.bind(this);
 
@@ -113,6 +125,10 @@ export default class NodeGroup {
         return Object.keys(this.nonagons).length > 0;
     }
 
+    amountNonagons() {
+        return Object.keys(this.nonagons).length;
+    }
+
     onNodeTabSelected(id) {
         const node = this.nonagons[id];
 
@@ -130,13 +146,25 @@ export default class NodeGroup {
 		return pos;
 	}
 
-    show() {
-        this.el.classList.add('visible');
+    showAddHelper() {
+        this._addRemoveVisualHelp.setType(TYPES.plus);
     }
 
-    hide() {
-        this.el.classList.remove('visible');
+    showRemoveHelper() {
+        this._addRemoveVisualHelp.setType(TYPES.minus);
     }
+
+    hideAddRemoveVisualHelper() {
+        this._addRemoveVisualHelp.setType(undefined);
+    }
+
+    // show() {
+    //     this.el.classList.add('visible');
+    // }
+
+    // hide() {
+    //     this.el.classList.remove('visible');
+    // }
 
     delete() {
         this.parentEl.removeChild(this.el);
@@ -149,9 +177,11 @@ export default class NodeGroup {
     addNonagon(nonagon, initFromBackend) {
         const onSuccess = () => {
             this.nonagons[nonagon.ID] = nonagon;
-            nonagon.addToGroup(this.el);
+            nonagon.addToGroup(this._nodesContainerEl);
 
             this.nodeSelectionTabs.addNode(nonagon);
+
+            this._collapsedView.setData({ amountNonagons: this.amountNonagons() });
 
             const keys = Object.keys(this.nonagons);
             if (keys.length === 1) {
@@ -204,6 +234,8 @@ export default class NodeGroup {
             nonagon.removeFromGroup(e, this);
             delete this.nonagons[nonagon.ID];
 
+            this._collapsedView.setData({ amountNonagons: this.amountNonagons() });
+
             if (this.hasNonagons()) {
                 console.log('has nonagons', this.nonagons);
                 const keys = Object.keys(this.nonagons);
@@ -211,6 +243,8 @@ export default class NodeGroup {
                 activeNonagon.groupShow();
 
                 this.nodeSelectionTabs.setTabSelected(activeNonagon.ID);
+
+                nonagon.setSelected();
             }
         }
         
@@ -234,6 +268,10 @@ export default class NodeGroup {
     onMouseDown(e) {
         e.preventDefault;
         e.stopPropagation();
+
+		if (e.target.nodeName === 'INPUT' || e.target.classList.contains('prevent-drag')) {
+			return;
+		}
 
         this.lastDelta.x = 0;
 		this.lastDelta.y = 0;

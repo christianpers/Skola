@@ -19,7 +19,6 @@ export default class NodeGroupManager {
     }
 
     onAddGroupToBackend(e) {
-        console.log('e: ', e, this.groups);
         const group = this.groups[e.detail];
         group.syncBackend()
             .then((ID) => {
@@ -82,7 +81,7 @@ export default class NodeGroupManager {
         // alert('get nonagon group fix !!');
         const existingGroup = this.getGroupFromNonagon(overNonagon);
         if (existingGroup) {
-            console.log('return group', existingGroup.ID);
+            console.log('return existing group', existingGroup.ID);
             return existingGroup;
         }
 
@@ -104,15 +103,17 @@ export default class NodeGroupManager {
             this.currentActiveGroup = this.getNonagonGroup(overNonagon);
         }
 
-        this.currentActiveGroup.show();
+        // this.currentActiveGroup.show();
+        
         this.overNonagon = overNonagon;
     }
 
     overNonagonCheck() {
-        const checkOver = () => {
+        
+        const checkOverNonagon = () => {
+            const modifierPos = this.activeNonagon.getPos();
             for (let i=0; i < this.nonagonsToCheckLength; i++) {
                 const nonagonPos = this.nonagonsToCheck[i].getPos();
-                const modifierPos = this.activeNonagon.getPos();
                 const dist = nonagonPos.distanceTo(modifierPos);
                 
                 if (dist < 160) {
@@ -122,18 +123,41 @@ export default class NodeGroupManager {
             return null;
         }
 
-        const overNonagon = checkOver();
+        const checkOverGroup = () => {
+            const groupKeys = Object.keys(this.groups);
+            const L = groupKeys.length;
+            const modifierPos = this.activeNonagon.getPos();
+            for (let i=0; i < L; i++) {
+                const groupPos = this.groups[groupKeys[i]].getPos();
+                
+                const dist = groupPos.distanceTo(modifierPos);
+
+                if (dist < 280) {
+                    return this.groups[groupKeys[i]];
+                }
+            }
+            return null;
+        }
+
+        const overGroup = checkOverGroup();
+        if (this.alreadyConnected && !overGroup) {
+            this.alreadyConnected = false;
+        }
+        const overNonagon = checkOverNonagon();
 
         if (overNonagon) {
             this.onOverNonagon(overNonagon);
+        } else if (overGroup) {
+            this.currentActiveGroup = overGroup;
         } else {
             window.NS.singletons.SelectionManager.deselectAllNonagons(this.nonagonsToCheck);
             if (this.currentActiveGroup) {
+                this.currentActiveGroup.hideAddRemoveVisualHelper();
                 if (!this.currentActiveGroup.hasNonagons()) {
                     this.currentActiveGroup.delete();
                     delete this.groups[this.overNonagon.ID];
-                    this.currentActiveGroup = null;
                 }
+                this.currentActiveGroup = null;
 
             }
             this.overNonagon = null;
@@ -161,23 +185,35 @@ export default class NodeGroupManager {
     onNodeDragStart(nonagon) {
         this.currentActiveGroup = null;
         this.setActiveNonagon(nonagon);
+        
+        const connectedToGroup = this.getGroupFromNonagon(nonagon);
+        if (connectedToGroup) {
+            // FLAG TO MARK THAT ALREADY CONNECTED NONAGON TO GROUP
+            // USED FOR EXAMPLE IN THAT HELPER SHOULDNT SHOW ON DISCONNECT
+            this.alreadyConnected = true;
+        }
+
         this.overNonagonCheck();
     }
 
     onNodeDragMove(e, nonagon, localDelta) {
         const connectedToGroup = this.getGroupFromNonagon(nonagon);
-
         if (connectedToGroup) {
-            if (Math.abs(localDelta.x) > 5 || Math.abs(localDelta.y) > 5) {
+            connectedToGroup.hideAddRemoveVisualHelper();
+            if (Math.abs(localDelta.x) > 20 || Math.abs(localDelta.y) > 20) {
                 this.removeFromGroup(e, connectedToGroup, nonagon);
             }
             return;
+        } else {
+            if (this.currentActiveGroup && !this.alreadyConnected) {
+                this.currentActiveGroup.showAddHelper();
+            }
         }
         this.overNonagonCheck();
     }
 
     onNodeDragEnd() {
-        if (this.currentActiveGroup && this.activeNonagon && this.overNonagon) {
+        if (this.currentActiveGroup && this.activeNonagon) {
             const keys = Object.keys(this.currentActiveGroup.nonagons);
             if (keys.length === 0) {
                 this.currentActiveGroup.addNonagon(this.overNonagon);
@@ -189,8 +225,9 @@ export default class NodeGroupManager {
                 }
                 
             }
+            this.currentActiveGroup.hideAddRemoveVisualHelper();
         }
-
+        this.alreadyConnected = false;
         this.currentActiveGroup = null;
     }
 }

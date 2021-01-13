@@ -4,6 +4,8 @@ import {
   getDrawingsData,
   getGenericDrawingsData,
   getViewHTML,
+  getDrawing,
+  drawingExists,
 } from './helpers';
 
 import {
@@ -15,7 +17,7 @@ import { createDrawing, createDrawingFromGeneric } from '../../set';
 import './index.scss';
 
 export default class DrawingsWindow{
-  constructor(parentEl, username, onSelected) {
+  constructor(parentEl, username, onSelected, drawingId) {
     this.username = username;
     this.drawings = {};
     this.genericDrawings = {};
@@ -25,6 +27,49 @@ export default class DrawingsWindow{
     this.el = document.createElement('div');
     this.el.className = 'drawings-window';
 
+    parentEl.appendChild(this.el);
+
+    const hasDrawingId = drawingId.length > 0;
+
+    if (!hasDrawingId) {
+      this.initFromScratch(username);
+    } else {
+      this.initFromDrawingId(username, drawingId);
+    }
+  }
+
+  initFromDrawingId(username, drawingId) {
+    const onDrawingExists = () => {
+      getDrawing(username, drawingId)
+        .then(drawingData => {
+          window.NS.singletons.refs.setDrawingRef(getDrawingRef(drawingId));
+          this.onSelected(drawingData);
+        })
+        .catch(err => {
+          console.log('err: ', err);
+        });
+    };
+
+    const onDrawingNotExists = () => {
+      window.location.href = window.location.origin;
+    };
+
+    drawingExists(username, drawingId)
+      .then(exists => {
+        if (exists) {
+          onDrawingExists();
+        } else {
+          onDrawingNotExists();
+        }
+      })
+      .catch(err => {
+        console.log('err: ', err);
+      });
+  }
+
+  initFromScratch(username) {
+    
+
     this.onExistingDrawingClickBound = this.onExistingDrawingClick.bind(this);
     // this.onNewDrawingClickBound = this.onNewDrawingClick.bind(this);
     this.onDeleteDrawingBound = this.onDeleteDrawing.bind(this);
@@ -32,7 +77,7 @@ export default class DrawingsWindow{
     this.onNewProjectSaveBound = this.onNewProjectSave.bind(this);
     this.onNewProjectCancelBound = this.onNewProjectCancel.bind(this);
 
-    parentEl.appendChild(this.el);
+    
 
     const getData = () => {
       const promises = [getDrawingsData(username), getGenericDrawingsData()];
@@ -42,7 +87,6 @@ export default class DrawingsWindow{
     getData()
       .then((resp) => {
         const [drawings, genericDrawings] = resp;
-        console.log('sdfsd: ', drawings);
         this.drawings = drawings;
         this.genericDrawings = genericDrawings;
         this.el.innerHTML = getViewHTML(drawings, genericDrawings);
@@ -51,7 +95,6 @@ export default class DrawingsWindow{
       .catch((err) => {
         console.log('sdfsdf', err);
       });
-    
   }
 
   makeInteractive() {
@@ -83,7 +126,6 @@ export default class DrawingsWindow{
       const deleteFn = firebase.functions().httpsCallable('recursiveDelete');
       deleteFn({ path: path })
         .then((result) => {
-          console.log('Delete success: ' + JSON.stringify(result));
           window.NS.singletons.DialogManager.loaderDialog.hide();
           getDrawingsData(this.username)
             .then((drawingsData) => {

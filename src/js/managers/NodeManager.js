@@ -233,8 +233,6 @@ export default class NodeManager{
 		this.outputActiveNode = null;
 		this.outputActiveType = undefined;
 
-		// this.nodeConnectionLine.resetLine();
-
 		this.availableConnections.resetAvailable();
 	}
 
@@ -272,16 +270,14 @@ export default class NodeManager{
 	}
 
 	onInputConnection(outNode, paramContainer, fromInit) {
-		// console.log('on input connection', outNode, paramContainer);
-
-		/* TODO Connect params that has prop defaultConnect  soooo maybe filter on that key */
-		const paramKeys = Object.keys(paramContainer.inputParams);
-		if (paramKeys.length === 1) {
-		}
-		
 		window.NS.singletons.ConnectionsManager.addNodeConnection(outNode, paramContainer);
 
 		if (!fromInit) {
+			const defaultConnectParamObjects = Object.keys(paramContainer.inputParams)
+				.filter(t => paramContainer.inputParams[t].param.defaultConnect)
+				.map(t => paramContainer.inputParams[t])
+				.forEach(t => this.enableParamConnection(t, outNode, t.paramContainer.node));
+
 			this.windowManager.onNodeConnect(outNode);
 		}
 		

@@ -145,6 +145,62 @@ export const getGenericDrawings = (username) => {
     });
 };
 
+export const getSingleDrawing = (username, drawingId) => {
+    const getForSingle = (drawingRef, collectionType) => {
+        return new Promise((resolve, reject) => {
+            const nodesRef = drawingRef.collection(collectionType);
+            nodesRef.get().then(function(querySnapshot) {
+                const ret = [];
+                querySnapshot.forEach(function(doc) {
+                    // respArr.push({ref: doc, data: doc.data()});
+                    ret.push({id: doc.id, data: doc.data()});
+                });
+
+                resolve(ret);
+            }).catch((err) => {
+                reject(err);
+            });
+        });
+    };
+    return new Promise((resolve, reject) => {
+        const hasUserRef = window.NS.singletons.refs.hasUserRef();
+        const userRef = hasUserRef ? window.NS.singletons.refs.getUserRef() : db.collection("Users").doc(username);
+
+        const drawingRef = userRef.collection("Drawings").doc(drawingId);
+        if (!drawingRef) {
+            resolve(undefined);
+        }
+
+        const ret = {
+            drawing: {},
+            nodes: [],
+            groups: []
+        };
+
+        
+        drawingRef.get().then(doc => {
+            if (doc.exists) {
+                //This is only done cause object stupidly formatted from the beginning
+                ret.drawing = {
+                    doc: doc.data()
+                };
+                const promises = [getForSingle(drawingRef, 'Nodes'), getForSingle(drawingRef, 'Groups')];
+                return Promise.all(promises);
+            } else {
+                resolve(undefined);
+            }
+        }).then(resp => {
+            const [nodes, groups] = resp;
+            ret.nodes = nodes;
+            ret.groups = groups;
+            resolve(ret);
+
+        }).catch(err => {
+            reject(err);
+        });
+    })
+}
+
 export const getDrawings = (username) => {
     return new Promise((resolve, reject) => {
         const hasUserRef = window.NS.singletons.refs.hasUserRef();
@@ -182,6 +238,23 @@ export const checkUserExists = (username) => {
                 // doc.data() will be undefined in this case
                 console.log("No such document!");
                 userRef.set({ username });
+                resolve(false);
+            }
+        }).catch(function(error) {
+            console.log("Error getting document:", error);
+            reject();
+        });
+    });
+}
+
+export const checkDrawingExists = (drawingId) => {
+    return new Promise((resolve, reject) => {
+        const drawingRef = window.NS.singletons.refs.getUserRef().collection("Drawings").doc(drawingId);
+        drawingRef.get().then(function(doc) {
+            if (doc.exists) {
+                console.log("Document data:", doc, '  ', doc.data());
+                resolve(true);
+            } else {
                 resolve(false);
             }
         }).catch(function(error) {

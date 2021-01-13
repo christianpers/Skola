@@ -40,8 +40,8 @@ export default class NodeTab {
         this.onTabClickBound = this.onTabClick.bind(this);
         this.onTabClickCallback = onTabClickCallback;
 
-        // this.touchLayer.addEventListener('click', this.onTabClickBound);
-        this.touchLayer.addEventListener('mousedown', this.onMouseDownBound);
+        this.touchLayer.addEventListener('click', this.onTabClickBound);
+        // this.touchLayer.addEventListener('mousedown', this.onMouseDownBound);
     }
 
     getWidth() {

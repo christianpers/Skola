@@ -31,12 +31,7 @@ export default class ModifierCollisionManager{
             const dist = nonagonPos.distanceTo(modifierPos);
             
             if (dist < 160) {
-                console.log('over nonagon');
-                // nonagons[i].setSelected();
                 window.NS.singletons.SelectionManager.setSelected(nonagons[i]);
-            } else {
-                // nonagons[i].setNotSelected();
-                // window.NS
             }
         }
     }
@@ -44,9 +39,7 @@ export default class ModifierCollisionManager{
     onModifierDragStart(activeModifier, e) {
         this.activeModifier = activeModifier;
         this.nonagonsToCheck = this.nonagons.filter(t => (t.groupState.isInGroup && t.groupState.isShowing) || !t.groupState.isInGroup);
-        for (let i = 0; i < this.nonagonsToCheck.length; i++) {
-            console.log('val: ', this.nonagonsToCheck[i].nodeTitle.el.value);
-        }
+
         this.overNonagonCheck();
     }
     

@@ -37,10 +37,10 @@ export default class NodeSelection{
     }
 
     onTabDragEnd() {
-        const renderOrder = this.tabGroupMover.onDragEnd();
-        this.renderOrder = renderOrder;
-        this.onUpdatedRenderOrder(renderOrder);
-        this.renderDOM();
+        // const renderOrder = this.tabGroupMover.onDragEnd();
+        // this.renderOrder = renderOrder;
+        // this.onUpdatedRenderOrder(renderOrder);
+        // this.renderDOM();
     }
 
     addTab(node) {
@@ -55,11 +55,11 @@ export default class NodeSelection{
 
         this.tabs[node.ID] = tab;
 
-        this.renderOrder.push(node.ID);
+        // this.renderOrder.push(node.ID);
 
-        this.tabWidths[node.ID] = tab.getWidth();
+        // this.tabWidths[node.ID] = tab.getWidth();
 
-        this.renderDOM();
+        // this.renderDOM();
     }
 
     removeTab(node) {
@@ -69,17 +69,17 @@ export default class NodeSelection{
         delete this.tabs[node.ID];
         delete this.tabWidths[node.ID];
 
-        this.renderOrder = this.renderOrder.filter(t => t !== node.ID);
+        // this.renderOrder = this.renderOrder.filter(t => t !== node.ID);
 
-        this.renderDOM();
+        // this.renderDOM();
     }
 
     setTabTitle(nodeID, title) {
         this.tabs[nodeID].setTitle(title);
 
-        this.tabWidths[nodeID] = this.tabs[nodeID].getWidth();
+        // this.tabWidths[nodeID] = this.tabs[nodeID].getWidth();
 
-        this.renderDOM();
+        // this.renderDOM();
     }
 
     addNode(node) {

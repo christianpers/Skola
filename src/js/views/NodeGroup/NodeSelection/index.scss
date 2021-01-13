@@ -1,8 +1,11 @@
 .node-selection {
     position: absolute;
-    bottom: 0;
+    top: 100%;
     left: 0;
     width: 100%;
     display: flex;
     z-index: 3;
+    background: transparent;
+    flex-flow: wrap;
+
 }

@@ -4,6 +4,9 @@ var path = require('path');
 module.exports = {
   devServer: {
     contentBase: './dist',
+    historyApiFallback: {
+      index: 'index.html'
+    }
   },
   output: {
     filename: '[name].bundle.js',

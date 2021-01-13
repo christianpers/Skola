@@ -199,17 +199,16 @@ export default class SpaceOrbitNode extends OrbitDriverNode{
 			this.speedDefaultSettings = {
 				value: this.initValues ? this.initValues['speed'] : 0,
 				step: 0.1,
-				min: 10,
+				min: 0,
 				max: 60230,
 			};
 
 			this.speedInput = new InputComponent(
 				speedInnerSliderGroup,
-				' ',
+				'Hastighet (mindre betyder fortare)',
 				this.speedDefaultSettings,
 				this.onSpeedChangeBound,
 				false,
-				true,
 			);
 
 			this.orbitSliders = {

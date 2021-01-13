@@ -49,14 +49,10 @@ export default class Starter {
 		window.NS.singletons.refs = refs;
 		
 		this.main = new Main();
-		this.drawingsWindow = new DrawingsWindow(document.body, username, this.onDrawingSelectedBound);
+		const pathnameSplit = window.location.pathname.split('/');
+    	const pathSegments = pathnameSplit.length > 1 ? pathnameSplit.slice(1) : '';
 
-		this.onResize();
-		window.addEventListener('resize', () => {
-			this.onResize();
-		});
-
-		
+		this.drawingsWindow = new DrawingsWindow(document.body, username, this.onDrawingSelectedBound, pathSegments[0]);
 	}
 
 	onDrawingSelected(drawing) {
@@ -65,6 +61,11 @@ export default class Starter {
 		window.NS.singletons.PROJECT_TYPE = drawing.drawing.doc.type;
 
 		this.main.init(drawing);
+
+		this.onResize();
+		window.addEventListener('resize', () => {
+			this.onResize();
+		});
 
 		this.reqFrameBound = this.reqFrame.bind(this);
 		this.reqFrame();

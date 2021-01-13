@@ -1,0 +1,13 @@
+.node-group-expand-collapse {
+    position: absolute;
+    top: -19px;
+    left: 0;
+    background: black;
+    padding: 4px 10px;
+    cursor: pointer;
+
+    & > h5 {
+        pointer-events: none;
+        color: white;
+    }
+}

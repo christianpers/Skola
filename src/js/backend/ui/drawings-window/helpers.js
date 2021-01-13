@@ -1,5 +1,6 @@
 import {
   checkUserExists,
+  checkDrawingExists,
   getDrawings,
   getAllNodesFromAllDrawings,
   getAllGroupsFromAllDrawings,
@@ -8,18 +9,14 @@ import {
   copySnapshot,
   getDrawingsCollectionRef,
   getGenericDrawingsCollectionRef,
+  getSingleDrawing,
 } from '../../get';
-
-// const TypeMapping = Object.freeze({
-//     'space': 'Rymden',
-//     'chemistry': 'Kemi',
-// });
 
 export const getFromArr = (arr) => {
     const ret = {};
     for (let i = 0; i < arr.length; i++) {
-    const key = Object.keys(arr[i])[0];
-    ret[key] = arr[i][key];
+        const key = Object.keys(arr[i])[0];
+        ret[key] = arr[i][key];
     }
     return ret;
 }
@@ -39,6 +36,39 @@ export const getDate = (timestamp) => {
     const hours = addZeroIfNeeded(d.getHours());
     const min = addZeroIfNeeded(d.getMinutes());
     return `${ye}-${mo}-${da}  ${hours}:${min}`;
+}
+
+export const drawingExists = (username, drawingId) => {
+    return new Promise((resolve, reject) => {
+        checkUserExists(username)
+            .then(exists => {
+                return checkDrawingExists(drawingId);
+            })
+            .then(exists => {
+                resolve(exists);
+            })
+            .catch(err => {
+                reject(err);
+            });
+    });
+    
+}
+
+export const getDrawing = (username, drawingId) => {
+    return new Promise((resolve, reject) => {
+        checkUserExists(username)
+            .then(exists => {
+                if (exists) {
+                    return getSingleDrawing(username, drawingId);
+                }
+            })
+            .then(drawing => {
+                resolve(drawing);
+            })
+            .catch((err) => {
+                reject(err);
+            });
+    })
 }
 
 export const getDrawingsData = (username) => {
@@ -72,6 +102,7 @@ export const getDrawingsData = (username) => {
             finalData[t] = { groups: groupsArr[t], nodes: nodesArr[t], drawing: drawings[t] };
           });
 
+          // USE THIS TO CREATE NEW GENERIC DRAWING
           // copyDrawingToGeneric(finalData['RnIyLW9hVCSQxbxtt9Wp'])
           //   .then(() => {
           //     console.log('drawing created');

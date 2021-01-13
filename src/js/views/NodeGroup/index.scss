@@ -4,5 +4,31 @@
     left: 0;
     width: 400px;
     height: 400px;
-    background: black;
+    border: 1px dashed black;
+    transition: height .3s;
+    cursor: grab;
+    z-index: 1;
+
+    & .nodes-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+    
+    &[collapsed="true"] {
+        height: 40px;
+
+        & .node-selection {
+            display: none;
+        }
+
+        & .collapsed-view {
+            display: flex;
+        }
+        
+    }
+
 }

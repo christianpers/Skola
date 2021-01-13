@@ -164,6 +164,7 @@ export default class AtomNode extends mixins.AtomEventHandler(mixins.AtomDragEve
 			needsFrameUpdate: false,
 			minMax: {min: 1, max: 20},
 			defaultVal: 1,
+			defaultConnect: true,
 		};
 
         const electronsParam = {
@@ -175,6 +176,7 @@ export default class AtomNode extends mixins.AtomEventHandler(mixins.AtomDragEve
 			needsFrameUpdate: false,
 			minMax: {min: 1, max: 20},
 			defaultVal: 1,
+			defaultConnect: true,
 		};
 
         const neutronsParam = {
@@ -186,6 +188,7 @@ export default class AtomNode extends mixins.AtomEventHandler(mixins.AtomDragEve
 			needsFrameUpdate: false,
 			minMax: {min: 1, max: 20},
 			defaultVal: 1,
+			defaultConnect: true,
 		};
 
 		this.params = {
@@ -317,7 +320,6 @@ export default class AtomNode extends mixins.AtomEventHandler(mixins.AtomDragEve
 
 		if (electronsModifierNode) {
 			const connectedElectrons = electronsModifierNode.getConnectedElectrons();
-			console.log('sdfsdf: ', connectedElectrons.length);
 
 			this.syncAtomRings(connectedElectrons.length);
 		}

@@ -17,6 +17,9 @@ export default class SpaceManager {
     }
 
     onCameraChanged(e) {
+        if (!this.planetsToCheckDistance || this.planetsToCheckDistance.length === 0) {
+            return;
+        }
         const orbitNode = window.NS.singletons.ConnectionsManager.getConnectedNodeWithType(this.planetsToCheckDistance[0].ID, 'Space Orbit');
         // console.log('o: ', orbitNode.ID, ' d: ', orbitNode.currentDistanceToOrigin);
         const cameraPos = new THREE.Vector3(e.detail.x, 0, e.detail.z);
