@@ -14,6 +14,7 @@ export default class BackendSync {
         if (this.isDone()) {
             this.initNodeSettings();
             this.initGroups();
+            this.initBackendData();
         }
     }
 
@@ -53,6 +54,14 @@ export default class BackendSync {
                 group.addNonagon(node, true);
             });
         });
+    }
+
+    initBackendData() {
+        Object.values(window.NS.singletons.ConnectionsManager.nodes).forEach(t => {
+            if (t.initBackendData) {
+                t.initBackendData();
+            }
+        })
     }
 
     isDone() {

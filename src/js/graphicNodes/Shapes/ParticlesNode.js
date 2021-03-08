@@ -1,10 +1,12 @@
 import GraphicNode from '../GraphicNode';
 import ParamHelpers from '../Helpers/ParamHelpers';
-import { PARTICLES_VERTEX, PARTICLES_FRAGMENT } from '../../../shaders/SHADERS';
+import { PARTICLES_VERTEX, PARTICLES_FRAGMENT, SIMPLE_3D_VERTEX, ACTIVE_MESH_FRAGMENT } from '../../../shaders/SHADERS';
 
 export default class ParticlesNode extends GraphicNode{
 	constructor() {
 		super();
+
+		this._currentAngle = 0;
 
 		this.isForegroundNode = true;
 		this.needsUpdate = true;
@@ -83,41 +85,41 @@ export default class ParticlesNode extends GraphicNode{
 			defaultConnect: true,
 		};
 
-		const positionXParam = {
-			title: 'Position X',
-			param: 'x',
-			useAsInput: true,
-			parent: 'Position',
-			paramHelpersType: 'position',
-			needsFrameUpdate: false,
-			minMax: {min: -2, max: 2},
-			defaultVal: 0,
-			defaultConnect: true,
-		};
+		// const positionXParam = {
+		// 	title: 'Position X',
+		// 	param: 'x',
+		// 	useAsInput: true,
+		// 	parent: 'Particle Position',
+		// 	paramHelpersType: 'position',
+		// 	needsFrameUpdate: false,
+		// 	minMax: {min: -2, max: 2},
+		// 	defaultVal: 0,
+		// 	defaultConnect: true,
+		// };
 
-		const positionYParam = {
-			title: 'Position Y',
-			param: 'y',
-			useAsInput: true,
-			parent: 'Position',
-			paramHelpersType: 'position',
-			needsFrameUpdate: false,
-			minMax: {min: -2, max: 2},
-			defaultVal: 0,
-			defaultConnect: false,
-		};
+		// const positionYParam = {
+		// 	title: 'Position Y',
+		// 	param: 'y',
+		// 	useAsInput: true,
+		// 	parent: 'Particle Position',
+		// 	paramHelpersType: 'position',
+		// 	needsFrameUpdate: false,
+		// 	minMax: {min: -2, max: 2},
+		// 	defaultVal: 0,
+		// 	defaultConnect: false,
+		// };
 
-		const positionZParam = {
-			title: 'Position Z',
-			param: 'z',
-			useAsInput: true,
-			parent: 'Position',
-			paramHelpersType: 'position',
-			needsFrameUpdate: false,
-			minMax: {min: -2, max: 2},
-			defaultVal: 0,
-			defaultConnect: true,
-		};
+		// const positionZParam = {
+		// 	title: 'Position Z',
+		// 	param: 'z',
+		// 	useAsInput: true,
+		// 	parent: 'Particle Position',
+		// 	paramHelpersType: 'position',
+		// 	needsFrameUpdate: false,
+		// 	minMax: {min: -2, max: 2},
+		// 	defaultVal: 0,
+		// 	defaultConnect: true,
+		// };
 
 		const rotationXParam = {
 			title: 'Rotation x',
@@ -191,15 +193,15 @@ export default class ParticlesNode extends GraphicNode{
 		this.params = {
 			// textureParam,
 			colorParam,
-			positionXParam,
-			positionYParam,
-			positionZParam,
-			rotationXParam,
+			// positionXParam,
+			// positionYParam,
+			// positionZParam,
+			// rotationXParam,
 			rotationYParam,
 			formXParam,
 			formYParam,
 			formZParam,
-			sizeParam,
+			// sizeParam,
 		};
 
 		this.paramVals = {};
@@ -211,6 +213,8 @@ export default class ParticlesNode extends GraphicNode{
 			y: 0,
 			z: 0,
 		};
+
+		this.isSelected = false;
 
 		
 	}
@@ -246,12 +250,19 @@ export default class ParticlesNode extends GraphicNode{
 
 		this.outputDataConnection = null;
 
-		// const canvas = this.nodeTitle.canvas;
-		// this.nameTexture = new THREE.CanvasTexture(canvas);
-		// this.nameMesh.material.map = this.nameTexture;
-		// this.nameTexture.needsUpdate = true;
-
 		this.enabledOutputs = [];
+	}
+
+	onSelected() {
+		this.isSelected = true;
+	}
+
+	onDeselected() {
+		this.isSelected = false;
+	}
+
+	getActiveHelperMesh() {
+		return undefined;
 	}
 
 	getMesh() {
@@ -305,9 +316,11 @@ export default class ParticlesNode extends GraphicNode{
 		const yDefaultVal = this.params['formYParam'].defaultVal;
 		const zDefaultVal = this.params['formZParam'].defaultVal;
 
-		const rColor = this.currentParticleColor[0];
-		const gColor = this.currentParticleColor[1];
-		const bColor = this.currentParticleColor[2];
+		const rColor = this.isSelected ? 1.0 : this.currentParticleColor[0];
+		const gColor = this.isSelected ? 1.0 : this.currentParticleColor[1];
+		const bColor = this.isSelected ? 1.0 : this.currentParticleColor[2];
+
+		const size = this.isSelected ? 4 : this.currentParticleSize;
 
 		for ( var i = 0; i < this.particles; i ++ ) {
 			const normalizedIdx = i / this.particles;
@@ -316,7 +329,7 @@ export default class ParticlesNode extends GraphicNode{
 			positions[posIndex] = hasXConnection ? curvePos.x + this.offsets[posIndex] : xDefaultVal  + this.offsets[posIndex];
 			positions[posIndex + 1] = hasYConnection ? curvePos.y + this.offsets[posIndex + 1] : yDefaultVal + this.offsets[posIndex + 1];
 			positions[posIndex + 2] = hasZConnection ? curvePos.y + this.offsets[posIndex + 2] : zDefaultVal + this.offsets[posIndex + 2];
-			sizes[i] = this.currentParticleSize;
+			sizes[i] = size;
 			color[posIndex] = rColor;
 			color[posIndex + 1] = gColor;
 			color[posIndex + 2] = bColor;

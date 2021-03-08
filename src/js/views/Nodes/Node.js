@@ -161,7 +161,9 @@ export default class Node{
 
 	// CALLED FROM CONNECTIONSMANAGER
 	onNodeDisconnectFromNonagonDelete() {
+		/* THIS IS WHERE THE PROBLEM STARTS WHEN DISCONNECTING TRIANGLE NODES ON PLANET NODE DELETE */
 		this.nodeType.deactivateAsChild({x: 0, y: 0}, true);
+		this.nodeType.setAngle(0);
 	}
 
 	nodeCreated(nodeConfig) {
@@ -318,7 +320,6 @@ export default class Node{
 		this.onDisconnectCallback(this, paramContainer);
 		const pos = paramContainer.getCleanPos();
 		this.parentEl.appendChild(this.el);
-		// let nodeBoundingRect = paramContainer.node.el.getBoundingClientRect();
 		
 		const parentNode = paramContainer.node;
 
@@ -354,6 +355,9 @@ export default class Node{
 			
 			this.moveCoords.start.x = getX() + offsetX;
 			this.moveCoords.start.y = getY() + offsetY;
+
+			this.moveCoords.offset.x = getX();
+			this.moveCoords.offset.y = getY();
 
 			const { x, y } = this.moveCoords.start;
 
@@ -426,6 +430,10 @@ export default class Node{
 		}
 
 		window.NS.singletons.CanvasNode.foregroundRender.hideActive(this.ID);
+
+		if (this.onDeselected) {
+			this.onDeselected();
+		}
 	}
 
 	setSelected() {
@@ -433,12 +441,14 @@ export default class Node{
 
 		if (this.isRendered) {
 			window.NS.singletons.CanvasNode.foregroundRender.showActive(this.ID);
-			// console.log('set active camera id: ', this.ID);
-			// window.NS.singletons.CanvasNode.foregroundRender.setActiveCamera(this.camera);
 		}
 		
 		if (this.nodeType.setActive && !this.groupState.isInGroup) {
 			this.nodeType.setActive();
+		}
+
+		if (this.onSelected) {
+			this.onSelected();
 		}
 	}
 

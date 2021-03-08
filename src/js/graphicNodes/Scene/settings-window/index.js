@@ -52,9 +52,9 @@ export default class SettingsWindow{
 
             this.toggleOrbitHelper = new ToggleOrbitHelper(col1BottomPartSettings);
 
-            this.onSpeedSettingChangeBound = this.onSpeedSettingChange.bind(this);
+            // this.onSpeedSettingChangeBound = this.onSpeedSettingChange.bind(this);
 
-            this.speedSetting = new HorizontalSlider(col2BottomPartSettings, 1, this.onSpeedSettingChangeBound, 2, { min: 0, max: 1 }, 'speed-settings settings-item', 'Speed modifier');
+            // this.speedSetting = new HorizontalSlider(col2BottomPartSettings, 1, this.onSpeedSettingChangeBound, 2, { min: 0, max: 1 }, 'speed-settings settings-item', 'Speed modifier');
 		}
 
         this.closeFullscreenBtn = document.createElement('div');
@@ -69,9 +69,9 @@ export default class SettingsWindow{
         this.parentEl.appendChild(this.el);
     }
 
-    onSpeedSettingChange(val) {
-        window.NS.settings.speedModifier = val;
-    }
+    // onSpeedSettingChange(val) {
+    //     window.NS.settings.speedModifier = val;
+    // }
 
     onLabelClick(e) {
         e.stopPropagation();

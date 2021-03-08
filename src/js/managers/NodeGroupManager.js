@@ -124,7 +124,7 @@ export default class NodeGroupManager {
         }
 
         const checkOverGroup = () => {
-            const groupKeys = Object.keys(this.groups);
+            const groupKeys = Object.keys(this.groups).filter(t => this.groups[t].isExpanded());
             const L = groupKeys.length;
             const modifierPos = this.activeNonagon.getPos();
             for (let i=0; i < L; i++) {
@@ -140,6 +140,9 @@ export default class NodeGroupManager {
         }
 
         const overGroup = checkOverGroup();
+        if (!overGroup && this.currentActiveGroup) {
+            this.currentActiveGroup.hideAddRemoveVisualHelper();
+        }
         if (this.alreadyConnected && !overGroup) {
             this.alreadyConnected = false;
         }
@@ -148,6 +151,9 @@ export default class NodeGroupManager {
         if (overNonagon) {
             this.onOverNonagon(overNonagon);
         } else if (overGroup) {
+            if (this.currentActiveGroup && this.currentActiveGroup.ID !== overGroup.ID) {
+                this.currentActiveGroup.hideAddRemoveVisualHelper();
+            }
             this.currentActiveGroup = overGroup;
         } else {
             window.NS.singletons.SelectionManager.deselectAllNonagons(this.nonagonsToCheck);
@@ -178,7 +184,8 @@ export default class NodeGroupManager {
                 });
             
             group.delete();
-            delete this.groups[group.ID];  
+            delete this.groups[group.ID];
+            this.currentActiveGroup = null;
         }
     }
 
@@ -225,9 +232,13 @@ export default class NodeGroupManager {
                 }
                 
             }
+
             this.currentActiveGroup.hideAddRemoveVisualHelper();
+            
         }
         this.alreadyConnected = false;
         this.currentActiveGroup = null;
+
+        
     }
 }

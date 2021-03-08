@@ -63,6 +63,10 @@ export default class NodeGroup {
         
     }
 
+    isExpanded() {
+        return this._expandCollapseController.isExpanded;
+    }
+
     /* TODO -- NOT BEING USED --- HAS TO BE USED WHEN NO INTERNET */
     getCurrentID() {
         if (this.ID) {
@@ -167,7 +171,10 @@ export default class NodeGroup {
     // }
 
     delete() {
-        this.parentEl.removeChild(this.el);
+        if (this.el) {
+            this.parentEl.removeChild(this.el);
+        }
+        
     }
 
     hasNonagon(ID) {

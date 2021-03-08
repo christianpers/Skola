@@ -13,8 +13,18 @@ export default class NonagonType {
 
 		this.size = 200;
 
+		const parents = Object.keys(this.params).reduce((acc, curr) => {
+			const param = this.params[curr];
+			if (!acc[param.parent]) {
+				acc[param.parent] = true;
+			}
+			return acc;
+		}, {});
+
+		const isTriangleShape = Object.keys(parents).length === 3;
+		
 		// Set css class for triangle.. needs some spec css props
-		if (Object.keys(this.params).length === 3) {
+		if (isTriangleShape) {
 			parentEl.classList.add('triangle-shape');
 		}
 

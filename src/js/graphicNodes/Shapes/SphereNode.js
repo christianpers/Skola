@@ -185,8 +185,6 @@ export default class SphereNode extends GraphicNode{
 	onCanvasResize(e) {
 		const [w, h] = e.detail;
 
-		console.log('canvas resize', w, h );
-
 		if (this.camera.aspect) {
 			this.camera.aspect = w / h;
 		} else {

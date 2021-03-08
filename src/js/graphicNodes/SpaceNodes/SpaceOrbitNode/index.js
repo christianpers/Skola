@@ -1,21 +1,38 @@
 import OrbitDriverNode from '../../OrbitDriverNode';
-import VerticalSlider from '../../../views/Nodes/NodeComponents/VerticalSlider';
 import VisualHelperSettings from '../../OrbitDriverNode/visual-helper-settings';
 import CenterPointSettings from '../../OrbitDriverNode/center-point-settings';
 import InputComponent from '../../../views/Nodes/NodeComponents/InputComponent';
+import ConversionInputs from '../../../views/Nodes/NodeComponents/ConversionInputs';
 
 import './index.scss';
+
+const kmToTellusRadius = (km /* miljoner km */) => {
+	return Math.round(((Number(km) + Number.EPSILON) / 149.6) * 100) / 100;
+};
+
+const tellusRadiusToKm = (radius) => {
+	return Math.round(((radius + Number.EPSILON) * 149.6) * 10) / 10;
+};
 
 export default class SpaceOrbitNode extends OrbitDriverNode{
 	constructor(renderer, backendData) {
 		super(renderer, backendData);
 
 		this.title = 'Space orbit modifier';
+		this.isOrbitPosition = true;
 		this.onCameraChangedBound = this.onCameraChanged.bind(this);
+		this.onCenterPointListResetClickBound = this.onCenterPointListResetClick.bind(this);
 
-		document.documentElement.addEventListener('camera-pos-changed', this.onCameraChangedBound);
+		this.animateValues.isRunning = true;
+
+		// document.documentElement.addEventListener('camera-pos-changed', this.onCameraChangedBound);
 	}
 
+	initBackendData() {
+		this.getSettings();
+	}
+
+	/* NOT USED ANYMORE */
 	onCameraChanged(e) {
 		if (this.targetNode) {
 			const keys = Object.keys(this.enabledAxes);
@@ -52,19 +69,11 @@ export default class SpaceOrbitNode extends OrbitDriverNode{
 
 		const speedInitVal = (this.initValues && this.initValues.speed) ? this.initValues.speed : 0;
 
-		const { speed } = this.getSpeedVal(speedInitVal);
+		// const { speed } = this.getSpeedVal(speedInitVal);
 
-		this.currentSpeed = speed;
+		this.currentSpeed = Number(speedInitVal);
 		
 		this.curve = new THREE.EllipseCurve(
-			0,  0,            // ax, aY
-			xRadius, yRadius, // xRadius, yRadius
-			0,  2 * Math.PI,  // aStartAngle, aEndAngle
-			false,            // aClockwise
-			0                 // aRotation
-		);
-
-		this.relativeCurve = new THREE.EllipseCurve(
 			0,  0,            // ax, aY
 			xRadius, yRadius, // xRadius, yRadius
 			0,  2 * Math.PI,  // aStartAngle, aEndAngle
@@ -143,7 +152,7 @@ export default class SpaceOrbitNode extends OrbitDriverNode{
 			const labelSpeedHTML = `
 				<div class="orbit-slider-label-group">
 					<h4>Hastighet</h4>
-					<h5>1 = 24h</h5>
+					<h5>1 varv runt center-punkt</h5>
 				</div>
 			`;
 
@@ -154,6 +163,38 @@ export default class SpaceOrbitNode extends OrbitDriverNode{
 
 			speedSliderGroup.appendChild(speedInnerSliderGroup);
 
+
+			//CENTER-POINT
+			const centerPointSliderGroup = document.createElement('div');
+			centerPointSliderGroup.className = 'orbit-slider-group';
+
+			speedSliderRow.appendChild(centerPointSliderGroup);
+
+			const labelCenterPointHTML = `
+				<div class="orbit-slider-label-group">
+					<h4>Center punkt</h4>
+					<h5>Välj center punkt</h5>
+				</div>
+			`;
+
+			centerPointSliderGroup.insertAdjacentHTML('afterbegin', labelCenterPointHTML);
+
+			const centerPointInnerSliderGroup = document.createElement('div');
+			centerPointInnerSliderGroup.className = 'orbit-inner-slider-group';
+
+			centerPointSliderGroup.appendChild(centerPointInnerSliderGroup);
+
+			const centerPointInitValue = (
+				this.initValues &&
+				this.initValues.targetNode &&
+				window.NS.singletons.ConnectionsManager.nodes[this.initValues.targetNode]
+			) ? window.NS.singletons.ConnectionsManager.nodes[this.initValues.targetNode].title : null;
+
+			this.centerPointSettings = new CenterPointSettings(
+				centerPointInnerSliderGroup, this.onCenterPointSelectedBound, centerPointInitValue, this.onCenterPointListResetClickBound,
+			);
+
+
 			const defaultSettings = {
 				value: 0,
 				step: 0.000001,
@@ -161,31 +202,84 @@ export default class SpaceOrbitNode extends OrbitDriverNode{
 				max: 4503,
 			};
 
-			const orbitXInput = new InputComponent(
-				orbitInnerSliderGroup,
-				'X',
-				Object.assign({}, defaultSettings, { value: this.initValues ? this.initValues['orbitX'] : defaultSettings.value }),
-				this.onOrbitXChangeBound,
-				true,
-			);
-			
+			// X
+			const conversionXDefinitionKm = {
+				name: 'X (Miljoner km)',
+				inputSettings: Object.assign({}, defaultSettings, { value: this.initValues ? this.initValues['orbitX'] : defaultSettings.value }),
+				conversionFn: tellusRadiusToKm,
+				isMaster: true,
+			};
 
-			const orbitYInput = new InputComponent(
-				orbitInnerSliderGroup,
-				'Y',
-				Object.assign({}, defaultSettings, { value: this.initValues ? this.initValues['orbitY'] : defaultSettings.value }),
-				this.onOrbitYChangeBound,
-				true,
-			);
-			
+			const conversionXDefinitionTellusRadius = {
+				name: 'X (Jord Radie)',
+				inputSettings: Object.assign({}, defaultSettings, { step: 0.1, value: this.initValues ? kmToTellusRadius(this.initValues['orbitX']) : kmToTellusRadius(defaultSettings.value) }),
+				conversionFn: kmToTellusRadius
+			};
 
-			const orbitZInput = new InputComponent(
-				orbitInnerSliderGroup,
-				'Z',
-				Object.assign({}, defaultSettings, { value: this.initValues ? this.initValues['orbitY'] : defaultSettings.value }),
-				this.onOrbitZChangeBound,
-				true,
-			);
+			const xDef = {
+				disabled: true,
+				hideMinMax: false,
+				applyCallback: this.onOrbitXChangeBound,
+				inputs: [
+					conversionXDefinitionKm,
+					conversionXDefinitionTellusRadius,
+				],
+			};
+
+			const orbitXInput = new ConversionInputs(xDef, orbitInnerSliderGroup);
+
+
+			// Y
+			const conversionYDefinitionKm = {
+				name: 'Y (Miljoner km)',
+				inputSettings: Object.assign({}, defaultSettings, { value: this.initValues ? this.initValues['orbitY'] : defaultSettings.value }),
+				conversionFn: tellusRadiusToKm,
+				isMaster: true,
+			};
+
+			const conversionYDefinitionTellusRadius = {
+				name: 'Y (Jord Radie)',
+				inputSettings: Object.assign({}, defaultSettings, { step: 0.1, value: this.initValues ? kmToTellusRadius(this.initValues['orbitY']) : kmToTellusRadius(defaultSettings.value) }),
+				conversionFn: kmToTellusRadius
+			};
+
+			const yDef = {
+				disabled: true,
+				hideMinMax: false,
+				applyCallback: this.onOrbitYChangeBound,
+				inputs: [
+					conversionYDefinitionKm,
+					conversionYDefinitionTellusRadius,
+				],
+			};
+
+			const orbitYInput = new ConversionInputs(yDef, orbitInnerSliderGroup);
+
+			// Z
+			const conversionZDefinitionKm = {
+				name: 'Z (Miljoner km)',
+				inputSettings: Object.assign({}, defaultSettings, { value: this.initValues ? this.initValues['orbitY'] : defaultSettings.value }),
+				conversionFn: tellusRadiusToKm,
+				isMaster: true,
+			};
+
+			const conversionZDefinitionTellusRadius = {
+				name: 'Z (Jord Radie)',
+				inputSettings: Object.assign({}, defaultSettings, { step: 0.1, value: this.initValues ? kmToTellusRadius(this.initValues['orbitY']) : kmToTellusRadius(defaultSettings.value) }),
+				conversionFn: kmToTellusRadius
+			};
+
+			const zDef = {
+				disabled: true,
+				hideMinMax: false,
+				applyCallback: this.onOrbitZChangeBound,
+				inputs: [
+					conversionZDefinitionKm,
+					conversionZDefinitionTellusRadius,
+				],
+			};
+
+			const orbitZInput = new ConversionInputs(zDef, orbitInnerSliderGroup);
 
 			
 			if (this.initValues && this.initValues['orbitX']) {
@@ -198,14 +292,14 @@ export default class SpaceOrbitNode extends OrbitDriverNode{
 
 			this.speedDefaultSettings = {
 				value: this.initValues ? this.initValues['speed'] : 0,
-				step: 0.1,
+				step: .1,
 				min: 0,
-				max: 60230,
+				max: 60255,
 			};
 
 			this.speedInput = new InputComponent(
 				speedInnerSliderGroup,
-				'Hastighet (mindre betyder fortare)',
+				'Hastighet (dagar)',
 				this.speedDefaultSettings,
 				this.onSpeedChangeBound,
 				false,
@@ -233,26 +327,18 @@ export default class SpaceOrbitNode extends OrbitDriverNode{
                 (this.initValues && this.initValues.visualHelperEnabled) ? this.initValues.visualHelperEnabled : undefined,
             );
 
-			const centerPointInitValue = (
-				this.initValues &&
-				this.initValues.targetNode &&
-				window.NS.singletons.ConnectionsManager.nodes[this.initValues.targetNode]
-			) ? window.NS.singletons.ConnectionsManager.nodes[this.initValues.targetNode].title : null;
+			
+			
+			// this.toggleStartBtn = document.createElement('div');
+			// this.toggleStartBtn.className = 'toggle-start';
+			// this.toggleStartBtn.addEventListener('click', this.onToggleStartClickBound);
 
-			this.centerPointSettings = new CenterPointSettings(
-				bottomContainer, this.onCenterPointSelectedBound, centerPointInitValue, this.onCenterPointListResetClickBound,
-			);
+			// this.toggleBtnText = document.createElement('h4');
+			// this.toggleBtnText.innerHTML = (this.initValues && this.initValues.isRunning) ? 'Stop' : 'Start';
 
-			this.toggleStartBtn = document.createElement('div');
-			this.toggleStartBtn.className = 'toggle-start';
-			this.toggleStartBtn.addEventListener('click', this.onToggleStartClickBound);
+			// this.toggleStartBtn.appendChild(this.toggleBtnText);
 
-			this.toggleBtnText = document.createElement('h4');
-			this.toggleBtnText.innerHTML = (this.initValues && this.initValues.isRunning) ? 'Stop' : 'Start';
-
-			this.toggleStartBtn.appendChild(this.toggleBtnText);
-
-			speedInnerSliderGroup.appendChild(this.toggleStartBtn);
+			// speedInnerSliderGroup.appendChild(this.toggleStartBtn);
 
 			settingsContainer.appendChild(sliderContainer);
 			settingsContainer.appendChild(speedSliderRow);
@@ -261,7 +347,7 @@ export default class SpaceOrbitNode extends OrbitDriverNode{
 			this.settingsContainer = settingsContainer;
 		}
 
-		// this.refreshSettings();
+		this.refreshSettings();
 		
 		return this.settingsContainer;
 	}
@@ -281,16 +367,19 @@ export default class SpaceOrbitNode extends OrbitDriverNode{
 
 	onCenterPointSelected(fromInit, node) {
 		this.targetNode = node;
-		window.NS.singletons.LessonManager.space.addPlanetToCheckDistance(node);
+		// window.NS.singletons.LessonManager.space.addPlanetToCheckDistance(node);
 		if (!fromInit) {
 			this.updateVisualSettings();
 		}
 	}
 
 	onCenterPointListResetClick() {
+		
+		if (this.targetNode) {
+			window.NS.singletons.LessonManager.space.removePlanetToCheckDistance(this.targetNode);
+		}
+		
 		this.targetNode = null;
-
-		window.NS.singletons.LessonManager.space.removePlanetToCheckDistance(node);
 
 		this.updateVisualSettings();
 
@@ -305,13 +394,12 @@ export default class SpaceOrbitNode extends OrbitDriverNode{
 		this.curve.aX = 0;
 		this.curve.aY = 0;
 
-		this.nodeConnectedID = null;
-
 		this.refreshSettings(true);
 
 		this.updateMesh();
 	}
 
+	/* NOT NEEDED ANYMORE */
 	getSpeedVal(value) {
 		/* 
 			EARTH EXAMPLE:
@@ -320,11 +408,15 @@ export default class SpaceOrbitNode extends OrbitDriverNode{
 			AVG SPEED = DIST/TIME (939.488 / 365) = 2,573939726
 			AVG SPEED (KM / H) = (939.488/(365*24)) * 1000000 = 107 247,488584475
 
+			EXAMPLE IN NEw calc: 365/365
+
 			MOON:
 			TIME FOR ONE LAP AROUND CIRCLE: 30.5 days
 			CIRCLE DISTANCE: 2 * 3.14 * 0.389(miljoner km) = 2.41152
 			AVG SPEED = DIST/TIME (2.41152 / 30.5) = 0.079
 			AVG SPEED (KM / H) = (2.41152/(30.5*24)) * 1000000 = 3 294,4262295082
+
+			EXAMPLE IN NEw calc: 365/30.5
 
 			Merkurius EXAMPLE:
 			TIME FOR ONE LAP AROUND CIRCLE: 88 days
@@ -332,11 +424,15 @@ export default class SpaceOrbitNode extends OrbitDriverNode{
 			AVG SPEED = DIST/TIME (364.24 / 88) = 4,1390909091
 			AVG SPEED (KM / H) = (364.24/(88*24)) * 1000000 = 172 462,121212121
 
+			EXAMPLE IN NEw calc: 365/88
+
 			Neptunus EXAMPLE:
 			TIME FOR ONE LAP AROUND CIRCLE: 60225 days
 			CIRCLE DISTANCE: 2 * 3.14 * 4503(miljoner km) = 28 278,84
 			AVG SPEED = DIST/TIME (28 278,84 / 60225) = 0,4695531756
 			AVG SPEED (KM / H) = (28 278,84/(60225*24)) * 1000000 = 19 564,7156496472
+
+			EXAMPLE IN NEw calc: 365/60255
 		*/
 
 		if (!this.currentXInputVal || value <= 0) {
@@ -367,7 +463,7 @@ export default class SpaceOrbitNode extends OrbitDriverNode{
 
 	onOrbitXChange(val) {
 		this.curve.xRadius = this.getOrbitVal(val, true);
-		this.relativeCurve.xRadius = this.getOrbitVal(val, true);
+		// this.relativeCurve.xRadius = this.getOrbitVal(val, true);
 		this.currentXInputVal = val;
 		this.updateVisualSettings();
 
@@ -376,7 +472,7 @@ export default class SpaceOrbitNode extends OrbitDriverNode{
 
 	onOrbitYChange(val) {
 		this.curve.yRadius = this.getOrbitVal(val, true);
-		this.relativeCurve.yRadius = this.getOrbitVal(val, true);
+		// this.relativeCurve.yRadius = this.getOrbitVal(val, true);
 		this.currentYInputVal = val;
 		this.updateVisualSettings();
 
@@ -385,7 +481,7 @@ export default class SpaceOrbitNode extends OrbitDriverNode{
 
 	onOrbitZChange(val) {
 		this.curve.yRadius = this.getOrbitVal(val, true);
-		this.relativeCurve.yRadius = this.getOrbitVal(val, true);
+		// this.relativeCurve.yRadius = this.getOrbitVal(val, true);
 		this.currentYInputVal = val;
 		this.updateVisualSettings();
 
@@ -394,7 +490,7 @@ export default class SpaceOrbitNode extends OrbitDriverNode{
 
 	onSpeedChange(val) {
 		const { speed, kmHSpeed } = this.getSpeedVal(val);
-		this.currentSpeed = speed;
+		this.currentSpeed = Number(val);
 		
 		this.updateVisualSettings();
 	}
@@ -402,15 +498,44 @@ export default class SpaceOrbitNode extends OrbitDriverNode{
 	update() {
 		super.update();
 
-		// const point = this.relativeCurve.getPoint(this.currentT);
-		// const vectorPoint = new THREE.Vector3(point.x, point.y, point.y);
 
-		// for (let i = 0; i < this.currentOutConnectionsLength; i++) {
-		// 	const connectionData = this.currentOutConnections[i];
-		// 	const inNode = window.NS.singletons.ConnectionsManager.nodes[connectionData.inNodeID];
-		// 	// const paramContainer = window.NS.singletons.ConnectionsManager.params[connectionData.connection.paramID];
-			
-		// 	inNode.distanceMeasurePosition = vectorPoint;
-		// }
+	}
+
+	reset() {
+		this.animateValues.isRunning = false;
+
+		// this.currentT = 0;
+		this.currentSpeed = 0;
+
+		this.orbitSliders.Position.x.setValue(0);
+		this.orbitSliders.Position.y.setValue(0);
+		this.orbitSliders.Position.z.setValue(0);
+
+		this.speedInput.setValue(0);
+
+		this.curve.xRadius = 0;
+		this.currentXInputVal = 0;
+
+		this.curve.yRadius = 0;
+		this.currentYInputVal = 0;
+
+		this.nodeConnectedID = null;
+
+		this.setDistanceToOrigin();
+
+		this.onCenterPointListResetClick();
+	}
+
+	_calcCurrentT() {
+		const spaceTime = window.NS.singletons.LessonManager.space.spaceTimeController.getNormalizedPositionInYear(this.currentSpeed);
+		return spaceTime;
+	}
+
+	get currentT() {
+		return this._currentT;
+	}
+
+	set currentT(value) {
+		this._currentT = value;
 	}
 }

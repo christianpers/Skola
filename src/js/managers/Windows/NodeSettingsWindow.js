@@ -91,7 +91,6 @@ export default class NodeSettingsWindow{
 
     checkForUpdates(node) {
         if (node.refreshSettings) {
-            console.log('sss');
             this.removeCurrent();
             this.setupForNode(node);
         }

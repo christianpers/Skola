@@ -1,0 +1,46 @@
+space-time-ui {
+    display: block;
+    position: absolute;
+    right: 20px;
+    top: 0;
+    padding: 10px;
+    background: transparent;
+    width: 170px;
+    
+    & > .time-container {
+        margin-bottom: 10px;
+        display: grid;
+        grid-auto-rows: auto;
+        grid-template-columns: 90px 1fr;
+        grid-gap: 6px;
+        grid-template-areas:
+            "values button";
+
+        & > .value-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-gap: 6px;
+        }
+
+        & > button {
+            background: yellow;
+            border: 0;
+            padding: 4px 8px;
+            cursor: pointer;
+    
+            & > h4 {
+                color: black;
+                font-size: 12px;
+                font-weight: bold;
+            }
+        }
+    }
+
+    & > .speed-slider-container {
+        background: rgb(20, 20, 20);
+        padding: 6px;
+        margin-bottom: 10px;
+    }
+
+    
+}

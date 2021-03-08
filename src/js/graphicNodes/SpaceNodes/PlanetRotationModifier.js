@@ -1,5 +1,8 @@
 import GraphicNode from '../GraphicNode';
-import VerticalSlider from '../../views/Nodes/NodeComponents/VerticalSlider';
+// import VerticalSlider from '../../views/Nodes/NodeComponents/VerticalSlider';
+import InputComponent from '../../views/Nodes/NodeComponents/InputComponent';
+
+const FULL_RADIAN = Math.PI * 2;
 
 export default class PlanetRotationModifer extends GraphicNode {
     constructor(renderer, backendData) {
@@ -12,15 +15,16 @@ export default class PlanetRotationModifer extends GraphicNode {
 
 		this.isParam = true;
 
-		this.currentRotationY = (this.initValues && this.initValues.rotationX) ? this.initValues.rotationX : 0;
+		const hasYVal = (this.initValues && this.initValues.rotationY);
+		this.currentRotationY = hasYVal ? this.initValues.rotationY : 0;
 
 		this.outValues = {
 			Rotation: {
-				y: 0,
+				y: 1,
 			}
 		};
 
-		this.onRotationChangeYBound = this.onRotationChangeY.bind(this);
+		this.onInputChangeBound = this.onInputChange.bind(this);
 		
 		this.getSettings();
 	}
@@ -37,20 +41,23 @@ export default class PlanetRotationModifer extends GraphicNode {
 			const rotationSliderContainer = document.createElement('div');
 			rotationSliderContainer.className = 'slider-row';
 
-			const rotationYSlider = new VerticalSlider(
+			const defaultSettings = {
+				value: this.initValues ? this.initValues['rotationY'] : 1,
+				step: 1,
+				min: 1,
+				max: 20000,
+			};
+
+			const input = new InputComponent(
 				rotationSliderContainer,
-				this.initValues ? this.initValues['rotationY'] : 0,
-				this.onRotationChangeYBound,
-				6,
-				{min: 0, max: .01},
-				'Rotation Y',
-				60,
-				true,
+				'Rotation (Timmar)',
+				defaultSettings,
+				this.onInputChangeBound
 			);
 
 			this.rotationSliders = {
 				Rotation: {
-					y: rotationYSlider,
+					y: input,
 				},
 			};
 
@@ -62,7 +69,7 @@ export default class PlanetRotationModifer extends GraphicNode {
 		return this.settingsContainer;
 	}
 
-	onRotationChangeY(val) {
+	onInputChange(val) {
 		this.currentRotationY = val;
 		this.updateVisualSettings();
 	}
@@ -74,7 +81,9 @@ export default class PlanetRotationModifer extends GraphicNode {
 	}
 
     reset() {
-
+		this.outValues['Rotation'].y = 1.0;
+		this.rotationSliders['Rotation'].y.setValue(1.0);
+		this.currentRotationY = 1.0;
     }
 
 	getValue(param) {
@@ -82,15 +91,18 @@ export default class PlanetRotationModifer extends GraphicNode {
 	}
 
 	update() {
-		this.outValues['Rotation'].y += this.currentRotationY;
+		const normalizedRotation = window.NS.singletons.LessonManager.space.spaceTimeController.getNormalizedCurrentHourInDay(this.currentRotationY / 24);
+		const val = normalizedRotation * FULL_RADIAN;
+		this.outValues['Rotation'].y = -Math.round((val + Number.EPSILON) * 1000) / 1000;
 		
-		// console.log(this.currentOutConnectionsLength);
 
     	for (let i = 0; i < this.currentOutConnectionsLength; i++) {
 			const connectionData = this.currentOutConnections[i];
 			const inNode = window.NS.singletons.ConnectionsManager.nodes[connectionData.inNodeID];
 			const paramContainer = window.NS.singletons.ConnectionsManager.params[connectionData.connection.paramID];
-			
+			// if (inNode.ID === 'gKc0wgRdBiGbw9MbzTMQ') {
+			// 	console.log(normalizedRotation);
+			// }
 			inNode.updateParam(paramContainer, this);
 		}
 	}
@@ -101,12 +113,11 @@ export default class PlanetRotationModifer extends GraphicNode {
 
 	onConnectionAdd(e) {
 		// console.log('graphic node on connection add orbit: ', e.detail, e.type, this.ID);
-
 		if (e.detail.connection.outNodeID === this.ID) {
 			const connection = e.detail.connection;
 			const paramContainer = window.NS.singletons.ConnectionsManager.params[connection.paramID];
 			
-			this.rotationSliders[paramContainer.param.parent][paramContainer.param.param].show();
+			// this.rotationSliders[paramContainer.param.parent][paramContainer.param.param].show();
 			this.currentOutConnections.push(e.detail);
 			this.currentOutConnectionsLength = this.currentOutConnections.length;
 		}
@@ -121,9 +132,12 @@ export default class PlanetRotationModifer extends GraphicNode {
 			const outIDToRemove = connection.outNodeID;
 			const inIDToRemove = e.detail.inNodeID;
 			const paramContainer = window.NS.singletons.ConnectionsManager.params[connection.paramID];
-			
-			this.rotationSliders[paramContainer.param.parent][paramContainer.param.param].hide();
+			// if (this.rotationSliders[paramContainer.param.parent][paramContainer.param.param]) {
+			// 	this.rotationSliders[paramContainer.param.parent][paramContainer.param.param].hide();
 
+				
+			// }
+			
 			const tempOutConnections = this.currentOutConnections.map(t => t);
 
 			const paramConnections = tempOutConnections.filter(t => (t.inNodeID === inIDToRemove && t.connection.paramID !== paramIDToRemove));

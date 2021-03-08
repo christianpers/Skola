@@ -10,6 +10,7 @@ export default class SizeModifierNode extends GraphicNode{
 		this.isParam = true;
 		this.returnsSingleNumber = true;
 		this.title = 'Space size modifier';
+		this.isSpaceSize = true;
 
 		this.sizeInput = null;
 		this.maxScale = 8;
@@ -88,6 +89,11 @@ export default class SizeModifierNode extends GraphicNode{
         return this.currentConvertedValue;
 	}
 
+	reset() {
+		this.currentConvertedValue = 0.01;
+		this.currentNormalizedVal = 0;
+	}
+
 	onConnectionAdd(e) {
 		if (e.detail.connection.outNodeID === this.ID) {
 			this.currentOutConnections.push(e.detail);
@@ -120,7 +126,6 @@ export default class SizeModifierNode extends GraphicNode{
 
 	removeFromDom() {
 		this.reset();
-		window.cancelAnimationFrame(this.animateValues.reqAnimFrame);
 
 		super.removeFromDom();
 	}

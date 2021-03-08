@@ -3,6 +3,8 @@ import Editor from '../views/Editor';
 import NodeParam from '../views/Nodes/NodeComponents/NodeParam';
 import NodeParamContainer from '../views/Nodes/NodeComponents/NodeParamContainer';
 
+import { SIMPLE_3D_VERTEX, ACTIVE_MESH_FRAGMENT } from '../../shaders/SHADERS';
+
 import ParamHelpers from './Helpers/ParamHelpers';
 import InputHelpers from './Helpers/InputHelpers';
 
@@ -102,6 +104,24 @@ export default class GraphicNode extends Node{
 		paramObj.disable();
 
 		ParamHelpers[paramObj.param.paramHelpersType].disconnect(this, paramObj.param, outNode);
+	}
+
+	getActiveHelperMesh() {
+		const planeGeometry = new THREE.PlaneBufferGeometry( 5, 5, 1, 1 );
+		const planeMaterial = new THREE.ShaderMaterial({
+            uniforms: {},
+            vertexShader: SIMPLE_3D_VERTEX,
+            fragmentShader: ACTIVE_MESH_FRAGMENT,
+        });
+
+		planeMaterial.transparent = true;
+		
+		const planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
+		planeMesh.position.y = 0;
+		planeMesh.scale.set(1.4, 1.4, 1);
+		planeMesh.visible = false;
+
+		return planeMesh;
 	}
 
 	onResize() {

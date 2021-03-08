@@ -4,7 +4,7 @@ export default class PlanetNode extends SphereNode{
 	constructor() {
 		super();
 
-		
+		this.needsUpdate = false;
 
 		const textureParam = {
 			title: 'Texture',
@@ -21,7 +21,7 @@ export default class PlanetNode extends SphereNode{
 			param: 'x',
 			useAsInput: true,
 			parent: 'Position',
-			paramHelpersType: 'position',
+			paramHelpersType: 'orbitPosition',
 			needsFrameUpdate: false,
 			minMax: {min: -2, max: 2},
 			defaultVal: 0,
@@ -33,7 +33,7 @@ export default class PlanetNode extends SphereNode{
 			param: 'y',
 			useAsInput: true,
 			parent: 'Position',
-			paramHelpersType: 'position',
+			paramHelpersType: 'orbitPosition',
 			needsFrameUpdate: false,
 			minMax: {min: -2, max: 2},
 			defaultVal: 0,
@@ -45,7 +45,7 @@ export default class PlanetNode extends SphereNode{
 			param: 'z',
 			useAsInput: true,
 			parent: 'Position',
-			paramHelpersType: 'position',
+			paramHelpersType: 'orbitPosition',
 			needsFrameUpdate: false,
 			minMax: {min: -2, max: 2},
 			defaultVal: 0,
@@ -81,7 +81,7 @@ export default class PlanetNode extends SphereNode{
 			param: 'Storlek',
 			useAsInput: true,
 			parent: 'Storlek',
-			paramHelpersType: 'scale',
+			paramHelpersType: 'spaceSize',
 			needsFrameUpdate: false,
 			minMax: {min: .1, max: 6},
 			defaultVal: 1,

@@ -33,7 +33,7 @@ export default class ColorNode extends GraphicNode{
 		if (backendData && backendData.data && backendData.data.visualSettings) {
 			this.currentColor = new THREE.Color(backendData.data.visualSettings.color);
 		} else {
-			this.currentColor = undefined;
+			this.currentColor = new THREE.Color(1.0, 1.0, 1.0);
 		}
 
 		// this.picker = new Picker(colorConfig);
@@ -74,6 +74,7 @@ export default class ColorNode extends GraphicNode{
 			super.onConnectionRemove(e);
 		} else if (this.ID === detail.connection.outNodeID) {
 			this.disableOutput(detail.connection.paramID);
+			this.currentColor = new THREE.Color(1.0, 1.0, 1.0);
 		}
 	}
 

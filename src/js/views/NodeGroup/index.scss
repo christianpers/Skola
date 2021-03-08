@@ -21,6 +21,10 @@
     &[collapsed="true"] {
         height: 40px;
 
+        & .nodes-container {
+            opacity: 0;
+        }
+
         & .node-selection {
             display: none;
         }

@@ -1,7 +1,7 @@
 import './index.scss';
 
 export default class InputComponent{
-	constructor(parentEl, name, inputSettings, callback, disabled, hideMinMax) {
+	constructor(parentEl, name, inputSettings, callback, disabled, hideMinMax, callbackOnChange) {
 		this.callback = callback;
 		const container = document.createElement('div');
 		container.className = `input-setting`;
@@ -9,6 +9,8 @@ export default class InputComponent{
 		const label = document.createElement('h4');
 		label.className = `input-label`;
 		label.innerHTML = `${name}`;
+
+		this._name = name;
 
 		const minLabel = document.createElement('h4');
 		minLabel.className = 'range';
@@ -29,13 +31,15 @@ export default class InputComponent{
 
 		this.onChangeBound = this.onChange.bind(this);
 
+		this._callbackOnChange = callbackOnChange;
+
 		this.el = document.createElement('input');
 		this.el.type = 'number';
 		this.el.value = inputSettings.value;
 		this.el.step = inputSettings.step;
 		this.el.min = inputSettings.min;
 		this.el.max = inputSettings.max;
-		this.el.addEventListener('change', this.onChangeBound);
+		this.el.addEventListener('input', this.onChangeBound);
 
 		this.el.addEventListener('click', (e) => {
 			e.stopPropagation();
@@ -69,7 +73,7 @@ export default class InputComponent{
 		e.stopPropagation();
 		const value = Number(this.el.value);
 		if (this.isValidInput(value)) {
-			this.callback(value);
+			this.callback(value, this._name);
 		} else {
 			this.el.value = this.el.min;
 		}
@@ -92,7 +96,15 @@ export default class InputComponent{
 		if (!this.isValidInput(value)) {
 			// this.callback(value);
 			this.el.value = this.el.min;
+
+			return;
 		}
+
+		if (this._callbackOnChange) {
+			this._callbackOnChange(value, this._name);
+		}
+
+		
 	}
 
 	setValue(val) {

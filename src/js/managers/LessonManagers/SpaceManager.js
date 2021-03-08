@@ -1,3 +1,4 @@
+import SpaceTimeController from './SpaceTimeController';
 
 export default class SpaceManager {
     constructor() {
@@ -7,6 +8,8 @@ export default class SpaceManager {
         window.NS.singletons.lessons.space.distanceModifier = 0;
 
         this.origin = new THREE.Vector3();
+
+        this.spaceTimeController = new SpaceTimeController();
 
         this.onCameraChangedBound = this.onCameraChanged.bind(this);
 
@@ -25,7 +28,8 @@ export default class SpaceManager {
         const cameraPos = new THREE.Vector3(e.detail.x, 0, e.detail.z);
         const getDistance = (targetNode) => {
             const camDistanceToCenter = cameraPos.distanceToSquared(this.origin);
-            const diff = Math.abs(camDistanceToCenter - orbitNode.currentDistanceToOrigin);
+            const dist = orbitNode ? orbitNode.currentDistanceToOrigin : 0;
+            const diff = Math.abs(camDistanceToCenter - dist);
             // console.log(camDistanceToCenter);
             
             const minDistance = 3000;
@@ -53,5 +57,5 @@ export default class SpaceManager {
     removePlanetToCheckDistance(planetNode) {
         const temp = this.planetsToCheckDistance.filter(t => t.ID !== planetNode.ID);
         this.planetsToCheckDistance = temp;
-    } 
+    }
 }

@@ -1,0 +1,90 @@
+.node-settings.shape-modifier-node {
+    flex-direction: column;
+    .slider-row {
+        width: 100%;
+        display: flex;
+        margin-bottom: 20px;
+
+        .orbit-slider-group {
+            position: relative;
+            padding-top: 20px;
+            margin-right: 10px;
+            .orbit-slider-label-group {
+                position: absolute;
+                top: -13px;
+                background: yellow;
+                padding: 4px 8px;
+
+                > h4 {
+                    color: black;
+                }
+
+                > h5 {
+                    color: black;
+                }
+            }
+            .orbit-inner-slider-group {
+                display: flex;
+                border: 1px solid yellow;
+                padding: 6px;
+                align-items: flex-end;
+
+                .input-setting {
+                    margin-right: 20px;
+
+                    &:last-child {
+                        margin-right: 0;
+                    }
+                }
+            }
+
+            &:last-child {
+                margin-right: 0;
+            }
+        }
+
+        .vertical-slider {
+            margin-right: 10px;
+
+            &:last-child {
+                margin-right: 0;
+            }
+        }
+    }
+
+    .visual-helper-settings {
+        padding: 5px;
+
+        .toggle-visibility {
+            width: 20px;
+            height: 20px;
+            background: yellow;
+            margin-top: 10px;
+            cursor: pointer;
+            opacity: 0.4;
+            border-radius: 4px;
+
+            &.enabled {
+                opacity: 1;
+            }
+        }
+    }
+
+    .center-point-settings {
+        padding: 5px;
+        margin-left: 40px;
+    }
+
+    .toggle-start {
+        color: black;
+        display: block;
+        background: yellow;
+        padding: 6px 20px;
+        border-radius: 4px;
+        margin-top: 50px;
+
+        > h4 {
+            color: black;
+        }
+    }
+}

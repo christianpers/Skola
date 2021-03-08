@@ -1,4 +1,3 @@
-import { SIMPLE_3D_VERTEX, ACTIVE_MESH_FRAGMENT } from '../../../shaders/SHADERS';
 import Stars from './lessons/space/Stars';
 import CameraKeyboardBindings from './CameraKeyboardBindings';
 import {
@@ -232,24 +231,13 @@ export default class ForegroundRender{
 			return;
 		}
 
-		console.log('create plane mesh', this.showActiveHelperMeshes);
-		const planeGeometry = new THREE.PlaneBufferGeometry( 5, 5, 1, 1 );
-		const planeMaterial = new THREE.ShaderMaterial({
-            uniforms: {},
-            vertexShader: SIMPLE_3D_VERTEX,
-            fragmentShader: ACTIVE_MESH_FRAGMENT,
-        });
+		const helperMesh = node.getActiveHelperMesh();
+		if (helperMesh) {
+			node.mesh.add(helperMesh);
 
-		planeMaterial.transparent = true;
+			this.activeHelperMeshes[`${meshName}-active`] = helperMesh;
+		}
 		
-		const planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
-		planeMesh.position.y = 0;
-		planeMesh.scale.set(1.4, 1.4, 1);
-		planeMesh.visible = false;
-
-		node.mesh.add(planeMesh);
-
-		this.activeHelperMeshes[`${meshName}-active`] = planeMesh;
 	}
 
 	showActive(nodeID) {
@@ -260,14 +248,19 @@ export default class ForegroundRender{
 		const isRenderedKeys = keys.filter(t => window.NS.singletons.ConnectionsManager.nodes[t].isRendered);
 		isRenderedKeys.forEach(t => {
 			const meshName = `${t}-mesh-active`;
-			this.activeHelperMeshes[meshName].visible = false;
+			if (this.activeHelperMeshes[meshName]) {
+				this.activeHelperMeshes[meshName].visible = false;
+			}
 		});
 
 
 		const meshName = `${nodeID}-mesh-active`;
 		if (this.activeHelperMeshes[meshName]) {
 			this.currentActiveKey = meshName;
-			this.activeHelperMeshes[meshName].visible = true;
+			if (this.activeHelperMeshes[meshName]) {
+				this.activeHelperMeshes[meshName].visible = true;
+			}
+			
 		}
 		
 		// console.log('show active: ', nodeID, this.activeHelperMeshes)

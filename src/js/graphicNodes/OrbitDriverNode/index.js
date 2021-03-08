@@ -66,7 +66,7 @@ export default class OrbitDriverNode extends GraphicNode{
 		this.onCenterPointListResetClickBound = this.onCenterPointListResetClick.bind(this);
 
 		this.updateAxes();
-		this.getSettings();
+		// this.getSettings();
 	}
 
 	initCurve() {
@@ -118,8 +118,6 @@ export default class OrbitDriverNode extends GraphicNode{
 
 		this.curve.aX = 0;
 		this.curve.aY = 0;
-
-		this.nodeConnectedID = null;
 
 		this.refreshSettings(true);
 
@@ -335,6 +333,8 @@ export default class OrbitDriverNode extends GraphicNode{
 			
 			const enabledParams = this.targetNode.nodeType.getEnabledParamsForType('Position', {x: {enabled: false}, y: {enabled: false}, z: {enabled: false}});
 			let yVal = 0;
+
+			
 			
 			const targetPoint = this.curve.getPoint(this.currentT);
 			if (this.enabledAxes['x']) {
@@ -354,6 +354,8 @@ export default class OrbitDriverNode extends GraphicNode{
 				finalAxesToSet.z = targetPoint.y;
 			}
 			this.curve.aY = yVal;
+
+			
 
 			const finalHelperMesh = {};
 
@@ -388,12 +390,12 @@ export default class OrbitDriverNode extends GraphicNode{
 			this.outValues['Position'].z = point.y;
 
 			
-			/* LOOKAT has to be done before setting position */
-			for (let i = 0; i < this.currentOutConnectionsLength; i++) {
-				const connectionData = this.currentOutConnections[i];
-				const inNode = window.NS.singletons.ConnectionsManager.nodes[connectionData.inNodeID];
-				inNode.mesh.lookAt(new THREE.Vector3(point.x, 0, point.y));
-			}
+			/* LOOKAT has to be done before setting position ---- WHY DO WE DO THIS ???  FUCKED UP THE ROTATION */
+			// for (let i = 0; i < this.currentOutConnectionsLength; i++) {
+			// 	const connectionData = this.currentOutConnections[i];
+			// 	const inNode = window.NS.singletons.ConnectionsManager.nodes[connectionData.inNodeID];
+			// 	inNode.mesh.lookAt(new THREE.Vector3(point.x, 0, point.y));
+			// }
 
 			for (let i = 0; i < this.currentOutConnectionsLength; i++) {
 				const connectionData = this.currentOutConnections[i];
@@ -409,10 +411,8 @@ export default class OrbitDriverNode extends GraphicNode{
 			return;
 		}
 
-		this.currentT += this.currentSpeed * window.NS.settings.speedModifier;
-		if (this.currentT > 1) {
-			this.currentT = 0;
-		}
+		this.currentT = this._calcCurrentT();
+		
 	}
 
 	updateAxes() {
@@ -444,7 +444,19 @@ export default class OrbitDriverNode extends GraphicNode{
 	}
 
 	refreshSettings(resetSelected) {
-		this.centerPointSettings.refresh(this.nodeConnectedID, resetSelected);
+		if (this.centerPointSettings) {
+			this.centerPointSettings.refresh(this.nodeConnectedID, resetSelected);
+		}
+		
+
+		this.currentOutConnections.forEach(t => {
+			const conn = t.connection;
+			const paramContainer = window.NS.singletons.ConnectionsManager.params[conn.paramID];
+			if (paramContainer && this.orbitSliders) {
+				this.orbitSliders[paramContainer.param.parent][paramContainer.param.param].show();
+			}
+			
+		})
 	}
 
 	onConnectionAdd(e) {
@@ -452,13 +464,16 @@ export default class OrbitDriverNode extends GraphicNode{
 			const connection = e.detail.connection;
 			const paramContainer = window.NS.singletons.ConnectionsManager.params[connection.paramID];
 			
-			this.orbitSliders[paramContainer.param.parent][paramContainer.param.param].show();
+			// this.orbitSliders[paramContainer.param.parent][paramContainer.param.param].show();
 			this.currentOutConnections.push(e.detail);
 			this.currentOutConnectionsLength = this.currentOutConnections.length;
 
 			if (this.currentOutConnectionsLength > 0) {
 				this.mesh.visible = true;
-				this.visualHelperSettings.enableVisibility();
+				if (this.visualHelperSettings) {
+					this.visualHelperSettings.enableVisibility();
+				}
+				
 
 				this.updateAxes();
 				this.updateMesh();
@@ -551,6 +566,22 @@ export default class OrbitDriverNode extends GraphicNode{
 			if (inputParams[zParamKey].isConnected) {
 				inputParams[yParamKey].setConnectionAllowed(false);
 			}
+		}
+	}
+
+	_calcCurrentT() {
+		return this.currentT + this.currentSpeed * window.NS.settings.speedModifier;
+	}
+
+	get currentT() {
+		return this._currentT;
+	}
+
+	set currentT(value) {
+		this._currentT = value;
+
+		if (this._currentT > 1) {
+			this._currentT = 0;
 		}
 	}
 }

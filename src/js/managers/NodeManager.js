@@ -3,6 +3,7 @@ import GraphicsNodeManager from './GraphicsNodeManager';
 import AudioNodeManager from './AudioNodeManager';
 
 import WindowManager from './Windows/WindowManager';
+import UpdateLoopManager from './UpdateLoopManager';
 
 import ParamHelpers from '../graphicNodes/Helpers/ParamHelpers';
 import Helpers from '../musicHelpers/Helpers';
@@ -26,6 +27,8 @@ export default class NodeManager{
 		this.nodeLibrary = nodeLibrary;
 
 		this.availableConnections = new AvailableConnections();
+
+		this._updateLoopManager = new UpdateLoopManager();
 
 		window.NS.singletons.NodeGroupManager = new NodeGroupManager();
 		if (window.NS.singletons.PROJECT_TYPE === window.NS.singletons.TYPES.chemistry.id) {
@@ -194,7 +197,7 @@ export default class NodeManager{
 	initNode(nodeData, e, backendData) {
 		let createdNode = null;
 		if (nodeData.type === 'graphics') {
-			const hasSceneNode = this._graphicNodes.some(t => t.isCanvasNode);
+			const hasSceneNode = this._nodes.some(t => t.isCanvasNode);
 			if (hasSceneNode && nodeData.data.type === 'Canvas') {
 				return;
 			}
@@ -252,6 +255,9 @@ export default class NodeManager{
 			console.log('error updating node');
 		});
 		window.NS.singletons.ConnectionsManager.addParamConnection(paramObj, outNode);
+		
+		this._updateLoopManager.add(outNode);
+		this._updateLoopManager.add(inNode);
 		return true;
 	}
 
@@ -266,12 +272,16 @@ export default class NodeManager{
 			console.log('error updating node');
 		});
 		window.NS.singletons.ConnectionsManager.removeParamConnection(paramObj, outNode);
+		
+		this._updateLoopManager.delete(outNode);
+		this._updateLoopManager.delete(inNode);
 		return true;
 	}
 
 	onInputConnection(outNode, paramContainer, fromInit) {
 		window.NS.singletons.ConnectionsManager.addNodeConnection(outNode, paramContainer);
 
+		/* SHOULD LOOK INTO NOT HAVING FROMINIT HERE   SHOULD BE ABLE TO DO IT WITHOUT */
 		if (!fromInit) {
 			const defaultConnectParamObjects = Object.keys(paramContainer.inputParams)
 				.filter(t => paramContainer.inputParams[t].param.defaultConnect)
@@ -280,11 +290,25 @@ export default class NodeManager{
 
 			this.windowManager.onNodeConnect(outNode);
 		}
+
+		if (fromInit) {
+			if (outNode.needsUpdate) {
+				this._updateLoopManager.add(outNode);
+			}
+			const defaultConnectParamObjects = Object.keys(paramContainer.inputParams)
+				.filter(t => paramContainer.inputParams[t].param.defaultConnect)
+				.map(t => paramContainer.inputParams[t])
+				.forEach(t => {
+					if (t.paramContainer.node.needsUpdate) {
+						this._updateLoopManager.add(t.paramContainer.node);
+					}
+				});
+		}
 		
 	};
 
 	onDisconnect(outNode, paramContainer) {
-		// console.log('on disconnect');
+		console.log('on disconnect');
 		const params = Object.keys(paramContainer.inputParams);
 		for (let i = 0; i < params.length; i++) {
 			const param = paramContainer.inputParams[params[i]];
@@ -299,16 +323,12 @@ export default class NodeManager{
 	add(node) {
 		if (node.isRendered || node.hasMesh) {
 			window.NS.singletons.CanvasNode.enableInput(node, 'foreground');
-			this._nodes.push(node);
-		} else {
-			this._nodes.push(node);
 		}
-		// window.NS.singletons.ConnectionsManager.addNode(node);
-		
-		if (node.isRenderNode || node.isCanvasNode || node.needsUpdate) {
-			this._graphicNodes.push(node);
-			this._graphicNodeLength = this._graphicNodes.length;
-		}
+		this._nodes.push(node);
+		// if (node.isRenderNode || node.isCanvasNode || node.needsUpdate) {
+		// 	this._graphicNodes.push(node);
+		// 	this._graphicNodeLength = this._graphicNodes.length;
+		// }
 
 		// if (node.isSequencer) {
 		// 	const audioConnections = this.getAudioConnections(this._nodeConnections);
@@ -330,11 +350,11 @@ export default class NodeManager{
 		window.NS.singletons.StatusWindow.onNodeRemove(node);
 
 		window.NS.singletons.ConnectionsManager.removeNode(node);
-		if (node.isGraphicsNode || node.needsUpdate) {
-			const tempNodes = this._graphicNodes.filter(t => t.ID !== node.ID);
-			this._graphicNodes = tempNodes;
-			this._graphicNodeLength = this._graphicNodes.length;
-		}
+		// if (node.isGraphicsNode || node.needsUpdate) {
+		// 	const tempNodes = this._graphicNodes.filter(t => t.ID !== node.ID);
+		// 	this._graphicNodes = tempNodes;
+		// 	this._graphicNodeLength = this._graphicNodes.length;
+		// }
 
 		if (node.isRendered || node.hasMesh) {
 			window.NS.singletons.CanvasNode.disableInput(node, 'foreground');
@@ -363,19 +383,12 @@ export default class NodeManager{
 	}
 
 	update() {
-
-		for (let i = 0; i < this._graphicNodeLength; i++) {
-			this._graphicNodes[i].update();
-		}
+		this._updateLoopManager.update();
 		window.NS.singletons.CanvasNode.update();
-
 	}
 
 	render() {
-		for (let i = 0; i < this._graphicNodeLength; i++) {
-			this._graphicNodes[i].render();
-		}
-
+		this._updateLoopManager.render();
 		window.NS.singletons.CanvasNode.render();
 	}
 }

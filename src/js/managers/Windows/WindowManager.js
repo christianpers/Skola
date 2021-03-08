@@ -12,7 +12,7 @@ export default class WindowManager{
         this.onNodeSettingsWindowShowBound = this.onNodeSettingsWindowShow.bind(this);
         this.onNodeRemoveClickBound = this.onNodeRemoveClick.bind(this);
 
-        this.connectionWindow = new ConnectionWindow(parentEl, enableParamCallback, disableParamCallback, this.onConnectionWindowShowBound);
+        // this.connectionWindow = new ConnectionWindow(parentEl, enableParamCallback, disableParamCallback, this.onConnectionWindowShowBound);
         this.nodeSettingsWindow = new NodeSettingsWindow(parentEl, this.onNodeSettingsWindowShowBound, this.onNodeRemoveClickBound);
         this.selectedNodeWindow = new SelectedNodeWindow(parentEl);
     }
@@ -30,14 +30,14 @@ export default class WindowManager{
         // if (node.nodeType.assignedParamContainer) {
         //     this.connectionWindow.setupForNode(node);
         // }
-        this.connectionWindow.setupForNode(node);
+        // this.connectionWindow.setupForNode(node);
         this.nodeSettingsWindow.setupForNode(node);
 
         this.selectedNodeWindow.setNode(node.ID);
     }
 
     onNodeConnect(activeNode) {
-        this.connectionWindow.setupForNode(activeNode);
+        // this.connectionWindow.setupForNode(activeNode);
     }
 
     onConnectionWindowShow() {
@@ -46,16 +46,16 @@ export default class WindowManager{
 
     onNodeSettingsWindowShow() {
         this.nodeSettingsWindow.checkForUpdates(this.activeNode);
-        this.connectionWindow.hide();
+        // this.connectionWindow.hide();
     }
 
     onNodeDisconnect() {
-        this.connectionWindow.blur();
+        // this.connectionWindow.blur();
     }
 
     blur() {
         this.nodeSettingsWindow.blur();
-        this.connectionWindow.blur();
+        // this.connectionWindow.blur();
 
         this.selectedNodeWindow.blur();
     }

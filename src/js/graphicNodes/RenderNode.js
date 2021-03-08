@@ -5,6 +5,7 @@ export default class RenderNode extends GraphicNode{
 		super();
 
 		this.isRenderNode = true;
+		this.needsUpdate = true;
 		this.canConnectToMaterial = true;
 
 		this.scene = new THREE.Scene();

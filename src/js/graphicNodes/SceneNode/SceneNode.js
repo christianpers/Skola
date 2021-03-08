@@ -130,10 +130,7 @@ export default class SceneNode{
 		this.parentEl.appendChild(this.el);
     }
 
-	/* CALLED WHEN ON NODE SELECTION (USED FOR BOTH IF NODE SELECTED OR NONE SELECTED) */
-	onNodeDeselect() {
-		this.settingsWindow.followNodeSetting.checkActive();
-	}
+	
 
 	addMeshLabel(obj, ID, htmlLabelObj) {
 		
@@ -217,38 +214,6 @@ export default class SceneNode{
 		return [this.topPartEl.clientWidth, this.topPartEl.clientHeight];
 	}
 
-	// ONLY BEING CALLED IF SPACE LESSONS ACTIVE
-	setForegroundCamera(camera) {
-		if (camera) {
-			this.foregroundRender.setActiveCamera(camera);
-			return;
-		}
-
-		const selectedNode = window.NS.singletons.SelectionManager.currentSelectedNode;
-
-		// if (selectedNode.camera) {
-		// 	this.foregroundRender.setActiveCamera(selectedNode.camera);
-		// }
-
-		if (selectedNode.mesh) {
-			const { position } = selectedNode.mesh;
-			selectedNode.mainMesh.geometry.computeBoundingBox();
-			// console.log(selectedNode.mainMesh.geometry.boundingBox);
-			// console.log(selectedNode.mesh.scale);
-			const { boundingBox } = selectedNode.mainMesh.geometry;
-			const size = selectedNode.mesh.scale.z * boundingBox.max.z;
-			
-			const distance = -size*8;
-			const obj = { mesh: selectedNode.mesh, distance };
-			this.foregroundRender.setMeshToFollow(obj);
-		}
-	}
-
-	resetForegroundCamera() {
-		// this.foregroundRender.setActiveCamera(this.foregroundRender.camera);
-		this.foregroundRender.resetMeshToFollow();
-	}
-
 	setCanvasSize(size) {
 		if (size.w < 100 || size.h < 100) {
 			return;
@@ -261,6 +226,7 @@ export default class SceneNode{
 
 	setBackgroundTexture(texture) {
 		this.mesh.material.uniforms.u_texture0.value = texture;
+		this.mesh.material.uniforms.u_connection0.value = 1.0;
 	}
 
 	enableInput(outputNode, inputType) {

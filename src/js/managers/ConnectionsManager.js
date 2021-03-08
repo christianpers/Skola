@@ -102,6 +102,15 @@ export default class ConnectionsManager{
         }
     }
 
+    hasNodeConnection(inNodeID, outNodeID) {
+        const connections = this.nodeConnections[inNodeID];
+        if (connections) {
+            return connections.some(t => t.outNodeID === outNodeID);
+        }
+
+        return false;
+    }
+
     addNodeConnection(outNode, paramContainer) {
         const connectionObj = this.getNewNodeConnectionObj(outNode, paramContainer);
 
@@ -142,6 +151,8 @@ export default class ConnectionsManager{
             paramID: param.ID,
         };
     };
+
+    
 
     addParamConnection(param, outNode) {
         try {

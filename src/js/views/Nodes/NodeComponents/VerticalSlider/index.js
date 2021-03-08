@@ -98,7 +98,7 @@ export default class VerticalSlider{
 
 		if (this.valChangeCallback) {
 
-			this.valChangeCallback(val);
+			this.valChangeCallback(Number(val));
 		}
 	}
 

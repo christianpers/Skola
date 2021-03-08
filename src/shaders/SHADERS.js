@@ -243,6 +243,8 @@ precision mediump float;
         vec4 fgColor = texture2D(u_texture1, st);
 		vec4 whiteColor = vec4(1., 1., 1., 1.);
         vec4 transparentColor = vec4(1.0, 1.0, 1.0, 0.0);
+
+        // bgColor = vec4(1.0, 0.1, 0.1, 1.0);
         vec4 finalFgColor = mix(transparentColor, fgColor, u_connection1);
         vec4 finalBgColor = mix(transparentColor, bgColor, u_connection0);
         
@@ -252,9 +254,12 @@ precision mediump float;
 
         vec4 overlayColor = vec4(ra, ga, ba, 1.0);
 
+        
+
         vec4 finalColor = mix(fgColor + bgColor, overlayColor, u_multiConnection);
 
-        gl_FragColor = mix(whiteColor, finalColor, u_finalConnection);
+        // gl_FragColor = mix(whiteColor, finalColor, u_finalConnection);
+        gl_FragColor = vec4(finalColor);
 	} 
 
 `;

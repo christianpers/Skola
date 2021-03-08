@@ -105,11 +105,14 @@ export default class NodeParamContainer{
 	}
 
 	isAvailableForConnection(outputNode, inNode) {
+		if (this.connectedNodes.length > 0) {
+			return false;
+		}
 		const keys = Object.keys(this.inputParams);
 		for (let i = 0; i < keys.length; i++) {
 			const key = keys[i];
 			const param = this.inputParams[key];
-			if (GraphicsParamHelpers[param.param.paramHelpersType].isValid(outputNode, inNode, param.param)) {
+			if (GraphicsParamHelpers[param.param.paramHelpersType].isValid(outputNode, inNode, param.param, param.ID)) {
 				// param.activatePossible();
 				return true;
 

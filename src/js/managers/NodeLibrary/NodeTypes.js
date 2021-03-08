@@ -139,7 +139,7 @@ export const spaceTypes = {
                 isModifier: true,
             },
             {
-                type: 'Space Orbit',
+                type: 'Planet Position',
                 isModifier: true,
             },
             {
@@ -150,6 +150,10 @@ export const spaceTypes = {
                 type: 'Form',
                 isModifier: true,
             },
+            {
+                type: 'Color',
+                isModifier: true,
+            }
         ]
     }
 }

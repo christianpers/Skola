@@ -54,6 +54,20 @@ const onColorParamUpdate = (inNode, outNode) => {
 	inNode.material.color = outNode.currentColor;
 };
 
+const isValidSpaceSizeInput = (outNode, inNode, param) => {
+	if (!outNode.isSpaceSize) {
+		return false;
+	}
+	return (outNode.isParam && !param.isConnected);
+}
+
+const isValidOrbitPositionParamInput = (outNode, inNode, param) => {
+	if (!outNode.isOrbitPosition) {
+		return false;
+	}
+	return (outNode.isParam && !param.isConnected);
+} 
+
 const isValidParamPositionInput = (outNode, inNode, param) => {
 
 	if  (outNode.framebuffer || outNode.texture || outNode.picker || outNode.isSequencer) {
@@ -72,20 +86,35 @@ const isValidParamPositionInput = (outNode, inNode, param) => {
 		return false;
 	}
 
+	if (outNode.isOrbitPosition) {
+		return false;
+	}
+
+	if (outNode.isSpaceSize) {
+		return false;
+	}
+
 	return (outNode.isParam && !param.isConnected) || (outNode.isAnalyser && !param.isConnected);
 };
 
 const onPositionParamUpdate = (inNode, outNode, param) => {
 	inNode.mesh.position[param.param] = outNode.getValue(param);
+	// inNode.mesh.rotation.y = 0;
+	// console.log('position: ', inNode.mesh.rotation.y);
 };
 
 const onPositionDisconnect = (inNode, param, outNode) => {
 	inNode.mesh.position[param.param] = param.defaultVal;
 };
 
+const onRotationDisconnect = (inNode, param, outNode) => {
+	inNode.mainMesh.rotation[param.param] = param.defaultVal;
+}
 
 const onRotationParamUpdate = (inNode, outNode, param) => {
-	inNode.mainMesh.rotation[param.param] = outNode.getValue(param);
+	
+	const val = outNode.getValue(param);
+	inNode.mainMesh.rotation[param.param] = val;
 };
 
 const onScaleParamUpdate = (inNode, outNode, param) => {
@@ -133,6 +162,8 @@ const onParticleParamUpdate = () => {};
 const isValidParticleFormInput = (outNode) => {
 	return outNode.isShapeNode;
 };
+
+/* check if those below work for the particles... have to check which inputs works.. remove some ? */
 
 const onParticleSizeParamUpdate = (inNode, outNode) => {
 	inNode.currentParticleSize = outNode.getValue();
@@ -253,7 +284,7 @@ const paramHelpers = {
 	rotation: {
 		update: onRotationParamUpdate,
 		isValid: isValidParamPositionInput,
-		disconnect: onPositionDisconnect,
+		disconnect: onRotationDisconnect,
 	},
 	scale: {
 		update: onScaleParamUpdate,
@@ -275,6 +306,16 @@ const paramHelpers = {
 		isValid: isValidAtomParamInput,
 		disconnect: onAtomParamDisconnect,
 	},
+	orbitPosition: {
+		update: onPositionParamUpdate,
+		isValid: isValidOrbitPositionParamInput,
+		disconnect: onPositionDisconnect,
+	},
+	spaceSize: {
+		update: onScaleParamUpdate,
+		isValid: isValidSpaceSizeInput,
+		disconnect: onScaleParamDisconnect,
+	}
 }
 
 export default paramHelpers;

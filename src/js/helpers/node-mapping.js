@@ -27,7 +27,7 @@ import DirectionalLightNode from '../graphicNodes/Lights/DirectionalLightNode';
 import PointLightNode from '../graphicNodes/Lights/PointLightNode';
 import TextureSelectorNode from '../graphicNodes/TextureSelectorNode';
 import ParticlesNode from '../graphicNodes/Shapes/ParticlesNode';
-import ShapeNode from '../graphicNodes/ShapeNode';
+import ShapeNode from '../graphicNodes/SpaceNodes/ShapeNode';
 import PlanetNode from '../graphicNodes/SpaceNodes/PlanetNode';
 import SizeModifier from '../graphicNodes/SpaceNodes/SizeModifier';
 import PlanetTextureSelector from '../graphicNodes/SpaceNodes/PlanetTextureSelector';
@@ -116,7 +116,7 @@ const nodeMapping = {
     obj: PlanetTextureSelector,
     isModifier: true,
   },
-  'Space Orbit': {
+  'Planet Position': {
     obj: SpaceOrbitNode,
     isModifier: true,
   },
