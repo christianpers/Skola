@@ -47,12 +47,13 @@ export default class ForegroundRender{
 		// this.gridHelper = new THREE.GridHelper(4, 10);
 		// this.scene.add(this.gridHelper);
 
-		this.ambientLight = new THREE.AmbientLight( );
+		this.ambientLight = new THREE.AmbientLight();
 
 		this.scene.add(this.ambientLight);
 		
 		if (window.NS.singletons.PROJECT_TYPE === window.NS.singletons.TYPES.space.id) {
 			this.stars = new Stars(this.scene);
+			this.ambientLight.intensity = 0.5;
 		}
 
 		this.showActiveHelperMeshes = true;
@@ -89,6 +90,39 @@ export default class ForegroundRender{
 			600,
 			{minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter}
 		);
+	}
+
+	fitCameraToObjects() {
+		const bb = new THREE.Box3();
+		this.connectedNodes.forEach(t => {
+			bb.expandByObject(t.mesh);
+		});
+
+		const offset = 6;
+		const center = bb.getCenter();
+		const size = bb.getSize();
+
+		// get the max side of the bounding box (fits to width OR height as needed )
+		const maxDim = Math.max( size.x, size.y, size.z );
+		const fov = this.camera.fov * ( Math.PI / 180 );
+		let cameraZ = Math.abs( maxDim / 4 * Math.tan( fov * 2 ) );
+
+		cameraZ *= offset; // zoom out a little so that objects don't fill the screen
+
+		this.camera.position.z = cameraZ;
+
+		// this.camera.far = cameraToFarEdge * 3;
+		this.camera.updateProjectionMatrix();
+
+
+		// set camera to rotate around center of loaded object
+		this.cameraControls.target = center;
+
+		// prevent camera from zooming out far enough to create far plane cutoff
+		// this.cameraControls.maxDistance = cameraToFarEdge * 2;
+
+		this.cameraControls.saveState();
+
 	}
 
 	setMeshToFollow(mesh) {

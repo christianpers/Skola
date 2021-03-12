@@ -46,7 +46,7 @@ export default class SettingsWindow{
 
         if (window.NS.singletons.PROJECT_TYPE === window.NS.singletons.TYPES.space.id) {
 			this.followNodeSetting = new FollowNodeSetting(col1BottomPartSettings);
-            this.ambientLightSetting = new HorizontalSlider(col2BottomPartSettings, 1, onAmbientLightSettingChange, 2, {min: 0, max: 1}, 'ambient-light settings-item', 'Ambient light');
+            this.ambientLightSetting = new HorizontalSlider(col2BottomPartSettings, foregroundRender.ambientLight.intensity, onAmbientLightSettingChange, 2, {min: 0, max: 1}, 'ambient-light settings-item', 'Ambient light');
 
             this.axesHelper = new AxesHelper(col1BottomPartSettings, foregroundRender);
 

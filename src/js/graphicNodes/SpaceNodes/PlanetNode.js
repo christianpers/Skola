@@ -6,6 +6,11 @@ export default class PlanetNode extends SphereNode{
 
 		this.needsUpdate = false;
 
+		this.mainMesh.castShadow = true;
+		this.mainMesh.receiveShadow = true;
+		// this.mesh.castShadow = true;
+		// this.mesh.receiveShadow = true;
+
 		const textureParam = {
 			title: 'Texture',
 			param: 'Planet',

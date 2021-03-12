@@ -489,7 +489,7 @@ export default class SpaceOrbitNode extends OrbitDriverNode{
 	}
 
 	onSpeedChange(val) {
-		const { speed, kmHSpeed } = this.getSpeedVal(val);
+		// const { speed, kmHSpeed } = this.getSpeedVal(val);
 		this.currentSpeed = Number(val);
 		
 		this.updateVisualSettings();
@@ -527,8 +527,13 @@ export default class SpaceOrbitNode extends OrbitDriverNode{
 	}
 
 	_calcCurrentT() {
-		const spaceTime = window.NS.singletons.LessonManager.space.spaceTimeController.getNormalizedPositionInYear(this.currentSpeed);
-		return spaceTime;
+		if (this.currentSpeed > 0) {
+			const spaceTime = window.NS.singletons.LessonManager.space.spaceTimeController.getNormalizedPositionInYear(this.currentSpeed);
+			return spaceTime;
+		}
+
+		return 0;
+		
 	}
 
 	get currentT() {

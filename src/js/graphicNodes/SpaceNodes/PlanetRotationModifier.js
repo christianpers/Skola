@@ -20,7 +20,7 @@ export default class PlanetRotationModifer extends GraphicNode {
 
 		this.outValues = {
 			Rotation: {
-				y: 1,
+				y: 0,
 			}
 		};
 
@@ -44,7 +44,7 @@ export default class PlanetRotationModifer extends GraphicNode {
 			const defaultSettings = {
 				value: this.initValues ? this.initValues['rotationY'] : 1,
 				step: 1,
-				min: 1,
+				min: 0,
 				max: 20000,
 			};
 
@@ -81,9 +81,9 @@ export default class PlanetRotationModifer extends GraphicNode {
 	}
 
     reset() {
-		this.outValues['Rotation'].y = 1.0;
-		this.rotationSliders['Rotation'].y.setValue(1.0);
-		this.currentRotationY = 1.0;
+		this.outValues['Rotation'].y = 0.0;
+		this.rotationSliders['Rotation'].y.setValue(0.0);
+		this.currentRotationY = 0.0;
     }
 
 	getValue(param) {
@@ -91,11 +91,15 @@ export default class PlanetRotationModifer extends GraphicNode {
 	}
 
 	update() {
-		const normalizedRotation = window.NS.singletons.LessonManager.space.spaceTimeController.getNormalizedCurrentHourInDay(this.currentRotationY / 24);
-		const val = normalizedRotation * FULL_RADIAN;
-		this.outValues['Rotation'].y = -Math.round((val + Number.EPSILON) * 1000) / 1000;
+		if (this.currentRotationY > 0) {
+			const normalizedRotation = window.NS.singletons.LessonManager.space.spaceTimeController.getNormalizedCurrentHourInDay(this.currentRotationY / 24);
+			const val = normalizedRotation * FULL_RADIAN;
+			const finalVal = -Math.round((val + Number.EPSILON) * 1000) / 1000;
+			this.outValues['Rotation'].y = -Math.round((val + Number.EPSILON) * 1000) / 1000;
+		} else {
+			this.outValues['Rotation'].y = 0;
+		}
 		
-
     	for (let i = 0; i < this.currentOutConnectionsLength; i++) {
 			const connectionData = this.currentOutConnections[i];
 			const inNode = window.NS.singletons.ConnectionsManager.nodes[connectionData.inNodeID];

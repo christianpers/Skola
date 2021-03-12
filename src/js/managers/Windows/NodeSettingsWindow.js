@@ -98,6 +98,7 @@ export default class NodeSettingsWindow{
 
     show() {
         this.onShowCallback();
+        window.NS.singletons.CanvasNode.foregroundRender.toggleCameraControl(false);
 
         this.el.classList.add('visible');
 
@@ -106,6 +107,7 @@ export default class NodeSettingsWindow{
 
     hide() {
         this.el.classList.remove('visible');
+        window.NS.singletons.CanvasNode.foregroundRender.toggleCameraControl(true);
 
         // this.nodeRemove.hide();
     }

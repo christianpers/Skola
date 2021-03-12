@@ -1,6 +1,8 @@
 import GraphicNode from '../GraphicNode';
 import InputComponent from '../../views/Nodes/NodeComponents/InputComponent';
 
+const DEFAULT_VAL = 50000;
+
 export default class SizeModifierNode extends GraphicNode{
 	constructor(renderer, backendData) {
 		super();
@@ -15,9 +17,8 @@ export default class SizeModifierNode extends GraphicNode{
 		this.sizeInput = null;
 		this.maxScale = 8;
 		this.onInputChangeBound = this.onInputChange.bind(this);
-		this.currentConvertedValue = (this.initValues && this.initValues.size) ? this.getConvertedVal(this.initValues.size) : 0.01;
-		this.currentNormalizedVal = 0;
-
+		this.currentConvertedValue = (this.initValues && this.initValues.size) ? this.getConvertedVal(this.initValues.size) : this.getConvertedVal(DEFAULT_VAL);
+	
 		this.getSettings();
 	}
 
@@ -56,7 +57,7 @@ export default class SizeModifierNode extends GraphicNode{
 			settingsContainer.className = 'node-settings space-size-node';
 
 			const defaultSettings = {
-				value: (this.initValues && this.initValues.size) ? this.initValues.size : 1,
+				value: (this.initValues && this.initValues.size) ? this.initValues.size : DEFAULT_VAL,
 				step: 1,
 				min: 0,
 				max: 142980,
@@ -90,8 +91,7 @@ export default class SizeModifierNode extends GraphicNode{
 	}
 
 	reset() {
-		this.currentConvertedValue = 0.01;
-		this.currentNormalizedVal = 0;
+		this.currentConvertedValue = this.getConvertedVal(DEFAULT_VAL);
 	}
 
 	onConnectionAdd(e) {

@@ -18,12 +18,16 @@ export default class NodeTitle{
 
         this.onChangeBound = this.onChange.bind(this);
         this.onMouseDownBound = this.mouseDown.bind(this);
+        this.onFocusBound = this.onFocus.bind(this);
+        this.onBlurBound = this.onBlur.bind(this);
 
 		this.el = document.createElement('input');
 		this.el.type = 'text';
 		this.el.value = node.title;
         this.el.addEventListener('change', this.onChangeBound);
         this.el.addEventListener('click', this.onMouseDownBound);
+        this.el.addEventListener('focus', this.onFocusBound);
+        this.el.addEventListener('blur', this.onBlurBound);
 
         
 
@@ -35,6 +39,14 @@ export default class NodeTitle{
         innerContainer.appendChild(debugEl);
 
 		parentEl.appendChild(container);
+    }
+
+    onFocus() {
+        window.NS.singletons.CanvasNode.foregroundRender.toggleCameraControl(false);
+    }
+
+    onBlur() {
+        window.NS.singletons.CanvasNode.foregroundRender.toggleCameraControl(true);
     }
 
     mouseDown(e) {
@@ -55,7 +67,6 @@ export default class NodeTitle{
 
 	onChange(e) {
         const value = this.el.value;
-        console.log('on change: ', value);
 
 		if (this.isValidInput(value)) {
             this.node.setTitle(value);

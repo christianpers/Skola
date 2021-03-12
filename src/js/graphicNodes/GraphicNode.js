@@ -107,7 +107,10 @@ export default class GraphicNode extends Node{
 	}
 
 	getActiveHelperMesh() {
-		const planeGeometry = new THREE.PlaneBufferGeometry( 5, 5, 1, 1 );
+		const bb = new THREE.Box3();
+		bb.expandByObject(this.mainMesh);
+		const bbSize = bb.getSize();
+		const planeGeometry = new THREE.PlaneBufferGeometry( bbSize.x + .4, bbSize.z + .4, 1, 1 );
 		const planeMaterial = new THREE.ShaderMaterial({
             uniforms: {},
             vertexShader: SIMPLE_3D_VERTEX,
@@ -118,7 +121,7 @@ export default class GraphicNode extends Node{
 		
 		const planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
 		planeMesh.position.y = 0;
-		planeMesh.scale.set(1.4, 1.4, 1);
+		planeMesh.scale.set(1.1, 1.1, 1);
 		planeMesh.visible = false;
 
 		return planeMesh;

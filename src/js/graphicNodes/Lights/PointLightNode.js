@@ -10,9 +10,23 @@ export default class PointLightNode extends GraphicNode{
 		this.light = new THREE.PointLight( 0xffffff, 1, 100 );
 		this.light.position.set(0, 0, 0);
 
-		this.geometry = new THREE.SphereGeometry(1, 20, 20);
+		this.light.castShadow = true;
+		// this.light.shadowCameraVisible = true;
+
+		// const light = this.light;
+
+		//Set up shadow properties for the light
+		// light.shadow.mapSize.width = 2048; // default
+		// light.shadow.mapSize.height = 2048; // default
+		// light.shadow.camera.near = 0.0001; // default
+		// light.shadow.camera.far = 5000000; // default
+
+		this.geometry = new THREE.SphereGeometry(2, 32, 32);
+		
 		this.material = new THREE.MeshBasicMaterial();
 		this.mesh = new THREE.Mesh(this.geometry, this.material);
+
+		this.mainMesh = this.mesh;
 
 		const textureParam = {
 			title: 'Texture',
