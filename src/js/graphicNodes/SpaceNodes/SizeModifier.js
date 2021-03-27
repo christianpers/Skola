@@ -1,7 +1,16 @@
 import GraphicNode from '../GraphicNode';
-import InputComponent from '../../views/Nodes/NodeComponents/InputComponent';
+// import InputComponent from '../../views/Nodes/NodeComponents/InputComponent';
+import ConversionInputs from '../../views/Nodes/NodeComponents/ConversionInputs';
 
 const DEFAULT_VAL = 50000;
+
+const kmToTellusRadius = (km) => {
+	return Math.round(((Number(km) + Number.EPSILON) / 6371) * 100) / 100;
+};
+
+const tellusRadiusToKm = (radius) => {
+	return Math.round(((radius + Number.EPSILON) * 6371) * 10) / 10;
+};
 
 export default class SizeModifierNode extends GraphicNode{
 	constructor(renderer, backendData) {
@@ -11,7 +20,7 @@ export default class SizeModifierNode extends GraphicNode{
 
 		this.isParam = true;
 		this.returnsSingleNumber = true;
-		this.title = 'Space size modifier';
+		this.title = 'Planet storlek';
 		this.isSpaceSize = true;
 
 		this.sizeInput = null;
@@ -63,12 +72,45 @@ export default class SizeModifierNode extends GraphicNode{
 				max: 142980,
 			};
 
-			this.sizeInput = new InputComponent(
-				settingsContainer,
-				'Planet diameter (km)',
-				defaultSettings,
-				this.onInputChangeBound
-			);
+			// this.sizeInput = new InputComponent(
+			// 	settingsContainer,
+			// 	'Planet diameter (km)',
+			// 	defaultSettings,
+			// 	this.onInputChangeBound
+			// );
+
+			// const defaultSettings = {
+			// 	value: 0,
+			// 	step: 0.000001,
+			// 	min: 0,
+			// 	max: 4503,
+			// };
+
+			// X
+			const conversionSize = {
+				name: 'Storlek (km)',
+				inputSettings: Object.assign({}, defaultSettings, { value: this.initValues ? this.initValues['size'] : DEFAULT_VAL }),
+				conversionFn: tellusRadiusToKm,
+				isMaster: true,
+			};
+
+			const conversionSizeTellusRadius = {
+				name: 'Storlek (Jordens radie)',
+				inputSettings: Object.assign({}, defaultSettings, { step: .1, value: this.initValues ? kmToTellusRadius(this.initValues['size']) : kmToTellusRadius(defaultSettings.value) }),
+				conversionFn: kmToTellusRadius
+			};
+
+			const sizeDef = {
+				disabled: false,
+				hideMinMax: false,
+				applyCallback: this.onInputChangeBound,
+				inputs: [
+					conversionSize,
+					conversionSizeTellusRadius,
+				],
+			};
+
+			this.sizeInput = new ConversionInputs(sizeDef, settingsContainer);
 			
 			this.settingsContainer = settingsContainer;
 		}
@@ -87,7 +129,7 @@ export default class SizeModifierNode extends GraphicNode{
 			120 540 km
 			142 980 km
 		*/
-        return this.currentConvertedValue;
+        return this.currentConvertedValue * 4;
 	}
 
 	reset() {

@@ -53,7 +53,7 @@ export default class SpaceTimeUI{
             window.NS.singletons.LessonManager.space.spaceTimeController.multiplier,
             this.onSpeedSettingChangeBound,
             2,
-            { min: -12, max: 48 },
+            { min: -12, max: 480 },
             'speed-settings settings-item',
             'Timmar per sekund'
         );

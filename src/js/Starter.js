@@ -3,6 +3,9 @@
 import Main from "./Main";
 import DrawingsWindow from './backend/ui/drawings-window';
 import Refs from './backend/refs';
+import {
+	getUserData
+} from './backend/get';
 
 const TYPES = Object.freeze({
 	space: {
@@ -60,6 +63,17 @@ export default class Starter {
 
 		window.NS.singletons.PROJECT_TYPE = drawing.drawing.doc.type;
 
+		getUserData()
+			.then(data => {
+				window.NS.userData = data;
+				window.NS.showDebug = () => {
+					return window.NS.userData && window.NS.userData.dev;
+				};
+				this.initDrawing(drawing);
+			});
+	}
+
+	initDrawing(drawing) {
 		this.main.init(drawing);
 
 		this.onResize();

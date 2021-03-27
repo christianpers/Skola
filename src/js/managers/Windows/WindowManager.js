@@ -59,4 +59,8 @@ export default class WindowManager{
 
         this.selectedNodeWindow.blur();
     }
+
+    nodeSettingsOpen() {
+        return this.nodeSettingsWindow.isOpen;
+    }
 }

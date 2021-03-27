@@ -222,6 +222,22 @@ export const getDrawings = (username) => {
     });
 };
 
+export const getUserData = () => {
+    return new Promise((resolve, reject) => {
+        const userRef = window.NS.singletons.refs.getUserRef();
+
+        userRef.get().then(doc => {
+            if (doc.exists) {
+                resolve(doc.data());
+            }
+
+            resolve(undefined);
+        }).catch(err => {
+            reject(err);
+        });
+    });
+}
+
 export const checkUserExists = (username) => {
     return new Promise((resolve, reject) => {
         const hasUserRef = window.NS.singletons.refs.hasUserRef();

@@ -502,9 +502,13 @@ export default class OrbitDriverNode extends GraphicNode{
 			this.currentOutConnectionsLength = this.currentOutConnections.length;
 
 			if (this.currentOutConnectionsLength <= 0) {
+				if (this.visualHelperSettings) {
+					this.visualHelperSettings.disableVisibility();
+				}
+				
 				this.reset();
 				this.mesh.visible = false;
-				this.visualHelperSettings.disableVisibility();
+				
 			}
 
 			this.updateAxes();

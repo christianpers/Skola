@@ -5,8 +5,11 @@
     padding: 10px 14px;
     background: black;
     color: yellow;
-    cursor: pointer;
     z-index: 2;
+    transform: translateY(-100%);
+    transition: transform .3s;
+    display: flex;
+    align-items: center;
 
     > h4 {
         color: yellow;
@@ -19,8 +22,21 @@
         }
     }
 
-    &.unsaved {
+    > button {
+        padding: 4px 8px;
+        background: yellow;
+        border: 0;
+        color: black;
+        margin-left: 8px;
+        cursor: pointer;
 
+        > p {
+            color: inherit;
+        }
+    }
+
+    &.unsaved {
+        transform: translateY(0);
         > p > span {
             color: red;
         }

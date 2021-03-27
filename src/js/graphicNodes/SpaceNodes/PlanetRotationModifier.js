@@ -11,7 +11,7 @@ export default class PlanetRotationModifer extends GraphicNode {
 		this.initValues = backendData ? backendData.data.visualSettings : null;
 
 		this.needsUpdate = true;
-		this.title = 'Planet Rotation modifier';
+		this.title = 'Planet rotation';
 
 		this.isParam = true;
 

@@ -22,7 +22,7 @@ export default class NodeSettingsWindow{
         this.el.appendChild(this.bgLayer);
 
         const label = document.createElement('h5');
-        label.innerHTML = 'NODE SETTINGS';
+        label.innerHTML = 'NOD INSTÄLLNINGAR';
         label.className = 'title';
 
         this.el.appendChild(label);
@@ -102,12 +102,16 @@ export default class NodeSettingsWindow{
 
         this.el.classList.add('visible');
 
+        this.isOpen = true;
+
         // this.nodeRemove.show();
     }
 
     hide() {
         this.el.classList.remove('visible');
         window.NS.singletons.CanvasNode.foregroundRender.toggleCameraControl(true);
+
+        this.isOpen = false;
 
         // this.nodeRemove.hide();
     }

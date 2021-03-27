@@ -7,19 +7,27 @@ export default class StatusWindow {
     this.el = document.createElement('div');
     this.el.className = 'status-window';
 
-    this.titleEl = document.createElement('h4');
-    this.titleEl.innerHTML = 'Backend status';
-
     this.onClickBound = this.onClick.bind(this);
+    this.onSaveDialogClose = this.onSaveDialogClose.bind(this);
 
-    this.el.addEventListener('click', this.onClickBound);
+    // this.el.addEventListener('click', this.onClickBound);
 
     this.statusText = document.createElement('p');
-    this.statusText.innerHTML = 'Backend status: <span>Up to date</span>';
     // this.el.appendChild(this.titleEl);
     this.el.appendChild(this.statusText);
 
+    this.btn = document.createElement('button');
+    this.btn.addEventListener('click', this.onClickBound);
+
+    const btnLabel = document.createElement('p');
+    this.btn.appendChild(btnLabel);
+    btnLabel.innerHTML = 'Spara';
+
+    this.el.appendChild(this.btn);
+
     parentEl.appendChild(this.el);
+
+    this._timeout = undefined;
   }
 
   addEvent(evtObj) {
@@ -27,6 +35,8 @@ export default class StatusWindow {
     this.unsavedChanges[evtObj.id] = Object.assign({}, this.unsavedChanges[evtObj.id], evtObj.saveData);
 
     this.onUnsavedChanges();
+    
+
     // console.log('unsaved: ', this.unsavedChanges);
   }
 
@@ -40,6 +50,9 @@ export default class StatusWindow {
   }
 
   onClick() {
+    clearTimeout(this._timeout);
+    this._timeout = undefined;
+
     const getPromise = (id, saveData) => {
       const ref = window.NS.singletons.refs.getNodeRef(id);
       if (ref) {
@@ -66,14 +79,37 @@ export default class StatusWindow {
     
   }
 
+  onSaveDialogClose() {
+    window.NS.singletons.DialogManager.saveDialog.hide();
+    this._timeout = undefined;
+  }
+
   onSaved() {
     this.unsavedChanges = {};
     this.el.classList.remove('unsaved');
-    this.statusText.innerHTML = 'Backend status: <span>Up to date</span>';
+    window.NS.singletons.DialogManager.saveDialog.hide();
+    clearTimeout(this._timeout);
+    this._timeout = undefined;
   }
 
   onUnsavedChanges() {
     this.el.classList.add('unsaved');
-    this.statusText.innerHTML = 'Backend status: <span>Unsaved changes !</span>';
+    this.statusText.innerHTML = '<span>Du har osparade ändringar !</span>';
+
+    if (!this._timeout) {
+      this._timeout = this.getTimeout();
+    }
+  }
+
+  getTimeout() {
+    return setTimeout(() => {
+      window.NS.singletons.DialogManager.saveDialog.hide();
+      if (window.NS.singletons.DialogManager.saveDialog.shouldShow()) {
+        window.NS.singletons.DialogManager.saveDialog.show(this.onClickBound, this.onSaveDialogClose);
+      } else {
+        this._timeout = this.getTimeout();
+      }
+      
+    }, 5000);
   }
 }

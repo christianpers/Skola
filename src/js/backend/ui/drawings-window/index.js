@@ -68,8 +68,6 @@ export default class DrawingsWindow{
   }
 
   initFromScratch(username) {
-    
-
     this.onExistingDrawingClickBound = this.onExistingDrawingClick.bind(this);
     // this.onNewDrawingClickBound = this.onNewDrawingClick.bind(this);
     this.onDeleteDrawingBound = this.onDeleteDrawing.bind(this);

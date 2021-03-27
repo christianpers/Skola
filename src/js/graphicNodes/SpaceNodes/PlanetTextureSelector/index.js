@@ -6,7 +6,7 @@ export default class PlanetTextureSelector extends TextureSelectorNode {
     constructor(renderer, backendData) {
         super(renderer, backendData);
 
-		this.title = 'Planet texture';
+		this.title = 'Planet textur';
     }
 
     getSettings() {

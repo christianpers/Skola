@@ -18,7 +18,7 @@ export default class SpaceOrbitNode extends OrbitDriverNode{
 	constructor(renderer, backendData) {
 		super(renderer, backendData);
 
-		this.title = 'Space orbit modifier';
+		this.title = 'Rymd orbit position';
 		this.isOrbitPosition = true;
 		this.onCameraChangedBound = this.onCameraChanged.bind(this);
 		this.onCenterPointListResetClickBound = this.onCenterPointListResetClick.bind(this);
@@ -173,7 +173,7 @@ export default class SpaceOrbitNode extends OrbitDriverNode{
 			const labelCenterPointHTML = `
 				<div class="orbit-slider-label-group">
 					<h4>Center punkt</h4>
-					<h5>Välj center punkt</h5>
+					<h5>Välj center punkt (default Solen)</h5>
 				</div>
 			`;
 
@@ -211,7 +211,7 @@ export default class SpaceOrbitNode extends OrbitDriverNode{
 			};
 
 			const conversionXDefinitionTellusRadius = {
-				name: 'X (Jord Radie)',
+				name: 'X (Jordens omloppsbana)',
 				inputSettings: Object.assign({}, defaultSettings, { step: 0.1, value: this.initValues ? kmToTellusRadius(this.initValues['orbitX']) : kmToTellusRadius(defaultSettings.value) }),
 				conversionFn: kmToTellusRadius
 			};
@@ -238,7 +238,7 @@ export default class SpaceOrbitNode extends OrbitDriverNode{
 			};
 
 			const conversionYDefinitionTellusRadius = {
-				name: 'Y (Jord Radie)',
+				name: 'Y (Jordens omloppsbana)',
 				inputSettings: Object.assign({}, defaultSettings, { step: 0.1, value: this.initValues ? kmToTellusRadius(this.initValues['orbitY']) : kmToTellusRadius(defaultSettings.value) }),
 				conversionFn: kmToTellusRadius
 			};
@@ -264,7 +264,7 @@ export default class SpaceOrbitNode extends OrbitDriverNode{
 			};
 
 			const conversionZDefinitionTellusRadius = {
-				name: 'Z (Jord Radie)',
+				name: 'Z (Jordens omloppsbana)',
 				inputSettings: Object.assign({}, defaultSettings, { step: 0.1, value: this.initValues ? kmToTellusRadius(this.initValues['orbitY']) : kmToTellusRadius(defaultSettings.value) }),
 				conversionFn: kmToTellusRadius
 			};
@@ -318,14 +318,14 @@ export default class SpaceOrbitNode extends OrbitDriverNode{
 				},
 			};
 
-			const bottomContainer = document.createElement('div');
-			bottomContainer.className = 'slider-row bottom-container';
+			// const bottomContainer = document.createElement('div');
+			// bottomContainer.className = 'slider-row bottom-container';
 
-            this.visualHelperSettings = new VisualHelperSettings(
-                bottomContainer,
-                this.onToggleVisualHelperVisibilityBound,
-                (this.initValues && this.initValues.visualHelperEnabled) ? this.initValues.visualHelperEnabled : undefined,
-            );
+            // this.visualHelperSettings = new VisualHelperSettings(
+            //     bottomContainer,
+            //     this.onToggleVisualHelperVisibilityBound,
+            //     (this.initValues && this.initValues.visualHelperEnabled) ? this.initValues.visualHelperEnabled : undefined,
+            // );
 
 			
 			
@@ -342,7 +342,7 @@ export default class SpaceOrbitNode extends OrbitDriverNode{
 
 			settingsContainer.appendChild(sliderContainer);
 			settingsContainer.appendChild(speedSliderRow);
-			settingsContainer.appendChild(bottomContainer);
+			// settingsContainer.appendChild(bottomContainer);
 
 			this.settingsContainer = settingsContainer;
 		}

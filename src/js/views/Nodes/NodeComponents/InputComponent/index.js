@@ -28,7 +28,6 @@ export default class InputComponent{
 			container.appendChild(maxLabel);
 		}
 		
-
 		this.onChangeBound = this.onChange.bind(this);
 
 		this._callbackOnChange = callbackOnChange;
@@ -72,6 +71,7 @@ export default class InputComponent{
 	onApply(e) {
 		e.stopPropagation();
 		const value = Number(this.el.value);
+		this.applyBtn.classList.remove('not-saved');
 		if (this.isValidInput(value)) {
 			this.callback(value, this._name);
 		} else {
@@ -92,6 +92,7 @@ export default class InputComponent{
 
 	onChange(e) {
 		const value = Number(this.el.value);
+		this.applyBtn.classList.add('not-saved');
 
 		if (!this.isValidInput(value)) {
 			// this.callback(value);

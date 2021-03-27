@@ -29,15 +29,15 @@ export default class NodeTitle{
         this.el.addEventListener('focus', this.onFocusBound);
         this.el.addEventListener('blur', this.onBlurBound);
 
-        
-
 		innerContainer.appendChild(this.el);
 
-        const debugEl = document.createElement('h5');
-        debugEl.innerHTML = node.ID;
+        if (window.NS.showDebug()) {
+            const debugEl = document.createElement('h5');
+            debugEl.innerHTML = node.ID;
 
-        innerContainer.appendChild(debugEl);
-
+            innerContainer.appendChild(debugEl);
+        }
+        
 		parentEl.appendChild(container);
     }
 

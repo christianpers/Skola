@@ -48,11 +48,13 @@ export default class Main{
 
 		this.onResize();
 
+		this._canShowSaveDialog = this._canShowSaveDialog.bind(this);
+
 		
 
-		window.NS.singletons.StatusWindow = new StatusWindow(document.body)
+		window.NS.singletons.StatusWindow = new StatusWindow(document.body);
 		window.NS.singletons.ConnectionsManager = new ConnectionsManager();
-		window.NS.singletons.DialogManager = new DialogManager(document.body);
+		window.NS.singletons.DialogManager = new DialogManager(document.body, this._canShowSaveDialog);
 
 		this.keyboardManager = new KeyboardManager();
 
@@ -99,6 +101,10 @@ export default class Main{
 		this.nodeLibrary.show();
 		this.workspaceManager.enable();
 		this.keyboardManager.enable();
+	}
+
+	_canShowSaveDialog() {
+		return !this.nodeManager.windowManager.nodeSettingsOpen();
 	}
 
 	onScaleChange(val) {

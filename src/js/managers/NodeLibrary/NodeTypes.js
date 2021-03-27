@@ -121,20 +121,24 @@ export const spaceTypes = {
                 isModifier: false,
             },
             {
+                title: 'Partiklar',
                 type: 'Particles',
                 isModifier: false,
             },
             {
+                title: 'Solen',
                 type: 'Sun',
                 isModifier: false,
             },
         ],
         'Modifiers': [
             {
+                title: 'Planet storlek',
                 type: 'Size Modifier',
                 isModifier: true,
             },
             {
+                title: 'Planet textur',
                 type: 'Texture Selector',
                 isModifier: true,
             },

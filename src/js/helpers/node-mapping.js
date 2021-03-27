@@ -143,5 +143,5 @@ const nodeMapping = {
 };
 
 export const getNode = (nodeStr) => {
-  return nodeMapping[nodeStr];
+    return nodeMapping[nodeStr];
 };
