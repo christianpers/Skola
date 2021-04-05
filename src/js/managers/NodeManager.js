@@ -151,6 +151,8 @@ export default class NodeManager{
 			this.initNode(initObj, node.data.pos, node);
 		}
 
+		window.NS.singletons.CanvasNode.enableForeground();
+		
 		window.NS.singletons.CanvasNode.foregroundRender.fitCameraToObjects();
 	}
 

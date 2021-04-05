@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>Skola_003</title>
+    <title>Piece of cake</title>
 
 
   </head>
@@ -18,12 +18,12 @@
     <script>
       // Initialize Firebase
       var config = {
-        apiKey: "AIzaSyAblQQ3bFiR5d5Vd4wCex3N7fsGZCk6wFQ",
-        authDomain: "skola-39370.firebaseapp.com",
-        databaseURL: "https://skola-39370.firebaseio.com",
-        projectId: "skola-39370",
-        storageBucket: "skola-39370.appspot.com",
-        messagingSenderId: "792261340682"
+        apiKey: "<%= htmlWebpackPlugin.options.apiKeys.firebase.key %>",
+        authDomain: "<%= htmlWebpackPlugin.options.apiKeys.firebase.authDomain %>",
+        databaseURL: "<%= htmlWebpackPlugin.options.apiKeys.firebase.databaseURL %>",
+        projectId: "<%= htmlWebpackPlugin.options.apiKeys.firebase.projectId %>",
+        storageBucket: "<%= htmlWebpackPlugin.options.apiKeys.firebase.storageBucket %>",
+        messagingSenderId: "<%= htmlWebpackPlugin.options.apiKeys.firebase.messagingSenderId %>"
       };
       firebase.initializeApp(config);
     </script>

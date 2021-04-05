@@ -21,7 +21,7 @@ export default class StatusWindow {
 
     const btnLabel = document.createElement('p');
     this.btn.appendChild(btnLabel);
-    btnLabel.innerHTML = 'Spara';
+    btnLabel.innerHTML = 'Spara nu';
 
     this.el.appendChild(this.btn);
 
@@ -105,7 +105,8 @@ export default class StatusWindow {
     return setTimeout(() => {
       window.NS.singletons.DialogManager.saveDialog.hide();
       if (window.NS.singletons.DialogManager.saveDialog.shouldShow()) {
-        window.NS.singletons.DialogManager.saveDialog.show(this.onClickBound, this.onSaveDialogClose);
+        // window.NS.singletons.DialogManager.saveDialog.show(this.onClickBound, this.onSaveDialogClose);
+        this.onClick();
       } else {
         this._timeout = this.getTimeout();
       }

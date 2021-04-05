@@ -37,5 +37,15 @@ module.exports = {
     // Load a custom template (lodash by default)
     template: './dist/template.html',
     hash: true,
+    apiKeys: {
+      firebase: {
+        key: 'AIzaSyAblQQ3bFiR5d5Vd4wCex3N7fsGZCk6wFQ',
+        authDomain: "skola-39370.firebaseapp.com",
+        databaseURL: "https://skola-39370.firebaseio.com",
+        projectId: "skola-39370",
+        storageBucket: "skola-39370.appspot.com",
+        messagingSenderId: "792261340682"
+      }
+    }
   })],
 };

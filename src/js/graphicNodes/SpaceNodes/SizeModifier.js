@@ -2,7 +2,7 @@ import GraphicNode from '../GraphicNode';
 // import InputComponent from '../../views/Nodes/NodeComponents/InputComponent';
 import ConversionInputs from '../../views/Nodes/NodeComponents/ConversionInputs';
 
-const DEFAULT_VAL = 50000;
+const DEFAULT_VAL = 6371;
 
 const kmToTellusRadius = (km) => {
 	return Math.round(((Number(km) + Number.EPSILON) / 6371) * 100) / 100;

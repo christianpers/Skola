@@ -1,0 +1,148 @@
+.outer-sign-in {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+
+    &.hidden {
+        display: none;
+    }
+}
+
+.sign-in {
+	z-index: 4;
+	// transform: translate3d(-50%, -50%, 0);
+	// margin-left: -150px;
+	// margin-top: -100px;
+	width: 500px;
+	// height: 240px;
+	padding: 0;
+	background: white;
+	text-align: right;
+	transition: transform .2s, opacity .2s;
+	background: black;
+    color: white;
+
+    & span, p, h4, h5 {
+        color: inherit;
+    }
+
+    .sign-in-inner {
+        padding: 24px;
+        overflow: hidden;
+        position: relative;
+
+        .error-wrapper {
+            background: red;
+            padding: 8px 10px;
+            position: absolute;
+            top: 0;
+            transform: translateY(-100%);
+            transition: transform .3s;
+    
+            &.visible {
+                transform: translateY(0);
+            }
+
+            & > h5 {
+                font-size: 12px;
+                font-weight: 700;
+                color: black;
+                text-align: left;
+            }
+    
+            & > p {
+                font-size: 12px;
+                color: black;
+                text-align: left;
+            }
+        }
+
+        .notice-wrapper {
+            background: yellow;
+        }
+    }
+
+	
+
+	.input-container {
+		width: 100%;
+		margin-bottom: 20px;
+        text-align: left;
+
+        &.not-valid {
+            & > input {
+                border-bottom: 2px solid red;
+            }
+        }
+        
+        & > h4 {
+            margin-bottom: 6px;
+        }
+
+		& > input {
+			margin-top: 2px;
+			padding: 6px 6px;
+			border: 0;
+			font-size: 12px;
+			width: 100%;
+			box-sizing: border-box;
+			background: #1b1c1e;
+            color: black;
+            background: yellow;
+            font-weight: 700;
+            border-bottom: 2px solid yellow;
+            
+            &::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+                color: black;
+                opacity: .6;
+            }
+            &::-moz-placeholder { /* Firefox 19+ */
+                color: black;
+                opacity: .6;
+            }
+            &:-ms-input-placeholder { /* IE 10+ */
+                color: black;
+                opacity: .6;
+            }
+            &:-moz-placeholder { /* Firefox 18- */
+                color: black;
+                opacity: .6;
+            }
+		}
+	}
+
+	.sign-in-button {
+		margin-top: 20px;
+		padding: 10px 14px;
+		background: #1b1c1e;
+		font-size: 14px;
+		display: inline-block;
+		cursor: pointer;
+    }
+    
+    .create-user-wrapper {
+        position: absolute;
+        bottom: -24px;
+        background: yellow;
+        padding: 6px;
+        right: 0;
+        cursor: pointer;
+
+        &:hover {
+            background: black;
+            color: yellow;
+        }
+    }
+
+    .btn[disabled] {
+        opacity: .6;
+        cursor: default;
+    }
+
+    .forgot-password {
+        margin-top: 8px;
+        cursor: pointer;
+    }
+}

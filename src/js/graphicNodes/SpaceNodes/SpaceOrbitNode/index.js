@@ -129,7 +129,7 @@ export default class SpaceOrbitNode extends OrbitDriverNode{
 
 			const labelHTML = `
 				<div class="orbit-slider-label-group">
-					<h4>Orbit</h4>
+					<h4>Omloppsbana</h4>
 					<h5>Miljoner km</h5>
 				</div>
 			`;

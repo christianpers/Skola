@@ -93,6 +93,9 @@ export default class ForegroundRender{
 	}
 
 	fitCameraToObjects() {
+		if (!this.connectedNodes.length) {
+			return;
+		}
 		const bb = new THREE.Box3();
 		this.connectedNodes.forEach(t => {
 			bb.expandByObject(t.mesh);
@@ -167,6 +170,7 @@ export default class ForegroundRender{
 	}
 
 	addLight(node) {
+		this.connectedNodes.push(node);
 		const lightName = `${node.ID}-light`;
 		node.light.name = lightName;
 
@@ -181,6 +185,7 @@ export default class ForegroundRender{
 	}
 
 	removeLight(node) {
+		this.connectedNodes = this.connectedNodes.filter(t => t.ID !== node.ID);
 		const lightName = `${node.ID}-light`;
 		const light = this.scene.getObjectByName(lightName);
 		this.scene.remove(light);

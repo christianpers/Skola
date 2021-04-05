@@ -68,6 +68,29 @@ button:focus {
     outline: none;
 }
 
+input {
+	font-family: Arial;
+}
+
+button {
+	border: 0;
+    border-radius: 0;
+    padding: 6px 12px;
+	background: yellow;
+	cursor: pointer;
+
+}
+
+.main-title {
+	position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 120px;
+    white-space: nowrap;
+    color: #1e1f21;
+}
+
 .user-window {
 	position: absolute;
     top: 0;
@@ -114,55 +137,6 @@ button:focus {
 	    	transform: translate3d(-50%, 0%, 0);
 	    	display: block;
 	    }
-	}
-}
-
-.sign-in {
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	z-index: 4;
-	// transform: translate3d(-50%, -50%, 0);
-	margin-left: -150px;
-	margin-top: -100px;
-	width: 300px;
-	height: 240px;
-	padding: 14px 24px;
-	background: white;
-	text-align: right;
-	transition: transform .2s, opacity .2s;
-
-	.error-message {
-		color: red;
-		font-size: 14px;
-		margin-bottom: 10px;
-	}
-
-	.input-container {
-		width: 100%;
-		margin-bottom: 10px;
-		text-align: left;
-		& > input {
-			margin-top: 2px;
-			padding: 6px;
-			border: 0;
-			font-size: 12px;
-			width: 100%;
-			box-sizing: border-box;
-			background: #1b1c1e;
-			color: white;
-
-		}
-	}
-
-	.sign-in-button {
-		margin-top: 20px;
-		padding: 10px 14px;
-		background: #1b1c1e;
-		color: white;
-		font-size: 14px;
-		display: inline-block;
-		cursor: pointer;
 	}
 }
 

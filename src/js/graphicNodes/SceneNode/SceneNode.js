@@ -229,6 +229,14 @@ export default class SceneNode{
 		this.mesh.material.uniforms.u_connection0.value = 1.0;
 	}
 
+	enableForeground() {
+		const framebuffer = this.foregroundRender.framebuffer.texture;
+		this.mesh.material.uniforms.u_texture1.value = framebuffer;
+		this.mesh.material.uniforms.u_connection1.value = 1.0;
+
+		this.mesh.material.uniforms.u_finalConnection.value = 1.0;
+	}
+
 	enableInput(outputNode, inputType) {
 		// this.inputs[inputType].enable();
 
@@ -238,13 +246,18 @@ export default class SceneNode{
 			this.mesh.material.uniforms.u_connection0.value = 1.0;
 		} else if (outputNode.isForegroundNode) {
 			this.foregroundRender.addNode(outputNode);
-			if (this.foregroundRender.connectedNodes.length === 1) {
-				const framebuffer = this.foregroundRender.framebuffer.texture;
-				this.mesh.material.uniforms.u_texture1.value = framebuffer;
-				this.mesh.material.uniforms.u_connection1.value = 1.0;
-			}
+			// if (this.foregroundRender.connectedNodes.length === 1) {
+			// 	const framebuffer = this.foregroundRender.framebuffer.texture;
+			// 	this.mesh.material.uniforms.u_texture1.value = framebuffer;
+			// 	this.mesh.material.uniforms.u_connection1.value = 1.0;
+			// }
 		} else if (outputNode.isLightNode) {
 			this.foregroundRender.addLight(outputNode);
+			// if (this.foregroundRender.connectedNodes.length === 1) {
+			// 	const framebuffer = this.foregroundRender.framebuffer.texture;
+			// 	this.mesh.material.uniforms.u_texture1.value = framebuffer;
+			// 	this.mesh.material.uniforms.u_connection1.value = 1.0;
+			// }
 		}
 
 		const obj = {
@@ -253,12 +266,12 @@ export default class SceneNode{
 		};
 		this.enabledInputs.push(obj);
 
-		if (!outputNode.isLightNode) {
-			this.mesh.material.uniforms.u_finalConnection.value = 1.0;
-			// if (this.inputs['background'].isActive && this.inputs['foreground'].isActive) {
-			// 	this.mesh.material.uniforms.u_multiConnection.value = 1.0;
-			// }
-		}
+		// if (!outputNode.isLightNode) {
+		// 	this.mesh.material.uniforms.u_finalConnection.value = 1.0;
+		// 	// if (this.inputs['background'].isActive && this.inputs['foreground'].isActive) {
+		// 	// 	this.mesh.material.uniforms.u_multiConnection.value = 1.0;
+		// 	// }
+		// }
 	}
 
 	disableInput(outNode, inputType) {
@@ -271,25 +284,23 @@ export default class SceneNode{
 		} else if (outNode.isForegroundNode) {
 			this.foregroundRender.removeNode(outNode);
 
-			if (this.foregroundRender.connectedNodes.length === 0) {
-				// if (this.inputs[inputType]) {
-				// 	this.inputs[inputType].disable();
-				// }
+			// if (this.foregroundRender.connectedNodes.length === 0) {
+			// 	// if (this.inputs[inputType]) {
+			// 	// 	this.inputs[inputType].disable();
+			// 	// }
 				
-				this.mesh.material.uniforms.u_texture1.value = null;
-				this.mesh.material.uniforms.u_connection1.value = 0.0;
-			}
+			// 	this.mesh.material.uniforms.u_texture1.value = null;
+			// 	this.mesh.material.uniforms.u_connection1.value = 0.0;
+			// }
 		} else if (outNode.isLightNode) {
 			// this.inputs[inputType].disable();
 			this.foregroundRender.removeLight(outNode);
 		}
 		
 		this.enabledInputs = this.enabledInputs.filter(t => t.out.ID !== outNode.ID);
-		const graphicInputs = this.enabledInputs.filter(t => !t.out.isLightNode);
+		// const graphicInputs = this.enabledInputs.filter(t => !t.out.isLightNode);
 
-		if (graphicInputs.length === 0) {
-			this.mesh.material.uniforms.u_finalConnection.value = 0.0;
-		} else if (this.inputs && !this.inputs['foreground'].isActive) {
+		if (this.inputs && !this.inputs['foreground'].isActive) {
 			this.mesh.material.uniforms.u_multiConnection.value = 0.0;
 		}
 	}

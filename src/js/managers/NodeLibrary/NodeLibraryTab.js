@@ -75,10 +75,8 @@ export default class NodeLibraryTab{
 						type.innerHTML = nodeTitle;
 					}
 					
-
 					const typeStr = nodeTypes[key][keySub][i].type;
 					
-
 					const title = isModifier ? `${typeStr}-modifier` : `${typeStr}-node`;
 					const shape = isModifier ? this.getTriangleShape() : this.getNonagonShape(true);
 

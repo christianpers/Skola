@@ -2,16 +2,20 @@
 
 import './main.scss';
 
-import SignIn from './js/SignIn';
+import SignIn from './js/views/SignIn';
 import UserWindow from './js/UserWindow';
-
-// import { DragControls } from './DragControls';
 
 class Index {
 	constructor() {
 
 		this.signIn = new SignIn();
 		this.userWindow = new UserWindow(document.body);
+
+		const title = document.createElement('h2');
+		title.innerHTML = 'PIECE OF CAKE';
+		title.classList.add('main-title');
+
+		document.body.appendChild(title);
 
 		this.starter = null;
 
@@ -29,7 +33,7 @@ class Index {
 				this.signIn.hide();
 
 				const { email } = user;
-				console.log('email:', email);
+				console.log('email:', email, ' user: ', user.uid);
 				// checkUserExists(email);
 				this.userWindow.update(email);
 				this.userWindow.show();

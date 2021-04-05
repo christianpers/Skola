@@ -1,5 +1,21 @@
 var functions = require('firebase-functions');
 var firebase_tools = require('firebase-tools');
+var express = require('express');
+var admin = require('firebase-admin');
+var cors = require('cors');
+var bodyParser = require('body-parser');
+
+const { routesConfig } = require('./users/routes-config');
+
+admin.initializeApp();
+
+const app = express();
+app.use(bodyParser.json());
+app.use(cors({ origin: true }));
+
+routesConfig(app);
+
+exports.api = functions.https.onRequest(app);
 
 // // Start writing Firebase Functions
 // // https://firebase.google.com/functions/write-firebase-functions
