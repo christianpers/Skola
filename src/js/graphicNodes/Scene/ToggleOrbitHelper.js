@@ -34,14 +34,16 @@ export default class ToggleOrbitHelper{
 			this.el.classList.add('enabled');
 			this.label.innerHTML = 'Visa alla orbit helpers';
             nodes.forEach(node => {
-                node.visualHelperSettings.disableVisibility(true, false);
+                // node.visualHelperSettings.disableVisibility(true, false);
+				node.onToggleVisualHelperVisibility(false, false);
             });
 		} else {
 			this.el.classList.remove('enabled');
 			this.label.innerHTML = 'Dölj alla orbit helpers';
 
             nodes.forEach(node => {
-                node.visualHelperSettings.enableVisibility(true, false);
+                // node.visualHelperSettings.enableVisibility(true, false);
+				node.onToggleVisualHelperVisibility(true, false);
             });
 		}
 	}

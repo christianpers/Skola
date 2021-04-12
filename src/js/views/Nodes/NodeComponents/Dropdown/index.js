@@ -53,7 +53,7 @@ export default class Dropdown {
         this.selectedContainer.classList.add('selected-container');
 
         this.selectedContainerTitle = document.createElement('h4');
-        this.selectedContainerTitle.innerHTML = 'Nothing selected';
+        this.selectedContainerTitle.innerHTML = 'Inget valt';
 
         this.selectedContainer.appendChild(this.selectedContainerTitle);
 

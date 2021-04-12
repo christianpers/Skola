@@ -13,12 +13,15 @@ export default class NewProjectDialog{
         const html = `
             <div class="inner-content">
                 <div class="title-container">
-                    <h4>Projektnamn:</h4>
-                    <input class="title-input" type="text" placeholder="Projektnamn" />
+                    <h4>Skapa nytt projekt</h4>
+                    <input class="title-input" type="text" placeholder="Namn på ditt projekt" />
                 </div>
                 <div class="dropdown-container"></div>
-                <button class="save-btn btn" type="button"><h5>Spara</h5></button>
-                <button class="cancel-btn btn" type="button"><h5>Avbryt</h5></button>
+                <div class="btn-container">
+                    <button class="cancel-btn btn" type="button"><h5>Avbryt</h5></button>
+                    <button class="save-btn btn" type="button" disabled><h5>Skapa</h5></button>
+                    
+                </div>
             </div>
         `;
 
@@ -29,7 +32,7 @@ export default class NewProjectDialog{
         const getItems = () => {
             const types = window.NS.singletons.TYPES;
             const keys = Object.keys(types);
-            return keys.map(t => ({ id: t, title: types[t].title }));
+            return keys.filter(t => types[t].readyForUse).map(t => ({ id: t, title: types[t].title }));
         }
 
         const items = getItems();
@@ -41,7 +44,10 @@ export default class NewProjectDialog{
 
         this.parentEl.appendChild(this.el);
 
+        this.onInputChange = this.onInputChange.bind(this);
+
         this.inputEl = this.el.querySelector('.title-input');
+        this.inputEl.addEventListener('input', this.onInputChange);
 
         this.onSaveClickBound = this.onSaveClick.bind(this);
         this.onCancelClickBound = this.onCancelClick.bind(this);
@@ -53,9 +59,22 @@ export default class NewProjectDialog{
         this.onCancelFn = null;
     }
 
+    onInputChange() {
+        this.checkValid();
+    }
+
     onTypeSelected(bool, item, title) {
-        console.log('type: ', item, ' sdf: ', title);
         this.selectedType = item;
+        this.checkValid();
+    }
+
+    checkValid() {
+        const title = this.inputEl.value;
+        if (title.length <= 0 || !this.selectedType) {
+            this.onSaveBtn.disabled = true;
+        } else {
+            this.onSaveBtn.disabled = false;
+        }
     }
 
     onSaveClick() {

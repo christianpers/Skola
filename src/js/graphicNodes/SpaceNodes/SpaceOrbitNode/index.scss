@@ -9,6 +9,11 @@
             position: relative;
             padding-top: 20px;
             margin-right: 10px;
+
+            &.disabled {
+                opacity: .2;
+                pointer-events: none;
+            }
             .orbit-slider-label-group {
                 background: yellow;
                 padding: 4px 8px;

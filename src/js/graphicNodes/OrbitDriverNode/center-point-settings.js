@@ -22,6 +22,8 @@ export default class CenterPointSettings{
         const nodes = this.getNodes();
         this.dropdown = new Dropdown(dropdownContainer, nodes, 'Nodes', this.onSelectedCallback, initValue, onResetCallback);
 
+        this._groupEl = parentEl.closest('.orbit-slider-group');
+
         parentEl.appendChild(this.el);
     }
 
@@ -41,6 +43,20 @@ export default class CenterPointSettings{
     refresh(connectedNodeID, resetSelected) {
         const nodes = this.getNodes(connectedNodeID);
 
+        if (!nodes.length) {
+            this.disable();
+        } else {
+            this.enable();
+        }
+
         this.dropdown.update(nodes, resetSelected);
+    }
+
+    enable() {
+        this._groupEl.classList.remove('disabled');
+    }
+
+    disable() {
+        this._groupEl.classList.add('disabled');
     }
 }

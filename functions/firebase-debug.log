@@ -1,0 +1,60 @@
+[debug] [2021-04-11T20:19:57.317Z] ----------------------------------------------------------------------
+[debug] [2021-04-11T20:19:57.319Z] Command:       /usr/local/bin/node /usr/local/bin/firebase init firestore
+[debug] [2021-04-11T20:19:57.320Z] CLI Version:   9.8.0
+[debug] [2021-04-11T20:19:57.320Z] Platform:      darwin
+[debug] [2021-04-11T20:19:57.320Z] Node Version:  v11.11.0
+[debug] [2021-04-11T20:19:57.320Z] Time:          Sun Apr 11 2021 22:19:57 GMT+0200 (Central European Summer Time)
+[debug] [2021-04-11T20:19:57.320Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2021-04-11T20:19:57.327Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2021-04-11T20:19:57.328Z] > authorizing via signed-in user
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  /Users/christian/Sites/Skola_003
+
+Before we get started, keep in mind:
+
+  * You are initializing in an existing Firebase project directory
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] but for now we'll just set up a default project.
+[info] 
+[info] i  .firebaserc already has a default project, using skola-39370. 
+[debug] [2021-04-11T20:19:57.336Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/skola-39370 [none]
+[debug] [2021-04-11T20:19:57.591Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/skola-39370 200
+[debug] [2021-04-11T20:19:57.591Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/skola-39370 {"projectId":"skola-39370","projectNumber":"792261340682","displayName":"Piece of cake","name":"projects/skola-39370","resources":{"hostingSite":"skola-39370","realtimeDatabaseInstance":"skola-39370","storageBucket":"skola-39370.appspot.com","locationId":"europe-west"},"state":"ACTIVE"}
+[info] 
+=== Firestore Setup
+[debug] [2021-04-11T20:19:57.593Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2021-04-11T20:19:57.593Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2021-04-11T20:19:57.663Z] <<< HTTP RESPONSE 200 {"date":"Sun, 11 Apr 2021 20:19:57 GMT","expires":"Mon, 01 Jan 1990 00:00:00 GMT","cache-control":"no-cache, no-store, max-age=0, must-revalidate","pragma":"no-cache","content-type":"application/json; charset=utf-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","server":"scaffolding on HTTPServer2","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-29=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-04-11T20:19:57.685Z] >>> HTTP REQUEST GET https://serviceusage.googleapis.com/v1/projects/skola-39370/services/firestore.googleapis.com  
+ 
+[debug] [2021-04-11T20:19:58.782Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Sun, 11 Apr 2021 20:19:58 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-29=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-04-11T20:19:58.782Z] >>> HTTP REQUEST GET https://appengine.googleapis.com/v1/apps/skola-39370  
+ 
+[debug] [2021-04-11T20:19:59.257Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Sun, 11 Apr 2021 20:19:59 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-29=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-04-11T20:19:59.258Z] database_type: CLOUD_FIRESTORE
+[debug] [2021-04-11T20:19:59.258Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2021-04-11T20:19:59.259Z] > authorizing via signed-in user
+[debug] [2021-04-11T20:19:59.259Z] [iam] checking project skola-39370 for permissions ["firebase.projects.get"]
+[debug] [2021-04-11T20:19:59.260Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/skola-39370:testIamPermissions  
+ {"permissions":["firebase.projects.get"]}
+[debug] [2021-04-11T20:20:00.076Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Sun, 11 Apr 2021 20:19:59 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","server-timing":"gfet4t7; dur=756","alt-svc":"h3-29=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[info] 
+[info] Firestore Security Rules allow you to define how and when to allow
+[info] requests. You can keep these rules in your project directory
+[info] and publish them with firebase deploy.
+[info] 

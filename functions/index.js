@@ -17,6 +17,68 @@ routesConfig(app);
 
 exports.api = functions.https.onRequest(app);
 
+// export const updateCreatedTime = functions.firestore.document(`facts/{newFactId}`)
+// .onUpdate(async (snap,context) => {
+//   if(snap.before.data().time !== snap.after.data().time){
+//     console.log(‘time Updated’);
+//   }else{
+//     await admin.firestore().doc(`facts/${context.params.newFactId}`).update({
+//     time: snap.after.updateTime
+//     }).then(()=>{
+//     console.log(“Finish”);
+//     }).catch(err =>{
+//     console.error(err);
+//     })
+//   }
+// });
+
+
+  // Listen for updates to any `user` document.
+// exports.countNameChanges = functions.firestore
+//     .document('Users/{userId}/Drawings/{drawingId}')
+//     .onUpdate((change, context) => {
+//       // Retrieve the current and previous value
+//       const data = change.after.data();
+//       const previousData = change.before.data();
+
+//       if (previousData.modified !== data.modified) {
+//         console.log('time updated');
+//         return null;
+//       } else {
+//         const timestamp = new Date().getTime();
+//         return change.after.ref.set({
+//           modified: timestamp
+//         }, {merge: true});
+//       }
+
+//       // // We'll only update if the name has changed.
+//       // // This is crucial to prevent infinite loops.
+//       // if (data.name == previousData.name) {
+//       //   return null;
+//       // }
+
+//       // // Retrieve the current count of name changes
+//       // let count = data.name_change_count;
+//       // if (!count) {
+//       //   count = 0;
+//       // }
+
+//       // Then return a promise of a set operation to update the count
+//       // 
+      
+//     });
+
+// Listen for updates to any `user` document.
+// exports.modifiedDateUpdate = functions.firestore
+//     .document('/Users/{userId}/Drawings/{drawingId}')
+//     .onUpdate((change, context) => {
+//       const data = change.after.data();
+//       console.log('data: ', data);
+//       return change.after.ref.set({
+//         modified_timestamp: new Date()
+//       }, {merge: true});
+//     });
+
 // // Start writing Firebase Functions
 // // https://firebase.google.com/functions/write-firebase-functions
 //

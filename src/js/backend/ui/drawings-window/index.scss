@@ -4,7 +4,6 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(0,0,0,.8);
     z-index: 3;
     display: flex;
     justify-content: center;
@@ -18,11 +17,17 @@
         padding-top: 40px;
         min-width: 400px;
         width: 90vw;
-        display: grid;
+        display: block;
         width: 90vw;
-        grid-template-columns: fit-content(280px) auto;
 
         .drawings-container {
+
+            & > h4 {
+                background: black;
+                padding: 4px;
+                display: inline-flex;
+                margin-bottom: 4px;
+            }
             &:first-child {
                 margin-right: 40px;
             }
@@ -42,13 +47,18 @@
 
         .new-drawing {
             padding: 20px;
-            background: white;
+            background: yellow;
             margin-top: 4px;
             cursor: pointer;
             position: relative;
+            display: inline-flex;
 
             &:hover {
-                background: rgba(255,255,255, 0.94);
+                background: black;
+
+                & .init-container > h4 {
+                    color: yellow;
+                }
             }
 
             .init-container {
@@ -115,13 +125,17 @@
         grid-template-columns: auto auto auto;
         grid-gap: 12px;
 
+        &.no-drawings {
+            grid-template-columns: auto;
+        }
+
         > h4 {
             color: black;
             text-align: center;
         }
 
         .drawings-item {
-            padding: 20px;
+            padding: 10px 14px;
             background: rgba(0,0,0,.03);
             cursor: pointer;
             position: relative;
@@ -136,7 +150,7 @@
 
             .top-row {
                 display: flex;
-                margin-bottom: 6px;
+                margin-bottom: 14px;
 
                 .block-with-pre {
                     margin-left: 10px;
@@ -168,11 +182,13 @@
             }
 
             
-
-            > h5 {
-                color: black;
-                margin-bottom: 2px;
+            > .drawing-info {
+                > h5 {
+                    color: black;
+                    margin-bottom: 4px;
+                }
             }
+            
 
             > .click-cover {
                 position: absolute;

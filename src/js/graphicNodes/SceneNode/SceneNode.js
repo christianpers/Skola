@@ -165,7 +165,9 @@ export default class SceneNode{
 
 	onFullscreenClick() {
 		if (!document.fullscreenElement) {
-            this.el.requestFullscreen();
+			const fn = this.el.requestFullscreen || this.el.webkitRequestFullScreen;
+            // this.el.requestFullscreen() || this.el.webkitRequestFullScreen;
+			fn.call(this.el);
 			this.settingsWindow.showFullscreenBtn();
 			
             setTimeout(() => {

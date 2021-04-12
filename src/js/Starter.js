@@ -13,14 +13,16 @@ const TYPES = Object.freeze({
 		id: 'space',
 		settings: {
 			showActiveMeshHelper: true,
-		}
+		},
+		readyForUse: true,
 	},
 	chemistry: {
 		title: 'Kemi',
 		id: 'chemistry',
 		settings: {
 			showActiveMeshHelper: false,
-		}
+		},
+		readyForUse: false,
 	},
 });
 

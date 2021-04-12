@@ -78,16 +78,19 @@ export default class DrawingsWindow{
     
 
     const getData = () => {
-      const promises = [getDrawingsData(username), getGenericDrawingsData()];
-      return Promise.all(promises);
+      // const promises = [getDrawingsData(username), getGenericDrawingsData()];
+      // return Promise.all(promises);
+      return getDrawingsData(username);
     }
 
     getData()
       .then((resp) => {
-        const [drawings, genericDrawings] = resp;
-        this.drawings = drawings;
-        this.genericDrawings = genericDrawings;
-        this.el.innerHTML = getViewHTML(drawings, genericDrawings);
+        // const [drawings, genericDrawings] = resp;
+        this.drawings = resp;
+        // this.drawings = drawings;
+        // this.genericDrawings = genericDrawings;
+        // this.el.innerHTML = getViewHTML(drawings, genericDrawings);
+        this.el.innerHTML = getViewHTML(resp);
         this.makeInteractive();
       })
       .catch((err) => {
