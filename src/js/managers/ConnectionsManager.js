@@ -207,6 +207,29 @@ export default class ConnectionsManager{
 
     /* GETTERS */
 
+    getParamConnections(inNodeID, filterKey) {
+        const connections = this.paramConnections[inNodeID] || [];
+
+        if (!filterKey) {
+            return connections;
+        }
+
+        return connections.filter(t => {
+            const outNode = this.getNode(t.outNodeID);
+            return (outNode && outNode.hasOwnProperty(filterKey));
+        }).map(t => {
+            const outNode = this.getNode(t.outNodeID);
+            return {
+                outNode,
+                ...t
+            };
+        })
+    }
+
+    getParam(paramID) {
+        return this.params[paramID];
+    }
+
     /* GET NODES WITH TYPE EXCEPT THE ONE WITH ID PARAM */
     getNodesWithType(type, ID) {
         const keys = Object.keys(this.nodes);

@@ -31,7 +31,7 @@ export default class NodeTitle{
 
 		innerContainer.appendChild(this.el);
 
-        if (window.NS.showDebug()) {
+        if (window.NS.showDebug) {
             const debugEl = document.createElement('h5');
             debugEl.innerHTML = node.ID;
 

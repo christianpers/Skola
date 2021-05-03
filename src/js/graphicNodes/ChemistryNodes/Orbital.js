@@ -62,6 +62,10 @@ export default class Orbital{
         this.mesh.scale.set(scale, scale, scale);
     }
 
+    get position() {
+        return this.mesh.position;
+    }
+
     get allowConnectionMove() {
         return this._allowConnectionMove;
     }

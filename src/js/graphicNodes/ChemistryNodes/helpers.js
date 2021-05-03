@@ -93,8 +93,8 @@ export const getProtonsNeutronsPositions = () => {
     let index = 0;
 
     const rings = [4, 10, 16, 24];
-    const startRadius = 0.8;
-    const radiusIncrease = 1.1;
+    const startRadius = 0.5;
+    const radiusIncrease = .4;
 
     for (let i = 0; i < rings.length; i++) {
         const radius = startRadius + radiusIncrease * i;
@@ -114,6 +114,7 @@ export const getProtonsNeutronsPositions = () => {
             index++;
         }
     }
+
     return ret;
 }
 

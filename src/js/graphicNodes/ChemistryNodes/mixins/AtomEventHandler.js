@@ -8,23 +8,23 @@ import {
 
 const AtomEventHandler = (superclass) => class extends superclass {
     onOrbitalChange({ detail: { isFull, orbital, ringIndex } }) {
-		console.log('---- START ', this.ID, '---------');
-		console.log('on orbital change 1');
+		// console.log('---- START ', this.ID, '---------');
+		// console.log('on orbital change 1');
         const modifierNode = window.NS.singletons.ConnectionsManager.getConnectedNodeWithType(this.ID, 'electrons');
         if (!modifierNode) {
-			console.log('on orbital change 2');
+			// console.log('on orbital change 2');
             return;
         }
-		console.log('on orbital change 3', ' ringINdex: ', ringIndex, ' orbital: ', orbital);
+		// console.log('on orbital change 3', ' ringINdex: ', ringIndex, ' orbital: ', orbital);
         orbital.positions.forEach(posKey => {
             const electron = modifierNode.getElectronByPositionKeyAndRingIndex(parseInt(posKey), ringIndex);
-			console.log('electron; ', electron, ' posKey: ', posKey);
+			// console.log('electron; ', electron, ' posKey: ', posKey);
             if (electron) {
                 electron.orbitalConnected = isFull;
             }
         });
 
-		console.log('---- END ', this.ID, '---------');
+		// console.log('---- END ', this.ID, '---------');
     }
 
     onAtomDisconnect() {

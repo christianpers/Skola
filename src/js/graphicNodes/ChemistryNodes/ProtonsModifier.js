@@ -12,6 +12,9 @@ export default class ProtonsModifer extends GraphicNode {
 		// this.needsUpdate = true;
 		this.title = 'Protons modifier';
 		this.hasMeshToAdd = true;
+		this.isCoreParam = true;
+
+		this.noIcon = true;
 
 		this.isParam = true;
 
@@ -25,6 +28,9 @@ export default class ProtonsModifer extends GraphicNode {
 
 		this.addToGroup = 'mainAtomGroup';
 
+		this._visualAmountEl = document.createElement('h4');
+		this._visualAmountEl.innerHTML = '0';
+
 		const color = new THREE.Color(1, 0.1, 0.0).getHex();
 		// this.material = new THREE.MeshLambertMaterial({ color });
 		this.material = new THREE.MeshBasicMaterial( { transparent: true, opacity: 1, color, side: THREE.DoubleSide } );
@@ -34,16 +40,24 @@ export default class ProtonsModifer extends GraphicNode {
 		this.getSettings();
 	}
 
+	nodeCreated(nodeConfig) {
+		super.nodeCreated(nodeConfig);
+
+		this.innerContainer.appendChild(this._visualAmountEl);
+	}
+
 	hideSettings() {
 		
 	}
 
 	getAmountPositions() {
 		if (this.visualSettings) {
+			this._visualAmountEl.innerHTML = this.visualSettings.amountProtons;
 			return this.visualSettings.amountProtons;
 		}
 
 		if (this.initValues && this.initValues.amountProtons) {
+			this._visualAmountEl.innerHTML = this.initValues.amountProtons;
 			return this.initValues.amountProtons;
 		}
 
@@ -66,9 +80,12 @@ export default class ProtonsModifer extends GraphicNode {
 	onInputChange(value) {
 		this.updateVisualSettings(value);
 
+		
+
 		if (value !== this.mesh.children.length) {
 			for (let i = 0; i < this.currentOutConnectionsLength; i++) {
-				const param = window.NS.singletons.ConnectionsManager.params[this.currentOutConnections[i].connection.paramID];
+				// const param = window.NS.singletons.ConnectionsManager.params[this.currentOutConnections[i].connection.paramID];
+				const param = window.NS.singletons.ConnectionsManager.getParam(this.currentOutConnections[i].connection.paramID);
 				const inNode = window.NS.singletons.ConnectionsManager.nodes[this.currentOutConnections[i].inNodeID];
 				inNode.updateParam(param, this);
 			}
@@ -107,7 +124,6 @@ export default class ProtonsModifer extends GraphicNode {
 	}
 
     reset() {
-		console.log('node reset');
 		this.amountInput.setValue(0);
 		this.updateVisualSettings(0);
 		this.initValues = null;
@@ -165,16 +181,6 @@ export default class ProtonsModifer extends GraphicNode {
 
 	removeFromDom() {
 		this.reset();
-
-		// this.speedSlider.remove();
-
-		// this.orbitXSlider.remove();
-		// this.orbitYSlider.remove();
-		// this.orbitZSlider.remove();
-
-		// this.rotationXSlider.remove();
-
-		// this.rotationYSlider.remove();
 
 		super.removeFromDom();
 

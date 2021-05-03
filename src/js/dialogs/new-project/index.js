@@ -29,13 +29,13 @@ export default class NewProjectDialog{
 
         const dropdownContainer = this.el.querySelector('.dropdown-container');
 
-        const getItems = () => {
+        const getItems = (isDebugUser) => {
             const types = window.NS.singletons.TYPES;
             const keys = Object.keys(types);
-            return keys.filter(t => types[t].readyForUse).map(t => ({ id: t, title: types[t].title }));
-        }
+            return keys.filter(t => types[t].readyForUse || isDebugUser).map(t => ({ id: t, title: types[t].title }));
+        };
 
-        const items = getItems();
+        const items = getItems(window.NS.showDebug);
 
         this.selectedType = null;
 

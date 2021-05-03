@@ -63,7 +63,9 @@ const AtomDragEvents = (superclass) => class extends superclass {
 		const { releasePoint, ringToReleaseOn, atomToConnect, electronObj } = this.dragData;
 
 		if (isElectron(object)) {
-			onElectronDragEnd(ringToReleaseOn, electronObj, this.visibleRings, this.position, object);
+			onElectronDragEnd(ringToReleaseOn, electronObj, this.visibleRings, this.position, object, this.dragData);
+
+			console.log('releasePoint: ', releasePoint, ' pos: ', this.position);
 
 			// BACKEND SYNC
 			const electronsModifierNode = window.NS.singletons.ConnectionsManager.getConnectedNodeWithType(this.ID, 'electrons');

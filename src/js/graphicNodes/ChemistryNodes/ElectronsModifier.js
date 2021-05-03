@@ -3,6 +3,7 @@ import InputComponent from '../../views/Nodes/NodeComponents/InputComponent';
 import { getGridPositions, syncConnectedElectrons } from './helpers';
 import Electron from './Electron';
 import { RING_DEF } from './AtomNode';
+import { ON_ATOM_CHARGE_CHANGE } from './events';
 
 export default class ElectronsModifer extends GraphicNode {
     constructor(renderer, backendData) {
@@ -19,6 +20,8 @@ export default class ElectronsModifer extends GraphicNode {
 
 		this.isParam = true;
 
+		this.noIcon = true;
+
         this.electrons = {};
 
 		this.controlsAmountAtomRings = true;
@@ -34,8 +37,19 @@ export default class ElectronsModifer extends GraphicNode {
 		this.mesh.name = 'electrons';
 
         this.addToGroup = 'electronsGroup';
+
+		this._visualAmountEl = document.createElement('h4');
+		this._visualAmountEl.innerHTML = '0';
+
+		this._onAtomChargeChange = this._onAtomChargeChange.bind(this);
 		
 		this.getSettings();
+	}
+
+	nodeCreated(nodeConfig) {
+		super.nodeCreated(nodeConfig);
+
+		this.innerContainer.appendChild(this._visualAmountEl);
 	}
 
 	hideSettings() {
@@ -60,29 +74,29 @@ export default class ElectronsModifer extends GraphicNode {
         return this.electrons[ID];
     }
 
+	getAmountElectrons() {
+		if (this.visualSettings) {
+			return this.visualSettings.amountElectrons;
+		}
+
+		if (this.initValues && this.initValues.amountElectrons) {
+			return this.initValues.amountElectrons;
+		}
+
+		return 0;
+	};
+
+
     getConnectedElectrons() {
-        const keys = Object.keys(this.electrons);
-        return keys
+        return Object.keys(this.electrons)
             .filter(key => this.electrons[key].isConnected())
             .map(key => this.electrons[key]);
     }
 
 	getMeshGroup(atomNode) {
         /* CALLED FROM PARAMHELPERS WHEN AMOUNT ELECTRONS INPUT CHANGES IN UI */
-		const getAmountElectrons = () => {
-			if (this.visualSettings) {
-				return this.visualSettings.amountElectrons;
-			}
-
-			if (this.initValues && this.initValues.amountElectrons) {
-				return this.initValues.amountElectrons;
-			}
-
-			return 0;
-		};
-
-		const amountElectrons = getAmountElectrons();
-
+		const amountElectrons = this.getAmountElectrons();
+		
         const atomPosIndex = atomNode.nodeIndex;
         const positions = getGridPositions(3, amountElectrons, false, new THREE.Vector3(atomPosIndex * 8 + 6, 20, 0));
 
@@ -171,6 +185,11 @@ export default class ElectronsModifer extends GraphicNode {
 		return this.settingsContainer;
 	}
 
+	_onAtomChargeChange({ detail: { electrons = 0 } }) {
+		const amountElectrons = this.getAmountElectrons();
+		this._visualAmountEl.innerHTML = `${electrons} | ${amountElectrons}`;
+	}
+
 	updateVisualSettings(val) {
 		this.syncVisualSettings({
 			amountElectrons: val,
@@ -191,6 +210,9 @@ export default class ElectronsModifer extends GraphicNode {
 
 	onConnectionAdd(e) {
 		if (e.detail.connection.outNodeID === this.ID) {
+			console.log('connection add: ', e.detail);
+			const inNode = window.NS.singletons.ConnectionsManager.getNode(e.detail.inNodeID);
+			inNode.el.addEventListener(ON_ATOM_CHARGE_CHANGE, this._onAtomChargeChange);
 			const connection = e.detail.connection;
 			const paramContainer = window.NS.singletons.ConnectionsManager.params[connection.paramID];
 			
@@ -209,6 +231,8 @@ export default class ElectronsModifer extends GraphicNode {
 			const paramContainer = window.NS.singletons.ConnectionsManager.params[connection.paramID];
 
 			const inNode = window.NS.singletons.ConnectionsManager.getNode(inIDToRemove);
+			inNode.el.removeEventListener(ON_ATOM_CHARGE_CHANGE, this._onAtomChargeChange);
+			
 			
 
 			const tempOutConnections = this.currentOutConnections.map(t => t);
@@ -224,7 +248,10 @@ export default class ElectronsModifer extends GraphicNode {
 				this.reset();
 				this.resetConnection(inNode, connection);
 
-				inNode.onModifierDisconnect(outIDToRemove);
+				if (inNode.onModifierDisconnect) {
+					inNode.onModifierDisconnect(outIDToRemove);
+				}
+				
 			}
 		}
 	}

@@ -12,8 +12,11 @@ export default class NeutronsModifer extends GraphicNode {
 		// this.needsUpdate = true;
 		this.title = 'Neutrons modifier';
 		this.hasMeshToAdd = true;
+		this.isCoreParam = true;
 
 		this.isParam = true;
+
+		this.noIcon = true;
 
 		this.outValues = {};
 
@@ -38,8 +41,17 @@ export default class NeutronsModifer extends GraphicNode {
         //     fragmentShader: NEUTRON_FRAGMENT,
 		// 	lights: true
         // });
+
+		this._visualAmountEl = document.createElement('h4');
+		this._visualAmountEl.innerHTML = '0';
 		
 		this.getSettings();
+	}
+
+	nodeCreated(nodeConfig) {
+		super.nodeCreated(nodeConfig);
+
+		this.innerContainer.appendChild(this._visualAmountEl);
 	}
 
 	hideSettings() {
@@ -48,10 +60,12 @@ export default class NeutronsModifer extends GraphicNode {
 
 	getAmountPositions() {
 		if (this.visualSettings) {
+			this._visualAmountEl.innerHTML = this.visualSettings.amountNeutrons;
 			return this.visualSettings.amountNeutrons;
 		}
 
 		if (this.initValues && this.initValues.amountNeutrons) {
+			this._visualAmountEl.innerHTML = this.initValues.amountNeutrons;
 			return this.initValues.amountNeutrons;
 		}
 

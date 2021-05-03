@@ -195,22 +195,43 @@ const isValidParamSingleNumberInput = (outNode, inNode, param) => {
 };
 
 const onAtomParamUpdate = (inNode, outNode, param) => {
-	let meshGroup;
 	if (param.param === 'electrons') {
-		meshGroup = outNode.getMeshGroup(inNode);
+		const meshGroup = outNode.getMeshGroup(inNode);
+
+		inNode.updateMeshType(
+			meshGroup, 
+			param.param,
+			outNode.enableDragging,
+			outNode.controlsAmountAtomRings,
+			outNode.addToGroup,
+		);
 	} else {
-		const amountPositions = outNode.getAmountPositions();
-		const positions = inNode.getAvailableCorePositions(param.param, amountPositions);
-		meshGroup = outNode.getMeshGroup(positions);
+		const coreParamNodes = window.NS.singletons.ConnectionsManager.getParamConnections(inNode.ID, 'isCoreParam');
+		const amountRequested = coreParamNodes.reduce((acc, curr) => {
+			const amountPositions = curr.outNode.getAmountPositions();
+			acc.totalAmount += amountPositions;
+			acc.amountPerType.push({
+				amountPositions,
+				...curr
+			});
+			return acc;
+		}, { totalAmount: 0, amountPerType: [] });
+		const positionState = inNode.getCorePositions(amountRequested);
+
+		Object.keys(positionState).forEach(paramID => {
+			const outNode = window.NS.singletons.ConnectionsManager.getNode(positionState[paramID].outNodeID);
+			const meshGroup = outNode.getMeshGroup(positionState[paramID].positions);
+			const paramObj = window.NS.singletons.ConnectionsManager.getParam(paramID);
+
+			inNode.updateMeshType(
+				meshGroup, 
+				paramObj.param.param,
+				outNode.enableDragging,
+				outNode.controlsAmountAtomRings,
+				outNode.addToGroup,
+			);
+		})
 	}
-	
-	inNode.updateMeshType(
-		meshGroup, 
-		param.param,
-		outNode.enableDragging,
-		outNode.controlsAmountAtomRings,
-		outNode.addToGroup,
-	);
 };
 
 const isValidAtomParamInput = (outNode, inNode, param) => {

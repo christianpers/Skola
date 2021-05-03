@@ -52,27 +52,28 @@ export default class Starter {
 
 		const refs = new Refs();
 		window.NS.singletons.refs = refs;
-		
-		this.main = new Main();
+
 		const pathnameSplit = window.location.pathname.split('/');
     	const pathSegments = pathnameSplit.length > 1 ? pathnameSplit.slice(1) : '';
 
-		this.drawingsWindow = new DrawingsWindow(document.body, username, this.onDrawingSelectedBound, pathSegments[0]);
+		getUserData(username)
+			.then(data => {
+				window.NS.userData = data;
+				window.NS.showDebug = Boolean(window.NS.userData) && Boolean(window.NS.userData.dev);
+
+				this.main = new Main();
+				this.drawingsWindow = new DrawingsWindow(document.body, username, this.onDrawingSelectedBound, pathSegments[0]);
+			});
 	}
 
 	onDrawingSelected(drawing) {
 		this.drawingsWindow.hide();
 
 		window.NS.singletons.PROJECT_TYPE = drawing.drawing.doc.type;
+		window.NS.IS_CHEMISTRY = window.NS.singletons.PROJECT_TYPE === window.NS.singletons.TYPES.chemistry.id;
+		window.NS.IS_SPACE = window.NS.singletons.PROJECT_TYPE === window.NS.singletons.TYPES.space.id
 
-		getUserData()
-			.then(data => {
-				window.NS.userData = data;
-				window.NS.showDebug = () => {
-					return window.NS.userData && window.NS.userData.dev;
-				};
-				this.initDrawing(drawing);
-			});
+		this.initDrawing(drawing);
 	}
 
 	initDrawing(drawing) {

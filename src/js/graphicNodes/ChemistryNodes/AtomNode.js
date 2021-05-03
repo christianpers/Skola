@@ -13,7 +13,9 @@ import {
 
 import AnimateObject from './AnimateObject';
 import { SIMPLE_3D_VERTEX, ATOM_CENTER_FRAGMENT } from '../../../shaders/SHADERS';
-import AtomHTMLLabel from './AtomHTMLLabel';
+// import AtomHTMLLabel from './AtomHTMLLabel';
+
+import './index.scss';
 
 export const RING_DEF = Object.freeze({
 	0: {
@@ -26,19 +28,19 @@ export const RING_DEF = Object.freeze({
 		amountElectrons: 8,
 		orbitalPositions: 4,
 		orbitals: 4,
-		allowElectronAngleMove: false,
+		allowElectronAngleMove: true,
 	},
 	2: {
 		amountElectrons: 18,
 		orbitalPositions: 9,
 		orbitals: 9,
-		allowElectronAngleMove: false,
+		allowElectronAngleMove: true,
 	},
 	3: {
 		amountElectrons: 32,
 		orbitalPositions: 16,
 		orbitals: 16,
-		allowElectronAngleMove: false,
+		allowElectronAngleMove: true,
 	}
 });
 
@@ -52,6 +54,7 @@ export default class AtomNode extends mixins.AtomEventHandler(mixins.AtomDragEve
 
 		this.isForegroundNode = true;
 		this.isRendered = true;
+		this.noIcon = true;
 		// this.needsUpdate = true;
 
 		this.corePositions = getProtonsNeutronsPositions();
@@ -59,6 +62,13 @@ export default class AtomNode extends mixins.AtomEventHandler(mixins.AtomDragEve
 		this.dragControls = null;
 
 		this.visibleRings = [];
+
+		this._visualAmountWrapper = document.createElement('div');
+		this._visualAmountWrapper.classList.add('visual-amount-wrapper');
+		this._visualAmountEl = document.createElement('h4');
+		this._visualAmountEl.innerHTML = '0';
+
+		this._visualAmountWrapper.appendChild(this._visualAmountEl);
 
 		this.atomDisconnectCallback = this.onAtomDisconnect.bind(this);
 
@@ -97,8 +107,6 @@ export default class AtomNode extends mixins.AtomEventHandler(mixins.AtomDragEve
 			'mainAtomGroup': this.mainAtomGroup,
 			'electronsGroup': this.electronsGroup,
 		};
-
-		
 
 		const circleDragColor = new THREE.Color(0, 0, 0).getHex();
 		const circleDragGeometry = new THREE.CircleGeometry( 5, 32 );
@@ -200,6 +208,12 @@ export default class AtomNode extends mixins.AtomEventHandler(mixins.AtomDragEve
 		this.paramVals = {};
 	}
 
+	nodeCreated(nodeConfig) {
+		super.nodeCreated(nodeConfig);
+
+		this.innerContainer.appendChild(this._visualAmountWrapper);
+	}
+
 	setScale(value) {
 		this.mesh.scale.set(value, value, value);
 	}
@@ -225,9 +239,9 @@ export default class AtomNode extends mixins.AtomEventHandler(mixins.AtomDragEve
 
 		this.foregroundRender.scene.add(this.debugMesh);
 
-		this._atomHTMLLabel = new AtomHTMLLabel();
+		// this._atomHTMLLabel = new AtomHTMLLabel();
 		
-		window.NS.singletons.CanvasNode.addMeshLabel(this.mainAtomGroup, this.ID, this._atomHTMLLabel);
+		// window.NS.singletons.CanvasNode.addMeshLabel(this.mainAtomGroup, this.ID, this._atomHTMLLabel);
 
 		// THIS IS USED TO KNOW WHICH ATOMNODE SHOULD GET THE DRAG EVT
 		this.mesh.userData.nodeID = this.ID;
@@ -236,11 +250,42 @@ export default class AtomNode extends mixins.AtomEventHandler(mixins.AtomDragEve
 		this.foregroundRender.dragControls.setObjects(this.mainAtomGroup.children, `${this.ID}-mainAtomGroup`);
 	}
 
-	getAvailableCorePositions(paramKey, amountPositions) {
-		const keys = Object.keys(this.corePositions);
-		const paramKeyPositionKeys = keys.filter(t => this.corePositions[t].type === paramKey);
-		const finalParamKeyPositionKeys = paramKeyPositionKeys.slice(0, amountPositions);
-		return finalParamKeyPositionKeys.map(t => this.corePositions[t].pos);
+	getCorePositions({ amountPerType, totalAmount }) {
+		const getAvailableKeysLength = (arr, stateObj) => {
+			const ret = arr.filter(t => {
+				const state = stateObj[t.paramID];
+				return state.positions.length <= state.total;
+			});
+
+			return ret.length;
+		}
+
+		const stateObj = amountPerType.reduce((acc, curr) => {
+			acc[curr.paramID] = {
+				total: curr.amountPositions,
+				positions: [],
+				outNodeID: curr.outNodeID
+			};
+
+			return acc;
+		}, {});
+		
+		const keys = Object.keys(this.corePositions).slice(0, totalAmount);
+		
+		// sorting this cause we default to index 0 in the loop
+		const amountKeys = amountPerType.sort((a, b) => {
+			return b.amountPositions - a.amountPositions;
+		});
+
+		for (let i = 0; i < totalAmount; i++) {
+			let index = i % getAvailableKeysLength(amountPerType, stateObj);
+			let obj = amountKeys[index];
+			const corePosition = this.corePositions[keys[i]].pos;
+			stateObj[obj.paramID].positions.push(corePosition);
+		}
+
+		return stateObj;
+
 	}
 
 	getCartesianForRing(angle, ringIndex) {
@@ -265,6 +310,7 @@ export default class AtomNode extends mixins.AtomEventHandler(mixins.AtomDragEve
 		}
 	}
 
+	/* THIS IS CALLED FROM MODIFIERS WHICH RESPONDS TO THE PARAM CONNECTION (ADD/REMOVE) EVENTS FROM CONNECTIONSMANAGER */
 	onModifierDisconnect(modifierID) {
 		const modifierNode = window.NS.singletons.ConnectionsManager.getNode(modifierID);
 		if (modifierNode.controlsAmountAtomRings) {
@@ -338,9 +384,10 @@ export default class AtomNode extends mixins.AtomEventHandler(mixins.AtomDragEve
 
 	updateAtomHTML() {
 		const protonsModifierNode = window.NS.singletons.ConnectionsManager.getConnectedNodeWithType(this.ID, 'protons');
+		let amountProtons = 0;
 		if (protonsModifierNode) {
-			const amountProtons = protonsModifierNode.getAmount();
-			this._atomHTMLLabel.amountProtons = amountProtons;
+			amountProtons = protonsModifierNode.getAmount();
+			// this._atomHTMLLabel.amountProtons = amountProtons;
 		}
 
 		const amountElectrons = this.visibleRings.reduce((amount, ring) => {
@@ -349,11 +396,17 @@ export default class AtomNode extends mixins.AtomEventHandler(mixins.AtomDragEve
 			return amount + (amountPositions - amountAvailPositions.length);
 		}, 0);
 		
-		this._atomHTMLLabel.amountElectrons = amountElectrons;
+		// this._atomHTMLLabel.amountElectrons = amountElectrons;
+		const charge = amountProtons - amountElectrons;
+		const prefix = charge >= 0 ? '+' : '-';
+		this._visualAmountEl.innerHTML = `${prefix}${charge}`;
+
+		const atomChargeChangeEvent = new CustomEvent(Events.ON_ATOM_CHARGE_CHANGE, { detail: { protons: amountProtons, electrons: amountElectrons }});
+        this.el.dispatchEvent(atomChargeChangeEvent);
 	}
 
 	removeFromDom() {
-		window.NS.singletons.CanvasNode.removeMeshLabel(this.ID);
+		// window.NS.singletons.CanvasNode.removeMeshLabel(this.ID);
 		super.removeFromDom();
 
 		this.foregroundRender.dragControls.removeEventListener('dragstart', this.onDragStartBound);

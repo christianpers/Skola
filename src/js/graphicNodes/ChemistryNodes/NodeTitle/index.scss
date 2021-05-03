@@ -1,0 +1,16 @@
+.chemistry-node-title {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+
+    .node-inner-title {
+        background: black;
+        padding: 10px;
+        display: flex;
+
+        & > p {
+            margin-right: 8px;
+            font-size: 12px;
+        }
+    }
+}

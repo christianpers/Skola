@@ -222,13 +222,18 @@ export const getDrawings = (username) => {
     });
 };
 
-export const getUserData = () => {
+export const getUserData = (username) => {
     return new Promise((resolve, reject) => {
-        const userRef = window.NS.singletons.refs.getUserRef();
+        const hasUserRef = window.NS.singletons.refs.hasUserRef();
+        const userRef = hasUserRef ? window.NS.singletons.refs.getUserRef() : db.collection("Users").doc(username);
+        if (!hasUserRef) {
+            console.log('set user ref', userRef);
+            window.NS.singletons.refs.setUserRef(userRef);
+        }
 
         userRef.get().then(doc => {
             if (doc.exists) {
-                resolve(doc.data());
+                return resolve(doc.data());
             }
 
             resolve(undefined);

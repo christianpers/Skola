@@ -2,6 +2,7 @@
 import NonagonType from './NodeTypes/NonagonType';
 import TriangleType from './NodeTypes/TriangleType';
 import NodeTitle from './NodeComponents/NodeTitle/NodeTitle';
+import ChemistryNodeTitle from '../../graphicNodes/ChemistryNodes/NodeTitle';
 import { createNode, updateNode } from '../../backend/set';
 import { getNodeRef } from '../../backend/get';
 
@@ -82,7 +83,7 @@ export default class Node{
 
 		if (!this.isModifier) {
 			this.upperContainer = document.createElement('div');
-			this.upperContainer.className = 'node-upper';
+			this.upperContainer.className = `node-upper ${window.NS.singletons.PROJECT_TYPE}`;
 			this.el.appendChild(this.upperContainer);
 		}
 		
@@ -102,7 +103,12 @@ export default class Node{
 				if (this.initNodeConfig) {
 					this.title = nodeConfig.data.title;
 				}
-				this.nodeTitle = new NodeTitle(this.upperContainer, this);
+				if (window.NS.IS_CHEMISTRY) {
+					this.nodeTitle = new ChemistryNodeTitle(this.upperContainer, this);
+				} else {
+					this.nodeTitle = new NodeTitle(this.upperContainer, this);
+				}
+				
 			}
 
 			this.nodeType = this.isModifier
@@ -161,13 +167,12 @@ export default class Node{
 
 	// CALLED FROM CONNECTIONSMANAGER
 	onNodeDisconnectFromNonagonDelete() {
-		/* THIS IS WHERE THE PROBLEM STARTS WHEN DISCONNECTING TRIANGLE NODES ON PLANET NODE DELETE */
 		this.nodeType.deactivateAsChild({x: 0, y: 0}, true);
 		this.nodeType.setAngle(0);
 	}
 
 	nodeCreated(nodeConfig) {
-		if (!this.isCanvasNode) {
+		if (!this.isCanvasNode && !this.noIcon) {
 			// this.nodeType = this.isModifier
 			// 	? new TriangleType(this.el, this.innerContainer, this.params, this) : new NonagonType(this.innerContainer, this.params, this, nodeConfig);
 
@@ -249,8 +254,6 @@ export default class Node{
 		console.log('node on param connection remove: ', e.detail, e.type, this.ID);
 
 	}
-
-	onModifierDisconnect() {}
 
 	syncVisualSettings(settings, directSync = false) {
 		this.visualSettings = Object.assign({}, this.visualSettings, settings);
