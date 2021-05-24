@@ -15,18 +15,6 @@ export default class CubeNode extends GraphicNode{
 		this.mesh = new THREE.Group();
 		this.mesh.add(mesh);
 
-		// const nameTexture = new THREE.CanvasTexture();
-
-		var planeGeometry = new THREE.PlaneBufferGeometry( 8, 2, 10, 10 );
-		var planeMaterial = new THREE.MeshBasicMaterial( {side: THREE.DoubleSide} );
-
-		// this.nameMesh = new THREE.Mesh(planeGeometry, planeMaterial);
-		// this.nameMesh.position.y = 3;
-		// this.nameMesh.scale.set(.2, .2, .2);
-
-		// this.mesh.add(this.nameMesh);
-
-
 		const textureParam = {
 			title: 'Texture',
 			param: 'map',

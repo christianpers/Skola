@@ -22,25 +22,21 @@ export const RING_DEF = Object.freeze({
 		amountElectrons: 2,
 		orbitalPositions: 1, // but only two electrons ? half orbitals ?
 		orbitals: 1,
-		allowElectronAngleMove: true, // used to know if allowed to move electron to connection angle.. might have to be decided based on both input and output but this is a temp solution
 	},
 	1: {
 		amountElectrons: 8,
 		orbitalPositions: 4,
 		orbitals: 4,
-		allowElectronAngleMove: true,
 	},
 	2: {
 		amountElectrons: 18,
 		orbitalPositions: 9,
 		orbitals: 9,
-		allowElectronAngleMove: true,
 	},
 	3: {
 		amountElectrons: 32,
 		orbitalPositions: 16,
 		orbitals: 16,
-		allowElectronAngleMove: true,
 	}
 });
 
@@ -55,7 +51,6 @@ export default class AtomNode extends mixins.AtomEventHandler(mixins.AtomDragEve
 		this.isForegroundNode = true;
 		this.isRendered = true;
 		this.noIcon = true;
-		// this.needsUpdate = true;
 
 		this.corePositions = getProtonsNeutronsPositions();
 
@@ -111,13 +106,7 @@ export default class AtomNode extends mixins.AtomEventHandler(mixins.AtomDragEve
 		const circleDragColor = new THREE.Color(0, 0, 0).getHex();
 		const circleDragGeometry = new THREE.CircleGeometry( 5, 32 );
 		const circleDragMaterial = new THREE.MeshBasicMaterial( { color: circleDragColor, transparent: true, opacity: 1 } );
-		// const circleDragMaterial = new THREE.LineDashedMaterial({ color: circleDragColor });
 		circleDragMaterial.userData.toggleSelected = true;
-		// const circleDragMaterial = new THREE.ShaderMaterial({
-        //     uniforms: {},
-        //     vertexShader: SIMPLE_3D_VERTEX,
-        //     fragmentShader: ATOM_CENTER_FRAGMENT,
-        // });
 		this.circleDragMesh = new THREE.Mesh( circleDragGeometry, circleDragMaterial );
 		this.mainAtomGroup.add(this.circleDragMesh);
 
@@ -142,26 +131,15 @@ export default class AtomNode extends mixins.AtomEventHandler(mixins.AtomDragEve
 
 		this.ringMeshGroup = new THREE.Group();
 
+		this.mainAtomGroup.add(this.ringMeshGroup);
+
 		this.onAtomConnectionUpdateEvent = this.onAtomConnectionUpdateEvent.bind(this);
 		document.documentElement.addEventListener(Events.ON_ATOM_CONNECTION_UPDATE, this.onAtomConnectionUpdateEvent);
 
 		this.onOrbitalChangeEvent = this.onOrbitalChange.bind(this);
 		this.el.addEventListener(Events.ON_ORBITAL_POSITIONS_UPDATE, this.onOrbitalChangeEvent);
 
-		const startRadius = 6;
-		const margin = 3;
-		const ringDefKeys = Object.keys(RING_DEF);
-		for (let i = 0; i < ringDefKeys.length; i++) {
-			const key = ringDefKeys[i];
-			const ringDef = RING_DEF[key];
-			const radius = startRadius + i * 2;
-			const ring = new AtomCircle(radius, ringDef, i, this.el);
-			
-			this.ringMeshGroup.add(ring.mesh);
-			this.rings[i] = ring;
-		}
 		
-		this.mainAtomGroup.add(this.ringMeshGroup);
 
         const protonsParam = {
 			title: 'Protoner',
@@ -211,6 +189,36 @@ export default class AtomNode extends mixins.AtomEventHandler(mixins.AtomDragEve
 	nodeCreated(nodeConfig) {
 		super.nodeCreated(nodeConfig);
 
+		const startRadius = 6;
+		const margin = 3;
+		// const ringDefKeys = Object.keys(RING_DEF);
+		// for (let i = 0; i < ringDefKeys.length; i++) {
+		// 	const key = ringDefKeys[i];
+		// 	// const ringDef = RING_DEF[key];
+		// 	const radius = startRadius + i * 2;
+		// 	const ring = new AtomCircle(radius, ringDef, i, this.el);
+			
+		// 	// this.ringMeshGroup.add(ring.mesh);
+		// 	this.rings[i] = ring;
+		// }
+
+		/*
+		
+			IM PAUSING CHEMISTRY ! SORRY
+			
+		*/
+		
+		/* START LOOK INTO ADDING EVENTS FROM MAIN STATE THAT ATOM REACTS TO  MAYBE CREATE A VISUAL ATOM CLASS THAT IS THE RENDERED ATOM IN CANVAS */
+
+		window.NS.singletons.LessonManager.chemistryState.createAtom(this.ID);
+		// Object.keys(this.rings).forEach(t => {
+		// 	const ring = this.rings[t];
+		// 	ring.init(this.ID);
+		// 	this.ringMeshGroup.add(ring.mesh);
+		// });
+
+		console.log(window.NS.singletons.LessonManager.chemistryState);
+
 		this.innerContainer.appendChild(this._visualAmountWrapper);
 	}
 
@@ -250,6 +258,7 @@ export default class AtomNode extends mixins.AtomEventHandler(mixins.AtomDragEve
 		this.foregroundRender.dragControls.setObjects(this.mainAtomGroup.children, `${this.ID}-mainAtomGroup`);
 	}
 
+	// used for protons and neutrons  should prob be moved somewhere else  called from paramhelpers
 	getCorePositions({ amountPerType, totalAmount }) {
 		const getAvailableKeysLength = (arr, stateObj) => {
 			const ret = arr.filter(t => {
@@ -297,18 +306,18 @@ export default class AtomNode extends mixins.AtomEventHandler(mixins.AtomDragEve
 		return { x, y };
 	}
 
-	syncAtomRings(childrenCount) {
-		this.visibleRings = [];
-		const amountRings = getAmountRings(childrenCount, RING_DEF);
-		const ringsLength = Object.keys(this.rings).length;
-		for (let i = 0; i < ringsLength; i++) {
-			const visible = i < amountRings;
-			this.rings[i].mesh.visible = visible;
-			if (visible) {
-				this.visibleRings.push(this.rings[i]);
-			}
-		}
-	}
+	// syncAtomRings(childrenCount) {
+	// 	this.visibleRings = [];
+	// 	const amountRings = getAmountRings(childrenCount, RING_DEF);
+	// 	const ringsLength = Object.keys(this.rings).length;
+	// 	for (let i = 0; i < ringsLength; i++) {
+	// 		const visible = i < amountRings;
+	// 		this.rings[i].mesh.visible = visible;
+	// 		if (visible) {
+	// 			this.visibleRings.push(this.rings[i]);
+	// 		}
+	// 	}
+	// }
 
 	/* THIS IS CALLED FROM MODIFIERS WHICH RESPONDS TO THE PARAM CONNECTION (ADD/REMOVE) EVENTS FROM CONNECTIONSMANAGER */
 	onModifierDisconnect(modifierID) {
@@ -320,8 +329,8 @@ export default class AtomNode extends mixins.AtomEventHandler(mixins.AtomDragEve
 				const { positionKey: dragAtomPosKey, id: dragAtomId } = connection.dragAtom;
 				const { positionKey: connectingAtomPosKey, id: connectingAtomId } = connection.connectingAtom;
 
-				resetElectronAndRing(dragAtomId, dragAtomPosKey);
-				resetElectronAndRing(connectingAtomId, connectingAtomPosKey);
+				// resetElectronAndRing(dragAtomId, dragAtomPosKey);
+				// resetElectronAndRing(connectingAtomId, connectingAtomPosKey);
 
 				window.NS.singletons.LessonManager.atomConnectionsManager.removeConnection(connectionId)
 			});
@@ -329,15 +338,16 @@ export default class AtomNode extends mixins.AtomEventHandler(mixins.AtomDragEve
 			//SYNC BACKEND
 			window.NS.singletons.LessonManager.atomConnectionsManager.syncConnections();
 
-			this.visibleRings = [];
-			const ringsLength = Object.keys(this.rings).length;
-			for (let i = 0; i < ringsLength; i++) {
-				this.rings[i].mesh.visible = false;
-			}
+			// this.visibleRings = [];
+			// const ringsLength = Object.keys(this.rings).length;
+			// for (let i = 0; i < ringsLength; i++) {
+			// 	this.rings[i].mesh.visible = false;
+			// }
 		}
 	}
 
-	updateMeshType(meshGroup, paramKey, enableDragging, controlsAmountAtomRings, groupToModify) {
+	// called from ParamHelpers when connected modifiers changes
+	updateMeshType(meshGroup, paramKey, enableDragging, groupToModify) {
 		const group = this.groupMapping[groupToModify] || this.mainAtomGroup;
 
 		if (enableDragging) {
@@ -347,66 +357,65 @@ export default class AtomNode extends mixins.AtomEventHandler(mixins.AtomDragEve
 		const electronsModifierNode = window.NS.singletons.ConnectionsManager.getConnectedNodeWithType(this.ID, 'electrons');
 
 		// ONLY RUNNED ONCE INITIALLY --- UGLY BUT IT WORKS..
-		if (electronsModifierNode && !electronsModifierNode.atomBackendSynced && paramKey === 'electrons') {
-			const electrons = electronsModifierNode.electrons;
-			const electronKeys = Object.keys(electrons);
-			if (electronKeys.length > 0) {
-				let index = 0;
-				Object.keys(this.initRingConnections).forEach(t => {
-					const amount = this.initRingConnections[t];
-					for (let i = 0; i < amount; i++) {
-						electrons[electronKeys[index]].setConnectionStatus(t);
-						index++;
-					}
-				});
-			}
+		// if (electronsModifierNode && !electronsModifierNode.atomBackendSynced && paramKey === 'electrons') {
+		// 	const electrons = electronsModifierNode.electrons;
+		// 	const electronKeys = Object.keys(electrons);
+		// 	if (electronKeys.length > 0) {
+		// 		let index = 0;
+		// 		Object.keys(this.initRingConnections).forEach(t => {
+		// 			const amount = this.initRingConnections[t];
+		// 			for (let i = 0; i < amount; i++) {
+		// 				electrons[electronKeys[index]].setConnectionStatus(t);
+		// 				index++;
+		// 			}
+		// 		});
+		// 	}
 			
-			electronsModifierNode.atomBackendSynced = true;
-		}
+		// 	electronsModifierNode.atomBackendSynced = true;
+		// }
 
-		if (electronsModifierNode) {
-			const connectedElectrons = electronsModifierNode.getConnectedElectrons();
+		// if (electronsModifierNode) {
+		// 	const connectedElectrons = electronsModifierNode.getConnectedElectrons();
 
-			this.syncAtomRings(connectedElectrons.length);
-		}
+		// 	this.syncAtomRings(connectedElectrons.length);
+		// }
 		
 
-		if (paramKey === 'electrons') {
-			updateMeshTypeMapper[paramKey](
-				group, paramKey, meshGroup, this.initRingConnections, electronsModifierNode.electrons, this.visibleRings, this.position,
-			);
-		} else {
-			updateMeshTypeMapper[paramKey](group, paramKey, meshGroup);
-		}
+		// if (paramKey === 'electrons') {
+		// 	updateMeshTypeMapper[paramKey](
+		// 		group, paramKey, meshGroup, this.initRingConnections, electronsModifierNode.electrons, this.visibleRings, this.position,
+		// 	);
+		// } else {
+		// 	updateMeshTypeMapper[paramKey](group, paramKey, meshGroup);
+		// }
 
 		this.updateAtomHTML();
 	}
 
 	updateAtomHTML() {
-		const protonsModifierNode = window.NS.singletons.ConnectionsManager.getConnectedNodeWithType(this.ID, 'protons');
-		let amountProtons = 0;
-		if (protonsModifierNode) {
-			amountProtons = protonsModifierNode.getAmount();
-			// this._atomHTMLLabel.amountProtons = amountProtons;
-		}
+		// const protonsModifierNode = window.NS.singletons.ConnectionsManager.getConnectedNodeWithType(this.ID, 'protons');
+		// let amountProtons = 0;
+		// if (protonsModifierNode) {
+		// 	amountProtons = protonsModifierNode.getAmount();
+		// }
 
-		const amountElectrons = this.visibleRings.reduce((amount, ring) => {
-			const amountPositions = ring.totalAmountPositions();
-			const amountAvailPositions = ring.getAvailablePositionKeys();
-			return amount + (amountPositions - amountAvailPositions.length);
-		}, 0);
+		// const amountElectrons = this.visibleRings.reduce((amount, ring) => {
+		// 	const amountPositions = ring.totalAmountPositions();
+		// 	const amountAvailPositions = ring.getAvailablePositionKeys();
+		// 	return amount + (amountPositions - amountAvailPositions.length);
+		// }, 0);
 		
-		// this._atomHTMLLabel.amountElectrons = amountElectrons;
-		const charge = amountProtons - amountElectrons;
-		const prefix = charge >= 0 ? '+' : '-';
-		this._visualAmountEl.innerHTML = `${prefix}${charge}`;
+		// const charge = amountProtons - amountElectrons;
+		// const prefix = charge >= 0 ? '+' : '-';
+		// this._visualAmountEl.innerHTML = `${prefix}${charge}`;
 
-		const atomChargeChangeEvent = new CustomEvent(Events.ON_ATOM_CHARGE_CHANGE, { detail: { protons: amountProtons, electrons: amountElectrons }});
-        this.el.dispatchEvent(atomChargeChangeEvent);
+		// const atomChargeChangeEvent = new CustomEvent(Events.ON_ATOM_CHARGE_CHANGE, { detail: { protons: amountProtons, electrons: amountElectrons }});
+        // this.el.dispatchEvent(atomChargeChangeEvent);
 	}
 
 	removeFromDom() {
 		// window.NS.singletons.CanvasNode.removeMeshLabel(this.ID);
+		window.NS.singletons.LessonManager.chemistryState.deleteAtom(this.ID);
 		super.removeFromDom();
 
 		this.foregroundRender.dragControls.removeEventListener('dragstart', this.onDragStartBound);
@@ -426,11 +435,11 @@ export default class AtomNode extends mixins.AtomEventHandler(mixins.AtomDragEve
 		this.mainAtomGroup.position.set(value.x, value.y, 0);
 	}
 
-	get outerRing() {
-		if (this.visibleRings.length > 0) {
-			return this.visibleRings[this.visibleRings.length - 1];
-		}
+	// get outerRing() {
+	// 	if (this.visibleRings.length > 0) {
+	// 		return this.visibleRings[this.visibleRings.length - 1];
+	// 	}
 
-		return undefined;
-	}
+	// 	return undefined;
+	// }
 }

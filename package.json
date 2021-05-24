@@ -34,6 +34,7 @@
     "glslify-loader": "^1.0.2",
     "hold-event": "0.0.1",
     "tone": "^0.12.80",
+    "uuid": "^8.3.2",
     "vanilla-picker": "^2.7.2"
   }
 }

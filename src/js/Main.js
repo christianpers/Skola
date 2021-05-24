@@ -75,11 +75,13 @@ export default class Main{
 			this.nodeManager = new NodeManager(null, this.keyboardManager, this.workspaceManager.el, this.nodeLibrary);
 			this.nodeManager.init(selectedDrawing);
 		} else {
-			this.nodeManager = new NodeManager(null, this.keyboardManager, this.workspaceManager.el, this.nodeLibrary);
-			this.nodeManager.init(selectedDrawing);
 
 			window.NS.singletons.LessonManager = new LessonManager();
 			window.NS.singletons.LessonManager.init(selectedDrawing.drawing);
+			this.nodeManager = new NodeManager(null, this.keyboardManager, this.workspaceManager.el, this.nodeLibrary);
+			this.nodeManager.init(selectedDrawing);
+
+			
 		}
 	}
 

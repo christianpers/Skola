@@ -174,26 +174,7 @@ export default class SphereNode extends GraphicNode{
 
 		this.outputDataConnection = null;
 
-		// const canvas = this.nodeTitle.canvas;
-		// this.nameTexture = new THREE.CanvasTexture(canvas);
-		// this.nameMesh.material.map = this.nameTexture;
-		// this.nameTexture.needsUpdate = true;
-
 		this.enabledOutputs = [];
-	}
-
-	onCanvasResize(e) {
-		const [w, h] = e.detail;
-
-		if (this.camera.aspect) {
-			this.camera.aspect = w / h;
-		} else {
-			this.camera.left = w / - 2;
-			this.camera.right = w / 2;
-			this.camera.top = h / -2;
-			this.camera.bottom = h / 2;
-		}
-		this.camera.updateProjectionMatrix();
 	}
 
 	getMesh() {
@@ -201,20 +182,7 @@ export default class SphereNode extends GraphicNode{
 	}
 
 	update() {
-		/* TODO THIS SHOULD Only BE DONE WHEN CAMERA ACTIVE */
 
-		// this.camera.lookAt(this.mesh.position);
-
-		// const relativeCameraOffset = new THREE.Vector3(0, 2, 20);
-
-		// const cameraOffset = relativeCameraOffset.applyMatrix4( this.mesh.matrixWorld );
-
-		// // this.camera.position.x = cameraOffset.x;
-		// // this.camera.position.y = cameraOffset.y;
-		// // this.camera.position.z = cameraOffset.z;
-		// this.camera.position.copy(cameraOffset);
-		// this.camera.lookAt( this.mesh.position );
-		// this.mesh.lookAt(this.mesh.position);
 	}
 
 	render() {

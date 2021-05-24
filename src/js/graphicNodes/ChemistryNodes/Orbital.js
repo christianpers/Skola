@@ -1,5 +1,6 @@
 export default class Orbital{
-    constructor(angle, radius, positions, createMesh, allowConnectionMove) {
+    constructor(ID, angle, radius, positions, createMesh, allowConnectionMove) {
+        this.ID = ID;
         this._angle = angle;
         this.overridedAngle;
         this._radius = radius;

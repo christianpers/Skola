@@ -27,20 +27,33 @@ export default class AtomCircle{
 
 		this.orbitals = [];
 
+		
+
+        this.highlightColor = new THREE.Color(245/255, 244/255, 225/255).getHex();
+        this.defaultColor = new THREE.Color(250/255, 75/255, 75/255).getHex();
+		this.connectedColor = new THREE.Color(152/255, 235/255, 169/255).getHex();
+        
+	}
+
+	init(atomID) {
+		const atomState = window.NS.singletons.LessonManager.chemistryState.getAtom(atomID);
+
+		// this.orbitals.forEach(t => {
+		// 	atomState.createOrbital(t.angle, t.radius);
+		// });
+
 		const { orbitalPositions } = this.ringDef;
 		const orbitalDistance = 360 / orbitalPositions;
 		
 		for (let i = 0; i < orbitalPositions; i++) {
 			const angle = getOrbitalAngle(i, orbitalPositions);
 			const positions = this.getPositionsForOrbital(angle);
-			const orbitalItem = new Orbital(angle, radius, positions, this.index > 0, this.ringDef.allowElectronAngleMove);
+			const orbitalStateID = atomState.createOrbital(angle, this.radius);
+			const orbitalItem = new Orbital(orbitalStateID, angle, this.radius, positions, this.index > 0, this.ringDef.allowElectronAngleMove);
 			this.orbitals.push(orbitalItem);
 		}
 
-        this.highlightColor = new THREE.Color(245/255, 244/255, 225/255).getHex();
-        this.defaultColor = new THREE.Color(250/255, 75/255, 75/255).getHex();
-		this.connectedColor = new THREE.Color(152/255, 235/255, 169/255).getHex();
-        this.initCurve(radius);
+		this.initCurve(this.radius);
 	}
 
 	initCurve(radius) {

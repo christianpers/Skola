@@ -56,12 +56,6 @@ export default class ElectronsModifer extends GraphicNode {
 		
 	}
 
-	getElectronByPositionKey(posKey) {
-		const keys = Object.keys(this.electrons);
-        const electronKey = keys.find(key => parseInt(this.electrons[key].ringPositionKey) === posKey);
-		return this.electrons[electronKey];
-	}
-
 	getElectronByPositionKeyAndRingIndex(posKey, ringIndex) {
 		const keys = Object.keys(this.electrons).filter(key => Number.isFinite(this.electrons[key].ringPositionKey));
         const electronKey = keys.find(key => {
@@ -95,53 +89,53 @@ export default class ElectronsModifer extends GraphicNode {
 
 	getMeshGroup(atomNode) {
         /* CALLED FROM PARAMHELPERS WHEN AMOUNT ELECTRONS INPUT CHANGES IN UI */
-		const amountElectrons = this.getAmountElectrons();
+		// const amountElectrons = this.getAmountElectrons();
 		
-        const atomPosIndex = atomNode.nodeIndex;
-        const positions = getGridPositions(3, amountElectrons, false, new THREE.Vector3(atomPosIndex * 8 + 6, 20, 0));
+        // const atomPosIndex = atomNode.nodeIndex;
+        // const positions = getGridPositions(3, amountElectrons, false, new THREE.Vector3(atomPosIndex * 8 + 6, 20, 0));
 
-        const keys = Object.keys(this.electrons);
-        const diff = amountElectrons - keys.length;
-        if (diff === 0) {
-            return this.mesh;
-        } else if (diff < 0) {
-            const amountToRemove = Math.abs(diff);
+        // const keys = Object.keys(this.electrons);
+        // const diff = amountElectrons - keys.length;
+        // if (diff === 0) {
+        //     return this.mesh;
+        // } else if (diff < 0) {
+        //     const amountToRemove = Math.abs(diff);
             
-            let electronsToRemove = [];
-            const notConnectedElectronKeys = keys.filter(key => !this.electrons[key].isConnected());
-            const connectedElectronKeys = keys
-				.filter(key => this.electrons[key].isConnected())
-				.sort((a, b) => this.electrons[b].getRingIndex() - this.electrons[a].getRingIndex());
-            if (notConnectedElectronKeys.length < amountToRemove) {
-                const remaining = amountToRemove - notConnectedElectronKeys.length;
-                for (let i = 0; i < remaining; i++) {
-                    electronsToRemove.push(connectedElectronKeys[i]);
-                }
-                electronsToRemove.push(...notConnectedElectronKeys);
-            } else {
-                electronsToRemove = notConnectedElectronKeys.slice(0, amountToRemove);
-            }
+        //     let electronsToRemove = [];
+        //     const notConnectedElectronKeys = keys.filter(key => !this.electrons[key].isConnected());
+        //     const connectedElectronKeys = keys
+		// 		.filter(key => this.electrons[key].isConnected())
+		// 		.sort((a, b) => this.electrons[b].getRingIndex() - this.electrons[a].getRingIndex());
+        //     if (notConnectedElectronKeys.length < amountToRemove) {
+        //         const remaining = amountToRemove - notConnectedElectronKeys.length;
+        //         for (let i = 0; i < remaining; i++) {
+        //             electronsToRemove.push(connectedElectronKeys[i]);
+        //         }
+        //         electronsToRemove.push(...notConnectedElectronKeys);
+        //     } else {
+        //         electronsToRemove = notConnectedElectronKeys.slice(0, amountToRemove);
+        //     }
 
-            for (let i = 0; i < electronsToRemove.length; i++) {
-                const electron = this.electrons[electronsToRemove[i]];
-				if (electron.isConnected()) {
-					const ring = atomNode.visibleRings[electron.getRingIndex()];
-					// ring.removeConnectedElectron(electron.ID);
-					ring.markPositionAsAvailable(electron.ringPositionKey);
-				}
-                electron.remove();
-                delete this.electrons[electronsToRemove[i]];
-            }
+        //     for (let i = 0; i < electronsToRemove.length; i++) {
+        //         const electron = this.electrons[electronsToRemove[i]];
+		// 		if (electron.isConnected()) {
+		// 			const ring = atomNode.visibleRings[electron.getRingIndex()];
+		// 			// ring.removeConnectedElectron(electron.ID);
+		// 			ring.markPositionAsAvailable(electron.ringPositionKey);
+		// 		}
+        //         electron.remove();
+        //         delete this.electrons[electronsToRemove[i]];
+        //     }
 
-            syncConnectedElectrons(this.ID, this.getConnectedElectrons());
-        } else {
-            const amountToAdd = diff;
-            for (let i = 0; i < amountToAdd; i++) {
-                const index = keys.length + i;
-                const electronObj = new Electron(index, positions[index], this.mesh);
-                this.electrons[electronObj.ID] = electronObj;
-            }
-        }
+        //     syncConnectedElectrons(this.ID, this.getConnectedElectrons());
+        // } else {
+        //     const amountToAdd = diff;
+        //     for (let i = 0; i < amountToAdd; i++) {
+        //         const index = keys.length + i;
+        //         const electronObj = new Electron(index, positions[index], this.mesh);
+        //         this.electrons[electronObj.ID] = electronObj;
+        //     }
+        // }
 
 		return this.mesh;
 	}
@@ -262,16 +256,6 @@ export default class ElectronsModifer extends GraphicNode {
 
 	removeFromDom() {
 		this.reset();
-
-		// this.speedSlider.remove();
-
-		// this.orbitXSlider.remove();
-		// this.orbitYSlider.remove();
-		// this.orbitZSlider.remove();
-
-		// this.rotationXSlider.remove();
-
-		// this.rotationYSlider.remove();
 
 		super.removeFromDom();
 

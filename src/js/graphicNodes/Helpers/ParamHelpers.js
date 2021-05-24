@@ -202,7 +202,7 @@ const onAtomParamUpdate = (inNode, outNode, param) => {
 			meshGroup, 
 			param.param,
 			outNode.enableDragging,
-			outNode.controlsAmountAtomRings,
+			// outNode.controlsAmountAtomRings,
 			outNode.addToGroup,
 		);
 	} else {
@@ -227,7 +227,7 @@ const onAtomParamUpdate = (inNode, outNode, param) => {
 				meshGroup, 
 				paramObj.param.param,
 				outNode.enableDragging,
-				outNode.controlsAmountAtomRings,
+				// outNode.controlsAmountAtomRings,
 				outNode.addToGroup,
 			);
 		})

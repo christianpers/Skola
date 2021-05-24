@@ -1,6 +1,8 @@
 import SpaceManager from './LessonManagers/SpaceManager';
 import AtomConnectionsManager from './LessonManagers/AtomConnectionsManager';
-import { default as ChemistryShared } from '../graphicNodes/ChemistryNodes/shared';  
+import { default as ChemistryShared } from '../graphicNodes/ChemistryNodes/shared'; 
+
+import ChemistryState from '../graphicNodes/ChemistryNodes/AtomState';
 
 export default class LessonManager{
     constructor() {
@@ -13,6 +15,10 @@ export default class LessonManager{
             this.atomConnectionsManager = new AtomConnectionsManager();
 
             this.shared = new ChemistryShared();
+
+            this.chemistryState = new ChemistryState();
+
+
         }
     }
 
