@@ -107,6 +107,7 @@ export default class SceneNode{
 		});
 
 		this.mesh = new THREE.Mesh(geometry, this.material);
+		this.mesh.name = 'framebuffer-mesh';
 
 		this.scene.add(this.mesh);
 	}

@@ -160,7 +160,7 @@ export const spaceTypes = {
             }
         ]
     }
-}
+};
 
 export const chemistryTypes = {
     graphics: {
@@ -185,4 +185,21 @@ export const chemistryTypes = {
             },
         ]
     }
-}
+};
+
+export const mathTypes = {
+    graphics: {
+        '3d-shapes': [
+            {
+                type: 'MathCube',
+                isModifier: false
+            }
+        ],
+        'Modifiers': [
+            {
+                type: 'MathPosition',
+                isModifier: true
+            }
+        ]
+    }
+};

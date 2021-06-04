@@ -1,5 +1,5 @@
 import NodePlaceHelper from './NodePlaceHelper';
-import { types as nodeTypes, spaceTypes, chemistryTypes } from './NodeTypes'; 
+import { types as nodeTypes, spaceTypes, chemistryTypes, mathTypes } from './NodeTypes'; 
 import NodeLibraryTab from './NodeLibraryTab';
 import TabSelector from './TabSelector';
 
@@ -39,9 +39,19 @@ export default class NodeLibrary{
 			onNodeAddedCallback,
 		);
 
+		this.mathTab = new NodeLibraryTab(
+			this.el,
+			'Matte',
+			mathTypes,
+			this.setMouseDownBound,
+			workspaceManager,
+			onNodeAddedCallback,
+		);
+
 		const tabs = {
 			'space': this.spaceTab,
 			'chemistry': this.chemistryTab,
+			'math': this.mathTab
 		};
 
 		this.tabSelector = new TabSelector(this.el, [tabs[window.NS.singletons.PROJECT_TYPE]]);

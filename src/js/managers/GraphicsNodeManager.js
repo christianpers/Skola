@@ -1,6 +1,7 @@
 import Render from '../graphicNodes/Render';
 import SceneNode from '../graphicNodes/SceneNode/SceneNode';
 import SpaceSceneNode from '../graphicNodes/SceneNode/SpaceSceneNode';
+import MathSceneNode from '../graphicNodes/SceneNode/MathSceneNode';
 import { getNode } from '../helpers/node-mapping';
 
 export default class GraphicsNodeManager{
@@ -56,6 +57,8 @@ export default class GraphicsNodeManager{
 		let canvasNode;
 		if (window.NS.singletons.PROJECT_TYPE === window.NS.singletons.TYPES.space.id) {
 			canvasNode = new SpaceSceneNode(this.mainRenderer);
+		} else if (window.NS.singletons.PROJECT_TYPE === window.NS.singletons.TYPES.math.id) {
+			canvasNode = new MathSceneNode(this.mainRenderer);
 		} else {
 			canvasNode = new SceneNode(this.mainRenderer);
 		}

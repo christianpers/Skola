@@ -21,6 +21,8 @@ export default class ForegroundRender{
 
 		this.camera = new THREE.PerspectiveCamera( 60, w / h, 0.01, 10000 );
 		this.camera.position.z = 10;
+		
+
 
 		// this.cameraControls = new CameraControls( this.camera, mainRender.renderer.domElement );
 
@@ -112,6 +114,7 @@ export default class ForegroundRender{
 
 		cameraZ *= offset; // zoom out a little so that objects don't fill the screen
 
+		// remove below on math
 		this.camera.position.z = cameraZ;
 
 		// this.camera.far = cameraToFarEdge * 3;

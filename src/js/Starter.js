@@ -24,6 +24,14 @@ const TYPES = Object.freeze({
 		},
 		readyForUse: false,
 	},
+	math: {
+		title: 'Matte',
+		id: 'math',
+		settings: {
+			showActiveMeshHelper: false,
+		},
+		readyForUse: true
+	}
 });
 
 function transformProp() {

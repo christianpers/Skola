@@ -152,8 +152,13 @@ export default class NodeManager{
 		}
 
 		window.NS.singletons.CanvasNode.enableForeground();
+
+		/* THE CUBE THATS ADDED DOESNT SHOW... FIX IT */
 		
-		window.NS.singletons.CanvasNode.foregroundRender.fitCameraToObjects();
+		if (window.NS.singletons.PROJECT_TYPE !== window.NS.singletons.TYPES.math.id) {
+			window.NS.singletons.CanvasNode.foregroundRender.fitCameraToObjects();
+		}
+		
 	}
 
 	onNodeSelectedEvent(event) {

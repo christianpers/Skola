@@ -99,8 +99,7 @@ const isValidParamPositionInput = (outNode, inNode, param) => {
 
 const onPositionParamUpdate = (inNode, outNode, param) => {
 	inNode.mesh.position[param.param] = outNode.getValue(param);
-	// inNode.mesh.rotation.y = 0;
-	// console.log('position: ', inNode.mesh.rotation.y);
+
 };
 
 const onPositionDisconnect = (inNode, param, outNode) => {

@@ -1,23 +1,8 @@
-import GraphicNode from '../GraphicNode';
+import CubeNode from '../Shapes/CubeNode';
 
-export default class CubeNode extends GraphicNode{
+export default class MathCubeNode extends CubeNode{
 	constructor() {
 		super();
-
-		this.isForegroundNode = true;
-		this.isRendered = true;
-		this.needsUpdate = true;
-
-		this.geometry = new THREE.BoxGeometry( 1, 1, 1, 10, 10, 10 );
-		this.material = new THREE.MeshPhongMaterial( {  } );
-		const mesh = new THREE.Mesh(this.geometry, this.material);
-
-		this.mesh = new THREE.Group();
-		this.mesh.add(mesh);
-
-		// used for showing current selected mesh  has to be reworked in math 
-		this.mainMesh = this.mesh;
-
 
 		const textureParam = {
 			title: 'Texture',
@@ -26,6 +11,7 @@ export default class CubeNode extends GraphicNode{
 			parent: 'Material',
 			paramHelpersType: 'texture',
 			needsFrameUpdate: false,
+			defaultConnect: true,
 		};
 
 		const colorParam = {
@@ -36,6 +22,7 @@ export default class CubeNode extends GraphicNode{
 			parent: 'Color',
 			paramHelpersType: 'color',
 			needsFrameUpdate: false,
+			defaultConnect: true,
 		};
 
 		// const bumpMapParam = {
@@ -57,6 +44,7 @@ export default class CubeNode extends GraphicNode{
 			needsFrameUpdate: false,
 			minMax: {min: -2, max: 2},
 			defaultVal: 0,
+			defaultConnect: true,
 		};
 
 		const positionYParam = {
@@ -68,6 +56,7 @@ export default class CubeNode extends GraphicNode{
 			needsFrameUpdate: false,
 			minMax: {min: -2, max: 2},
 			defaultVal: 0,
+			defaultConnect: true,
 		};
 
 		const positionZParam = {
@@ -79,6 +68,7 @@ export default class CubeNode extends GraphicNode{
 			needsFrameUpdate: false,
 			minMax: {min: -2, max: 2},
 			defaultVal: 0,
+			defaultConnect: true,
 		};
 
 		const rotationXParam = {
@@ -90,6 +80,7 @@ export default class CubeNode extends GraphicNode{
 			needsFrameUpdate: false,
 			minMax: {min: -6, max: 6},
 			defaultVal: 0,
+			defaultConnect: true,
 		};
 
 		const rotationYParam = {
@@ -101,6 +92,7 @@ export default class CubeNode extends GraphicNode{
 			needsFrameUpdate: false,
 			minMax: {min: -6, max: 6},
 			defaultVal: 0,
+			defaultConnect: true,
 		};
 
 		const scaleParam = {
@@ -112,6 +104,7 @@ export default class CubeNode extends GraphicNode{
 			needsFrameUpdate: false,
 			minMax: {min: .1, max: 6},
 			defaultVal: 0,
+			defaultConnect: true,
 		};
 
 		this.params = {
@@ -127,49 +120,6 @@ export default class CubeNode extends GraphicNode{
 		}
 
 		this.paramVals = {};
-	}
-
-	init(
-		pos,
-		parentEl,
-		onDisconnectCallback,
-		onInputConnectionCallback,
-		type,
-		initData,
-		onNodeRemove,
-		isModifier,
-		onNodeDragStart,
-		onNodeDragMove,
-		onNodeDragRelease,
-		addCallback,
-	) {
-		super.init(
-			pos,
-			parentEl,
-			onDisconnectCallback,
-			onInputConnectionCallback,
-			type,
-			initData,
-			onNodeRemove,
-			isModifier,
-			onNodeDragStart,
-			onNodeDragMove,
-			onNodeDragRelease,
-			addCallback,
-		);
-
-		this.outputDataConnection = null;
-
-		// const canvas = this.nodeTitle.canvas;
-		// this.nameTexture = new THREE.CanvasTexture(canvas);
-		// this.nameMesh.material.map = this.nameTexture;
-		// this.nameTexture.needsUpdate = true;
-
-		this.enabledOutputs = [];
-	}
-
-	getMesh() {
-		return this.mesh;
 	}
 
 	update() {

@@ -40,6 +40,11 @@ import ProtonsModifier from '../graphicNodes/ChemistryNodes/ProtonsModifier';
 import NeutronsModifier from '../graphicNodes/ChemistryNodes/NeutronsModifier';
 import ElectronsModifier from '../graphicNodes/ChemistryNodes/ElectronsModifier';
 
+
+/* Math */
+import MathCubeNode from '../graphicNodes/MathNodes/MathCubeNode';
+import MathPositionModifier from '../graphicNodes/MathNodes/modifiers/PositionModifier';
+
 const nodeMapping = {
   'Kick': {
     obj: KickSynth,
@@ -140,6 +145,14 @@ const nodeMapping = {
     obj: ElectronsModifier,
     isModifier: true,
   },
+  'MathCube': {
+    obj: MathCubeNode,
+    isModifier: false,
+  },
+  'MathPosition': {
+    obj: MathPositionModifier,
+    isModifier: true
+  }
 };
 
 export const getNode = (nodeStr) => {
