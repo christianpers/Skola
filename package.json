@@ -28,11 +28,12 @@
     "@babel/plugin-proposal-class-properties": "^7.10.4",
     "@babel/plugin-syntax-dynamic-import": "^7.2.0",
     "camera-controls": "^1.21.0",
-    "codemirror": "^5.41.0",
+    "codemirror": "^5.62.3",
     "firebase-cli": "^1.2.0",
     "firebase-tools": "^7.8.1",
     "glslify-loader": "^1.0.2",
     "hold-event": "0.0.1",
+    "mobx": "^6.3.3",
     "tone": "^0.12.80",
     "vanilla-picker": "^2.7.2"
   }

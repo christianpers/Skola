@@ -22,16 +22,6 @@ p{
 	font-size: .8rem;
 }
 
-.editor{
-	max-width: 700px;
-
-	& .CodeMirror-linebackground{
-		&.errorBg{
-			background: rgba(240, 10, 10, .8);
-		}
-	}
-}
-
 .glslCanvas, canvas{
 	position: absolute;
 	top: 0;

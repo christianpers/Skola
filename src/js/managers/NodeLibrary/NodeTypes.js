@@ -199,6 +199,14 @@ export const mathTypes = {
             {
                 type: 'MathPosition',
                 isModifier: true
+            },
+            {
+                type: 'Style',
+                isModifier: true
+            },
+            {
+                type: 'Rita',
+                isModifier: true
             }
         ]
     }

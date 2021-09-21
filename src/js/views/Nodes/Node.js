@@ -64,6 +64,9 @@ export default class Node{
 			isShowing: false,
 		};
 
+		// This is the assigned variable in code editor
+		this.variableName = undefined;
+
 		this.parentEl = parentEl;
 
 		this.connectedNodes = [];

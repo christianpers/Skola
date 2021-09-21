@@ -13,6 +13,9 @@ export default class PlanetRotationModifer extends GraphicNode {
 		this.needsUpdate = true;
 		this.title = 'Planet rotation';
 
+		// THIS IS USED PURELY FOR CONNECT VALIDATION.. COULD BE DONE NICER ?
+		this.isRotationModifier = true;
+
 		this.isParam = true;
 
 		const hasYVal = (this.initValues && this.initValues.rotationY);

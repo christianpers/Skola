@@ -137,6 +137,7 @@ export default class NodeLibraryTab{
 		const nodePos = this.nodePlaceHelper.getPos();
 
 		if (Math.abs(this.nodePlaceHelper.deltaX) > 4 && !this.currentCreatedNode) {
+			console.log('before node added: ', this.nodeToPlaceData, nodePos);
 			const node = this.onNodeAddedCallback(this.nodeToPlaceData, nodePos);
 			this.currentCreatedNode = node;
 			node.onMouseDown(e, false);

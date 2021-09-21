@@ -26,7 +26,7 @@ export default class ConnectionsManager{
             node.nodeIndex = mainNodesIndex;
         }
         
-        const nodeAddedEvent = new CustomEvent('node-added-event');
+        const nodeAddedEvent = new CustomEvent('node-added-event', { detail: node });
         document.documentElement.dispatchEvent(nodeAddedEvent);
     }
 
@@ -78,7 +78,7 @@ export default class ConnectionsManager{
 
         delete this.nodes[node.ID];
 
-        const nodeRemovedEvent = new CustomEvent('node-removed-event');
+        const nodeRemovedEvent = new CustomEvent('node-removed-event', { detail: node });
         document.documentElement.dispatchEvent(nodeRemovedEvent);
 
         console.log('paramConnections: ', this.paramConnections);

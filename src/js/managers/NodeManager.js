@@ -57,6 +57,9 @@ export default class NodeManager{
 		);
 		
 		this._nodes = [];
+		this._nodeState = new Map();
+
+		// Remove nodeConnections ??? Should come from ConnectionsManager
 		this._nodeConnections = [];
 		this._graphicNodes = [];
 		this._graphicNodeLength = 0;
@@ -334,6 +337,7 @@ export default class NodeManager{
 			window.NS.singletons.CanvasNode.enableInput(node, 'foreground');
 		}
 		this._nodes.push(node);
+		this._nodeState.set(node.ID, {});
 		// if (node.isRenderNode || node.isCanvasNode || node.needsUpdate) {
 		// 	this._graphicNodes.push(node);
 		// 	this._graphicNodeLength = this._graphicNodes.length;
@@ -378,6 +382,8 @@ export default class NodeManager{
 		node.removeFromDom();
 		const tempNodes = this._nodes.filter((t) => t.ID !== node.ID);
 		this._nodes = tempNodes;
+
+		this._nodeState.delete(node.ID);
 
 		deleteNode(node.ID)
 		.then(() => {

@@ -44,6 +44,8 @@ import ElectronsModifier from '../graphicNodes/ChemistryNodes/ElectronsModifier'
 /* Math */
 import MathCubeNode from '../graphicNodes/MathNodes/MathCubeNode';
 import MathPositionModifier from '../graphicNodes/MathNodes/modifiers/PositionModifier';
+import MathStyleModifier from '../graphicNodes/MathNodes/modifiers/StyleModifier';
+import MathDrawingModifier from '../graphicNodes/MathNodes/modifiers/DrawingModifier';
 
 const nodeMapping = {
   'Kick': {
@@ -151,6 +153,14 @@ const nodeMapping = {
   },
   'MathPosition': {
     obj: MathPositionModifier,
+    isModifier: true
+  },
+  'Style': {
+    obj: MathStyleModifier,
+    isModifier: true
+  },
+  'Rita': {
+    obj: MathDrawingModifier,
     isModifier: true
   }
 };

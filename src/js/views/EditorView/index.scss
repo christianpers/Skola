@@ -1,0 +1,67 @@
+editor {
+    height: 100%;
+    position: absolute;
+    top: 34px;
+    left: 0;
+    width: 50%;
+    z-index: 3;
+    padding-right: 20px;
+    background: black;
+    display: block;
+    transform: translateX(calc(-100% + 20px));
+    transition: transform .4s;
+
+
+    &.visible {
+        transform: translateX(0);
+    }
+
+    & > .CodeMirror {
+        height: 100%;
+
+        .CodeMirror-gutter-background {
+            &.red {
+                &::before {
+                    content: '';
+                    display: inline-block;
+                    width: 10px;
+                    height: 10px;
+                    border-radius: 50%;
+                    background-color: red;
+                    margin-left: 4px;
+                }
+            }
+
+            &.green {
+                &::before {
+                    content: '';
+                    display: inline-block;
+                    width: 10px;
+                    height: 10px;
+                    border-radius: 50%;
+                    background-color: green;
+                    margin-left: 4px;
+                }
+            }
+        }
+    }
+
+    & > editor-panel {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 20px;
+        height: 100%;
+        cursor: pointer;
+
+        & > h5 {
+            position: absolute;
+            top: 50%;
+            left: -24px;
+            transform: rotate(90deg);
+            color: white;
+            white-space: nowrap;
+            text-transform: uppercase;
+        }
+    }
+}

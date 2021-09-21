@@ -1,5 +1,7 @@
-import GraphicNode from '../../GraphicNode';
-import InputComponent from '../../../views/Nodes/NodeComponents/InputComponent';
+import GraphicNode from '../../../GraphicNode';
+import InputComponent from '../../../../views/Nodes/NodeComponents/InputComponent';
+
+import './index.scss';
 
 const DEFAULT_VAL = 0;
 
@@ -29,19 +31,18 @@ const getDefFromName = (name) => {
 }
 
 export default class PositionModifierNode extends GraphicNode{
+	code(index) {
+		return `var positionmodifiernode${index} = new PositionModifierNode`;
+	}
 	constructor(renderer, backendData) {
 		super();
 
 		const initData = backendData ? backendData.data.visualSettings : { x: DEFAULT_VAL, y: DEFAULT_VAL, z: DEFAULT_VAL };
 
-		console.log(initData);
-
 		this.isParam = true;
 		this.title = 'Position';
 
         this._inputs = {};
-
-
 
         this._convertedValues = new Map();
 		this._inputValues = new Map();
@@ -107,13 +108,18 @@ export default class PositionModifierNode extends GraphicNode{
 	}
 
 	getValue(param) {
+		const val = this._convertedValues.get(param.param);
         return this._convertedValues.get(param.param);
 	}
 
 	reset() {
-		this.currentConvertedValue = this.getConvertedVal(DEFAULT_VAL);
-		this._convertedValues.clear();
-		this._inputValues.clear();
+		INPUT_DEF.forEach(({ id, conversion }) => {
+			const value = DEFAULT_VAL;
+			this._inputs[id].setValue(value);
+			const convertedVal = conversion(value);
+			this._convertedValues.set(id, convertedVal);
+			this._inputValues.set(id, value);
+		});
 	}
 
 	onConnectionAdd(e) {
@@ -144,7 +150,6 @@ export default class PositionModifierNode extends GraphicNode{
 			}
 		}
 	}
-
 
 	removeFromDom() {
 		this.reset();

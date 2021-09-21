@@ -1,15 +1,23 @@
 import CubeNode from '../Shapes/CubeNode';
 
+
+
 export default class MathCubeNode extends CubeNode{
+
+	code(index) {
+		return `var mathcubenode${index} = new MathCubeNode();`;
+	}
+
 	constructor() {
 		super();
 
+		/* STYlE START */
 		const textureParam = {
 			title: 'Texture',
 			param: 'map',
 			useAsInput: true,
-			parent: 'Material',
-			paramHelpersType: 'texture',
+			parent: 'Style',
+			paramHelpersType: 'style',
 			needsFrameUpdate: false,
 			defaultConnect: true,
 		};
@@ -19,12 +27,12 @@ export default class MathCubeNode extends CubeNode{
 			param: 'color',
 			useAsInput: true,
 			defaultVal: new THREE.Color(1,1,1),
-			parent: 'Color',
-			paramHelpersType: 'color',
+			parent: 'Style',
+			paramHelpersType: 'style',
 			needsFrameUpdate: false,
 			defaultConnect: true,
 		};
-
+		
 		// const bumpMapParam = {
 		// 	title: 'Displacement',
 		// 	// param: 'displacementMap',
@@ -34,6 +42,17 @@ export default class MathCubeNode extends CubeNode{
 		// 	paramHelpersType: 'normalMap',
 		// 	needsFrameUpdate: false,
 		// };
+		/* STYlE END */
+
+		const mathDrawerParam = {
+			title: 'Rita',
+			param: 'rita',
+			useAsInput: true,
+			parent: 'Rita',
+			paramHelpersType: 'mathDrawing',
+			needsFrameUpdate: false,
+			defaultConnect: true
+		};
 
 		const positionXParam = {
 			title: 'Position X',
@@ -96,11 +115,11 @@ export default class MathCubeNode extends CubeNode{
 		};
 
 		const scaleParam = {
-			title: 'Scale',
+			title: 'Storlek',
 			param: 'scale',
 			useAsInput: true,
-			parent: 'Scale',
-			paramHelpersType: 'scale',
+			parent: 'Storlek',
+			paramHelpersType: 'mathScale',
 			needsFrameUpdate: false,
 			minMax: {min: .1, max: 6},
 			defaultVal: 0,
@@ -110,6 +129,7 @@ export default class MathCubeNode extends CubeNode{
 		this.params = {
 			textureParam,
 			colorParam,
+			mathDrawerParam,
 			// bumpMapParam,
 			positionXParam,
 			positionYParam,

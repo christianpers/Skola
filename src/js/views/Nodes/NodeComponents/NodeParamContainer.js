@@ -112,8 +112,8 @@ export default class NodeParamContainer{
 		for (let i = 0; i < keys.length; i++) {
 			const key = keys[i];
 			const param = this.inputParams[key];
-			if (GraphicsParamHelpers[param.param.paramHelpersType].isValid(outputNode, inNode, param.param, param.ID)) {
-				// param.activatePossible();
+			const paramHelper = GraphicsParamHelpers[param.param.paramHelpersType];
+			if (paramHelper && paramHelper.isValid(outputNode, inNode, param.param, param.ID)) {
 				return true;
 
 			}

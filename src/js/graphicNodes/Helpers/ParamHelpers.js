@@ -1,3 +1,5 @@
+// import { onMathDrawingDisconnect, onMathDrawingUpdate, isValidMathDrawingInput } from '../MathNodes/modifiers/DrawingModifier';
+
 const isValidParamTextureInput = (outNode) => {
 
 	return outNode.framebuffer || outNode.texture;
@@ -250,6 +252,79 @@ const onAtomParamDisconnect = (inNode, param) => {
 
 };
 
+
+const onMathDrawingDisconnect = (inNode, param) => {
+	console.log('on math drawing disconnect');
+};
+
+const onMathDrawingUpdate = (inNode, outNode, param) => {
+	console.log('on math drawing update');
+};
+
+const isValidMathDrawingInput = (outNode, inNode, param) => {
+	console.log('is valid math drawing: ', outNode, param);
+
+	
+
+	if (!param) {
+		return false;
+	}
+	if (!(outNode.isParam && !param.isConnected)) {
+		return false;
+	}
+
+	if (outNode.type.toLowerCase() === param.param) {
+		return true;
+	}
+
+	return false;
+
+};
+
+// IDEA IS TO USE THIS AS BASE
+const isValidGeneric = (outNode, inNode, param) => {
+	if (!param) {
+		return false;
+	}
+	if (!(outNode.isParam && !param.isConnected)) {
+		return false;
+	}
+
+	return true;
+}
+
+const isValidRotationInput = (outNode, inNode, param) => {
+	if (!isValidGeneric(outNode, inNode, param)) {
+		return false;
+	}
+
+	if (outNode.isRotationModifier) {
+		return true;
+	}
+
+	return false;
+}
+
+const isValidMathScaleInput = (outNode, inNode, param) => {
+	if (!isValidGeneric(outNode, inNode, param)) {
+		return false;
+	}
+
+	if (outNode.isScaleModifier) {
+		return true;
+	}
+
+	return false;
+};
+
+const onMathScaleDisconnect = (inNode, param) => {
+	console.log('on math scale disconnect');
+};
+
+const onMathScaleUpdate = (inNode, outNode, param) => {
+	console.log('on math scale update');
+};
+
 const paramHelpers = {
 	particleColor: {
 		update: onParticleColorParamUpdate,
@@ -303,7 +378,7 @@ const paramHelpers = {
 	},
 	rotation: {
 		update: onRotationParamUpdate,
-		isValid: isValidParamPositionInput,
+		isValid: isValidRotationInput,
 		disconnect: onRotationDisconnect,
 	},
 	scale: {
@@ -311,16 +386,16 @@ const paramHelpers = {
 		isValid: isValidParamPositionInput,
 		disconnect: onScaleParamDisconnect,
 	},
-	shaderParam: {
-		update: onShaderParamUpdate,
-		isValid: isValidParamPositionInput,
-		disconnect: onPositionDisconnect,
-	},
-	light: {
-		update: onLightParamUpdate,
-		isValid: isValidParamPositionInput,
-		disconnect: onPositionDisconnect,
-	},
+	// shaderParam: {
+	// 	update: onShaderParamUpdate,
+	// 	isValid: isValidParamPositionInput,
+	// 	disconnect: onPositionDisconnect,
+	// },
+	// light: {
+	// 	update: onLightParamUpdate,
+	// 	isValid: isValidParamPositionInput,
+	// 	disconnect: onPositionDisconnect,
+	// },
 	atom: {
 		update: onAtomParamUpdate,
 		isValid: isValidAtomParamInput,
@@ -335,6 +410,16 @@ const paramHelpers = {
 		update: onScaleParamUpdate,
 		isValid: isValidSpaceSizeInput,
 		disconnect: onScaleParamDisconnect,
+	},
+	mathDrawing: {
+		update: onMathDrawingUpdate,
+		isValid: isValidMathDrawingInput,
+		disconnect: onMathDrawingDisconnect
+	},
+	mathScale: {
+		update: onMathScaleUpdate,
+		isValid: isValidMathScaleInput,
+		disconnect: onMathScaleDisconnect
 	}
 }
 
