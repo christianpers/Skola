@@ -15,6 +15,10 @@ import EditorView from './views/EditorView';
 
 import ConnectionsManager from './managers/ConnectionsManager';
 
+import NodeStateManager from './managers/NodeStateManager';
+
+import { autorun } from 'mobx';
+
 import Tone from 'tone';
 
 export default class Main{
@@ -40,6 +44,18 @@ export default class Main{
 
 		window.NS.singletons.lessons = {};
 
+		//CONTAINS CONNECTION AND CURRENT NODES
+		window.NS.singletons.ConnectionsManager = new ConnectionsManager();
+
+
+		// HANDLES CHANGES FROM NODESREFS  (backend/refs) WHICH IS THE MAIN NODE STATE
+		this.nodeStateManager = new NodeStateManager();
+		window.NS.singletons.NodeStateManager = this.nodeStateManager;
+
+		
+
+		
+
 		this.workspaceManager = new WorkspaceManager(document.body, this.onWorkspaceClickBound);
 		window.NS.workspaceEl = this.workspaceManager.el;
 
@@ -57,7 +73,7 @@ export default class Main{
 		
 
 		window.NS.singletons.StatusWindow = new StatusWindow(document.body);
-		window.NS.singletons.ConnectionsManager = new ConnectionsManager();
+		
 		window.NS.singletons.DialogManager = new DialogManager(document.body, this._canShowSaveDialog);
 
 		this.keyboardManager = new KeyboardManager();

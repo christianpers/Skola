@@ -1,12 +1,6 @@
 import CubeNode from '../Shapes/CubeNode';
 
-
-
 export default class MathCubeNode extends CubeNode{
-
-	code(index) {
-		return `var mathcubenode${index} = new MathCubeNode();`;
-	}
 
 	constructor() {
 		super();

@@ -211,3 +211,22 @@ export const mathTypes = {
         ]
     }
 };
+
+export const getTypes = (types) => {
+    /* return items for hint list in editor to use */
+    const keys = Object.keys(types);
+    const type = keys[0];
+
+    const ret = {
+        type: keys[0],
+        options: []
+    };
+
+    ret.options = Object.keys(types[keys[0]]).reduce((acc, curr) => {
+        acc.push(types[keys[0]][curr]);
+        return acc;
+    }, []).flat();
+
+    return ret;
+    
+}

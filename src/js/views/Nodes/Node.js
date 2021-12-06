@@ -19,6 +19,8 @@ export default class Node{
 
 		this._nodeIndex = -1;
 		this._nodeSortIndex = 0;
+		// This is the assigned variable in code editor
+		this._variableName = undefined;
 
 		this.title = 'Enter node title';
 
@@ -43,11 +45,12 @@ export default class Node{
 		onNodeDragStart,
 		onNodeDragMove,
 		onNodeDragRelease,
-		addCallback,
+		addCallback
 	) {
 		this.initNodeConfig = !!nodeConfig;
 
 		this.ID = this.initNodeConfig ? nodeConfig.id : 'temp__' + Math.random().toString(36).substr(2, 9);
+		
 		this.onDisconnectCallback = onDisconnectCallback;
 		this.onInputConnectionCallback = onInputConnectionCallback;
 		this.hasActiveInput = false;
@@ -63,9 +66,7 @@ export default class Node{
 			isInGroup: false,
 			isShowing: false,
 		};
-
-		// This is the assigned variable in code editor
-		this.variableName = undefined;
+		
 
 		this.parentEl = parentEl;
 
@@ -133,20 +134,31 @@ export default class Node{
 
 		if (this.initNodeConfig) {
 			const ref = getNodeRef(this.ID);
-			window.NS.singletons.refs.addNodeRef(ref);
+			this.variableName = nodeConfig.data.variableName;
 			window.NS.singletons.ConnectionsManager.addNode(this);
+			window.NS.singletons.refs.addNodeRef(ref);
 			this.nodeCreated(nodeConfig);
 		} else {
-			let nodeObj = {
+			const initObj = {
 				type,
 				title: this.title,
 				pos,
+				// variableName: variableName
 			};
+			/* Make this a bit nicer !!!??
+				also changing variablename doesnt work yet
+			 */
+			let nodeObj = this.variableName ? Object.assign({}, initObj, { variableName: this.variableName }) : initObj;
+			console.log('variablename:', this.variableName, { variableName: this.variableName });
 			nodeObj = this.isModifier ? Object.assign({}, nodeObj, { paramConnections: [] }) : Object.assign({}, nodeObj);
 			createNode(nodeObj)
 			.then((ref) => {
 				this.ID = ref.id;
 				window.NS.singletons.ConnectionsManager.addNode(this);
+				console.log('add ref after node created', );
+				// if (variableName) {
+				// 	this.variableName = variableName;
+				// }
 				if (ref) {
 					window.NS.singletons.refs.addNodeRef(ref);
 				} else {
@@ -156,8 +168,8 @@ export default class Node{
 
 				this.nodeCreated();
 			})
-			.catch(() => {
-				console.log('err creating node in db');
+			.catch((err) => {
+				console.log('err creating node in db', err);
 			});
 		}
 
@@ -223,15 +235,6 @@ export default class Node{
 		this.addCallback(this);
 	}
 
-	// getSettings() {
-	// 	if (!this.settingsContainer) {
-	// 		this.settingsContainer = document.createElement('div');
-	// 		this.settingsContainer.className = 'node-settings';
-	// 	}
-
-	// 	return this.settingsContainer;
-	// }
-
 	setTitle(value) {
 		this.title = value;
 
@@ -246,6 +249,21 @@ export default class Node{
 		.catch(() => {
 			console.log('error updating node');
 		});
+	}
+
+	setVariableName(value) {
+		this.variableName = value;
+
+		updateNode({
+			variableName: this.variableName,
+		}, this.ID)
+		.then(() => {
+			console.log('updated node');
+		})
+		.catch(() => {
+			console.log('error updating node');
+		});
+
 	}
 
 	onConnectionAdd(e) {
@@ -614,5 +632,19 @@ export default class Node{
 
 	get nodeSortIndex() {
 		return this._nodeSortIndex;
+	}
+
+	get variableName() {
+		return this._variableName;
+	}
+
+	set variableName(value) {
+		this._variableName = value;
+
+		// NEED TO ADD A SOLUTION FOR MODIFIERS
+		if (this.nodeTitle) {
+			this.nodeTitle.setVariableName(value);
+		}
+			
 	}
 }

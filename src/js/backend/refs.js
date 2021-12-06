@@ -1,3 +1,5 @@
+import { observable, toJS } from 'mobx';
+
 export default class Refs{
     constructor() {
         this.userRef = null;
@@ -6,7 +8,11 @@ export default class Refs{
         // this.groupsRef = null;
         this.paramContainerRef = {};
 
-        this.nodesRefs = {};
+        this._state = observable({
+            nodesRefs: {}
+        });
+
+        // this.nodesRefs = {};
         this.groupsRefs = {};
     }
 
@@ -34,20 +40,39 @@ export default class Refs{
         return this.drawingRef;
     }
 
+    get $nodesRefs() {
+        return { ...this._state.nodesRefs };
+        // return toJS(this._state.nodesRefs);
+    }
+
     addNodeRef(ref) {
-        this.nodesRefs[ref.id] = ref;
+        // console.log('add node ref');
+        console.log('--- add node ref ----');
+        // console.trace();
+        // this.nodesRefs[ref.id] = ref;
+        // this._state.nodesRefs.push(ref);
+        this._state.nodesRefs[ref.id] = ref;
+        // const nodesRefs = this.nodesRefs;
+        // this._state.nodesRefs = {
+        //     ...this.nodesRefs,
+        //     ref
+        // };
     }
 
     removeNodeRef(id) {
-        delete this.nodesRefs[id];
+        console.log('--- remove node from ref ---');
+        // delete this.nodesRefs[id];
+        delete this._state.nodesRefs[id];
     }
 
     getNodeRef(id) {
-        return this.nodesRefs[id];
+        // return this.nodesRefs[id];
+        return this._state.nodesRefs[id];
     }
 
     hasNodeRef(id) {
-        return !!this.nodesRefs[id];
+        // return !!this.nodesRefs[id];
+        return !!this._state.nodesRefs[id];
     }
 
     // setNodesRef(ref) {

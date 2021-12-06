@@ -1,3 +1,5 @@
+import { autorun, observable, get, values, entries } from 'mobx';
+
 import Node from '../views/Nodes/Node';
 import GraphicsNodeManager from './GraphicsNodeManager';
 import AudioNodeManager from './AudioNodeManager';
@@ -23,6 +25,8 @@ export default class NodeManager{
 
 		this.config = config;
 		this.hasConfig = !!config;
+
+		this._testObservable = observable(1);
 
 		this.nodeLibrary = nodeLibrary;
 
@@ -57,7 +61,6 @@ export default class NodeManager{
 		);
 		
 		this._nodes = [];
-		this._nodeState = new Map();
 
 		// Remove nodeConnections ??? Should come from ConnectionsManager
 		this._nodeConnections = [];
@@ -105,7 +108,7 @@ export default class NodeManager{
 
 		if (this.hasConfig) {
 
-			console.log('has config', this.config);
+			// console.log('has config', this.config);
 			// for (let i = 0; i < this.config.connections.length; i++) {
 			// 	this.isConnecting = true;
 			// 	const outputNode = this._nodes.find(t => t.ID === this.config.connections[i].out);
@@ -138,6 +141,14 @@ export default class NodeManager{
 
 		this.onNodeSelectedEventBound = this.onNodeSelectedEvent.bind(this);
 		document.documentElement.addEventListener('node-selected', this.onNodeSelectedEventBound);
+
+		// this._nodeStateManager = window.NS.singletons.nodeStateManager;
+
+		
+
+		// autorun(() => {
+		// 	console.log('autorun: ', this._nodeStateManager.nodes.slice());
+		// });
 	}
 
 	init(selectedDrawing) {
@@ -151,7 +162,8 @@ export default class NodeManager{
 				type: 'graphics',
 				data: node.data,
 			};
-			this.initNode(initObj, node.data.pos, node);
+			this.initNode(initObj, node.data.pos, node, undefined /* variable */);
+			
 		}
 
 		window.NS.singletons.CanvasNode.enableForeground();
@@ -206,14 +218,15 @@ export default class NodeManager{
 		this.availableConnections.resetAvailable();
 	}
 
-	initNode(nodeData, e, backendData) {
+	initNode(nodeData, e, backendData, variable) {
+		// console.log('node data: ', nodeData, ' e: ', e, 'backendData: ', backendData);
 		let createdNode = null;
 		if (nodeData.type === 'graphics') {
 			const hasSceneNode = this._nodes.some(t => t.isCanvasNode);
 			if (hasSceneNode && nodeData.data.type === 'Canvas') {
 				return;
 			}
-			createdNode = this.graphicsNodeManager.createNode(nodeData.data, e, backendData);
+			createdNode = this.graphicsNodeManager.createNode(nodeData.data, e, backendData, variable);
 		} else {
 			createdNode = this.audioNodeManager.createNode(nodeData.data, e, backendData);
 		}
@@ -221,6 +234,11 @@ export default class NodeManager{
 		this.nodeLibrary.hide();
 		return createdNode;
 		
+	}
+
+	removeNodeById(nodeID) {
+		const node = this._nodes.find(t => t.ID === nodeID);
+		this.remove(node);
 	}
 
 	onNodeRemove(node) {
@@ -337,7 +355,6 @@ export default class NodeManager{
 			window.NS.singletons.CanvasNode.enableInput(node, 'foreground');
 		}
 		this._nodes.push(node);
-		this._nodeState.set(node.ID, {});
 		// if (node.isRenderNode || node.isCanvasNode || node.needsUpdate) {
 		// 	this._graphicNodes.push(node);
 		// 	this._graphicNodeLength = this._graphicNodes.length;
@@ -380,11 +397,8 @@ export default class NodeManager{
 		}
 
 		node.removeFromDom();
-		const tempNodes = this._nodes.filter((t) => t.ID !== node.ID);
-		this._nodes = tempNodes;
-
-		this._nodeState.delete(node.ID);
-
+		this._nodes = this._nodes.filter((t) => t.ID !== node.ID);
+		
 		deleteNode(node.ID)
 		.then(() => {
 			console.log('node deleted', node.ID);
@@ -407,3 +421,4 @@ export default class NodeManager{
 		window.NS.singletons.CanvasNode.render();
 	}
 }
+

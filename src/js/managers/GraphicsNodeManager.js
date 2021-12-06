@@ -28,11 +28,16 @@ export default class GraphicsNodeManager{
 		this.mainRenderer = new Render();
 	}
 
-	createNode(data, pos, backendData) {
+	createNode(data, pos, backendData, variable) {
 		const nodeObj = getNode(data.type);
 		const obj = nodeObj.obj;
 		const isModifier = nodeObj.isModifier;
 		const node = new obj(this.mainRenderer, backendData);
+
+		if (variable) {
+			node.variableName = variable;
+		}
+
 		node.init(
 			pos,
 			this.parentEl,
@@ -45,7 +50,7 @@ export default class GraphicsNodeManager{
 			this.onNodeDragStart,
 			this.onNodeDragMove,
 			this.onNodeDragRelease,
-			this.addCallback,
+			this.addCallback
 		);
 		
 		node.onResize({w: 540, h: 538});

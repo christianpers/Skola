@@ -11,10 +11,10 @@ export default class NodeTitle{
         const innerContainer = document.createElement('div');
         innerContainer.className = 'node-inner-title';
 
-        container.appendChild(innerContainer);
+        this._variableName = document.createElement('p');
+        this._variableName.className = 'node-variable-name';
 
-		const label = document.createElement('h4');
-		label.innerHTML = 'Node Title';
+        container.appendChild(innerContainer);
 
         this.onChangeBound = this.onChange.bind(this);
         this.onMouseDownBound = this.mouseDown.bind(this);
@@ -30,6 +30,7 @@ export default class NodeTitle{
         this.el.addEventListener('blur', this.onBlurBound);
 
 		innerContainer.appendChild(this.el);
+        innerContainer.appendChild(this._variableName);
 
         if (window.NS.showDebug) {
             const debugEl = document.createElement('h5');
@@ -77,4 +78,8 @@ export default class NodeTitle{
 			this.el.value = this.node.title;
 		}
 	}
+
+    setVariableName(value) {
+        this._variableName.innerHTML = value;
+    }
 }
