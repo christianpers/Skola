@@ -4,8 +4,7 @@ exports.isAuthorized = (opts) => {
         const { role, email, uid } = res.locals;
         const { id } = req.params;
 
-        if (email === 'root-admin@prog-skola.com')
-            return next();
+
 
         if (opts.allowSameUser && id && uid === id)
             return next();
